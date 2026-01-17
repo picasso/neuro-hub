@@ -5,9 +5,11 @@ description: This rule sets context about what the project's Tech Stack.
 
 # Tech Stack
 
+Ignore commented items!
+
 ## Build & Development
 
-- Base build system: Vite 7+
+- Base build system: Vite 7+ (not for Next.js projects, only for regular React)
 - Package manager: Yarn Classic 1.x
 - Runtime: Node.js 24 LTS
 - Use Docker as multi-stage containerization with Nginx
@@ -25,8 +27,8 @@ description: This rule sets context about what the project's Tech Stack.
 - Runtime: Node.js 24 LTS
 - API: Next.js API Routes + tRPC for type-safe endpoints
 - Database: PostgreSQL 16 with Knex.js SQL query builder
-- Cache: Redis for session storage and rate limiting
-- Queue: BullMQ for background jobs
+<!-- - Cache: Redis for session storage and rate limiting -->
+<!-- - Queue: BullMQ for background jobs -->
 
 ## Infrastructure
 
