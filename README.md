@@ -1,0 +1,191 @@
+# NeuroHub
+
+Platform for freelancing in the field of generative AI.
+
+## 📋 Overview
+
+Key features:
+
+- User authentication with OAuth providers
+- Specialization in Generative AI (not a universal freelance marketplace)
+- Live Demonstrations through Hugging Face Spaces
+- Skills Verification via portfolio and interactive demos
+- Two-sided Marketplace with rating system
+- Admin panel for platform moderation
+
+The application serves approximately 50,000 daily active users and processes 2,000+ transactions per day.
+
+## 🛠 Tech Stack
+
+### Frontend
+
+- **Framework**: Next.js 16+ (App Router)
+- **Language**: TypeScript 5.9+ (strict mode)
+- **UI Components**: Material UI 7.3+
+- **Styling**: Emotion 11+
+- **State Management**: Effector 23+
+- **Type-safe API**: tRPC 11+
+
+### Backend
+
+- **Runtime**: Node.js 24 LTS
+- **API**: Next.js API Routes + tRPC
+- **Database**: PostgreSQL 16
+- **Query Builder**: Knex.js 3+
+- **Authentication**: Better Auth 1+
+
+### Development Tools
+
+- **Package Manager**: Yarn Classic 1.x
+- **Linting**: ESLint 9+ with TypeScript
+- **Formatting**: Prettier 3+
+- **Testing**: Jest 29+ with Testing Library
+- **Containerization**: Docker with Docker Compose
+
+### Памятка для ленивых
+
+"dependencies": {
+  "@emotion/*": "...",        // Стилизация
+  "@mui/material": "...",     // UI компоненты
+  "@trpc/*": "...",           // Type-safe API
+  "better-auth": "...",       // Аутентификация
+  "effector": "...",          // State management
+  "immer": "...",             // Immutable updates
+  "knex": "...",              // Query builder
+  "pg": "...",                // PostgreSQL драйвер
+  "next": "...",              // Framework
+  "react": "...",             // UI library
+  "superjson": "...",         // Сериализация для tRPC
+  "zod": "..."                // Валидация
+}
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 24+ LTS
+- Yarn 1.x
+- Docker & Docker Compose (for local database)
+
+### Installation
+
+1. **Clone the repository**
+
+    ```bash
+    git clone https://github.com/picasso/neuro-hub.git
+    cd neuro-hub
+    ```
+
+2. **Install dependencies**
+
+    ```bash
+    yarn install
+    ```
+
+3. **Set up environment variables**
+
+    ```bash
+    cp env.example .env
+    ```
+
+    Edit `.env` and configure your environment variables:
+
+    ```env
+    NODE_ENV=development
+    PORT=3000
+    NEXT_PUBLIC_APP_URL=http://localhost:3000
+    DATABASE_URL=postgresql://postgres:postgres@localhost:5432/neurohub
+    BETTER_AUTH_SECRET=your-secret-key-here
+    BETTER_AUTH_URL=http://localhost:3000
+    ```
+
+4. **Start the database**
+
+    ```bash
+    docker-compose up -d postgres
+    ```
+
+5. **Run database migrations**
+
+    ```bash
+    yarn knex migrate:latest
+    ```
+
+6. **Start development server**
+
+    ```bash
+    yarn dev
+    ```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 📝 Available Scripts
+
+### Development
+
+```bash
+yarn dev          # Start development server
+yarn build        # Build for production
+yarn start        # Start production server
+```
+
+### Code Quality
+
+```bash
+yarn lint         # Run ESLint
+yarn lint:fix     # Fix ESLint errors
+yarn lint:ci      # Run ESLint with zero warnings policy
+yarn format       # Format code with Prettier
+yarn format:check # Check code formatting
+yarn type-check   # Run TypeScript compiler check
+```
+
+### Testing
+
+```bash
+yarn test         # Run tests
+yarn test:watch   # Run tests in watch mode
+```
+
+### Database
+
+```bash
+yarn knex migrate:make <name>    # Create new migration
+yarn knex migrate:latest         # Run all migrations
+yarn knex migrate:rollback       # Rollback last batch
+yarn knex seed:make <name>       # Create seed file
+yarn knex seed:run               # Run seed files
+```
+
+## 🐳 Docker
+
+### Development with Docker
+
+```bash
+# Start all services
+docker-compose up
+
+# Start in detached mode
+docker-compose up -d
+
+# Stop services
+docker-compose down
+
+# View logs
+docker-compose logs -f app
+```
+
+### Production Build
+
+```bash
+docker build -t neuro-hub .
+docker run -p 3000:3000 neuro-hub
+```
+
+## 🔗 Links
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Material UI Documentation](https://mui.com/material-ui/)
+- [Effector Documentation](https://effector.dev/)
+- [tRPC Documentation](https://trpc.io/)
+- [Better Auth Documentation](https://www.better-auth.com/)

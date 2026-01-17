@@ -5,14 +5,15 @@ description: This rule gives context about what the project does.
 
 # Project Overview
 
-This is an e-commerce platform for selling digital products.
+Platform for freelancing in the field of generative AI.
 
 Key features:
 
 - User authentication with OAuth providers
-- Product catalog with search and filtering
-- Shopping cart and checkout flow
-- Seller dashboard for product management
+- Specialization in Generative AI (not a universal freelance marketplace)
+- Live Demonstrations through Hugging Face Spaces
+- Skills Verification via portfolio and interactive demos
+- Two-sided Marketplace with rating system
 - Admin panel for platform moderation
 
 The application serves approximately 50,000 daily active users
