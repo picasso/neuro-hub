@@ -18,6 +18,11 @@ const nextConfig = {
 		config.resolve.extensionAlias = {
 			'.js': ['.js', '.ts', '.tsx'],
 		}
+		config.module.rules.push({
+			test: /\.svg$/i,
+			issuer: /\.[jt]sx?$/,
+			use: ['@svgr/webpack'],
+		})
 		return config
 	},
 }
