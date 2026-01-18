@@ -2,7 +2,7 @@ export default function HomePage() {
 	return (
 		<main>
 			<h1>Welcome to NeuroHub</h1>
-			<p>E-commerce platform for selling digital products</p>
+			<p>Platform for freelancing in the field of generative AI</p>
 		</main>
 	)
 }

@@ -4,16 +4,18 @@ Platform for freelancing in the field of generative AI.
 
 ## 📋 Overview
 
+NeuroHub is a specialized freelance marketplace connecting AI specialists with clients who need generative AI services. The platform focuses on modern generative models (GPT-4, Midjourney, Stable Diffusion, DALL-E, etc.) and provides unique features for showcasing AI capabilities.
+
 Key features:
 
-- User authentication with OAuth providers
-- Specialization in Generative AI (not a universal freelance marketplace)
-- Live Demonstrations through Hugging Face Spaces
-- Skills Verification via portfolio and interactive demos
-- Two-sided Marketplace with rating system
-- Admin panel for platform moderation
+- **Two-sided Marketplace**: Freelancers and clients with role-based workflows
+- **Specialization in Generative AI**: Not a universal freelance marketplace
+- **Live Demonstrations**: Integration with Hugging Face Spaces for interactive demos
+- **Skills Verification**: Portfolio and interactive demos showcase
+- **Project Management**: Kanban boards, built-in messenger, time tracking
+- **Rating System**: Reviews and ratings for quality assurance
 
-The application serves approximately 50,000 daily active users and processes 2,000+ transactions per day.
+Target scale: 50,000 daily active users, 2,000+ transactions per day.
 
 ## 🛠 Tech Stack
 
@@ -24,15 +26,15 @@ The application serves approximately 50,000 daily active users and processes 2,0
 - **UI Components**: Material UI 7.3+
 - **Styling**: Emotion 11+
 - **State Management**: Effector 23+
-- **Type-safe API**: tRPC 11+
 
 ### Backend
 
 - **Runtime**: Node.js 24 LTS
-- **API**: Next.js API Routes + tRPC
+- **API**: Next.js API Routes (RESTful)
+- **API Documentation**: OpenAPI 3.0 (Swagger UI)
 - **Database**: PostgreSQL 16
 - **Query Builder**: Knex.js 3+
-- **Authentication**: Better Auth 1+
+- **Authentication**: Better Auth 1+ (cookie-based sessions, OAuth)
 
 ### Development Tools
 
@@ -42,21 +44,21 @@ The application serves approximately 50,000 daily active users and processes 2,0
 - **Testing**: Jest 29+ with Testing Library
 - **Containerization**: Docker with Docker Compose
 
-### Памятка для ленивых
+### Key Dependencies
 
 "dependencies": {
-  "@emotion/*": "...",        // Стилизация
+  "@emotion/*": "...",        // Стилизация (CSS-in-JS)
   "@mui/material": "...",     // UI компоненты
-  "@trpc/*": "...",           // Type-safe API
-  "better-auth": "...",       // Аутентификация
-  "effector": "...",          // State management
-  "immer": "...",             // Immutable updates
-  "knex": "...",              // Query builder
+  "better-auth": "...",       // Аутентификация и авторизация
+  "effector": "...",          // State management (reactive)
+  "immer": "...",             // Immutable updates helper
+  "knex": "...",              // SQL query builder
+  "next": "...",              // React framework
+  "next-swagger-doc": "...",  // OpenAPI документация
   "pg": "...",                // PostgreSQL драйвер
-  "next": "...",              // Framework
   "react": "...",             // UI library
-  "superjson": "...",         // Сериализация для tRPC
-  "zod": "..."                // Валидация
+  "swagger-ui-react": "...",  // Swagger UI для API docs
+  "zod": "..."                // Schema validation
 }
 
 ## 🚀 Getting Started
@@ -187,5 +189,6 @@ docker run -p 3000:3000 neuro-hub
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Material UI Documentation](https://mui.com/material-ui/)
 - [Effector Documentation](https://effector.dev/)
-- [tRPC Documentation](https://trpc.io/)
 - [Better Auth Documentation](https://www.better-auth.com/)
+- [OpenAPI Specification](https://swagger.io/specification/)
+- [Swagger UI](https://swagger.io/tools/swagger-ui/)
