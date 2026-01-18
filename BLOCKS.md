@@ -50,9 +50,11 @@
 - Приём работы и система отзывов
 
 ## 4. Технические особенности
-- **Backend:** микросервисная архитектура, PostgreSQL + Elasticsearch + Redis
-- **Frontend:** SPA (React/Vue/Angular), адаптивный дизайн
-- **Безопасность:** JWT, HTTPS, bcrypt, защита от XSS/CSRF
+- **Backend:** Next.js монолит с feature-based структурой, PostgreSQL 16 + Knex.js
+- **Frontend:** Next.js 16 App Router + React 19, Material UI 7.3+, Effector для state
+- **API:** RESTful API Routes с OpenAPI/Swagger документацией
+- **Аутентификация:** Better Auth с cookie-based сессиями, OAuth (GitHub, Google)
+- **Безопасность:** HTTPS, bcrypt, CSP, CSRF-токены, Zod валидация
 - **Интеграция:** Hugging Face Spaces через iframe
 
 ## 5. Ключевые метрики MVP
