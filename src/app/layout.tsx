@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 
 export const metadata: Metadata = {
 	title: 'NeuroHub',
-	description: 'E-commerce platform for selling digital products',
+	description: 'Platform for freelancing in the field of generative AI',
 }
 
 type RootLayoutProps = {
