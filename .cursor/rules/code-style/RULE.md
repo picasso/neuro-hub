@@ -27,7 +27,11 @@ Follow these rules when you write code:
 - No semicolons
 - 100 character line limit
 - Trailing commas in multi-line structures
-- All file and folder names in kebab-case
+
+## File Naming Conventions
+
+- Code files and folders: kebab-case (user-profile.tsx, use-auth.ts)
+- Markdown documentation files: SCREAMING-KEBAB-CASE (README.md, MVP.md, ARCHITECTURE-DECISIONS.md)
 
 ## Naming Conventions
 
