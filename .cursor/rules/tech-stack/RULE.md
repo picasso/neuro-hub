@@ -25,8 +25,9 @@ Ignore commented items!
 ## Backend
 
 - Runtime: Node.js 24 LTS
-- API: Next.js API Routes + tRPC for type-safe endpoints
+- API: Next.js API Routes (RESTful) with OpenAPI/Swagger documentation
 - Database: PostgreSQL 16 with Knex.js SQL query builder
+- Authentication: Better Auth with cookie-based sessions
 <!-- - Cache: Redis for session storage and rate limiting -->
 <!-- - Queue: BullMQ for background jobs -->
 
