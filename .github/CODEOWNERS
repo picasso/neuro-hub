@@ -1,0 +1,14 @@
+# Default owners for everything
+* @picasso
+
+# Frontend components
+/src/components/ @picasso
+
+# Backend API and services
+/src/server/ @picasso
+/src/lib/ @picasso
+
+# CI/CD and configs
+/.github/ @picasso
+*.yml @picasso
+*.yaml @picasso
