@@ -15,7 +15,7 @@ const eslintConfig = [
 			'coverage',
 			'.cache',
 			'*.config.js',
-			'jest.config.js',
+			'*.config.cjs',
 			'knexfile.ts',
 		],
 	},
