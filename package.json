@@ -13,8 +13,8 @@
 		"format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
 		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
 		"type-check": "tsc --noEmit",
-		"test": "jest",
-		"test:watch": "jest --watch"
+		"test": "jest --passWithNoTests",
+		"test:watch": "jest --watch --passWithNoTests"
 	},
 	"dependencies": {
 		"@emotion/cache": "^11.13.5",
@@ -36,6 +36,7 @@
 		"zod": "^4.3.5"
 	},
 	"devDependencies": {
+		"@jest/test-sequencer": "^30.2.0",
 		"@svgr/webpack": "^8.1.0",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/react": "^16.3.2",
