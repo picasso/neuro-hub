@@ -1,27 +1,62 @@
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
-import { FlatCompat } from '@eslint/eslintrc'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-const compat = new FlatCompat({
-	baseDirectory: __dirname,
-})
+import js from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import importPlugin from 'eslint-plugin-import'
+import reactPlugin from 'eslint-plugin-react'
+import reactHooksPlugin from 'eslint-plugin-react-hooks'
 
 const eslintConfig = [
-	...compat.extends('next/core-web-vitals', 'next/typescript', 'prettier'),
 	{
+		ignores: [
+			'node_modules',
+			'.next',
+			'out',
+			'dist',
+			'build',
+			'coverage',
+			'.cache',
+			'*.config.js',
+			'jest.config.js',
+			'knexfile.ts',
+		],
+	},
+	js.configs.recommended,
+	...tseslint.configs.recommended,
+	{
+		files: ['**/*.{ts,tsx}'],
+		plugins: {
+			import: importPlugin,
+			react: reactPlugin,
+			'react-hooks': reactHooksPlugin,
+		},
+		languageOptions: {
+			parserOptions: {
+				ecmaFeatures: {
+					jsx: true,
+				},
+			},
+		},
+		settings: {
+			react: {
+				version: 'detect',
+			},
+		},
 		rules: {
 			'no-console': ['warn', { allow: ['warn', 'error'] }],
+			'no-duplicate-imports': 'warn',
+			'no-unneeded-ternary': 'warn',
+			'no-useless-catch': 'warn',
 			'no-var': 'error',
+			'object-shorthand': 'warn',
 			'prefer-const': 'error',
+			'spaced-comment': ['warn', 'always', { markers: ['/'] }],
+			'@typescript-eslint/no-empty-function': 'off',
 			'@typescript-eslint/no-explicit-any': 'error',
 			'@typescript-eslint/no-unused-vars': [
 				'error',
 				{
 					argsIgnorePattern: '^_',
 					varsIgnorePattern: '^_',
+					caughtErrors: 'none',
 				},
 			],
 			'react/no-array-index-key': 'error',
