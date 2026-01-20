@@ -1,0 +1,6 @@
+#!/bin/sh
+
+echo "🚀 Running checks on staged files..."
+yarn lint-staged || exit 1
+
+echo "✅ Pre-commit checks passed!"

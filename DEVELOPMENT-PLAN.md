@@ -7,12 +7,12 @@
 ## ЭТАП 0: Инфраструктура и базовая настройка
 
 ### 0.1 DevOps и окружение
-- [ ] Настроить Docker Compose для локальной разработки (PostgreSQL 16, Node 24)
-- [ ] Создать структуру feature-based модулей в `/app`
-- [ ] Настроить ESLint 9+ с TypeScript правилами
-- [ ] Настроить Prettier 3+ для форматирования
-- [ ] Настроить pre-commit hooks (Husky)
-- [ ] Создать базовые GitHub Actions workflows для CI/CD
+- [x] Настроить Docker Compose для локальной разработки (PostgreSQL 16, Node 24)
+- [x] Создать структуру feature-based модулей в `/app`
+- [x] Настроить ESLint 9+ с TypeScript правилами
+- [x] Настроить Prettier 3+ для форматирования
+- [x] Настроить pre-commit hooks (Husky)
+- [x] Создать базовые GitHub Actions workflows для CI/CD
 <!-- - [ ] Настроить Vercel проект для деплоя -->
 <!-- - [ ] Настроить Railway для PostgreSQL в production -->
 

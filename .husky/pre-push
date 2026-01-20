@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Type check
+echo "🔍 Running type check..."
+yarn type-check || exit 1
+
+# Lint check
+echo "🧹 Running lint check..."
+yarn lint:ci || exit 1
+
+# Format check
+echo "💅 Running format check..."
+yarn format:check || exit 1
+
+# Run tests
+echo "🧪 Running tests..."
+yarn test --passWithNoTests || exit 1
+
+echo "✅ All pre-push checks passed!"
