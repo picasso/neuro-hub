@@ -79,6 +79,18 @@
 - Хорошая документация и community support
 - Emotion обеспечивает гибкость стилизации
 
+### 7. Build Configuration: Без кастомного webpack config
+
+**Решение:** Использовать дефолтную конфигурацию Next.js без кастомизации webpack.
+
+**Обоснование:**
+- Next.js 16+ активно мигрирует на Turbopack, кастомный webpack config создает конфликты
+- SVGR loader и extensionAlias не используются в проекте (нет SVG файлов)
+- Упрощение конфигурации и совместимость с будущими версиями Next.js
+- Избегаем ошибок билда типа "This build is using Turbopack, with a webpack config and no turbopack config"
+
+**Дата решения:** 2026-01-20
+
 ## Технологический стек MVP
 
 ### Frontend
