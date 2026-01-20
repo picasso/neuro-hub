@@ -16,6 +16,13 @@
 		"type-check": "tsc --noEmit",
 		"test": "jest --passWithNoTests",
 		"test:watch": "jest --watch --passWithNoTests",
+		"db:migrate": "knex migrate:latest --knexfile knexfile.ts",
+		"db:migrate:make": "knex migrate:make --knexfile knexfile.ts",
+		"db:migrate:rollback": "knex migrate:rollback --knexfile knexfile.ts",
+		"db:migrate:status": "knex migrate:status --knexfile knexfile.ts",
+		"db:seed": "knex seed:run --knexfile knexfile.ts",
+		"db:seed:make": "knex seed:make --knexfile knexfile.ts",
+		"db:test": "tsx src/lib/db/test-connection.ts",
 		"prepare": "husky"
 	},
 	"dependencies": {
@@ -59,6 +66,7 @@
 		"jest-environment-jsdom": "^30.2.0",
 		"lint-staged": "^16.2.7",
 		"prettier": "^3.4.2",
+		"tsx": "^4.21.0",
 		"typescript": "^5.9.0"
 	},
 	"engines": {
