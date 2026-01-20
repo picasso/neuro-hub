@@ -5,8 +5,10 @@ dist
 build
 coverage
 .cache
+.yarn-cache
 *.log
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+.yarnrc
 *.md

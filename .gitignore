@@ -51,6 +51,7 @@ yarn-error.log*
 .cache
 .turbo
 .eslintcache
+.yarn-cache
 
 # Database
 *.db
