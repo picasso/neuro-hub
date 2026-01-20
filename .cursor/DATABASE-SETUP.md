@@ -6,20 +6,7 @@
 
 ## Quick Start
 
-### 1. Запуск PostgreSQL через Docker
-
-```bash
-# Запустить PostgreSQL контейнер
-docker compose up -d postgres
-
-# Проверить статус
-docker compose ps
-
-# Посмотреть логи
-docker compose logs postgres
-```
-
-### 2. Создание .env файла
+### 1. Создание .env файла
 
 Скопируйте `env.example` в `.env` и настройте переменные:
 
@@ -31,6 +18,19 @@ cp env.example .env
 
 ```env
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/neurohub
+```
+
+### 2. Запуск PostgreSQL через Docker
+
+```bash
+# Запустить PostgreSQL контейнер
+docker compose up -d postgres
+
+# Проверить статус
+docker compose ps
+
+# Посмотреть логи
+docker compose logs postgres
 ```
 
 ### 3. Запуск миграций
