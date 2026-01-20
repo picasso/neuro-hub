@@ -1,5 +1,8 @@
 #!/bin/sh
 
+export PATH="$HOME/.local/share/fnm:$PATH"
+eval "$(fnm env --use-on-cd)"
+
 echo "🚀 Running checks on staged files..."
 yarn lint-staged || exit 1
 

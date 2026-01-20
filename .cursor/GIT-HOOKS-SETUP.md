@@ -104,6 +104,28 @@ git push --no-verify
 yarn husky install
 ```
 
+## Troubleshooting
+
+### Ошибка "env: node: No such file or directory"
+
+Если при коммите появляется ошибка:
+
+```
+env: node: No such file or directory
+husky - pre-commit script failed (code 1)
+```
+
+**Причина:** Git hooks запускаются в отдельном окружении, где fnm не инициализирован.
+
+**Решение:** ✅ Уже настроено - в `.husky/pre-commit` и `.husky/pre-push` добавлена инициализация fnm:
+
+```bash
+export PATH="$HOME/.local/share/fnm:$PATH"
+eval "$(fnm env --use-on-cd)"
+```
+
+**Примечание:** Ошибка `Can't create the symlink for multishells` от fnm не критична и не влияет на работу хуков (см. `.cursor/FNM-MULTISHELLS-FIX.md`).
+
 ## Файлы конфигурации
 
 - `.husky/pre-commit` - pre-commit hook script
