@@ -3,9 +3,9 @@ const nextConfig = {
 	reactStrictMode: true,
 	poweredByHeader: false,
 	compress: true,
+	typedRoutes: true,
 	experimental: {
 		optimizePackageImports: ['@mui/material', '@mui/icons-material'],
-		typedRoutes: true,
 	},
 	compiler: {
 		emotion: true,
@@ -13,17 +13,6 @@ const nextConfig = {
 	images: {
 		formats: ['image/avif', 'image/webp'],
 		remotePatterns: [],
-	},
-	webpack: (config) => {
-		config.resolve.extensionAlias = {
-			'.js': ['.js', '.ts', '.tsx'],
-		}
-		config.module.rules.push({
-			test: /\.svg$/i,
-			issuer: /\.[jt]sx?$/,
-			use: ['@svgr/webpack'],
-		})
-		return config
 	},
 }
 
