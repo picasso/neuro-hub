@@ -333,5 +333,59 @@ export const swaggerConfig: OpenAPIV3.Document = {
 				},
 			},
 		},
+		'/api/auth/verify-email': {
+			get: {
+				tags: ['Auth'],
+				summary: 'Verify email address',
+				description:
+					'Verify user email address using token from verification email. Called automatically when user clicks link in email.',
+				parameters: [
+					{
+						name: 'token',
+						in: 'query',
+						required: true,
+						schema: { type: 'string' },
+						description: 'Email verification token from verification email',
+						example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+					},
+				],
+				responses: {
+					'200': {
+						description: 'Email verified successfully',
+						content: {
+							'application/json': {
+								schema: {
+									type: 'object',
+									properties: {
+										success: { type: 'boolean', example: true },
+										message: {
+											type: 'string',
+											example: 'Email verified successfully',
+										},
+									},
+								},
+							},
+						},
+					},
+					'400': {
+						description: 'Invalid or expired token',
+						content: {
+							'application/json': {
+								schema: {
+									type: 'object',
+									properties: {
+										code: { type: 'string', example: 'INVALID_TOKEN' },
+										message: {
+											type: 'string',
+											example: 'Invalid or expired verification token',
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 	},
 }

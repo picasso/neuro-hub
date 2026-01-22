@@ -51,11 +51,11 @@
 - [x] Миграция таблицы `account` для OAuth и credentials (создана через Better Auth CLI)
 
 ### 1.3 Верификация email
-- [ ] Миграция таблицы `email_verifications` (token, user_id, expires_at)
-- [ ] API endpoint для отправки верификационного письма
-- [ ] API endpoint для подтверждения токена
-- [ ] Email шаблон для верификации
-- [ ] Интеграция email сервиса (резолвить: Resend vs SendGrid)
+- [x] Миграция таблицы `verification` (создана через Better Auth CLI)
+- [x] API endpoint для отправки верификационного письма (Better Auth)
+- [x] API endpoint для подтверждения токена (Better Auth)
+- [x] Email шаблон для верификации (React Email)
+- [x] Интеграция email сервиса (Resend)
 
 ### 1.4 API endpoints для аутентификации
 - [x] `POST /api/auth/sign-up/email` - регистрация (Better Auth)
@@ -64,7 +64,7 @@
 - [x] `POST /api/auth/forget-password` - восстановление пароля (Better Auth)
 - [x] `POST /api/auth/reset-password` - сброс пароля (Better Auth)
 - [x] `GET /api/auth/get-session` - получение текущей сессии (Better Auth)
-- [ ] `POST /api/auth/verify-email` - верификация email (потом через плагин)
+- [x] `GET /api/auth/verify-email` - верификация email (Better Auth)
 
 ---
 

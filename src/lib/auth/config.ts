@@ -1,5 +1,8 @@
+import { render } from '@react-email/render'
 import { betterAuth } from 'better-auth'
 import { pool } from '@/lib/db/pool'
+import { emailConfig, resend } from '@/lib/email'
+import VerificationEmail from '@/lib/email/templates/verification-email'
 
 export const auth = betterAuth({
 	database: pool,
@@ -7,12 +10,58 @@ export const auth = betterAuth({
 	secret: process.env.BETTER_AUTH_SECRET || 'dev-secret-change-in-production',
 	emailAndPassword: {
 		enabled: true,
-		requireEmailVerification: false,
+		requireEmailVerification: true,
 		sendResetPassword: async ({ user, url }) => {
 			if (process.env.RESEND_API_KEY) {
-				// TODO: Implement email sending via Resend
+				try {
+					await resend.emails.send({
+						from: emailConfig.from,
+						to: user.email,
+						subject: 'Восстановление пароля - NeuroHub',
+						html: `
+							<h1>Восстановление пароля</h1>
+							<p>Вы запросили сброс пароля для вашей учетной записи.</p>
+							<p><a href="${url}">Нажмите здесь, чтобы сбросить пароль</a></p>
+							<p>Или скопируйте эту ссылку: ${url}</p>
+							<p>Если вы не запрашивали сброс пароля, проигнорируйте это письмо.</p>
+						`,
+					})
+				} catch (error) {
+					console.error('Failed to send password reset email:', error)
+				}
 			} else {
 				console.warn(`Password reset requested for ${user.email}. Reset URL: ${url}`)
+				console.warn(
+					'RESEND_API_KEY not configured. Email sending is disabled in development.',
+				)
+			}
+		},
+	},
+	emailVerification: {
+		sendOnSignUp: true,
+		sendOnSignIn: true,
+		sendVerificationEmail: async ({ user, url }) => {
+			if (process.env.RESEND_API_KEY) {
+				try {
+					const emailHtml = await render(
+						VerificationEmail({
+							email: user.email,
+							verificationUrl: url,
+						}),
+					)
+
+					await resend.emails.send({
+						from: emailConfig.from,
+						to: user.email,
+						subject: 'Подтвердите ваш email - NeuroHub',
+						html: emailHtml,
+					})
+				} catch (error) {
+					console.error('Failed to send verification email:', error)
+					throw error
+				}
+			} else {
+				console.warn(`Email verification requested for ${user.email}. URL: ${url}`)
 				console.warn(
 					'RESEND_API_KEY not configured. Email sending is disabled in development.',
 				)

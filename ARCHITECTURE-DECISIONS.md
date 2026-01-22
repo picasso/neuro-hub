@@ -176,6 +176,47 @@ Better Auth использует catch-all route `/api/auth/[...all]` котор
 
 **Дата решения:** 2026-01-22
 
+### 11. Email Сервис: Resend + React Email
+
+**Решение:** Использовать Resend для отправки email и React Email для создания шаблонов.
+
+**Проблема:**
+Необходимо отправлять транзакционные письма (верификация email, сброс пароля) с красивым и responsive дизайном.
+
+**Обоснование:**
+- **Resend:**
+  - Официально рекомендован в документации Better Auth
+  - Простое API, нативная интеграция с Next.js
+  - Щедрый free tier (3000 писем/месяц)
+  - Отличная документация и TypeScript типы
+- **React Email:**
+  - Создание email шаблонов как React компонентов
+  - Автоматическая генерация HTML для всех email клиентов
+  - Компоненты оптимизированы для Gmail, Outlook, Apple Mail
+  - Поддержка Tailwind CSS для стилей
+
+**Реализация:**
+1. **Email клиент** (`src/lib/email/index.ts`):
+   - Инициализация Resend с API ключом
+   - Централизованная конфигурация (from, replyTo)
+2. **Email шаблоны** (`src/lib/email/templates/`):
+   - `verification-email.tsx` - верификация email
+   - Будущие шаблоны: password reset, notifications
+3. **Интеграция с Better Auth** (`src/lib/auth/config.ts`):
+   - `emailVerification.sendVerificationEmail` - отправка при регистрации
+   - `emailAndPassword.sendResetPassword` - восстановление пароля
+   - `requireEmailVerification: true` - принудительная верификация
+
+**Конфигурация:**
+
+```env
+RESEND_API_KEY=re_xxx
+EMAIL_FROM=NeuroHub <onboarding@neurohub.dev>
+EMAIL_REPLY_TO=support@neurohub.dev
+```
+
+**Дата решения:** 2026-01-22
+
 ## Технологический стек MVP
 
 ### Frontend
