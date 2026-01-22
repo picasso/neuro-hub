@@ -91,36 +91,27 @@
 
 **Дата решения:** 2026-01-20
 
-### 8. API Documentation: Миграция с Swagger UI на Scalar
+### 8. API Documentation: Scalar вместо Swagger UI
 
-**Текущее решение:** `swagger-ui-react` 5.31.0 с workarounds для Next.js 16.
+**Решение:** Использовать `@scalar/nextjs-api-reference` для API документации.
 
-**Рекомендация:** Мигрировать на Scalar после решения React 19 compatibility issue.
-
-**Проблемы Swagger UI:**
-- React Class Components несовместимы с Next.js Server Components
-- Требует `'use client'` directive и `dynamic import` с `ssr: false`
-- Предупреждения `UNSAFE_componentWillReceiveProps` в React 19
-- Устаревший UI и медленная загрузка (~1.5s vs ~500ms у Scalar)
-- Большой bundle size (~400KB vs ~200KB у Scalar)
-- Ограниченная поддержка OpenAPI 3.1
-
-**Преимущества Scalar:**
-- Нативная поддержка Next.js App Router без хаков
+**Обоснование:**
+- Нативная поддержка Next.js 16 и React 19 без хаков
 - Современный UI с built-in dark mode
+- Производительность: ~500ms загрузка vs ~1.5s у Swagger UI
+- Меньший bundle size: ~200KB vs ~400KB
 - Full-text search по endpoints
 - Request history и persistent authentication
 - Multiple code examples (cURL, JS, Python, C#)
+- Полная поддержка OpenAPI 3.1
 - Рекомендован Microsoft для .NET 9 проектов
 
-**Блокер:** Issue #4216 - TypeError с React 19 (`ReactCurrentDispatcher`).
-
-**План миграции:**
-1. Отслеживать статус [scalar/scalar#4216](https://github.com/scalar/scalar/issues/4216)
-2. После закрытия issue установить `@scalar/nextjs-api-reference`
-3. Заменить `/api/swagger/page.tsx` на `/api/reference/route.ts`
-4. Удалить `swagger-ui-react` и связанные workarounds
-5. Обновить ссылки в документации
+**Проблемы Swagger UI (устранены миграцией):**
+- React Class Components несовместимы с Next.js Server Components
+- Требовал `'use client'` directive и `dynamic import` с `ssr: false`
+- Предупреждения `UNSAFE_componentWillReceiveProps` в React 19
+- Устаревший UI и медленная загрузка
+- Ограниченная поддержка OpenAPI 3.1
 
 **Дата решения:** 2026-01-22
 

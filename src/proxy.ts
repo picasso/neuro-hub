@@ -66,7 +66,7 @@ export function proxy(request: NextRequest) {
 
 		response.headers.set(
 			'Content-Security-Policy',
-			"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;",
+			"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' data: https://fonts.scalar.com;",
 		)
 		response.headers.set('X-Content-Type-Options', 'nosniff')
 		response.headers.set('X-Frame-Options', 'DENY')
