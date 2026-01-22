@@ -59,6 +59,68 @@ export const swaggerConfig: OpenAPIV3.Document = {
 					},
 				},
 			},
+			AuthUser: {
+				type: 'object',
+				properties: {
+					id: { type: 'string', example: 'uGNkZ5R7O6s1ik9JD3YjkicrieY0KAdP' },
+					email: { type: 'string', format: 'email', example: 'user@example.com' },
+					name: { type: 'string', example: 'John Doe' },
+					image: { type: 'string', format: 'uri', nullable: true },
+					emailVerified: { type: 'boolean', example: false },
+					role: { type: 'string', enum: ['freelancer', 'client'], example: 'freelancer' },
+					createdAt: { type: 'string', format: 'date-time' },
+					updatedAt: { type: 'string', format: 'date-time' },
+				},
+			},
+			Session: {
+				type: 'object',
+				properties: {
+					id: { type: 'string' },
+					userId: { type: 'string' },
+					token: { type: 'string' },
+					expiresAt: { type: 'string', format: 'date-time' },
+					ipAddress: { type: 'string', nullable: true },
+					userAgent: { type: 'string', nullable: true },
+					createdAt: { type: 'string', format: 'date-time' },
+					updatedAt: { type: 'string', format: 'date-time' },
+				},
+			},
+			SignUpRequest: {
+				type: 'object',
+				required: ['email', 'password', 'name'],
+				properties: {
+					email: { type: 'string', format: 'email', example: 'user@example.com' },
+					password: {
+						type: 'string',
+						format: 'password',
+						minLength: 8,
+						example: 'SecurePass123!',
+					},
+					name: { type: 'string', example: 'John Doe' },
+				},
+			},
+			SignInRequest: {
+				type: 'object',
+				required: ['email', 'password'],
+				properties: {
+					email: { type: 'string', format: 'email', example: 'user@example.com' },
+					password: { type: 'string', format: 'password', example: 'SecurePass123!' },
+				},
+			},
+			AuthResponse: {
+				type: 'object',
+				properties: {
+					token: { type: 'string', example: 'sKrpHa0he3OoAjyrfsf0OUNfgx5BFSYY' },
+					user: { $ref: '#/components/schemas/AuthUser' },
+				},
+			},
+			SessionResponse: {
+				type: 'object',
+				properties: {
+					session: { $ref: '#/components/schemas/Session' },
+					user: { $ref: '#/components/schemas/AuthUser' },
+				},
+			},
 			Pagination: {
 				type: 'object',
 				properties: {
@@ -111,5 +173,165 @@ export const swaggerConfig: OpenAPIV3.Document = {
 			},
 		},
 	},
-	paths: {},
+	paths: {
+		'/api/auth/sign-up/email': {
+			post: {
+				tags: ['Auth'],
+				summary: 'Register new user',
+				description: 'Create a new user account with email and password',
+				requestBody: {
+					required: true,
+					content: {
+						'application/json': {
+							schema: { $ref: '#/components/schemas/SignUpRequest' },
+						},
+					},
+				},
+				responses: {
+					'200': {
+						description: 'User successfully registered',
+						content: {
+							'application/json': {
+								schema: { $ref: '#/components/schemas/AuthResponse' },
+							},
+						},
+					},
+					'422': {
+						description: 'Validation error or user already exists',
+						content: {
+							'application/json': {
+								schema: {
+									type: 'object',
+									properties: {
+										code: { type: 'string', example: 'FAILED_TO_CREATE_USER' },
+										message: {
+											type: 'string',
+											example: 'Failed to create user',
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		'/api/auth/sign-in/email': {
+			post: {
+				tags: ['Auth'],
+				summary: 'Sign in user',
+				description: 'Authenticate user with email and password',
+				requestBody: {
+					required: true,
+					content: {
+						'application/json': {
+							schema: { $ref: '#/components/schemas/SignInRequest' },
+						},
+					},
+				},
+				responses: {
+					'200': {
+						description: 'User successfully authenticated',
+						content: {
+							'application/json': {
+								schema: { $ref: '#/components/schemas/AuthResponse' },
+							},
+						},
+					},
+					'401': {
+						description: 'Invalid credentials',
+						content: {
+							'application/json': {
+								schema: {
+									type: 'object',
+									properties: {
+										code: { type: 'string', example: 'INVALID_CREDENTIALS' },
+										message: {
+											type: 'string',
+											example: 'Invalid email or password',
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		'/api/auth/sign-out': {
+			post: {
+				tags: ['Auth'],
+				summary: 'Sign out user',
+				description: 'Invalidate current user session',
+				responses: {
+					'200': {
+						description: 'User successfully signed out',
+						content: {
+							'application/json': {
+								schema: {
+									type: 'object',
+									properties: {
+										success: { type: 'boolean', example: true },
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		'/api/auth/get-session': {
+			get: {
+				tags: ['Auth'],
+				summary: 'Get current session',
+				description:
+					'Retrieve current user session and user information. Returns null if no active session.',
+				responses: {
+					'200': {
+						description:
+							'Session retrieved successfully (or null if not authenticated)',
+						content: {
+							'application/json': {
+								schema: {
+									$ref: '#/components/schemas/SessionResponse',
+									nullable: true,
+								},
+								examples: {
+									authenticated: {
+										summary: 'Authenticated user',
+										value: {
+											session: {
+												id: 'AKwBZkb2QDgldUBJLqqkN8MySRppkYiz',
+												userId: 'uGNkZ5R7O6s1ik9JD3YjkicrieY0KAdP',
+												token: 'CcFjhkPLH95OZHVkfehFeGe6tWlf04Ng',
+												expiresAt: '2026-01-29T21:56:21.452Z',
+												ipAddress: '127.0.0.1',
+												userAgent: 'Mozilla/5.0',
+												createdAt: '2026-01-22T21:56:21.453Z',
+												updatedAt: '2026-01-22T21:56:21.453Z',
+											},
+											user: {
+												id: 'uGNkZ5R7O6s1ik9JD3YjkicrieY0KAdP',
+												email: 'user@example.com',
+												name: 'John Doe',
+												emailVerified: false,
+												image: null,
+												role: 'freelancer',
+												createdAt: '2026-01-22T21:55:59.732Z',
+												updatedAt: '2026-01-22T21:55:59.732Z',
+											},
+										},
+									},
+									unauthenticated: {
+										summary: 'No active session',
+										value: null,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	},
 }

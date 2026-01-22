@@ -151,6 +151,31 @@ Shared pg.Pool (src/lib/db/pool.ts)
 
 **Дата решения:** 2026-01-22
 
+### 10. API Документация: Комбинированный подход для Better Auth
+
+**Решение:** Документировать только основные Better Auth endpoints вручную в Swagger/Scalar.
+
+**Проблема:**
+Better Auth использует catch-all route `/api/auth/[...all]` который обрабатывает все endpoints через одну функцию. Невозможно добавить JSDoc для каждого endpoint'а отдельно.
+
+**Обоснование:**
+- Better Auth имеет собственную документацию для всех endpoints
+- Полное дублирование всех endpoints (20+) создаст большой overhead
+- Пользователи чаще всего используют базовые auth операции
+- Остальные endpoints (OAuth callbacks, password reset) используются реже
+
+**Реализация:**
+Документируем вручную в `src/lib/swagger/config.ts` только 4 основных endpoint'а:
+- `POST /api/auth/sign-up/email` - регистрация пользователя
+- `POST /api/auth/sign-in/email` - вход в систему
+- `POST /api/auth/sign-out` - выход из системы
+- `GET /api/auth/get-session` - получение текущей сессии
+
+**Для остальных Better Auth endpoints:**
+Пользователи могут обратиться к официальной документации [Better Auth](https://www.better-auth.com/docs)
+
+**Дата решения:** 2026-01-22
+
 ## Технологический стек MVP
 
 ### Frontend
