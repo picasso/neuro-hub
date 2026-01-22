@@ -1,8 +1,8 @@
 import { betterAuth } from 'better-auth'
-import { db } from '@/lib/db'
+import { pool } from '@/lib/db/pool'
 
 export const auth = betterAuth({
-	database: db,
+	database: pool,
 	baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
 	secret: process.env.BETTER_AUTH_SECRET || 'dev-secret-change-in-production',
 	emailAndPassword: {
@@ -46,21 +46,6 @@ export const auth = betterAuth({
 				required: true,
 				defaultValue: 'freelancer',
 			},
-			email_verified: {
-				type: 'boolean',
-				required: false,
-				defaultValue: false,
-				fieldName: 'emailVerified',
-			},
-		},
-		modelName: 'users',
-		fields: {
-			email: 'email',
-			name: 'name',
-			image: 'image',
-			emailVerified: 'email_verified_at',
-			createdAt: 'created_at',
-			updatedAt: 'updated_at',
 		},
 	},
 	advanced: {
