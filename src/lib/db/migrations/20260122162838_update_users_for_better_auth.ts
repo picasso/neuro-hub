@@ -8,10 +8,10 @@ export async function up(knex: Knex): Promise<void> {
 	})
 
 	await knex.raw(`
-		UPDATE users 
-		SET email_verified_at = CASE 
-			WHEN email_verified = true THEN created_at 
-			ELSE NULL 
+		UPDATE users
+		SET email_verified_at = CASE
+			WHEN email_verified = true THEN created_at
+			ELSE NULL
 		END
 	`)
 
