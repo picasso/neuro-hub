@@ -17,6 +17,8 @@ const knexConfig: Knex.Config = {
 
 export const db: Knex = knex(knexConfig)
 
+export { kysely } from './kysely'
+
 export const testConnection = async (): Promise<boolean> => {
 	try {
 		await db.raw('SELECT 1')
