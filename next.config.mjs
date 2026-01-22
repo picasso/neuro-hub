@@ -4,6 +4,8 @@ const nextConfig = {
 	poweredByHeader: false,
 	compress: true,
 	typedRoutes: true,
+	serverExternalPackages: ['knex', 'pg'],
+	turbopack: {},
 	experimental: {
 		optimizePackageImports: ['@mui/material', '@mui/icons-material'],
 	},
@@ -13,6 +15,15 @@ const nextConfig = {
 	images: {
 		formats: ['image/avif', 'image/webp'],
 		remotePatterns: [],
+	},
+	webpack: (config, { isServer }) => {
+		if (isServer) {
+			config.externals = config.externals || []
+			config.externals.push({
+				pg: 'commonjs pg',
+			})
+		}
+		return config
 	},
 }
 

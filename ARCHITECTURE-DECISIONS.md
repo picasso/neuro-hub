@@ -91,6 +91,30 @@
 
 **Дата решения:** 2026-01-20
 
+### 8. API Documentation: Scalar вместо Swagger UI
+
+**Решение:** Использовать `@scalar/nextjs-api-reference` для API документации.
+
+**Обоснование:**
+- Нативная поддержка Next.js 16 и React 19 без хаков
+- Современный UI с built-in dark mode
+- Производительность: ~500ms загрузка vs ~1.5s у Swagger UI
+- Меньший bundle size: ~200KB vs ~400KB
+- Full-text search по endpoints
+- Request history и persistent authentication
+- Multiple code examples (cURL, JS, Python, C#)
+- Полная поддержка OpenAPI 3.1
+- Рекомендован Microsoft для .NET 9 проектов
+
+**Проблемы Swagger UI (устранены миграцией):**
+- React Class Components несовместимы с Next.js Server Components
+- Требовал `'use client'` directive и `dynamic import` с `ssr: false`
+- Предупреждения `UNSAFE_componentWillReceiveProps` в React 19
+- Устаревший UI и медленная загрузка
+- Ограниченная поддержка OpenAPI 3.1
+
+**Дата решения:** 2026-01-22
+
 ## Технологический стек MVP
 
 ### Frontend

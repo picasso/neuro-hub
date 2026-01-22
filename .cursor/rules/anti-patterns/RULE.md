@@ -27,3 +27,8 @@ description: This rule explicitly lists anti-patterns.
 - Avoid `useEffect` for data fetching (use Effector stores or effects)
 - Don't create objects/arrays in render (use useMemo)
 - Never fetch in client components when server fetch is possible
+
+## Сarelessness Anti-patterns
+
+- Avoid completing code implementation without Typescript and ESLint error checking
+- Avoid creating markdown documents without checking .md files with a linter

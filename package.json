@@ -31,6 +31,7 @@
 		"@emotion/styled": "^11.14.0",
 		"@mui/material": "^7.3.2",
 		"@mui/material-nextjs": "^7.3.2",
+		"@scalar/nextjs-api-reference": "^0.9.12",
 		"better-auth": "^1.4.16",
 		"effector": "^23.3.0",
 		"effector-react": "^23.3.0",
@@ -41,7 +42,6 @@
 		"pg": "8.14.0",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
-		"swagger-ui-react": "^5.31.0",
 		"zod": "^4.3.5"
 	},
 	"devDependencies": {

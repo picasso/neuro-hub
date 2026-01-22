@@ -1,11 +1,18 @@
 import knex, { type Knex } from 'knex'
-import config from '../../../knexfile'
 
-const environment = process.env.NODE_ENV || 'development'
-const knexConfig = config[environment]
-
-if (!knexConfig) {
-	throw new Error(`No Knex configuration found for environment: ${environment}`)
+const knexConfig: Knex.Config = {
+	client: 'pg',
+	connection: process.env.DATABASE_URL || {
+		host: 'localhost',
+		port: 5432,
+		database: 'neurohub',
+		user: 'postgres',
+		password: 'postgres',
+	},
+	pool: {
+		min: 2,
+		max: 10,
+	},
 }
 
 export const db: Knex = knex(knexConfig)

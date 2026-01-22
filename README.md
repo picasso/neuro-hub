@@ -31,7 +31,7 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
 
 - **Runtime**: Node.js 24 LTS
 - **API**: Next.js API Routes (RESTful)
-- **API Documentation**: OpenAPI 3.0 (Swagger UI)
+- **API Documentation**: OpenAPI 3.0 (Scalar)
 - **Database**: PostgreSQL 16
 - **Query Builder**: Knex.js 3+
 - **Authentication**: Better Auth 1+ (cookie-based sessions, OAuth)
@@ -47,18 +47,18 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
 ### Key Dependencies
 
 "dependencies": {
-  "@emotion/*": "...",        // Стилизация (CSS-in-JS)
-  "@mui/material": "...",     // UI компоненты
-  "better-auth": "...",       // Аутентификация и авторизация
-  "effector": "...",          // State management (reactive)
-  "immer": "...",             // Immutable updates helper
-  "knex": "...",              // SQL query builder
-  "next": "...",              // React framework
-  "next-swagger-doc": "...",  // OpenAPI документация
-  "pg": "...",                // PostgreSQL драйвер
-  "react": "...",             // UI library
-  "swagger-ui-react": "...",  // Swagger UI для API docs
-  "zod": "..."                // Schema validation
+  "@emotion/*": "...",                       // Стилизация (CSS-in-JS)
+  "@mui/material": "...",                    // UI компоненты
+  "@scalar/nextjs-api-reference": "...",     // Scalar API documentation
+  "better-auth": "...",                      // Аутентификация и авторизация
+  "effector": "...",                         // State management (reactive)
+  "immer": "...",                            // Immutable updates helper
+  "knex": "...",                             // SQL query builder
+  "next": "...",                             // React framework
+  "next-swagger-doc": "...",                 // OpenAPI спецификация
+  "pg": "...",                               // PostgreSQL драйвер
+  "react": "...",                            // UI library
+  "zod": "..."                               // Schema validation
 }
 
 ## 🚀 Getting Started
@@ -191,4 +191,4 @@ docker run -p 3000:3000 neuro-hub
 - [Effector Documentation](https://effector.dev/)
 - [Better Auth Documentation](https://www.better-auth.com/)
 - [OpenAPI Specification](https://swagger.io/specification/)
-- [Swagger UI](https://swagger.io/tools/swagger-ui/)
+- [Scalar API Documentation](https://scalar.com/)
