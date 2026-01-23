@@ -54,9 +54,15 @@ Always structure React components in this order:
 
 ## Import Order
 
-1. React and Next.js
-2. Third-party libraries
-3. Internal aliases (@/components, @/lib)
-4. Relative imports
-5. Styles
-  
+Imports are automatically sorted by ESLint in this order:
+
+1. builtin - Node.js built-in modules (fs, path, etc.)
+2. external - npm packages (@mui, next, react, etc.)
+3. internal - internal aliases (@/components, @/lib, @/utils)
+4. parent - relative parent imports (../)
+5. sibling - relative sibling imports (./)
+6. index - index imports
+7. type - type imports
+
+Within each group, imports are sorted alphabetically (case-insensitive).
+CRITICAL: NO empty lines between import groups! (`'newlines-between': 'never'`)
