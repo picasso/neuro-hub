@@ -56,8 +56,6 @@ VerificationEmail.PreviewProps = {
 	verificationUrl: 'https://neurohub.dev/api/auth/verify-email?token=abc123',
 } as VerificationEmailProps
 
-export default VerificationEmail
-
 const main = {
 	backgroundColor: '#f6f9fc',
 	fontFamily:
