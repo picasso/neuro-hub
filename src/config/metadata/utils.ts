@@ -27,6 +27,7 @@ export const createMetadata = ({
 	return {
 		title: fullTitle,
 		description,
+		themeColor: '#1976d2',
 		...(noIndex && { robots: { index: false, follow: false } }),
 		openGraph: {
 			title: fullTitle,
