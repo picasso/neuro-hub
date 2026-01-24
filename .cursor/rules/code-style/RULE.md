@@ -18,6 +18,7 @@ Follow these rules when you write code:
 - Use early returns whenever possible to make the code more readable.
 - Implement accessibility features on elements. For example, a tag should have a tabindex=“0”, aria-label, on:click, and on:keydown, and similar attributes.
 - Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements.
+- Only Single-Line comments, comments start with lowercase
 
 ## Formatting (enforced by ESLint + Prettier)
 

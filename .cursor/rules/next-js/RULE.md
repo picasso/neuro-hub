@@ -66,3 +66,76 @@ export async function middleware(request: NextRequest) {
   - Browser APIs
   - Event handlers
   - Client-side state management (Effector stores)
+
+## Module Exports: Index Files Pattern
+
+### ✅ ALWAYS use `index.ts` files for folder exports
+
+Every folder that contains reusable code (components, utils, hooks, etc.) MUST have an `index.ts` file that serves as the public API of that module.
+
+**Why:**
+- Encapsulation: control what's exposed from a module
+- Clean imports: `import { Button } from '@/components/ui'` instead of `import { Button } from '@/components/ui/Button'`
+- Refactoring safety: internal file structure changes don't affect external imports
+- Tree-shaking: easier for bundlers to optimize unused exports
+
+### Structure
+
+```typescript
+// ✅ CORRECT: src/components/ui/index.ts
+export { Button } from './Button'
+export { Link } from './Link'
+export { LinkBehaviour } from './LinkBehaviour'
+// Only export what should be used externally
+
+// ✅ CORRECT: External imports
+import { Button, Link } from '@/components/ui'
+
+// ❌ WRONG: Direct file imports from outside the folder
+import { Button } from '@/components/ui/Button'
+```
+
+### Rules
+
+1. **Every module folder MUST have `index.ts`**
+   - `src/components/ui/index.ts`
+   - `src/components/ui-theme/index.ts`
+   - `src/lib/auth/index.ts`
+   - `src/lib/db/index.ts`
+   - etc.
+
+2. **Keep index files clean**
+   - Remove unused exports immediately
+   - Only export what's needed by external consumers
+   - Internal helpers should NOT be exported
+
+3. **All external imports go through index**
+   - Imports from other folders MUST use the index
+   - Within the same folder, direct imports are allowed
+
+4. **Exception: Next.js special files**
+   - `page.tsx`, `layout.tsx`, `route.ts` don't need index files
+   - Next.js handles these automatically
+
+### Examples
+
+```typescript
+// ✅ CORRECT: src/lib/db/index.ts
+export { db } from './kysely'
+export { pool } from './pool'
+export type { Database } from './types'
+// Internal helper 'createConnection' is NOT exported
+
+// ✅ CORRECT: Usage from another module
+import { db, pool } from '@/lib/db'
+
+// ❌ WRONG: Bypassing the index
+import { db } from '@/lib/db/kysely'
+```
+
+### Maintenance
+
+- When adding new exports: update the index
+- When removing code: clean up the index
+- Regularly audit index files for unused exports
+- Use IDE "Find References" to check if exports are used
