@@ -67,3 +67,20 @@ Imports are automatically sorted by ESLint in this order:
 
 Within each group, imports are sorted alphabetically (case-insensitive).
 CRITICAL: NO empty lines between import groups! (`'newlines-between': 'never'`)
+
+## MUI sx Prop Syntax
+
+When using MUI `sx` prop, prefer numeric values for percentage dimensions:
+
+```typescript
+// ✅ CORRECT: numeric format
+sx={{ width: 1 }}       // 100%
+sx={{ width: 0.7 }}     // 70%
+sx={{ width: 0.5 }}     // 50%
+
+// ❌ AVOID: string format
+sx={{ width: '100%' }}
+sx={{ width: '70%' }}
+```
+
+This applies to: `width`, `height`, `maxWidth`, `maxHeight`, `minWidth`, `minHeight`

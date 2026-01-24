@@ -67,6 +67,26 @@ export async function middleware(request: NextRequest) {
   - Event handlers
   - Client-side state management (Effector stores)
 
+### ✅ MUI Grid v7: Use NEW syntax
+
+**CRITICAL:** Material-UI Grid v7 uses NEW syntax without `item` prop.
+
+```typescript
+// ✅ CORRECT: MUI v7 Grid syntax
+import Grid from '@mui/material/Grid'
+<Grid size={{ xs: 12, md: 6 }}>...</Grid>
+
+// ❌ WRONG: Old syntax with item prop (deprecated)
+<Grid item xs={12} md={6}>...</Grid>
+```
+
+**Key points:**
+- Import from `@mui/material/Grid`
+- DO NOT use `item` prop (all Grids are items by default)
+- Use `size={{ xs: 12, md: 6 }}` object syntax (NOT direct props)
+- Container: `<Grid container spacing={3}>`
+- Items: `<Grid size={{ xs: 12, sm: 6 }}>`
+
 ## Module Exports: Index Files Pattern
 
 ### ✅ ALWAYS use `index.ts` files for folder exports
