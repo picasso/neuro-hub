@@ -51,6 +51,7 @@ Systematically set up a new feature following project architecture and conventio
    - Plan component structure
    - Reuse existing UI components
    - Follow Material-UI patterns
+   - Use named exports for all components
    - Keep files under 300 lines
    - Show which files were created and wait for explicit confirmation
 

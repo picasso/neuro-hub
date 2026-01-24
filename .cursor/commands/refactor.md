@@ -16,6 +16,7 @@ Before starting, review key rules:
 - Functional and declarative patterns, avoid classes
 - Descriptive variable names (isLoading, hasError)
 - Early returns for readability
+- Named exports for components (except Next.js pages/layouts)
 - Single-line comments, lowercase
 - 4 spaces indentation, tabs, single quotes, no semicolons
 - 100 character line limit
