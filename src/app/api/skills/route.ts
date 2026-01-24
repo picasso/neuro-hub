@@ -1,5 +1,5 @@
 import { db } from '@/lib/db'
-import { paginationSchema } from '@/lib/validations/common'
+import { paginationSchema } from '@/lib/validations'
 import { successResponse, errorResponse } from '@/utils/api-response'
 
 /**

@@ -217,6 +217,59 @@ EMAIL_REPLY_TO=support@neurohub.dev
 
 **Дата решения:** 2026-01-22
 
+### 12. Material UI Link + Next.js Link: Глобальная интеграция через Theme
+
+**Решение:** Настроить глобальную интеграцию MUI Link с Next.js Link через конфигурацию темы.
+
+**Проблема:**
+- Material UI Link предоставляет стилизацию и MUI API (variants, colors, underline props)
+- Next.js Link обеспечивает client-side navigation и prefetching
+- Необходимо объединить функциональность обоих без дублирования кода
+
+**Рассмотренные варианты:**
+1. **Глобальная настройка через theme** (выбран) - настроить один раз, работает везде
+2. Per-component LinkComponent - явно указывать на каждом компоненте
+3. Кастомный компонент-обертка - дополнительная абстракция
+
+**Обоснование выбранного решения:**
+- Настраивается один раз в `theme.ts`, работает для всех MUI компонентов
+- Все MUI Link и Button с href автоматически используют Next.js роутинг
+- Чистый код без оберток `<NextLink><MuiLink></MuiLink></NextLink>`
+- Можно использовать `<Link href="/path">` напрямую с MUI стилями
+- Решает проблемы с TypeScript типами и ref forwarding
+
+**Использование:**
+
+```tsx
+// До: NextLink обертка
+<NextLink href="/" passHref>
+  <MuiLink>Home</MuiLink>
+</NextLink>
+
+// После: чистый MUI Link с Next.js роутингом
+<Link href="/" underline="hover" color="inherit">
+  Home
+</Link>
+
+// Или Button с href
+<Button href="/" variant="contained">
+  Go Home
+</Button>
+```
+
+**Преимущества:**
+- ✅ Автоматический client-side navigation для всех MUI Link/Button
+- ✅ Полная поддержка MUI API (variants, colors, underline, sx props)
+- ✅ TypeScript type-safety с правильным ref forwarding
+- ✅ Убрана необходимость в `@ts-expect-error` комментариях
+- ✅ Удалены inline стили для навигационных ссылок
+- ✅ Совместимо с Next.js 13+ (где Link не требует дочернего `<a>`)
+
+**Источник решения:**
+[Stack Overflow: Using Material UI Link with Next.js Link](https://stackoverflow.com/a/74419666)
+
+**Дата решения:** 2026-01-24
+
 ## Технологический стек MVP
 
 ### Frontend
