@@ -26,6 +26,7 @@ Create well-structured PR following project conventions.
    - Use: `gh pr create`
    - Fill `.github/pull_request_template.md`
    - Include ticket reference
+   - Language format: Headings and checklist items in English, content descriptions in Russian
    - Create meaningful description and wait for explicit confirmation or changes
 
 4. **PR Description Template**

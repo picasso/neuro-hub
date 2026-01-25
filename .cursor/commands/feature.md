@@ -118,3 +118,6 @@ Pages:
 - Run: `/tests`
 - Run: `/dlogs`
 - Run: `/pr`
+
+## CRITICAL
+It is better to give answers in Russian if possible.

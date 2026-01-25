@@ -53,3 +53,6 @@ Before implementing new functionality, thoroughly search codebase for similar pa
 
 ## Rule Reference
 This implements Rule #1: SEARCH FIRST - Use codebase_search/grep until finding similar functionality or confirming none exists.
+
+## CRITICAL
+It is better to give answers in Russian if possible.
