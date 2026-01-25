@@ -14,7 +14,7 @@
 - [x] Настроить pre-commit hooks (Husky)
 - [x] Создать базовые GitHub Actions workflows для CI/CD
 - [ ] Настроить Vercel проект для деплоя
-- [ ] Настроить Railway для PostgreSQL в production
+- [x] Настроить Railway для PostgreSQL в production
 
 ### 0.2 База данных
 - [x] Настроить Knex.js с TypeScript конфигурацией
