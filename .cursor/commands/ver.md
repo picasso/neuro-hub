@@ -308,9 +308,8 @@ After confirmation:
    - If yes: use `git push && git push --tags`
 
    **Important:** Git push requires proper permissions:
-   - Use `required_permissions: ["git_write", "network"]`
-   - Git uses credential manager for authentication
-   - This works correctly when both permissions are specified
+   - Use `required_permissions: ["all"]`
+   - Git credential manager requires full sandbox access to work
    - If authentication fails, user can push manually from terminal
 
 ## Version Checklist
@@ -482,7 +481,7 @@ AI: [creates tag]
 
 User: "Yes"
 
-AI: [pushes with required_permissions: ["git_write", "network"]]
+AI: [pushes with required_permissions: ["all"]]
     "✓ Changes pushed to remote
      ✓ Tags pushed to remote
      
