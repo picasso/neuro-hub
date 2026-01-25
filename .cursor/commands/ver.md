@@ -302,6 +302,17 @@ After confirmation:
    - Wait for answer
    - If yes: `git tag v0.2.1`
 
+4. **Ask about push** (optional)
+   - "Push to remote repository?"
+   - Wait for answer
+   - If yes: use `git push && git push --tags`
+
+   **Important:** Git push requires proper permissions:
+   - Use `required_permissions: ["git_write", "network"]`
+   - Git uses credential manager for authentication
+   - This works correctly when both permissions are specified
+   - If authentication fails, user can push manually from terminal
+
 ## Version Checklist
 
 - [ ] Analyzed DEVELOPMENT-PLAN.md automatically
@@ -323,6 +334,8 @@ After confirmation:
 - [ ] Got "yes" confirmation
 - [ ] Created commit (if approved)
 - [ ] Offered to create git tag
+- [ ] Asked about push to remote (optional)
+- [ ] Used correct permissions for git push (if approved)
 
 ## Common Stages Reference
 
@@ -457,6 +470,23 @@ User: "Yes"
 AI: [creates commit]
     "✓ Commit created
      Create git tag v0.2.1?"
+
+User: "Yes"
+
+AI: [creates tag]
+    "✓ Tag v0.2.1 created
+     
+     Push to remote repository?
+     - git push
+     - git push --tags"
+
+User: "Yes"
+
+AI: [pushes with required_permissions: ["git_write", "network"]]
+    "✓ Changes pushed to remote
+     ✓ Tags pushed to remote
+     
+     Version 0.2.1 successfully released!"
 ```
 
 **Remember: Analyze first, suggest stage, get confirmation for all changes!**
