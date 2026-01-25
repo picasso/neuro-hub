@@ -110,7 +110,7 @@ yarn husky install
 
 Если при коммите появляется ошибка:
 
-```
+```zsh
 env: node: No such file or directory
 husky - pre-commit script failed (code 1)
 ```
