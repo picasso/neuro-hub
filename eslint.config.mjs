@@ -16,7 +16,6 @@ const eslintConfig = [
 			'.cache',
 			'*.config.js',
 			'*.config.cjs',
-			'knexfile.ts',
 		],
 	},
 	js.configs.recommended,
