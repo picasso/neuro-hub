@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.2] - 2026-01-25
+
+### Added
+- Vercel deployment configuration and documentation:
+  - `vercel.json` - minimal configuration with security headers
+  - `docs/VERCEL-SETUP.md` - comprehensive deployment guide (450+ lines)
+  - `docs/VERCEL-QUICKSTART.md` - quick start guide for rapid deployment
+- Complete Vercel deployment instructions with environment variables setup
+- Custom domain configuration guide with DNS setup
+- Monitoring and analytics setup (Vercel Analytics, Speed Insights)
+- Troubleshooting guide for common deployment issues
+
+### Changed
+- Updated README.md with deployment section for Vercel and Railway
+- Updated DEVELOPMENT-PLAN.md: marked Vercel deployment tasks as complete
+- Enhanced documentation structure with deployment guides
+
 ## [0.2.1] - 2026-01-25
 
 ### Added
@@ -71,6 +88,7 @@ All notable changes to this project will be documented in this file.
 - Database migrations for users, profiles, sessions, and skills
 - Comprehensive project documentation
 
+[0.2.2]: https://github.com/picasso/neuro-hub/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/picasso/neuro-hub/compare/v0.1.5...v0.2.1
 [0.1.5]: https://github.com/picasso/neuro-hub/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/picasso/neuro-hub/compare/v0.1.0...v0.1.4
