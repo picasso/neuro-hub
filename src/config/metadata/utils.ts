@@ -1,5 +1,5 @@
 import { BASE_URL, SITE_NAME, TITLE_SEPARATOR } from './constants'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 
 type MetadataParams = {
 	title?: string
@@ -27,7 +27,6 @@ export const createMetadata = ({
 	return {
 		title: fullTitle,
 		description,
-		themeColor: '#1976d2',
 		...(noIndex && { robots: { index: false, follow: false } }),
 		openGraph: {
 			title: fullTitle,
@@ -45,4 +44,12 @@ export const createMetadata = ({
 			...(image && { images: [image] }),
 		},
 	}
+}
+
+export const viewport: Viewport = {
+	width: 'device-width',
+	initialScale: 1,
+	maximumScale: 5,
+	userScalable: true,
+	themeColor: '#1976d2',
 }

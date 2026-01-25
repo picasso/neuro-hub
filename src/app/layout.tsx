@@ -3,6 +3,7 @@ import { ThemeRegistry } from '@/components/providers'
 import { Footer, Header } from '@/components/ui'
 
 export { homeMetadata as metadata } from '@/config/metadata'
+export { viewport } from '@/config/metadata/utils'
 
 type RootLayoutProps = {
 	children: ReactNode
