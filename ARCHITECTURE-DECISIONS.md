@@ -270,6 +270,49 @@ EMAIL_REPLY_TO=support@neurohub.dev
 
 **Дата решения:** 2026-01-24
 
+### 13. Railway PostgreSQL: SSL с отключением проверки сертификатов
+
+**Решение:** Отключить проверку SSL сертификатов для Railway PostgreSQL подключений.
+
+**Проблема:**
+Railway использует самоподписанные SSL сертификаты, что вызывает ошибку:
+
+```zsh
+Error: self-signed certificate in certificate chain
+code: 'SELF_SIGNED_CERT_IN_CHAIN'
+```
+
+**Рассмотренные варианты:**
+1. `sslmode=verify-full` - полная проверка сертификатов ❌ (не работает с Railway)
+2. `sslmode=require` - текущая версия pg трактует как `verify-full` ❌
+3. `uselibpqcompat=true&sslmode=require` - флаг совместимости (сложно)
+4. **Отключить проверку в коде через `ssl: { rejectUnauthorized: false }`** ✅ (выбрано)
+
+**Обоснование выбранного решения:**
+- SSL соединение остается активным (трафик зашифрован)
+- Автоматическое определение Railway по домену `railway.app` в URL
+- Не требует изменения connection string
+- Работает как для pg.Pool, так и для Knex миграций
+- Безопасно для Railway, так как это managed database сервис
+
+**Безопасность:**
+- ✅ Соединение остается зашифрованным через SSL/TLS
+- ✅ Подходит для managed services (Railway, Heroku, Render)
+- ⚠️  Не проверяет подлинность сертификата (приемлемо для managed DB)
+- ✅ Защита от MITM на уровне Railway infrastructure
+
+**Альтернатива для production:**
+При необходимости строгой проверки сертификатов (self-hosted PostgreSQL):
+
+```typescript
+ssl: {
+  rejectUnauthorized: true,
+  ca: fs.readFileSync('/path/to/ca-cert.pem').toString(),
+}
+```
+
+**Дата решения:** 2026-01-25
+
 ## Технологический стек MVP
 
 ### Frontend
