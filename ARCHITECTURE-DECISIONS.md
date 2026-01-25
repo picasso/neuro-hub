@@ -307,6 +307,7 @@ EMAIL_REPLY_TO=support@neurohub.dev
 3. ✅ Реализованы базовые миграции БД
 4. ✅ Настроен Better Auth с полной интеграцией
 5. ✅ Интегрирован Kysely для type-safe запросов
+6. ✅ Автоматизация Railway PostgreSQL (GitHub Actions + скрипты миграции)
 
 ## Следующие шаги
 

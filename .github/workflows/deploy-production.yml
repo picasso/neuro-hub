@@ -1,0 +1,117 @@
+name: Deploy Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      skip_migrations:
+        description: 'Skip database migrations'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  run-migrations:
+    name: Run Database Migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Check database connection
+        env:
+          DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+        run: |
+          echo "Checking Railway PostgreSQL connection..."
+          if ! yarn db:test; then
+            echo "❌ Failed to connect to database"
+            exit 1
+          fi
+          echo "✅ Connection successful"
+
+      - name: Check migration status
+        env:
+          DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+        run: |
+          echo "Current migration status:"
+          yarn db:migrate:status
+
+      - name: Create backup before migrations
+        if: ${{ !inputs.skip_migrations }}
+        env:
+          DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+        run: |
+          echo "Creating backup before migrations..."
+          mkdir -p ./backups/railway
+          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+          pg_dump "$DATABASE_URL" \
+            --no-owner \
+            --no-acl \
+            --if-exists \
+            --clean \
+            --file="./backups/railway/backup_${TIMESTAMP}.sql" || echo "Backup not created (database might be empty)"
+
+      - name: Run migrations
+        if: ${{ !inputs.skip_migrations }}
+        env:
+          DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+          NODE_ENV: production
+        run: |
+          echo "Running migrations..."
+          yarn db:migrate
+
+      - name: Verify migrations
+        env:
+          DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+        run: |
+          echo "Verifying migration status:"
+          yarn db:migrate:status
+
+      - name: Upload backup artifact
+        if: ${{ !inputs.skip_migrations }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-backup-${{ github.run_number }}
+          path: ./backups/railway/*.sql
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Deploy failed!"
+          echo "Check logs and restore from backup if necessary"
+
+  deploy-notification:
+    name: Deployment Notification
+    runs-on: ubuntu-latest
+    needs: run-migrations
+    if: always()
+
+    steps:
+      - name: Success notification
+        if: needs.run-migrations.result == 'success'
+        run: |
+          echo "✅ Production deploy completed successfully!"
+          echo "Railway PostgreSQL migrations applied"
+
+      - name: Failure notification
+        if: needs.run-migrations.result == 'failure'
+        run: |
+          echo "❌ Production deploy failed!"
+          echo "Check logs for job 'run-migrations'"
