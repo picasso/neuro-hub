@@ -28,6 +28,12 @@ Systematically set up a new feature following project architecture and conventio
    - Propose 2-3 solution options
    - Wait for user's choice
 
+4. **Implementation**
+   - Ask if a new branch should be created and suggest a name
+   - Wait for user confirmation
+   - Create branch if approved
+   - Begin implementation
+
 ## Implementation Structure
 
 1. **Database layer** (if needed)
@@ -118,3 +124,6 @@ Pages:
 - Run: `/tests`
 - Run: `/dlogs`
 - Run: `/pr`
+
+## CRITICAL
+It is better to give answers in Russian if possible.
