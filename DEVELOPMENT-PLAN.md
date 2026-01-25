@@ -36,35 +36,35 @@
 ## ЭТАП 1: Аутентификация и пользователи
 
 ### 1.1 Better Auth интеграция
-- [ ] Установить и настроить Better Auth 1+
-- [ ] Настроить cookie-based сессии
-- [ ] Реализовать регистрацию с email/паролем
-- [ ] Реализовать вход в систему
-- [ ] Настроить OAuth провайдеры (GitHub, Google)
-- [ ] Реализовать восстановление пароля
-- [ ] Создать middleware для защиты приватных роутов
+- [x] Установить и настроить Better Auth 1+
+- [x] Настроить cookie-based сессии
+- [x] Реализовать регистрацию с email/паролем
+- [x] Реализовать вход в систему
+- [x] Настроить OAuth провайдеры (GitHub, Google)
+- [x] Реализовать восстановление пароля
+- [x] Создать middleware для защиты приватных роутов (через proxy.ts)
 
 ### 1.2 База данных пользователей
-- [ ] Миграция таблицы `users` (id, email, password_hash, role, created_at, updated_at)
-- [ ] Миграция таблицы `user_profiles` (user_id, name, avatar_url, bio, company_name)
-- [ ] Миграция таблицы `sessions` для Better Auth
-- [ ] Миграция таблицы `oauth_accounts` для OAuth
+- [x] Миграция таблицы `users` (создана через Better Auth CLI)
+- [x] Миграция таблицы `user_profiles` (уже существует)
+- [x] Миграция таблицы `sessions` (создана через Better Auth CLI)
+- [x] Миграция таблицы `account` для OAuth и credentials (создана через Better Auth CLI)
 
 ### 1.3 Верификация email
-- [ ] Миграция таблицы `email_verifications` (token, user_id, expires_at)
-- [ ] API endpoint для отправки верификационного письма
-- [ ] API endpoint для подтверждения токена
-- [ ] Email шаблон для верификации
-- [ ] Интеграция email сервиса (резолвить: Resend vs SendGrid)
+- [x] Миграция таблицы `verification` (создана через Better Auth CLI)
+- [x] API endpoint для отправки верификационного письма (Better Auth)
+- [x] API endpoint для подтверждения токена (Better Auth)
+- [x] Email шаблон для верификации (React Email)
+- [x] Интеграция email сервиса (Resend)
 
 ### 1.4 API endpoints для аутентификации
-- [ ] `POST /api/auth/register` - регистрация
-- [ ] `POST /api/auth/login` - вход
-- [ ] `POST /api/auth/logout` - выход
-- [ ] `POST /api/auth/forgot-password` - восстановление пароля
-- [ ] `POST /api/auth/reset-password` - сброс пароля
-- [ ] `GET /api/auth/me` - получение текущего пользователя
-- [ ] `POST /api/auth/verify-email` - верификация email
+- [x] `POST /api/auth/sign-up/email` - регистрация (Better Auth)
+- [x] `POST /api/auth/sign-in/email` - вход (Better Auth)
+- [x] `POST /api/auth/sign-out` - выход (Better Auth)
+- [x] `POST /api/auth/forget-password` - восстановление пароля (Better Auth)
+- [x] `POST /api/auth/reset-password` - сброс пароля (Better Auth)
+- [x] `GET /api/auth/get-session` - получение текущей сессии (Better Auth)
+- [x] `GET /api/auth/verify-email` - верификация email (Better Auth)
 
 ---
 

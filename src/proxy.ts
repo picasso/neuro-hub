@@ -1,4 +1,6 @@
+import { betterFetch } from '@better-fetch/fetch'
 import { type NextRequest, NextResponse } from 'next/server'
+import type { Session } from 'better-auth/types'
 
 const RATE_LIMIT_MAP = new Map<string, { count: number; resetTime: number }>()
 
@@ -6,6 +8,9 @@ const RATE_LIMIT_CONFIG = {
 	windowMs: 60 * 1000,
 	maxRequests: 100,
 }
+
+const publicPaths = ['/', '/api/auth', '/api/health', '/api/docs', '/api/reference']
+const authPaths = ['/login', '/register', '/forgot-password']
 
 function getRateLimitKey(request: NextRequest): string {
 	const forwarded = request.headers.get('x-forwarded-for')
@@ -33,10 +38,36 @@ function checkRateLimit(key: string): boolean {
 	return true
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
+	const pathname = request.nextUrl.pathname
+
+	if (publicPaths.some((path) => pathname.startsWith(path))) {
+		return NextResponse.next()
+	}
+
+	const { data: session } = await betterFetch<Session>('/api/auth/get-session', {
+		baseURL: request.nextUrl.origin,
+		headers: {
+			cookie: request.headers.get('cookie') || '',
+		},
+	})
+
+	if (!session) {
+		if (authPaths.some((path) => pathname.startsWith(path))) {
+			return NextResponse.next()
+		}
+		const loginUrl = new URL('/login', request.url)
+		loginUrl.searchParams.set('from', pathname)
+		return NextResponse.redirect(loginUrl)
+	}
+
+	if (authPaths.some((path) => pathname.startsWith(path))) {
+		return NextResponse.redirect(new URL('/dashboard', request.url))
+	}
+
 	const response = NextResponse.next()
 
-	if (request.nextUrl.pathname.startsWith('/api')) {
+	if (pathname.startsWith('/api')) {
 		const rateLimitKey = getRateLimitKey(request)
 		const allowed = checkRateLimit(rateLimitKey)
 
@@ -81,5 +112,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-	matcher: ['/api/:path*'],
+	matcher: [
+		'/((?!_next/static|_next/image|favicon.ico|public|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+	],
 }

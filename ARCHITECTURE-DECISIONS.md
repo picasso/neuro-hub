@@ -115,6 +115,108 @@
 
 **Дата решения:** 2026-01-22
 
+### 9. Query Builder: Kysely для запросов, Knex для миграций
+
+**Решение:** Разделить ответственность между Kysely и Knex.js с единым connection pool.
+
+**Обоснование:**
+- Kysely обеспечивает полную type-safety для всех SQL запросов в runtime
+- Автоматическая генерация TypeScript типов из схемы БД (`kysely-codegen`)
+- Better Auth использует Kysely внутри, но требует pg.Pool на входе
+- Knex.js остается только для миграций БД (проверенный, стабильный инструмент)
+- Единый shared connection pool для всего приложения (эффективное использование ресурсов)
+
+**Архитектура:**
+
+```zsh
+Shared pg.Pool (src/lib/db/pool.ts)
+    ├── Better Auth → создает внутренний Kysely
+    ├── Kysely (src/lib/db/kysely.ts) → для запросов приложения
+    └── Knex (только для миграций)
+```
+
+**Реализация:**
+- `pool` - единый pg.Pool для всех подключений к БД
+- `kysely` - используется для всех SELECT/INSERT/UPDATE/DELETE в коде приложения
+- `knex` - используется только для `yarn db:migrate` команд
+- Better Auth получает `pool` и создает свой внутренний Kysely
+- TypeScript типы генерируются через `yarn db:generate-types`
+
+**Преимущества:**
+- Один connection pool = эффективное использование соединений
+- Better Auth и приложение не конкурируют за подключения
+- Type-safety сохраняется для всех запросов
+
+**Компромисс:** Необходимо поддерживать два инструмента, но это минимальная цена за type-safety и совместимость с Better Auth.
+
+**Дата решения:** 2026-01-22
+
+### 10. API Документация: Комбинированный подход для Better Auth
+
+**Решение:** Документировать только основные Better Auth endpoints вручную в Swagger/Scalar.
+
+**Проблема:**
+Better Auth использует catch-all route `/api/auth/[...all]` который обрабатывает все endpoints через одну функцию. Невозможно добавить JSDoc для каждого endpoint'а отдельно.
+
+**Обоснование:**
+- Better Auth имеет собственную документацию для всех endpoints
+- Полное дублирование всех endpoints (20+) создаст большой overhead
+- Пользователи чаще всего используют базовые auth операции
+- Остальные endpoints (OAuth callbacks, password reset) используются реже
+
+**Реализация:**
+Документируем вручную в `src/lib/swagger/config.ts` только 4 основных endpoint'а:
+- `POST /api/auth/sign-up/email` - регистрация пользователя
+- `POST /api/auth/sign-in/email` - вход в систему
+- `POST /api/auth/sign-out` - выход из системы
+- `GET /api/auth/get-session` - получение текущей сессии
+
+**Для остальных Better Auth endpoints:**
+Пользователи могут обратиться к официальной документации [Better Auth](https://www.better-auth.com/docs)
+
+**Дата решения:** 2026-01-22
+
+### 11. Email Сервис: Resend + React Email
+
+**Решение:** Использовать Resend для отправки email и React Email для создания шаблонов.
+
+**Проблема:**
+Необходимо отправлять транзакционные письма (верификация email, сброс пароля) с красивым и responsive дизайном.
+
+**Обоснование:**
+- **Resend:**
+  - Официально рекомендован в документации Better Auth
+  - Простое API, нативная интеграция с Next.js
+  - Щедрый free tier (3000 писем/месяц)
+  - Отличная документация и TypeScript типы
+- **React Email:**
+  - Создание email шаблонов как React компонентов
+  - Автоматическая генерация HTML для всех email клиентов
+  - Компоненты оптимизированы для Gmail, Outlook, Apple Mail
+  - Поддержка Tailwind CSS для стилей
+
+**Реализация:**
+1. **Email клиент** (`src/lib/email/index.ts`):
+   - Инициализация Resend с API ключом
+   - Централизованная конфигурация (from, replyTo)
+2. **Email шаблоны** (`src/lib/email/templates/`):
+   - `verification-email.tsx` - верификация email
+   - Будущие шаблоны: password reset, notifications
+3. **Интеграция с Better Auth** (`src/lib/auth/config.ts`):
+   - `emailVerification.sendVerificationEmail` - отправка при регистрации
+   - `emailAndPassword.sendResetPassword` - восстановление пароля
+   - `requireEmailVerification: true` - принудительная верификация
+
+**Конфигурация:**
+
+```env
+RESEND_API_KEY=re_xxx
+EMAIL_FROM=NeuroHub <onboarding@neurohub.dev>
+EMAIL_REPLY_TO=support@neurohub.dev
+```
+
+**Дата решения:** 2026-01-22
+
 ## Технологический стек MVP
 
 ### Frontend
@@ -126,8 +228,8 @@
 ### Backend
 - Node.js 24 LTS
 - Next.js API Routes (RESTful)
-- PostgreSQL 16 + Knex.js 3+
-- Better Auth 1+
+- PostgreSQL 16 + Kysely 0.28+ (queries) + Knex.js 3+ (migrations)
+- Better Auth 1+ (с pg.Pool adapter)
 
 ### DevOps
 - Docker Compose для локальной разработки
@@ -145,9 +247,17 @@
 3. **Поиск**: Интегрировать Elasticsearch для advanced search capabilities
 4. **Очереди**: Добавить BullMQ для фоновых задач (email, notifications)
 
+## Выполненные задачи
+
+1. ✅ Создана базовая структура API endpoints
+2. ✅ Настроена Scalar документация (вместо Swagger)
+3. ✅ Реализованы базовые миграции БД
+4. ✅ Настроен Better Auth с полной интеграцией
+5. ✅ Интегрирован Kysely для type-safe запросов
+
 ## Следующие шаги
 
-1. Создать базовую структуру API endpoints
-2. Настроить Swagger документацию
-3. Реализовать базовые миграции БД
-4. Настроить Better Auth
+1. Реализовать верификацию email (Этап 1.3)
+2. Создать UI компоненты для регистрации/входа
+3. Добавить профили пользователей
+4. Реализовать систему навыков
