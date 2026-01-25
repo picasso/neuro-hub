@@ -1,6 +1,6 @@
 {
 	"name": "neuro-hub",
-	"version": "0.1.0",
+	"version": "0.1.5",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -20,10 +20,14 @@
 		"db:migrate:make": "tsx node_modules/.bin/knex migrate:make --knexfile knexfile.ts",
 		"db:migrate:rollback": "tsx node_modules/.bin/knex migrate:rollback --knexfile knexfile.ts",
 		"db:migrate:status": "tsx node_modules/.bin/knex migrate:status --knexfile knexfile.ts",
+		"db:migrate:production": "./scripts/db/migrate-production.sh",
 		"db:seed": "tsx node_modules/.bin/knex seed:run --knexfile knexfile.ts",
 		"db:seed:make": "tsx node_modules/.bin/knex seed:make --knexfile knexfile.ts",
 		"db:test": "tsx src/lib/db/test-connection.ts",
 		"db:generate-types": "kysely-codegen --out-file=src/types/database.ts",
+		"db:export": "./scripts/db/export-data.sh",
+		"db:import": "./scripts/db/import-data.sh",
+		"db:backup:railway": "./scripts/db/backup-railway.sh",
 		"prepare": "husky"
 	},
 	"dependencies": {

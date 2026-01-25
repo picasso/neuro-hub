@@ -24,7 +24,14 @@ const config: { [key: string]: Knex.Config } = {
 	},
 	production: {
 		client: 'postgresql',
-		connection: process.env.DATABASE_URL,
+		connection: process.env.DATABASE_URL
+			? {
+					connectionString: process.env.DATABASE_URL,
+					ssl: process.env.DATABASE_URL.includes('railway.app')
+						? { rejectUnauthorized: false }
+						: undefined,
+				}
+			: undefined,
 		pool: {
 			min: 2,
 			max: 10,

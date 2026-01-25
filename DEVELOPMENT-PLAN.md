@@ -350,8 +350,8 @@
 
 ### 10.1 Production деплой
 - [ ] Настроить production окружение на Vercel
-- [ ] Настроить PostgreSQL на Railway
-- [ ] Настроить environment variables
+- [x] Настроить PostgreSQL на Railway (скрипты + CI/CD готовы)
+- [x] Настроить environment variables (документация готова)
 - [ ] Настроить custom domain
 - [ ] Настроить SSL сертификаты
 - [ ] Настроить Cloudflare CDN
@@ -361,7 +361,7 @@
 - [ ] Настроить мониторинг ошибок (Sentry)
 - [ ] Настроить мониторинг производительности (Vercel Analytics)
 - [ ] Настроить алерты для критических ошибок
-- [ ] Настроить backup БД на Railway
+- [x] Настроить backup БД на Railway (скрипты готовы)
 
 ### 10.3 Документация
 - [x] Scalar API документация (/api/reference)
