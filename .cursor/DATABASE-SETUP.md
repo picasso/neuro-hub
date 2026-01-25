@@ -223,12 +223,37 @@ yarn db:seed
 
 ### Railway Setup
 
-Для production на Railway:
+✅ **Настроена автоматизация для Railway PostgreSQL!**
 
-1. Создать PostgreSQL database в Railway
-2. Скопировать `DATABASE_URL` из Railway
-3. Добавить в переменные окружения Vercel
-4. Миграции запускаются автоматически при деплое (TODO: добавить в CI/CD)
+Для полной инструкции см. [docs/RAILWAY-SETUP.md](../docs/RAILWAY-SETUP.md)
+
+**Быстрый старт:**
+
+1. Создайте PostgreSQL database в Railway
+2. Скопируйте `DATABASE_URL` из Railway
+3. Добавьте `RAILWAY_DATABASE_URL` в GitHub Secrets
+4. Добавьте `DATABASE_URL` в переменные окружения Vercel
+5. Миграции запустятся автоматически при push в `main`
+
+**Доступные команды:**
+
+```bash
+# Миграция данных из локальной БД в Railway
+yarn db:export                    # Экспорт локальных данных
+yarn db:import <файл.sql>         # Импорт в Railway
+
+# Управление миграциями в production
+yarn db:migrate:production        # Безопасный запуск миграций в Railway
+
+# Бэкапы Railway БД
+yarn db:backup:railway            # Создать бэкап Railway БД
+```
+
+**Автоматические миграции:**
+- ✅ GitHub Action настроен (`.github/workflows/deploy-production.yml`)
+- ✅ Запускается автоматически при push в main
+- ✅ Создает бэкап перед миграциями
+- ✅ Возможность ручного запуска через GitHub UI
 
 ### Security
 

@@ -152,12 +152,23 @@ yarn test:watch   # Run tests in watch mode
 ### Database
 
 ```bash
-yarn knex migrate:make <name>    # Create new migration
-yarn knex migrate:latest         # Run all migrations
-yarn knex migrate:rollback       # Rollback last batch
-yarn knex seed:make <name>       # Create seed file
-yarn knex seed:run               # Run seed files
+# Local development
+yarn db:migrate                  # Run all migrations
+yarn db:migrate:make <name>      # Create new migration
+yarn db:migrate:rollback         # Rollback last batch
+yarn db:migrate:status           # Check migration status
+yarn db:seed                     # Run seed files
+yarn db:seed:make <name>         # Create seed file
+yarn db:test                     # Test database connection
+
+# Production (Railway)
+yarn db:migrate:production       # Run migrations on Railway
+yarn db:export                   # Export local data
+yarn db:import <file.sql>        # Import data to Railway
+yarn db:backup:railway           # Backup Railway database
 ```
+
+See [docs/RAILWAY-SETUP.md](docs/RAILWAY-SETUP.md) for Railway PostgreSQL setup guide.
 
 ## 🐳 Docker
 

@@ -18,6 +18,7 @@ Follow these rules when you write code:
 - Use early returns whenever possible to make the code more readable.
 - Implement accessibility features on elements. For example, a tag should have a tabindex=“0”, aria-label, on:click, and on:keydown, and similar attributes.
 - Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements.
+- Only Single-Line comments, comments start with lowercase
 
 ## Formatting (enforced by ESLint + Prettier)
 
@@ -54,9 +55,32 @@ Always structure React components in this order:
 
 ## Import Order
 
-1. React and Next.js
-2. Third-party libraries
-3. Internal aliases (@/components, @/lib)
-4. Relative imports
-5. Styles
-  
+Imports are automatically sorted by ESLint in this order:
+
+1. builtin - Node.js built-in modules (fs, path, etc.)
+2. external - npm packages (@mui, next, react, etc.)
+3. internal - internal aliases (@/components, @/lib, @/utils)
+4. parent - relative parent imports (../)
+5. sibling - relative sibling imports (./)
+6. index - index imports
+7. type - type imports
+
+Within each group, imports are sorted alphabetically (case-insensitive).
+CRITICAL: NO empty lines between import groups! (`'newlines-between': 'never'`)
+
+## MUI sx Prop Syntax
+
+When using MUI `sx` prop, prefer numeric values for percentage dimensions:
+
+```typescript
+// ✅ CORRECT: numeric format
+sx={{ width: 1 }}       // 100%
+sx={{ width: 0.7 }}     // 70%
+sx={{ width: 0.5 }}     // 50%
+
+// ❌ AVOID: string format
+sx={{ width: '100%' }}
+sx={{ width: '70%' }}
+```
+
+This applies to: `width`, `height`, `maxWidth`, `maxHeight`, `minWidth`, `minHeight`

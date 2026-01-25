@@ -2,7 +2,7 @@ import { render } from '@react-email/render'
 import { betterAuth } from 'better-auth'
 import { pool } from '@/lib/db/pool'
 import { emailConfig, resend } from '@/lib/email'
-import VerificationEmail from '@/lib/email/templates/verification-email'
+import { VerificationEmail } from '@/lib/email/templates/verification-email'
 
 export const auth = betterAuth({
 	database: pool,

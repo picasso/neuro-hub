@@ -35,5 +35,3 @@ export const closeConnection = async (): Promise<void> => {
 	await db.destroy()
 	await pool.end()
 }
-
-export default db
