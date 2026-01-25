@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2026-01-25
+
+### Added
+- Landing page for NeuroHub platform with modern design
+- Hero section with call-to-action buttons
+- Platform benefits showcase section
+- Project case studies block with project cards
+- Interactive FAQ section with accordion
+- Footer with contact information and social media links
+- SEO optimization: meta tags and Open Graph markup
+- Mobile responsive design for all public pages
+
+### Changed
+- Created layout structure for public pages
+- Updated routing structure for homepage
+
 ## [0.1.5] - 2026-01-25
 
 ### Added
@@ -55,6 +71,7 @@ All notable changes to this project will be documented in this file.
 - Database migrations for users, profiles, sessions, and skills
 - Comprehensive project documentation
 
+[0.2.1]: https://github.com/picasso/neuro-hub/compare/v0.1.5...v0.2.1
 [0.1.5]: https://github.com/picasso/neuro-hub/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/picasso/neuro-hub/compare/v0.1.0...v0.1.4
 [0.1.0]: https://github.com/picasso/neuro-hub/releases/tag/v0.1.0
