@@ -195,6 +195,47 @@ docker build -t neuro-hub .
 docker run -p 3000:3000 neuro-hub
 ```
 
+## 🚀 Deployment
+
+### Vercel (Frontend + API)
+
+The application is configured for deployment on Vercel with automatic deployments from GitHub.
+
+**Quick Deploy:**
+
+1. Import project to [Vercel](https://vercel.com/new)
+2. Configure environment variables (see [docs/VERCEL-QUICKSTART.md](docs/VERCEL-QUICKSTART.md))
+3. Deploy automatically
+
+**Environment Variables:**
+
+```bash
+NODE_ENV=production
+NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
+DATABASE_URL=<your-railway-database-url>
+BETTER_AUTH_SECRET=<generate-secure-random-string>
+BETTER_AUTH_URL=https://your-app.vercel.app
+```
+
+**Documentation:**
+- [Vercel Quick Start](docs/VERCEL-QUICKSTART.md) - быстрый старт
+- [Vercel Setup Guide](docs/VERCEL-SETUP.md) - полное руководство
+
+### Railway (PostgreSQL Database)
+
+Production PostgreSQL database is hosted on Railway with automatic backups and migrations.
+
+**Setup:**
+- [Railway Quick Start](docs/RAILWAY-QUICKSTART.md) - быстрый старт
+- [Railway Setup Guide](docs/RAILWAY-SETUP.md) - полное руководство
+
+**Automatic Deployments:**
+
+- ✅ Production deploy on push to `main` branch
+- ✅ Preview deployments for Pull Requests
+- ✅ Automatic database migrations via GitHub Actions
+- ✅ Database backups before each migration
+
 ## 🔗 Links
 
 - [Next.js Documentation](https://nextjs.org/docs)
