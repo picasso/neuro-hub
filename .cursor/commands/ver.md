@@ -140,6 +140,76 @@ If user agreed to update plan:
    ...
    ```
 
+## STEP 5.5: Update CHANGELOG (Optional)
+
+**Ask user first:**
+
+```zsh
+Do you want to update CHANGELOG.md for this release?
+```
+
+If user agrees:
+
+1. **Read current CHANGELOG.md**
+   - Get current content
+   - Find the latest version entry
+   - Determine date format (YYYY-MM-DD)
+
+2. **Analyze completed stage**
+   - Review tasks in the completed stage
+   - Identify what was added/changed/fixed
+   - Group changes by category
+
+3. **Propose CHANGELOG entry**
+
+   ```zsh
+   Proposed CHANGELOG entry for version 0.2.1:
+   
+   ## [0.2.1] - 2026-01-25
+   
+   ### Added
+   - Landing page with hero section
+   - Benefits showcase section
+   - FAQ section
+   - Responsive design for mobile devices
+   
+   ### Changed
+   - Updated project structure for public pages
+   - Improved navigation and routing
+   
+   ### Fixed
+   - (if any fixes were made)
+   
+   Please review and edit if needed, or confirm with "OK"
+   ```
+
+4. **Wait for user feedback**
+   - User can:
+     - Confirm: "OK", "Yes", "Correct"
+     - Edit text: "Change 'Benefits showcase' to 'Benefits and testimonials'"
+     - Provide completely new text
+   - If user provides edits, update the entry and show again
+   - Repeat until user confirms with "OK"
+
+5. **Update CHANGELOG.md**
+   - Insert new version entry after the header
+   - Before the previous version entry
+   - Maintain format and spacing
+   - Update version comparison links at the bottom
+
+6. **Show result**
+
+   ```zsh
+   ✓ CHANGELOG.md updated
+   Version 0.2.1 entry added
+   ```
+
+**Important:**
+- Always follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format
+- Use categories: Added, Changed, Deprecated, Removed, Fixed, Security
+- Keep entries clear and user-focused
+- Don't update CHANGELOG without user agreement on content
+
 ## STEP 6: Verify Changes
 
 1. **Verify package.json**
@@ -152,12 +222,18 @@ If user agreed to update plan:
    - Ensure tasks marked correctly
    - Show updated section
 
-3. **Show summary**
+3. **Verify CHANGELOG.md** (if updated)
+   - Read updated changelog
+   - Ensure new version entry added correctly
+   - Check format and links
+
+4. **Show summary**
 
    ```zsh
    Changes applied:
    ✓ package.json: version 0.2.1
    ✓ DEVELOPMENT-PLAN.md: stage 2.1 marked as completed
+   ✓ CHANGELOG.md: version 0.2.1 entry added
    ```
 
 ## STEP 7: Run Validation
@@ -187,6 +263,7 @@ Version updated to 0.2.1 based on stage 2.1
 Changed files:
 - package.json
 - DEVELOPMENT-PLAN.md (if updated)
+- CHANGELOG.md (if updated)
 
 Ready to commit changes?
 Proposed commit message:
@@ -203,9 +280,11 @@ After confirmation:
 1. **Create commit**
 
    ```bash
-   git add package.json DEVELOPMENT-PLAN.md
+   git add package.json DEVELOPMENT-PLAN.md CHANGELOG.md
    git commit -m "chore: bump version to 0.2.1 (stage 2.1 completed)"
    ```
+
+   **Note:** Include only files that were actually updated
 
 2. **Show result**
 
@@ -235,6 +314,10 @@ After confirmation:
 - [ ] Got user confirmation
 - [ ] Updated package.json
 - [ ] Updated DEVELOPMENT-PLAN.md (if needed)
+- [ ] Asked about CHANGELOG update
+- [ ] Proposed CHANGELOG entry (if agreed)
+- [ ] Got user approval for CHANGELOG text
+- [ ] Updated CHANGELOG.md (if approved)
 - [ ] Verified file validity
 - [ ] Asked about commit
 - [ ] Got "yes" confirmation
@@ -318,7 +401,55 @@ User: "Yes"
 AI: [updates package.json]
     "✓ package.json updated: 0.1.0 → 0.2.1
      
+     Do you want to update CHANGELOG.md for this release?"
+
+User: "Yes"
+
+AI: "Proposed CHANGELOG entry for version 0.2.1:
+     
+     ## [0.2.1] - 2026-01-25
+     
+     ### Added
+     - Landing page with hero section
+     - Benefits showcase section
+     - FAQ section with common questions
+     - Responsive design for mobile devices
+     
+     ### Changed
+     - Updated project structure for public pages
+     - Improved navigation and routing
+     
+     Please review and edit if needed, or confirm with 'OK'"
+
+User: "Change FAQ section to 'FAQ section answering common questions'"
+
+AI: "Updated CHANGELOG entry:
+     
+     ## [0.2.1] - 2026-01-25
+     
+     ### Added
+     - Landing page with hero section
+     - Benefits showcase section
+     - FAQ section answering common questions
+     - Responsive design for mobile devices
+     
+     ### Changed
+     - Updated project structure for public pages
+     - Improved navigation and routing
+     
+     Is this correct?"
+
+User: "OK"
+
+AI: [updates CHANGELOG.md]
+    "✓ CHANGELOG.md updated
+     
      Ready to commit?
+     
+     Changed files:
+     - package.json
+     - CHANGELOG.md
+     
      Message: 'chore: bump version to 0.2.1 (stage 2.1 completed)'"
 
 User: "Yes"
@@ -328,4 +459,4 @@ AI: [creates commit]
      Create git tag v0.2.1?"
 ```
 
-**Remember: Analyze first, suggest stage, get confirmation!**
+**Remember: Analyze first, suggest stage, get confirmation for all changes!**
