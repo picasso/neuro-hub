@@ -1731,31 +1731,31 @@
   resolved "https://registry.yarnpkg.com/@rtsao/scc/-/scc-1.1.0.tgz#927dd2fae9bc3361403ac2c7a00c32ddce9ad7e8"
   integrity sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==
 
-"@scalar/core@0.3.32":
-  version "0.3.32"
-  resolved "https://registry.yarnpkg.com/@scalar/core/-/core-0.3.32.tgz#ee8747acd561064b144cdaddae75c2b84533a89f"
-  integrity sha512-5qUC2l1fhLyKw1iKAbuQCWb2TNZ4Y52MDc7MA7RA7QLdJ0QPBzk2UAJ0ZuYY2dIhZ3qTcpuqtF4EXEllXHoNOA==
+"@scalar/core@0.3.34":
+  version "0.3.34"
+  resolved "https://registry.yarnpkg.com/@scalar/core/-/core-0.3.34.tgz#2bbcdba7c0e032ff6c5bc5fad2750fe0d864c519"
+  integrity sha512-dZnpkrnjiPvPLa/sIdjoaxdVoYowWUqC5nCCXJI+29laMIII6dCze8ThxLPGN1b9gJ8cYcQwBrwr+RNCjqJgdQ==
   dependencies:
-    "@scalar/types" "0.5.8"
+    "@scalar/types" "0.5.10"
 
-"@scalar/helpers@0.2.8":
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/@scalar/helpers/-/helpers-0.2.8.tgz#d8493ae1460c1eb8967a96a8ac05f2d6012852af"
-  integrity sha512-aXXRF4sCaiGZIRpZ1MUcnl8y0Q9pPG1VXqQMWacVWDh6zQN9cuayTC/TbODzWeldp50sgJ1E8MpHvpeV7CEF9g==
+"@scalar/helpers@0.2.9":
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/@scalar/helpers/-/helpers-0.2.9.tgz#d213415849654945d645ef872784ab898cc60d85"
+  integrity sha512-Y4ffJF0yELdwZ0BKgonqn3SumIgRn1WKyYCVHD+TDM7qRFChdGRypyt20+efHs26fmJeyBAIIv2laICj5uimiw==
 
-"@scalar/nextjs-api-reference@^0.9.12":
-  version "0.9.12"
-  resolved "https://registry.yarnpkg.com/@scalar/nextjs-api-reference/-/nextjs-api-reference-0.9.12.tgz#44e273d50f3ffb86ca88c7381ef2b5d22d767866"
-  integrity sha512-WkRFDKbbPPyZoD9y2wm+ey9THt6lW0O/d10hrzA4rk81rNP2GYrxbm4Q7tj/DiVwiCXwZFauTz1mLURgpE9KVw==
+"@scalar/nextjs-api-reference@^0.9.14":
+  version "0.9.14"
+  resolved "https://registry.yarnpkg.com/@scalar/nextjs-api-reference/-/nextjs-api-reference-0.9.14.tgz#dd72126ee50fc87dadb2410ec330bbe2c9c895b4"
+  integrity sha512-wA9oWVZJP82/FlO8PQGgn5KE7ETxx8NaIB6YUdOd9EPdW2l0Iu0+gyFx/dZBVbKoXMj/aFUg9+32aFg/tHWOnw==
   dependencies:
-    "@scalar/core" "0.3.32"
+    "@scalar/core" "0.3.34"
 
-"@scalar/types@0.5.8":
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/@scalar/types/-/types-0.5.8.tgz#e0241726b455c085ec4759abdc77e6c92a4c35a2"
-  integrity sha512-eL8zojDI9QB+kNRkuM80auTKHnzNrlOLC8ZLUJVnY0Jj5ZtoInKMDGodgQXK1wOSDTcfVfgLALOY1zb6cFFlCg==
+"@scalar/types@0.5.10":
+  version "0.5.10"
+  resolved "https://registry.yarnpkg.com/@scalar/types/-/types-0.5.10.tgz#41d1a17f02a09b961a3a7cc5324b9f863d7bed50"
+  integrity sha512-37qAHQC2J7O+Mt8u0HOZttTQPQ1OEWKWxo9SMbahYKTosL9k1KtTG2F3EB33EkW3WqEVQitkUKrM0+MVM2HeYQ==
   dependencies:
-    "@scalar/helpers" "0.2.8"
+    "@scalar/helpers" "0.2.9"
     nanoid "^5.1.6"
     type-fest "^5.3.1"
     zod "^4.3.5"
