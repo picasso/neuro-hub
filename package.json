@@ -38,7 +38,7 @@
 		"@mui/material": "^7.3.7",
 		"@mui/material-nextjs": "^7.3.2",
 		"@react-email/components": "^1.0.6",
-		"@scalar/nextjs-api-reference": "^0.9.12",
+		"@scalar/nextjs-api-reference": "^0.9.14",
 		"better-auth": "^1.4.17",
 		"effector": "^23.3.0",
 		"effector-react": "^23.3.0",
