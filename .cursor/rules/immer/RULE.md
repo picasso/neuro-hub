@@ -1,0 +1,388 @@
+---
+name: Immer Guide
+description: Best practices for using Immer for immutable state updates
+---
+
+# Immer - Immutable State Updates
+
+Immer enables you to work with immutable state in a more convenient way by using "draft" objects that can be mutated directly. Under the hood, Immer uses structural sharing to produce the next immutable state efficiently.
+
+## Overview
+
+**Why Immer?**
+
+- **Readability:** Write imperative mutations instead of complex spread operators
+- **Safety:** Structural sharing prevents accidental mutations of original state
+- **Performance:** Optimizes unchanged branches automatically
+- **Maintainability:** Easy to extend with more complex logic
+
+**Core principle:** Work with a `draft` copy of your state, mutate it as needed, and Immer will produce the next immutable state.
+
+Reference: [Immer Update Patterns](https://immerjs.github.io/immer/update-patterns/)
+
+## When to Use Immer
+
+✅ **Use Immer for:**
+
+- Arrays of objects (add, remove, update items)
+- Nested data structures (objects in arrays, arrays in objects)
+- Conditional updates with complex logic
+- Multiple mutations in one operation
+- When spread syntax becomes hard to read ("spread hell")
+
+## When NOT to Use Immer
+
+❌ **Don't use Immer for:**
+
+- Primitive values (numbers, strings, booleans)
+- Performance-critical hot paths (rare case)
+
+```typescript
+// ❌ BAD - Immer for primitive
+$step.on(nextStep, (step) => produce(step, (draft) => draft + 1))
+
+// ✅ GOOD - direct update
+$step.on(nextStep, (step) => step + 1)
+
+```
+
+## Core Patterns
+
+### Object Mutations
+
+```typescript
+import { produce } from 'immer'
+
+const state = {
+    id1: { done: false, body: 'Task 1' },
+    id2: { done: false, body: 'Task 2' },
+}
+
+// add property
+const added = produce(state, (draft) => {
+    draft.id3 = { done: false, body: 'Task 3' }
+})
+
+// delete property
+const deleted = produce(state, (draft) => {
+    delete draft.id1
+})
+
+// update property
+const updated = produce(state, (draft) => {
+    draft.id1.done = true
+})
+
+// bulk update
+const bulkUpdated = produce(state, (draft) => {
+    Object.assign(draft, {
+        id1: { done: true, body: 'Updated Task 1' },
+        id3: { done: false, body: 'New Task 3' },
+    })
+})
+
+// reset/clear
+const cleared = produce(state, () => ({}))
+```
+
+### Array Mutations
+
+```typescript
+import { produce } from 'immer'
+
+type Skill = {
+    skillId: string
+    proficiencyLevel: 'beginner' | 'intermediate' | 'advanced'
+}
+
+const skills: Skill[] = [
+    { skillId: 'js', proficiencyLevel: 'advanced' },
+    { skillId: 'ts', proficiencyLevel: 'intermediate' },
+]
+
+// add item (push)
+const added = produce(skills, (draft) => {
+    draft.push({ skillId: 'react', proficiencyLevel: 'advanced' })
+})
+
+// add at beginning (unshift)
+const prepended = produce(skills, (draft) => {
+    draft.unshift({ skillId: 'css', proficiencyLevel: 'beginner' })
+})
+
+// remove last item
+const removedLast = produce(skills, (draft) => {
+    draft.pop()
+})
+
+// remove first item
+const removedFirst = produce(skills, (draft) => {
+    draft.shift()
+})
+
+// delete by index
+const deletedByIndex = produce(skills, (draft) => {
+    draft.splice(1, 1)
+})
+
+// insert at index
+const insertedAt = produce(skills, (draft) => {
+    draft.splice(1, 0, { skillId: 'node', proficiencyLevel: 'advanced' })
+})
+
+// update by index
+const updatedByIndex = produce(skills, (draft) => {
+    draft[0].proficiencyLevel = 'expert'
+})
+
+// delete by id
+const deletedById = produce(skills, (draft) => {
+    const index = draft.findIndex((s) => s.skillId === 'ts')
+    if (index !== -1) {
+        draft.splice(index, 1)
+    }
+})
+
+// update by id
+const updatedById = produce(skills, (draft) => {
+    const skill = draft.find((s) => s.skillId === 'ts')
+    if (skill) {
+        skill.proficiencyLevel = 'advanced'
+    }
+})
+
+// filter items (return new array)
+const filtered = produce(skills, (draft) => {
+    return draft.filter((s) => s.proficiencyLevel === 'advanced')
+})
+```
+
+### Nested Data Structures
+
+```typescript
+import { produce } from 'immer'
+
+type Store = {
+    users: Map<
+        string,
+        {
+            name: string
+            todos: Array<{ title: string; done: boolean }>
+        }
+    >
+}
+
+const store: Store = {
+    users: new Map([
+        [
+            '17',
+            {
+                name: 'Michel',
+                todos: [{ title: 'Get coffee', done: false }],
+            },
+        ],
+    ]),
+}
+
+// deep update in object-in-array-in-map-in-object
+const deepUpdated = produce(store, (draft) => {
+    draft.users.get('17')!.todos[0].done = true
+})
+
+// filter nested array
+const filteredNested = produce(store, (draft) => {
+    const user = draft.users.get('17')
+    if (user) {
+        user.todos = user.todos.filter((todo) => !todo.done)
+    }
+})
+```
+
+## Effector Integration
+
+### Store Updates with Immer
+
+```typescript
+import { produce } from 'immer'
+import { domain } from '@/lib/logger'
+
+type UserSkill = {
+    skillId: string
+    proficiencyLevel: 'beginner' | 'intermediate' | 'advanced'
+}
+
+export const addSkill = domain.createEvent<UserSkill>('addSkill')
+export const removeSkill = domain.createEvent<string>('removeSkill')
+export const updateSkillLevel = domain.createEvent<{
+    skillId: string
+    level: UserSkill['proficiencyLevel']
+}>('updateSkillLevel')
+
+export const $selectedSkills = domain.createStore<UserSkill[]>([], {
+    name: '$selectedSkills',
+})
+
+// add with conditional check
+$selectedSkills.on(addSkill, (skills, skill) =>
+    produce(skills, (draft) => {
+        const exists = draft.find((s) => s.skillId === skill.skillId)
+        if (!exists) {
+            draft.push(skill)
+        }
+    }),
+)
+
+// update nested property
+$selectedSkills.on(updateSkillLevel, (skills, { skillId, level }) =>
+    produce(skills, (draft) => {
+        const skill = draft.find((s) => s.skillId === skillId)
+        if (skill) {
+            skill.proficiencyLevel = level
+        }
+    }),
+)
+```
+
+## Common Mistakes
+
+### ❌ Spread Hell for Complex Updates
+
+```typescript
+// BAD - hard to read and error-prone
+$skills.on(updateLevel, (skills, { skillId, level }) =>
+    skills.map((skill) => (skill.skillId === skillId ? { ...skill, proficiencyLevel: level } : skill)),
+)
+
+// GOOD - clear intent with Immer
+$skills.on(updateLevel, (skills, { skillId, level }) =>
+    produce(skills, (draft) => {
+        const skill = draft.find((s) => s.skillId === skillId)
+        if (skill) {
+            skill.proficiencyLevel = level
+        }
+    }),
+)
+```
+
+### ❌ Using Immer for Primitives
+
+```typescript
+// BAD - unnecessary overhead
+$count.on(increment, (count) => produce(count, (draft) => draft + 1))
+
+// GOOD - direct update
+$count.on(increment, (count) => count + 1)
+```
+
+### ❌ Returning Nothing from Producer
+
+```typescript
+// BAD - implicit undefined return
+const updated = produce(state, (draft) => {
+    draft.items.push(newItem)
+    return // returns undefined!
+})
+
+// GOOD - no explicit return (Immer returns draft)
+const updated = produce(state, (draft) => {
+    draft.items.push(newItem)
+})
+
+// GOOD - explicit return for replacement
+const cleared = produce(state, () => ({ items: [] }))
+```
+
+## Performance Tips
+
+### Bailout Optimization
+
+If you mutate a draft but the values remain the same, Immer will return the original reference:
+
+```typescript
+const state = { count: 5 }
+
+const same = produce(state, (draft) => {
+    draft.count = 5 // same value
+})
+
+console.log(same === state) // true - Immer bailed out
+```
+
+### Use Map for Frequent Lookups
+
+For arrays with frequent id-based lookups, consider using `Map` for better performance.
+
+**Important:** Map and Set support requires calling `enableMapSet()` once at application startup. See [Immer Map and Set documentation](https://immerjs.github.io/immer/map-set).
+
+```typescript
+import { enableMapSet, produce } from 'immer'
+import { domain } from '@/lib/logger'
+
+// enable Map/Set support (call once at app start, e.g., in main.ts or app entry)
+enableMapSet()
+
+type Skill = { id: string; name: string; level: number }
+type SkillUpdate = { id: string; level: number }
+
+// ❌ SLOW - O(n) lookup with array
+export const $skills = domain.createStore<Skill[]>([], { name: '$skills' })
+
+$skills.on(updateSkill, (skills, update) =>
+    produce(skills, (draft) => {
+        const skill = draft.find((s) => s.id === update.id) // O(n)
+        if (skill) {
+            Object.assign(skill, update)
+        }
+    }),
+)
+
+// ✅ FAST - O(1) lookup with Map
+export const $skillsMap = domain.createStore<Map<string, Skill>>(new Map(), {
+    name: '$skillsMap',
+})
+
+$skillsMap.on(updateSkill, (skillsMap, update) =>
+    produce(skillsMap, (draft) => {
+        const skill = draft.get(update.id) // O(1)
+        if (skill) {
+            Object.assign(skill, update)
+        }
+    }),
+)
+```
+
+### Multiple Operations
+
+When performing multiple operations, use a single `produce` call:
+
+```typescript
+// ❌ BAD - multiple produce calls
+let state = initialState
+state = produce(state, (draft) => {
+    draft.items.push(item1)
+})
+state = produce(state, (draft) => {
+    draft.items.push(item2)
+})
+
+// ✅ GOOD - single produce call
+const state = produce(initialState, (draft) => {
+    draft.items.push(item1)
+    draft.items.push(item2)
+})
+```
+
+## Best Practices
+
+1. **Use Immer for complex updates** - arrays of objects, nested structures
+2. **Skip Immer for primitives** - direct assignment is clearer
+3. **Prefer mutations over returns** - let Immer track changes automatically
+4. **Use TypeScript** - get type safety for draft mutations
+5. **Consider Map/object lookup** - for frequent id-based searches
+6. **Single produce call** - batch multiple mutations together
+7. **Guard with conditionals** - check if item exists before mutating
+8. **Return for replacements** - when you want to replace entire state
+
+## Summary
+
+Immer shines when dealing with complex, nested, or array-based state updates. For simple cases, stick with direct assignments or spread operators. Always choose the tool that makes your code most readable and maintainable.

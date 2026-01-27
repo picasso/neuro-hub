@@ -23,6 +23,7 @@ export const debugStores = {
 	generic: true,
 	meta: false,
 	tasks: true,
+	onboarding: true,
 }
 
 // * * * generic watched domain -------------------------------------------------------------------]
@@ -191,3 +192,27 @@ const taskEditConfig: ConfigLogger = {
 }
 
 export const taskEditDomain = createDomainWatched('task-edit', taskEditConfig, debugStores.tasks)
+
+// * * * onboarding ------------------------------------------------------------------------------]
+
+const onboardingConfig: ConfigLogger = {
+	colors: {
+		$currentStep: 'fx',
+		$role: 'query',
+		$selectedSkills: 'data',
+		setRole: 'event',
+		registerUserFx: 'fx',
+	},
+	filter: {
+		gate: false,
+	},
+	fn: {
+		$selectedSkills: (skills: AnyType) => namedItems('skill')(skills),
+	},
+}
+
+export const onboardingDomain = createDomainWatched(
+	'onboarding',
+	onboardingConfig,
+	debugStores.onboarding,
+)

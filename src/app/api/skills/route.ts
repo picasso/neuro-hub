@@ -1,6 +1,6 @@
-import { db } from '@/lib/db'
+import { kysely } from '@/lib/db'
 import { paginationSchema } from '@/lib/validations'
-import { successResponse, errorResponse } from '@/utils/api-response'
+import { errorResponse, successResponse } from '@/utils/api-response'
 
 /**
  * @swagger
@@ -64,23 +64,22 @@ export async function GET(request: Request) {
 
 		const offset = (page - 1) * pageSize
 
-		let query = db('skills').select('*')
+		let query = kysely.selectFrom('skills').selectAll()
 
 		if (category) {
-			query = query.where('category', category)
+			query = query.where('category', '=', category)
 		}
 
-		const skills = await query.limit(pageSize).offset(offset).orderBy('name', 'asc')
+		const skills = await query.limit(pageSize).offset(offset).orderBy('name', 'asc').execute()
 
-		const [{ count }] = await db('skills')
-			.count('* as count')
-			.modify((qb) => {
-				if (category) {
-					qb.where('category', category)
-				}
-			})
+		let countQuery = kysely.selectFrom('skills').select((eb) => eb.fn.countAll().as('count'))
 
-		const total = Number(count)
+		if (category) {
+			countQuery = countQuery.where('category', '=', category)
+		}
+
+		const countResult = await countQuery.executeTakeFirstOrThrow()
+		const total = Number(countResult.count)
 		const hasMore = offset + skills.length < total
 
 		return successResponse(skills, {
