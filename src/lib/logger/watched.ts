@@ -198,16 +198,30 @@ export const taskEditDomain = createDomainWatched('task-edit', taskEditConfig, d
 const onboardingConfig: ConfigLogger = {
 	colors: {
 		$currentStep: 'fx',
-		$role: 'query',
+		$role: 'data',
 		$selectedSkills: 'data',
+		$profileData: 'data',
+		$credentials: 'data',
 		setRole: 'event',
-		registerUserFx: 'fx',
+		registerUserFx: 'red',
 	},
 	filter: {
 		gate: false,
+		resetError: false,
+		resetCurrentStep: false,
+		resetRole: false,
+		resetCredentials: false,
+		resetProfileData: false,
+		resetSelectedSkills: false,
+		resetAllSkills: false,
+		updateProfileField: false,
+		updateCredentialField: false,
+		updateSkillLevel: false,
 	},
 	fn: {
 		$selectedSkills: (skills: AnyType) => namedItems('skill')(skills),
+		$profileData: (profile: AnyType) => (profile ? profile.name : 'unset'),
+		$credentials: (credentials: AnyType) => (credentials ? credentials.email : 'unset'),
 	},
 }
 

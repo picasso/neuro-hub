@@ -35,6 +35,7 @@ type DataValue =
 	| DataFunction
 	| DataMap
 	| DataSet
+	| unknown
 
 interface DataObject {
 	[key: string]: DataValue
