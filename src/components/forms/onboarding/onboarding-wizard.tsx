@@ -21,7 +21,7 @@ import {
 	updateProfileFx,
 } from '@/stores/onboarding'
 
-const STEP_LABELS = ['Роль', 'Аккаунт', 'Профиль', 'Навыки', 'Email']
+const STEP_LABELS = ['Роль', 'Профиль', 'Аккаунт', 'Навыки', 'Проверка']
 
 export function OnboardingWizard() {
 	const [currentStep, role, error, isRegistering, isUpdatingProfile, isAddingSkills] = useUnit([
@@ -40,14 +40,14 @@ export function OnboardingWizard() {
 			case 1:
 				return <RoleSelectionStep />
 			case 2:
-				return <CredentialsStep />
-			case 3:
 				if (role === 'freelancer') {
 					return <FreelancerProfileStep />
 				} else if (role === 'client') {
 					return <ClientProfileStep />
 				}
 				return null
+			case 3:
+				return <CredentialsStep />
 			case 4:
 				if (role === 'freelancer') {
 					return <SkillsSelectionStep />
@@ -62,7 +62,7 @@ export function OnboardingWizard() {
 
 	const getSteps = () => {
 		if (role === 'client') {
-			return ['Роль', 'Аккаунт', 'Профиль', 'Email']
+			return ['Роль', 'Профиль', 'Аккаунт', 'Проверка']
 		}
 		return STEP_LABELS
 	}

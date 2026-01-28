@@ -10,6 +10,7 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
+import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
@@ -80,17 +81,24 @@ export function SkillsSelectionStep() {
 						<Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
 							Выбрано навыков: {selectedSkills.length}
 						</Typography>
-						<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+						<Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
 							{selectedSkills.map((skill) => {
 								const skillData = allSkills.find((s) => s.id === skill.skillId)
 								return (
-									<Box key={skill.skillId} sx={{ display: 'flex', gap: 1 }}>
+									<Stack
+										key={skill.skillId}
+										direction="row"
+										alignItems="center"
+										gap={1}
+									>
 										<Chip
+											color="primary"
 											label={skillData?.name || skill.skillId}
 											onDelete={() => removeSkill(skill.skillId)}
 										/>
 										<FormControl size="small" sx={{ minWidth: 140 }}>
 											<Select
+												size="small"
 												value={skill.proficiencyLevel}
 												onChange={(e) =>
 													updateSkillLevel({
@@ -98,6 +106,7 @@ export function SkillsSelectionStep() {
 														level: e.target.value as ProficiencyLevel,
 													})
 												}
+												sx={{ height: 32 }}
 											>
 												<MenuItem value="beginner">Beginner</MenuItem>
 												<MenuItem value="intermediate">
@@ -106,10 +115,10 @@ export function SkillsSelectionStep() {
 												<MenuItem value="advanced">Advanced</MenuItem>
 											</Select>
 										</FormControl>
-									</Box>
+									</Stack>
 								)
 							})}
-						</Box>
+						</Stack>
 					</Box>
 				)}
 
@@ -166,15 +175,13 @@ export function SkillsSelectionStep() {
 											}
 											label={
 												<Box>
-													<Typography variant="body2">
+													<Typography variant="subtitle2">
 														{skill.name}
 													</Typography>
-													<Typography
-														variant="caption"
-														color="text.secondary"
-													>
-														{skill.category}
-													</Typography>
+													<Chip
+														size="small"
+														label={skill.category.replace('_', ' ')}
+													/>
 												</Box>
 											}
 											sx={{ width: 1 }}

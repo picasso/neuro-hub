@@ -1,4 +1,4 @@
-import type { UserSkillInput } from '@/lib/validations'
+import type { UserRole, UserSkillInput } from '@/lib/validations'
 
 export type OnboardingStep = 1 | 2 | 3 | 4 | 5
 
@@ -45,4 +45,17 @@ export type ProfileErrors = {
 	specialization?: string
 	companyName?: string
 	companyRole?: string
+}
+
+export type RegisterUserInput = {
+	email: string
+	password: string
+	name: string
+	role: UserRole
+	profileData: {
+		name: string
+		bio?: string
+		companyName?: string
+		companyRole?: string
+	}
 }

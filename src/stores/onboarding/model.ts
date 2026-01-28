@@ -6,6 +6,7 @@ import type {
 	ProfileData,
 	ProfileErrors,
 	ProfileField,
+	RegisterUserInput,
 	Skill,
 	UpdateSkillLevel,
 } from './types'
@@ -59,7 +60,7 @@ $credentials.on(setCredentials, (_, credentials) => credentials)
 $credentials.on(updateCredentialField, (credentials, { field, value }) =>
 	produce(credentials, (draft) => {
 		if (!draft) {
-			draft = { email: '', password: '' }
+			return { [field]: value } as CredentialsInput
 		}
 		draft[field] = value
 	}),
@@ -81,7 +82,9 @@ $profileData.on(setProfileData, (_, data) => data)
 
 $profileData.on(updateProfileField, (profile, { kind, field, value }) =>
 	produce(profile, (draft) => {
-		if (!draft) return
+		if (!draft) {
+			return { kind, [field]: value } as ProfileData
+		}
 
 		if (draft.kind === 'freelancer' && kind === 'freelancer') {
 			if (field === 'name') {
@@ -182,27 +185,35 @@ $error.reset(resetError)
 
 // * * * Effects ----------------------------------------------------------------------------------]
 
-export const registerUserFx = createEffect<
-	{ email: string; password: string; name: string; role: UserRole },
-	unknown,
-	Error
->(async ({ email, password, name }) => {
-	const result = await authClient.signUp.email({
-		email,
-		password,
-		name,
-		callbackURL: '/dashboard',
-		fetchOptions: {
-			onSuccess: () => {},
-		},
-	})
+export const registerUserFx = createEffect<RegisterUserInput, unknown, Error>(
+	async ({ email, password, name, profileData }) => {
+		const result = await authClient.signUp.email(
+			{
+				email,
+				password,
+				name,
+				callbackURL: '/dashboard',
+				fetchOptions: {
+					onSuccess: () => {},
+					body: {
+						profileData,
+					},
+				},
+			},
+			{
+				body: {
+					profileData,
+				},
+			},
+		)
 
-	if (!result.data) {
-		throw new Error('Registration failed')
-	}
+		if (!result.data) {
+			throw new Error('Registration failed')
+		}
 
-	return result.data
-})
+		return result.data
+	},
+)
 
 export const updateProfileFx = createEffect<Omit<ProfileData, 'kind'>, unknown, Error>(
 	async (profileData) => {
@@ -345,7 +356,7 @@ sample({
 sample({
 	clock: nextStep,
 	source: $currentStep,
-	filter: (step) => step < 4,
+	filter: (step) => step < 5,
 	fn: (step) => (step + 1) as OnboardingStep,
 	target: setCurrentStep,
 })
@@ -380,6 +391,7 @@ sample({
 	filter: (credentials) => {
 		if (!credentials) return false
 		const result = credentialsSchema.safeParse(credentials)
+		dev.data({ result })
 		return result.success
 	},
 	target: nextStep,
@@ -468,7 +480,7 @@ sample({
 	target: loadSkillsFx,
 })
 
-// trigger `registerUserFx` when step 3 is reached
+// trigger `registerUserFx` when step 4 is reached (after credentials filled)
 sample({
 	clock: $currentStep,
 	source: {
@@ -479,7 +491,7 @@ sample({
 	},
 	filter: ({ credentials, profile, role, isRegistering }, currentStep) => {
 		return (
-			currentStep === 3 &&
+			currentStep === 4 &&
 			!isRegistering &&
 			credentials !== null &&
 			profile !== null &&
@@ -491,25 +503,14 @@ sample({
 		password: credentials!.password,
 		name: profile!.name,
 		role: role!,
+		profileData: {
+			name: profile!.name,
+			bio: profile!.kind === 'freelancer' ? profile!.bio : undefined,
+			companyName: profile!.kind === 'client' ? profile!.companyName : undefined,
+			companyRole: profile!.kind === 'client' ? profile!.companyRole : undefined,
+		},
 	}),
 	target: registerUserFx,
-})
-
-// trigger `updateProfileFx` when step 4 is reached
-sample({
-	clock: $currentStep,
-	source: {
-		profile: $profileData,
-		isUpdating: updateProfileFx.pending,
-	},
-	filter: ({ profile, isUpdating }, currentStep) => {
-		return currentStep === 4 && !isUpdating && profile !== null
-	},
-	fn: ({ profile }) => {
-		const { kind: _kind, ...dataWithoutKind } = profile!
-		return dataWithoutKind
-	},
-	target: updateProfileFx,
 })
 
 // trigger `addSkillsFx` when step 5 is reached (freelancer only)

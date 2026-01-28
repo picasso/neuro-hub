@@ -2,21 +2,37 @@ import pg from 'pg'
 
 const { Pool } = pg
 
-const isRailway = process.env.DATABASE_URL?.includes('railway.app')
+const connectionString = process.env.DATABASE_URL
+const isRailway = connectionString?.includes('railway.app')
+const isLocalhost = connectionString?.includes('localhost') || !connectionString
 
-export const pool = new Pool({
-	connectionString:
-		process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/neurohub',
-	max: 20,
-	min: 2,
-	idleTimeoutMillis: 30000,
-	connectionTimeoutMillis: 2000,
-	ssl: isRailway
+export const pool = new Pool(
+	isLocalhost
 		? {
-				rejectUnauthorized: false,
+				host: 'localhost',
+				port: 5432,
+				database: 'neurohub',
+				user: 'postgres',
+				password: 'postgres',
+				max: 20,
+				min: 2,
+				idleTimeoutMillis: 30000,
+				connectionTimeoutMillis: 2000,
+				ssl: false,
 			}
-		: undefined,
-})
+		: {
+				connectionString,
+				max: 20,
+				min: 2,
+				idleTimeoutMillis: 30000,
+				connectionTimeoutMillis: 2000,
+				ssl: isRailway
+					? {
+							rejectUnauthorized: false,
+						}
+					: undefined,
+			},
+)
 
 pool.on('error', (err) => {
 	console.error('Unexpected error on idle client', err)

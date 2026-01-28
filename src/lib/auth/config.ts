@@ -1,8 +1,24 @@
 import { render } from '@react-email/render'
 import { betterAuth } from 'better-auth'
+import { createAuthMiddleware } from 'better-auth/api'
+import { nanoid } from 'nanoid'
+import { kysely } from '@/lib/db'
 import { pool } from '@/lib/db/pool'
 import { emailConfig, resend } from '@/lib/email'
 import { VerificationEmail } from '@/lib/email/templates/verification-email'
+
+type BetterAuthSignUpReturned = {
+	user: {
+		id: string
+		email: string
+		name: string
+		role: string
+		emailVerified: boolean
+		createdAt: string
+		updatedAt: string
+	}
+	token: string | null
+}
 
 export const auth = betterAuth({
 	database: pool,
@@ -81,6 +97,7 @@ export const auth = betterAuth({
 		},
 	},
 	session: {
+		modelName: 'sessions',
 		cookieCache: {
 			enabled: true,
 			maxAge: 5 * 60,
@@ -89,6 +106,7 @@ export const auth = betterAuth({
 		updateAge: 60 * 60 * 24,
 	},
 	user: {
+		modelName: 'users',
 		additionalFields: {
 			role: {
 				type: 'string',
@@ -97,8 +115,50 @@ export const auth = betterAuth({
 			},
 		},
 	},
+	account: {
+		modelName: 'accounts',
+	},
+	verification: {
+		modelName: 'verifications',
+	},
+	hooks: {
+		after: createAuthMiddleware(async (ctx) => {
+			if (ctx.path === '/sign-up/email' && ctx.context.returned) {
+				const returned = ctx.context.returned as BetterAuthSignUpReturned
+				const userId = returned.user.id
+				const body = ctx.body as {
+					profileData?: {
+						name: string
+						bio?: string
+						companyName?: string
+						companyRole?: string
+					}
+				}
+
+				const profileData = body.profileData
+
+				if (profileData) {
+					try {
+						await kysely
+							.insertInto('user_profiles')
+							.values({
+								id: nanoid(),
+								user_id: userId,
+								name: profileData.name,
+								bio: profileData.bio || null,
+								company_name: profileData.companyName || null,
+								company_role: profileData.companyRole || null,
+							})
+							.execute()
+					} catch (error) {
+						console.error('Failed to create user profile:', error)
+					}
+				}
+			}
+		}),
+	},
 	advanced: {
-		generateId: false,
+		generateId: true,
 		useSecureCookies: process.env.NODE_ENV === 'production',
 		cookieSameSite: 'lax',
 	},
