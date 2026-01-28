@@ -288,14 +288,14 @@ export const $canGoNext = combine(
 			case 1:
 				return role !== null
 			case 2:
-				return credentials !== null
+				return profileData !== null
 			case 3:
 				if (role === 'freelancer') {
-					return profileData !== null && selectedSkills.length > 0
+					return selectedSkills.length > 0
 				}
-				return profileData !== null
-			case 4:
 				return true
+			case 4:
+				return credentials !== null
 			default:
 				return false
 		}
@@ -358,6 +358,15 @@ sample({
 	source: $currentStep,
 	filter: (step) => step < 5,
 	fn: (step) => (step + 1) as OnboardingStep,
+	target: setCurrentStep,
+})
+
+// auto-skip step 3 (skills) for client role
+sample({
+	clock: $currentStep,
+	source: $role,
+	filter: (role, currentStep) => currentStep === 3 && role === 'client',
+	fn: () => 4 as OnboardingStep,
 	target: setCurrentStep,
 })
 
@@ -466,7 +475,7 @@ sample({
 
 // * * * Automatic effects triggering based on `$currentStep` -------------------------------------]
 
-// trigger `loadSkillsFx` when step 4 is reached (freelancer only, load once)
+// trigger `loadSkillsFx` when step 3 is reached (freelancer only, load once)
 sample({
 	clock: $currentStep,
 	source: {
@@ -475,30 +484,32 @@ sample({
 		isLoading: loadSkillsFx.pending,
 	},
 	filter: ({ allSkills, role, isLoading }, currentStep) => {
-		return currentStep === 4 && !isLoading && role === 'freelancer' && allSkills.length === 0
+		return currentStep === 3 && !isLoading && role === 'freelancer' && allSkills.length === 0
 	},
 	target: loadSkillsFx,
 })
 
-// trigger `registerUserFx` when step 4 is reached (after credentials filled)
+// trigger `registerUserFx` when step 5 is reached (after credentials filled on step 4)
 sample({
 	clock: $currentStep,
 	source: {
 		credentials: $credentials,
 		profile: $profileData,
 		role: $role,
+		skills: $selectedSkills,
 		isRegistering: registerUserFx.pending,
 	},
-	filter: ({ credentials, profile, role, isRegistering }, currentStep) => {
+	filter: ({ credentials, profile, role, skills, isRegistering }, currentStep) => {
 		return (
-			currentStep === 4 &&
+			currentStep === 5 &&
 			!isRegistering &&
 			credentials !== null &&
 			profile !== null &&
-			role !== null
+			role !== null &&
+			(role === 'client' || skills.length > 0)
 		)
 	},
-	fn: ({ credentials, profile, role }) => ({
+	fn: ({ credentials, profile, role, skills }) => ({
 		email: credentials!.email,
 		password: credentials!.password,
 		name: profile!.name,
@@ -508,24 +519,10 @@ sample({
 			bio: profile!.kind === 'freelancer' ? profile!.bio : undefined,
 			companyName: profile!.kind === 'client' ? profile!.companyName : undefined,
 			companyRole: profile!.kind === 'client' ? profile!.companyRole : undefined,
+			skills: role === 'freelancer' && skills.length > 0 ? skills : undefined,
 		},
 	}),
 	target: registerUserFx,
-})
-
-// trigger `addSkillsFx` when step 5 is reached (freelancer only)
-sample({
-	clock: $currentStep,
-	source: {
-		skills: $selectedSkills,
-		role: $role,
-		isAdding: addSkillsFx.pending,
-	},
-	filter: ({ skills, role, isAdding }, currentStep) => {
-		return currentStep === 5 && !isAdding && role === 'freelancer' && skills.length > 0
-	},
-	fn: ({ skills }) => ({ skills }),
-	target: addSkillsFx,
 })
 
 // * * * helpers ---------------------------------------------------------------------------------]

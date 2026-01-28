@@ -132,6 +132,10 @@ export const auth = betterAuth({
 						bio?: string
 						companyName?: string
 						companyRole?: string
+						skills?: Array<{
+							skillId: string
+							proficiencyLevel: 'beginner' | 'intermediate' | 'advanced' | 'expert'
+						}>
 					}
 				}
 
@@ -150,6 +154,17 @@ export const auth = betterAuth({
 								company_role: profileData.companyRole || null,
 							})
 							.execute()
+
+						if (profileData.skills && profileData.skills.length > 0) {
+							const userSkills = profileData.skills.map((skill) => ({
+								id: nanoid(),
+								user_id: userId,
+								skill_id: skill.skillId,
+								proficiency_level: skill.proficiencyLevel,
+							}))
+
+							await kysely.insertInto('user_skills').values(userSkills).execute()
+						}
 					} catch (error) {
 						console.error('Failed to create user profile:', error)
 					}

@@ -57,5 +57,9 @@ export type RegisterUserInput = {
 		bio?: string
 		companyName?: string
 		companyRole?: string
+		skills?: Array<{
+			skillId: string
+			proficiencyLevel: 'beginner' | 'intermediate' | 'advanced' | 'expert'
+		}>
 	}
 }
