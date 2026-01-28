@@ -292,6 +292,55 @@ const updated = produce(state, (draft) => {
 const cleared = produce(state, () => ({ items: [] }))
 ```
 
+### ❌ Reassigning Draft Variable
+
+**CRITICAL:** Never reassign the `draft` parameter itself. The `draft` is created outside `produce()` and acts as a proxy. Reassigning it breaks Immer's tracking mechanism.
+
+```typescript
+// ❌ BAD - reassigning draft destroys Immer logic
+$credentials.on(updateField, (credentials, { field, value }) =>
+    produce(credentials, (draft) => {
+        if (!draft) {
+            draft = { email: '', password: '' } // wrong! reassignment breaks Immer
+        }
+        draft[field] = value
+    }),
+)
+
+// ❌ BAD - empty return makes state undefined
+$profile.on(updateField, (profile, { field, value }) =>
+    produce(profile, (draft) => {
+        if (!draft) return // wrong! returns undefined
+        draft[field] = value
+    }),
+)
+
+// ✅ GOOD - return new object to replace state
+$credentials.on(updateField, (credentials, { field, value }) =>
+    produce(credentials, (draft) => {
+        if (!draft) {
+            return { [field]: value } as CredentialsInput // return replaces state
+        }
+        draft[field] = value
+    }),
+)
+
+// ✅ GOOD - mutate draft properties when it exists
+$profile.on(updateField, (profile, { field, value }) =>
+    produce(profile, (draft) => {
+        if (!draft) {
+            return { [field]: value } as ProfileData // return new state
+        }
+        draft[field] = value // mutate draft properties
+    }),
+)
+```
+
+**Remember:**
+- **Mutate draft properties** - `draft.field = value` ✅
+- **Return new value** - `return { ... }` ✅  
+- **Never reassign draft** - `draft = { ... }` ❌
+
 ## Performance Tips
 
 ### Bailout Optimization
