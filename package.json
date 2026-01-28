@@ -28,6 +28,8 @@
 		"db:export": "./scripts/db/export-data.sh",
 		"db:import": "./scripts/db/import-data.sh",
 		"db:backup:railway": "./scripts/db/backup-railway.sh",
+		"db:check": "tsx scripts/db/check-db.ts",
+		"db:delete-users": "tsx scripts/db/delete-users.ts",
 		"prepare": "husky"
 	},
 	"dependencies": {
