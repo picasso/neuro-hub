@@ -1,5 +1,6 @@
 'use client'
 
+import '@/lib/logger/debug-load'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter'
