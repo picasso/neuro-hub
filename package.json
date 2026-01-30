@@ -30,6 +30,9 @@
 		"db:backup:railway": "./scripts/db/backup-railway.sh",
 		"db:check": "tsx scripts/db/check-db.ts",
 		"db:delete-users": "tsx scripts/db/delete-users.ts",
+		"db:drop-all": "tsx scripts/db/drop-all-tables.ts",
+		"db:reset-railway": "./scripts/db/reset-railway.sh",
+		"db:reset-railway:force": "./scripts/db/reset-railway.sh --force",
 		"prepare": "husky"
 	},
 	"dependencies": {
