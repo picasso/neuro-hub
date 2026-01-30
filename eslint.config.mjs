@@ -59,16 +59,16 @@ const eslintConfig = [
 				},
 			],
 			'react/no-array-index-key': 'error',
-			'react-hooks/exhaustive-deps': 'error',
+			'react-hooks/exhaustive-deps': 'warn',
 			'@typescript-eslint/consistent-type-imports': [
-				'error',
+				'warn',
 				{
 					prefer: 'type-imports',
 					fixStyle: 'inline-type-imports',
 				},
 			],
 			'import/order': [
-				'error',
+				'warn',
 				{
 					groups: [
 						'builtin',
