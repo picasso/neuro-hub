@@ -1,36 +1,61 @@
-/* eslint-disable no-console */
 import { kysely } from '../../src/lib/db'
+import {
+	pluralize,
+	printDataRow,
+	printEmpty,
+	printError,
+	printSection,
+	printSuccess,
+} from '../utils/cli-utils'
 
 async function checkDatabase() {
-	console.log('\n=== Checking Users ===')
+	printEmpty()
+	printSection('Checking Users')
+
 	const users = await kysely.selectFrom('users').selectAll().limit(5).execute()
 
-	console.log(`Found ${users.length} users:`)
+	const userCount = users.length
+	printSuccess('Found ' + pluralize(userCount, 'user'))
 	users.forEach((user) => {
-		console.log(
-			`- ID: ${user.id} | Email: ${user.email} | Name: ${user.name} | Role: ${user.role}`,
-		)
+		printDataRow([
+			['ID', user.id],
+			['Email', user.email],
+			['Name', user.name],
+			['Role', user.role],
+		])
 	})
 
-	console.log('\n=== Checking User Profiles ===')
+	printEmpty()
+	printSection('Checking User Profiles')
+
 	const profiles = await kysely.selectFrom('user_profiles').selectAll().limit(5).execute()
 
-	console.log(`Found ${profiles.length} profiles:`)
+	const profileCount = profiles.length
+	printSuccess('Found ' + pluralize(profileCount, 'profile'))
 	profiles.forEach((profile) => {
-		console.log(
-			`- ID: ${profile.id} | User ID: ${profile.user_id} | Name: ${profile.name} | Bio: ${profile.bio} | Company: ${profile.company_name}`,
-		)
+		printDataRow([
+			['ID', profile.id],
+			['User ID', profile.user_id],
+			['Name', profile.name],
+			['Bio', profile.bio],
+			['Company', profile.company_name],
+		])
 	})
 
-	console.log('\n=== Checking Skills Library ===')
+	printEmpty()
+	printSection('Checking Skills Library')
+
 	const skillsCount = await kysely
 		.selectFrom('skills')
 		.select(({ fn }) => [fn.count<number>('id').as('count')])
 		.executeTakeFirst()
 
-	console.log(`Found ${skillsCount?.count || 0} skills in library`)
+	const skillCount = Number(skillsCount?.count || 0)
+	printSuccess('Found ' + pluralize(skillCount, 'skill') + ' in library')
 
-	console.log('\n=== Checking User Skills ===')
+	printEmpty()
+	printSection('Checking User Skills')
+
 	const userSkills = await kysely
 		.selectFrom('user_skills')
 		.innerJoin('users', 'users.id', 'user_skills.user_id')
@@ -44,17 +69,23 @@ async function checkDatabase() {
 		.limit(20)
 		.execute()
 
-	console.log(`Found ${userSkills.length} user-skill assignments:`)
+	const assignmentCount = userSkills.length
+	printSuccess('Found ' + pluralize(assignmentCount, 'user-skill assignment'))
 	userSkills.forEach((us) => {
-		console.log(
-			`- User: ${us.userName} (${us.userId}) | Skill: ${us.skillName} | Level: ${us.proficiency_level}`,
-		)
+		printDataRow([
+			['User', us.userName + ' (' + us.userId + ')'],
+			['Skill', us.skillName],
+			['Level', us.proficiency_level],
+		])
 	})
 
+	printEmpty()
 	process.exit(0)
 }
 
 checkDatabase().catch((error) => {
-	console.error('Error checking database:', error)
+	printEmpty()
+	printError('Error checking database: ' + error)
+	printEmpty()
 	process.exit(1)
 })

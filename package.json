@@ -45,6 +45,7 @@
 		"@react-email/components": "^1.0.6",
 		"@scalar/nextjs-api-reference": "^0.9.12",
 		"better-auth": "^1.4.17",
+		"chalk": "^5.6.2",
 		"dayjs": "^1.11.19",
 		"effector": "^23.3.0",
 		"effector-react": "^23.3.0",
