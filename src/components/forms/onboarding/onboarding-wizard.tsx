@@ -12,28 +12,19 @@ import { EmailVerificationStep } from './steps/email-verification-step'
 import { FreelancerProfileStep } from './steps/freelancer-profile-step'
 import { RoleSelectionStep } from './steps/role-selection-step'
 import { SkillsSelectionStep } from './steps/skills-selection-step'
-import {
-	$currentStep,
-	$error,
-	$role,
-	addSkillsFx,
-	registerUserFx,
-	updateProfileFx,
-} from '@/stores/onboarding'
+import { $currentStep, $error, $role, registerUserFx } from '@/stores/onboarding'
 
 const STEP_LABELS = ['Роль', 'Профиль', 'Навыки', 'Аккаунт', 'Проверка']
 
 export function OnboardingWizard() {
-	const [currentStep, role, error, isRegistering, isUpdatingProfile, isAddingSkills] = useUnit([
+	const [currentStep, role, error, isRegistering] = useUnit([
 		$currentStep,
 		$role,
 		$error,
 		registerUserFx.pending,
-		updateProfileFx.pending,
-		addSkillsFx.pending,
 	])
 
-	const isLoading = isRegistering || isUpdatingProfile || isAddingSkills
+	const isLoading = isRegistering
 
 	const renderStep = () => {
 		switch (currentStep) {

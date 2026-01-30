@@ -215,40 +215,6 @@ export const registerUserFx = createEffect<RegisterUserInput, unknown, Error>(
 	},
 )
 
-export const updateProfileFx = createEffect<Omit<ProfileData, 'kind'>, unknown, Error>(
-	async (profileData) => {
-		const response = await fetch('/api/user/profile', {
-			method: 'PUT',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(profileData),
-		})
-
-		if (!response.ok) {
-			const error = await response.json()
-			throw new Error(error.error?.message || 'Failed to update profile')
-		}
-
-		return await response.json()
-	},
-)
-
-export const addSkillsFx = createEffect<{ skills: UserSkillInput[] }, unknown, Error>(
-	async ({ skills }) => {
-		const response = await fetch('/api/user-skills', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ skills }),
-		})
-
-		if (!response.ok) {
-			const error = await response.json()
-			throw new Error(error.error?.message || 'Failed to add skills')
-		}
-
-		return await response.json()
-	},
-)
-
 export const loadSkillsFx = createEffect<void, Skill[], Error>(async () => {
 	const response = await fetch('/api/skills?pageSize=100')
 
@@ -270,9 +236,8 @@ $allSkills.on(loadSkillsFx.doneData, (_, skills) => skills)
 
 // * * * Computed stores --------------------------------------------------------------------------]
 
-export const $isLoading = combine(
-	[registerUserFx.pending, updateProfileFx.pending, addSkillsFx.pending, loadSkillsFx.pending],
-	(states) => states.some(Boolean),
+export const $isLoading = combine([registerUserFx.pending, loadSkillsFx.pending], (states) =>
+	states.some(Boolean),
 )
 
 export const $canGoNext = combine(
@@ -448,20 +413,6 @@ sample({
 // set error when `registerUserFx` fails
 sample({
 	clock: registerUserFx.failData,
-	fn: (error) => error.message,
-	target: $error,
-})
-
-// set error when `updateProfileFx` fails
-sample({
-	clock: updateProfileFx.failData,
-	fn: (error) => error.message,
-	target: $error,
-})
-
-// set error when `addSkillsFx` fails
-sample({
-	clock: addSkillsFx.failData,
 	fn: (error) => error.message,
 	target: $error,
 })
