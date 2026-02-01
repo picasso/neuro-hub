@@ -33,6 +33,11 @@ export function Header() {
 						<Link href="/api/docs" underline="hover" color="inherit">
 							API
 						</Link>
+						{process.env.NODE_ENV === 'development' && (
+							<Link href="/playground" underline="hover" color="inherit">
+								Playground
+							</Link>
+						)}
 						<Link href="/login" underline="hover" color="inherit">
 							Войти
 						</Link>
