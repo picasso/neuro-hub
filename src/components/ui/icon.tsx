@@ -46,19 +46,15 @@ export type IconOptions = {
 // )
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(
-	(
-		{ name, fontSize, forceSize, color = 'default', inheritColor, animation, sx, ...props },
-		ref,
-	) => {
+	({ name, fontSize, forceSize, color, inheritColor, animation, sx, ...props }, ref) => {
 		return (
 			<SvgIcon
 				ref={ref}
 				component={getIcon(name)}
 				fontSize={fontSize}
-				color={color !== 'placeholder' ? color : undefined}
+				color={color}
 				inheritViewBox
 				sx={[
-					color === 'placeholder' && { color: '#333333' },
 					!!animation && theme.animations[animation],
 					isArray(forceSize) && { width: forceSize[0], height: forceSize[1] },
 					!!forceSize && !isArray(forceSize) && { fontSize: forceSize },

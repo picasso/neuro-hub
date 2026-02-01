@@ -39,7 +39,7 @@ export type MuiIconName = PascalToKebab<CutSuffix<keyof typeof muiIcons, 'Outlin
 const library = reduce(
 	{ ...muiIcons, ...customIcons },
 	(acc, value, key) => {
-		acc[kebabCase(key.replace('Outlined', '')) as MuiIconName] = value
+		acc[kebabCase(key.replace(/Outline$/, '')) as MuiIconName] = value
 		return acc
 	},
 	{} as Record<MuiIconName, FC<SvgIconProps>>,

@@ -15,7 +15,6 @@ declare module '@mui/material/styles' {
 declare module '@mui/material/SvgIcon' {
 	interface SvgIconPropsColorOverrides extends PropMainColors {
 		default: true
-		placeholder: true
 	}
 	interface SvgIconPropsSizeOverrides {
 		xsmall: true
@@ -31,7 +30,6 @@ declare module '@mui/material/Alert' {
 declare module '@mui/material/IconButton' {
 	interface IconButtonPropsColorOverrides extends PropMainColors {
 		default: true
-		placeholder: true
 	}
 }
 

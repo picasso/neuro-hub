@@ -20,4 +20,14 @@ export const components: ThemeOptions['components'] = {
 			},
 		},
 	},
+	MuiSvgIcon: {
+		defaultProps: {
+			color: 'action',
+		},
+		styleOverrides: {
+			colorAction: {
+				color: 'var(--mui-palette-grey-500)',
+			},
+		},
+	},
 }

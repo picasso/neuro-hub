@@ -1,5 +1,5 @@
-import spinner from './spinner.svg'
+import { Spinner } from './spinner'
 
 export const customIcons = {
-	spinner,
+	spinner: Spinner,
 }
