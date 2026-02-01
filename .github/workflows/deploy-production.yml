@@ -82,7 +82,7 @@ jobs:
 
       - name: Upload backup artifact
         if: ${{ !inputs.skip_migrations }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: database-backup-${{ github.run_number }}
           path: ./backups/railway/*.sql
