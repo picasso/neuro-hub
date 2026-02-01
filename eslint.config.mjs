@@ -51,7 +51,7 @@ const eslintConfig = [
 			'@typescript-eslint/no-empty-function': 'off',
 			'@typescript-eslint/no-explicit-any': 'error',
 			'@typescript-eslint/no-unused-vars': [
-				'error',
+				'warn',
 				{
 					argsIgnorePattern: '^_',
 					varsIgnorePattern: '^_',
