@@ -1,4 +1,3 @@
-import { css } from '@mui/material/styles'
 import _ from 'lodash'
 
 export type MarkdownParams = {
@@ -145,41 +144,41 @@ function node2comp(node: HTMLElement | HTMLAnchorElement, index: number) {
 		)
 }
 
-export const markdownCss = css`
-	& br {
-		margin-bottom: 2px;
-	}
-	span.__code {
-		position: relative;
-		padding: 1px 6px 2px;
-		border-radius: 6px;
-		background-color: rgba(0, 0, 0, 0.05);
-		letter-spacing: 0.5px;
-		border: 1px solid var(--mui-palette-text-disabled);
-		&.__e {
-			background-color: var(--mui-palette-error-light);
-			color: var(--mui-palette-error-dark);
-			border-color: var(--mui-palette-error-main);
-		}
-		&.__q {
-			background-color: var(--mui-palette-secondary-light);
-			color: var(--mui-palette-secondary-dark);
-			border-color: var(--mui-palette-secondary-main);
-		}
-		&.__s {
-			background-color: var(--mui-palette-success-light);
-			color: var(--mui-palette-success-dark);
-			border-color: var(--mui-palette-success-main);
-		}
-		&.__i {
-			background-color: var(--mui-palette-info-light);
-			color: var(--mui-palette-info-dark);
-			border-color: var(--mui-palette-info-main);
-		}
-		&.__w {
-			background-color: var(--mui-palette-warning-light);
-			color: var(--mui-palette-warning-dark);
-			border-color: var(--mui-palette-warning-main);
-		}
-	}
-`
+export const markdownCss = {
+	'& br': {
+		marginBottom: '2px',
+	},
+	'span.__code': {
+		position: 'relative',
+		padding: '1px 6px 2px',
+		borderRadius: '6px',
+		backgroundColor: 'rgba(0, 0, 0, 0.05)',
+		letterSpacing: '0.5px',
+		border: '1px solid var(--mui-palette-text-disabled)',
+		'&.__e': {
+			backgroundColor: 'var(--mui-palette-error-light)',
+			color: 'var(--mui-palette-error-dark)',
+			borderColor: 'var(--mui-palette-error-main)',
+		},
+		'&.__q': {
+			backgroundColor: 'var(--mui-palette-secondary-light)',
+			color: 'var(--mui-palette-secondary-dark)',
+			borderColor: 'var(--mui-palette-secondary-main)',
+		},
+		'&.__s': {
+			backgroundColor: 'var(--mui-palette-success-light)',
+			color: 'var(--mui-palette-success-dark)',
+			borderColor: 'var(--mui-palette-success-main)',
+		},
+		'&.__i': {
+			backgroundColor: 'var(--mui-palette-info-light)',
+			color: 'var(--mui-palette-info-dark)',
+			borderColor: 'var(--mui-palette-info-main)',
+		},
+		'&.__w': {
+			backgroundColor: 'var(--mui-palette-warning-light)',
+			color: 'var(--mui-palette-warning-dark)',
+			borderColor: 'var(--mui-palette-warning-main)',
+		},
+	},
+}
