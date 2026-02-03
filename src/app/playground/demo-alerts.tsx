@@ -1,67 +1,320 @@
 'use client'
 
 import Stack from '@mui/material/Stack'
-import { createAlert } from '@/alerts'
-import { Button } from '@/components/ui'
+import { type Alert, createAlert } from '@/alerts'
+import { Button, type ButtonProps, type IconName, TS } from '@/components/ui'
+
+type DemoConfig = {
+	label: string
+	buttonColor?: ButtonProps['color']
+	leftIcon?: IconName
+	alertOptions: Alert
+}
+
+type DemoSection = {
+	title: string
+	demos: DemoConfig[]
+}
+
+const demoSections: DemoSection[] = [
+	{
+		title: 'Basic Severities & Special Modes',
+		demos: [
+			{
+				label: 'Info',
+				buttonColor: 'info',
+				alertOptions: {
+					severity: 'info',
+					message: 'Lorem `ipsum` dolor sit **amet**, consectetur adipiscing elit',
+				},
+			},
+			{
+				label: 'Warning',
+				buttonColor: 'warning',
+				alertOptions: {
+					severity: 'warning',
+					message: [
+						'You can **reuse** %s entities, delete *%s* from this panel or `%s` and update panel.',
+						23,
+						'duplicate compounds',
+						'cancel registration',
+					],
+				},
+			},
+			{
+				label: 'Error',
+				buttonColor: 'error',
+				alertOptions: {
+					severity: 'error',
+					message:
+						'Sed do `eiusmod` tempor incididunt ut **labore** et dolore magna aliqua.',
+				},
+			},
+			{
+				label: 'Success',
+				buttonColor: 'success',
+				alertOptions: {
+					severity: 'success',
+					title: 'Registered successfully',
+					message: 'Lorem `ipsum dolor` sit amet, **consectetur** adipiscing elit',
+				},
+			},
+			{
+				label: 'Progress',
+				buttonColor: 'primary',
+				alertOptions: {
+					severity: 'progress',
+					title: 'Registering panel...',
+					message: 'Lorem `ipsum` dolor sit amet, **consectetur** adipiscing elit',
+					disableClose: true,
+				},
+			},
+			{
+				label: 'Overlay',
+				buttonColor: 'primary',
+				alertOptions: {
+					severity: 'progress',
+					title: 'Loading data...',
+					message: 'Please wait while we process your request',
+					dismissible: false,
+					overlay: true,
+					duration: Infinity,
+				},
+			},
+		],
+	},
+	{
+		title: 'Variants',
+		demos: [
+			{
+				label: 'Standard',
+				buttonColor: 'warning',
+				alertOptions: {
+					severity: 'info',
+					variant: 'standard',
+					title: 'Standard variant',
+					message: 'This is the **default** variant with no background fill',
+				},
+			},
+			{
+				label: 'Filled',
+				buttonColor: 'warning',
+				alertOptions: {
+					severity: 'info',
+					variant: 'filled',
+					title: 'Filled variant',
+					message: 'This variant has a **filled** background',
+				},
+			},
+			{
+				label: 'Outlined',
+				buttonColor: 'warning',
+				alertOptions: {
+					severity: 'info',
+					variant: 'outlined',
+					title: 'Outlined variant',
+					message: 'This variant has an **outlined** border',
+				},
+			},
+
+			{
+				label: 'Standard',
+				buttonColor: 'secondary',
+				alertOptions: {
+					severity: 'progress',
+					variant: 'standard',
+					title: 'Standard variant',
+					message: 'This is the **default** variant with no background fill',
+				},
+			},
+			{
+				label: 'Filled',
+				buttonColor: 'secondary',
+				alertOptions: {
+					severity: 'progress',
+					variant: 'filled',
+					title: 'Filled variant',
+					message: 'This variant has a **filled** background',
+				},
+			},
+			{
+				label: 'Outlined',
+				buttonColor: 'secondary',
+				alertOptions: {
+					severity: 'progress',
+					variant: 'outlined',
+					title: 'Outlined variant',
+					message: 'This variant has an **outlined** border',
+				},
+			},
+		],
+	},
+	{
+		title: 'Elevation',
+		demos: [
+			{
+				label: 'Elevation 0',
+				buttonColor: 'error',
+				alertOptions: {
+					severity: 'info',
+					elevation: 0,
+					title: 'Elevation 0',
+					message: 'No shadow - flat appearance',
+				},
+			},
+			{
+				label: 'Elevation 3',
+				buttonColor: 'error',
+				alertOptions: {
+					severity: 'warning',
+					elevation: 3,
+					title: 'Elevation 3',
+					message: 'Small shadow - default elevation',
+				},
+			},
+			{
+				label: 'Elevation 6',
+				buttonColor: 'error',
+				alertOptions: {
+					severity: 'success',
+					elevation: 6,
+					title: 'Elevation 6',
+					message: 'Medium shadow - default elevation',
+				},
+			},
+			{
+				label: 'Elevation 12',
+				buttonColor: 'error',
+				alertOptions: {
+					severity: 'error',
+					elevation: 12,
+					title: 'Elevation 12',
+					message: 'High shadow - prominent appearance',
+				},
+			},
+		],
+	},
+	{
+		title: 'Custom Icons',
+		demos: [
+			{
+				label: 'Custom Icon',
+				buttonColor: 'success',
+				alertOptions: {
+					severity: 'info',
+					icon: 'error',
+					title: 'Custom icon',
+					message: 'Using **warning** icon instead of default info icon',
+				},
+			},
+			{
+				label: 'Animated Icon',
+				buttonColor: 'success',
+				alertOptions: {
+					severity: 'success',
+					icon: 'spinner',
+					iconOptions: { animation: 'rotate' },
+					title: 'Animated icon',
+					message: 'Icon with **rotate** animation',
+				},
+			},
+			{
+				label: 'Sized & Colored',
+				buttonColor: 'success',
+				alertOptions: {
+					severity: 'warning',
+					icon: 'done',
+					iconOptions: { size: 'large', color: 'error' },
+					title: 'Sized & colored icon',
+					message: 'Large **error** icon with error color',
+				},
+			},
+		],
+	},
+	{
+		title: 'Duration & Dismissible',
+		demos: [
+			{
+				label: 'Short (1s)',
+				alertOptions: {
+					severity: 'info',
+					title: 'Short duration (1s)',
+					message: 'This alert will disappear quickly',
+					duration: 1000,
+				},
+			},
+			{
+				label: 'Long (10s)',
+				alertOptions: {
+					severity: 'info',
+					title: 'Long duration (10s)',
+					message: 'This alert will stay visible longer',
+					duration: 10000,
+				},
+			},
+			{
+				label: 'Infinite',
+				alertOptions: {
+					severity: 'info',
+					title: 'Infinite duration',
+					message: 'This alert stays until manually dismissed',
+					duration: Infinity,
+				},
+			},
+		],
+	},
+	{
+		title: 'Markdown',
+		demos: [
+			{
+				label: 'With Markdown',
+				buttonColor: 'warning',
+				alertOptions: {
+					severity: 'success',
+					title: 'With Markdown',
+					message: [
+						'Supports **bold**, *italic*, `code`, and [%s](%s) formatting',
+						'links',
+						'https://example.com',
+					],
+				},
+			},
+			{
+				label: 'Without Markdown',
+				buttonColor: 'warning',
+				alertOptions: {
+					severity: 'error',
+					title: 'Without Markdown',
+					message: 'This shows **raw** text without *markdown* `parsing`',
+					md: false,
+				},
+			},
+		],
+	},
+]
 
 export const AlertsDemo = () => {
-	const alertInfo = () => {
-		createAlert('info', 'Lorem `ipsum` dolor sit **amet**, consectetur adipiscing elit')
-	}
-
-	const alertWarn = () => {
-		createAlert('warning', [
-			'You can **reuse** %s entities, delete *%s* from this panel or `%s` and update panel.',
-			23,
-			'duplicate compounds',
-			'cancel registration',
-		])
-	}
-
-	const alertError = () => {
-		createAlert(
-			'error',
-			'Sed do `eiusmod` tempor incididunt ut **labore** et dolore magna aliqua.',
-		)
-	}
-
-	const alertFull = () => {
-		createAlert({
-			severity: 'success',
-			title: 'Registered successfully',
-			message: 'Lorem `ipsum dolor` sit amet, **consectetur** adipiscing elit',
-			disableClose: true,
-			dismissible: false,
-		})
-	}
-
-	const alertProgress = () => {
-		createAlert({
-			severity: 'progress',
-			title: 'Registering panel...',
-			message: 'Lorem `ipsum` dolor sit amet, **consectetur** adipiscing elit',
-			disableClose: true,
-		})
-	}
-
-	const alertOverlay = () => {
-		createAlert({
-			severity: 'progress',
-			title: 'Registering panel...',
-			message: 'Lorem `ipsum` dolor sit amet, **consectetur** adipiscing elit',
-			dismissible: false,
-			overlay: true,
-		})
-	}
-
 	return (
-		<Stack direction="row" spacing={2}>
-			<Button variant="outlined" color="info" onClick={alertInfo} label="Info" />
-			<Button variant="outlined" color="warning" onClick={alertWarn} label="Warning" />
-			<Button variant="outlined" color="error" onClick={alertError} label="Error" />
-			<Button variant="outlined" color="success" onClick={alertFull} label="Success" />
-			<Button variant="outlined" color="primary" onClick={alertOverlay} label="Overlay" />
-			<Button variant="outlined" color="primary" onClick={alertProgress} label="Progress" />
+		<Stack spacing={4}>
+			{demoSections.map((section, index) => (
+				// eslint-disable-next-line react/no-array-index-key
+				<Stack key={`${section.title}-${index}`} spacing={1}>
+					<TS variant="h6">{section.title}</TS>
+					<Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+						{section.demos.map((demo, index) => (
+							<Button
+								// eslint-disable-next-line react/no-array-index-key
+								key={`${demo.label}-${index}`}
+								variant="outlined"
+								color={demo.buttonColor}
+								leftIcon={demo.leftIcon}
+								onClick={() => createAlert(demo.alertOptions)}
+								label={demo.label}
+							/>
+						))}
+					</Stack>
+				</Stack>
+			))}
 		</Stack>
 	)
 }

@@ -1,2 +1,2 @@
 export { AlertsPlugin } from './plugin'
-export { createAlert } from './model'
+export { createAlert, type Alert } from './model'

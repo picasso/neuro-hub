@@ -1,11 +1,11 @@
 'use client'
 
-import { useGate } from 'effector-react'
+import { useGate, useUnit } from 'effector-react'
 import { Toaster } from 'sonner'
-import { AlertGate } from './model'
+import { $options, AlertGate } from './model'
 
 export const AlertsPlugin = () => {
 	useGate(AlertGate)
-
-	return <Toaster position="bottom-left" visibleToasts={10} />
+	const options = useUnit($options)
+	return <Toaster {...options} />
 }

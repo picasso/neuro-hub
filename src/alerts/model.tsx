@@ -3,37 +3,16 @@
 import { type AlertProps as MuiAlertProps } from '@mui/material/Alert'
 import { createDomain, sample } from 'effector'
 import { createGate } from 'effector-react'
-import { isString, uniqueId } from 'lodash'
+import { isString, merge, uniqueId } from 'lodash'
 import { type ReactElement } from 'react'
-import { toast, type ExternalToast as ToastProps } from 'sonner'
+import { toast, type ExternalToast as ToastProps, type ToasterProps } from 'sonner'
 import { AlertComponent } from './alert'
 import { type IconName, type IconOptions } from '@/components/ui'
-import { type TemplatedMessage, type MarkdownParams } from '@/utils'
-
-// type Options = Omit<AlertProps, 'id' | 'text'> & {
-// 	message: string | ((id: number) => ReactElement) | ReactNode
-// 	duration?: number
-// }
+import { type MarkdownParams, type TemplatedMessage } from '@/utils'
 
 const domain = createDomain('alerts')
-export const AlertGate = createGate({ domain })
 
-// store for received alerts ----------------------------------------------------------------------]
-
-// export interface AlertProps {
-// 	id: number
-// 	text: string | ReactNode
-// 	title?: string
-// 	disableClose?: boolean
-// 	severity?: 'success' | 'info' | 'warning' | 'error' | 'progress'
-// 	variant?: MuiAlertProps['variant']
-// 	elevation?: MuiAlertProps['elevation']
-// 	icon?: IconName
-// 	iconOptions?: IconOptions
-// 	status?: number
-// 	statusText?: string
-// }
-// Omit<MuiAlertProps, 'id' | 'text'>
+// * * * Alert Types ------------------------------------------------------------------------------]
 
 export type AlertComponentProps = {
 	id?: ToastProps['id']
@@ -63,56 +42,99 @@ export type Alert = Omit<
 > &
 	Omit<AlertComponentProps, 'id'>
 
-export const addAlert = domain.createEvent<Alert>()
+export type AlertOptions = {
+	position?: ToasterProps['position']
+	visibleToasts?: ToasterProps['visibleToasts']
+	offset?: ToasterProps['offset']
+	mobileOffset?: ToasterProps['mobileOffset']
+	duration?: ToasterProps['duration']
+	gap?: ToasterProps['gap']
+	expand?: ToasterProps['expand']
+	toastOptions?: ToasterProps['toastOptions']
+}
 
-export const createAlertFx = domain.createEffect((options: Alert) => {
-	const {
-		id,
-		severity,
-		title,
-		message,
-		variant,
-		elevation,
-		overlay,
-		icon,
-		iconOptions,
-		md,
-		sx,
-		...rest
-	} = options
+// * * * Gate -------------------------------------------------------------------------------------]
 
-	const alertId = id ?? createAlertId()
+export const AlertGate = createGate({ domain, name: 'AlertGate' })
 
-	const render = (id: number | string): ReactElement => {
-		return (
-			<AlertComponent
-				id={id}
-				severity={severity}
-				title={title}
-				message={message}
-				elevation={elevation}
-				variant={variant}
-				overlay={overlay}
-				icon={icon}
-				iconOptions={iconOptions}
-				md={md}
-				sx={sx}
-			/>
-		)
-	}
+// * * * Events & Effects -------------------------------------------------------------------------]
 
-	toast.custom(render, { id: alertId, ...rest } as ToastProps)
+export const addAlert = domain.createEvent<Alert>('addAlert')
+export const updateOptions = domain.createEvent<Partial<AlertOptions>>('updateOptions')
+const resetOptions = domain.createEvent('resetOptions')
 
-	return alertId
+export const createAlertFx = domain.createEffect({
+	handler: (options: Alert) => {
+		const {
+			id,
+			severity,
+			title,
+			message,
+			variant,
+			elevation,
+			overlay,
+			icon,
+			iconOptions,
+			md,
+			sx,
+			...rest
+		} = options
+
+		const alertId = id ?? createAlertId()
+
+		const render = (id: number | string): ReactElement => {
+			return (
+				<AlertComponent
+					id={id}
+					severity={severity}
+					title={title}
+					message={message}
+					elevation={elevation}
+					variant={variant}
+					overlay={overlay}
+					icon={icon}
+					iconOptions={iconOptions}
+					md={md}
+					sx={sx}
+				/>
+			)
+		}
+
+		toast.custom(render, { id: alertId, ...rest } as ToastProps)
+
+		return alertId
+	},
+	name: 'createAlertFx',
 })
 
+// * * * $options ---------------------------------------------------------------------------------]
+
+export const $options = domain
+	.createStore<AlertOptions>(
+		{
+			visibleToasts: 3,
+			duration: 4000,
+			position: 'bottom-left',
+			gap: 10,
+			expand: true,
+			offset: { bottom: '80px', left: '16px' },
+			mobileOffset: { bottom: '16px', left: '16px' },
+		},
+		{ name: '$options' },
+	)
+	.on(updateOptions, (options, update) => merge({}, options, update))
+	.reset(resetOptions)
+
+// * * * Connections ------------------------------------------------------------------------------]
+
+// create alert when `addAlert` event triggered and gate is open
 sample({
 	clock: addAlert,
 	filter: AlertGate.status,
 	target: createAlertFx,
 })
 
-// helpers ----------------------------------------------------------------------------------------]
+// * * * helpers ----------------------------------------------------------------------------------]
 
 const createAlertId = (key?: string) => (key ? `alert-${key}` : uniqueId('alert-'))
 
