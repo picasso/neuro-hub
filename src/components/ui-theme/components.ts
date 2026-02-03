@@ -1,4 +1,5 @@
 import { type ThemeOptions } from '@mui/material/styles'
+import { feedback } from './feedback'
 import { LinkBehaviour } from '@/components/ui'
 
 export const components: ThemeOptions['components'] = {
@@ -30,4 +31,5 @@ export const components: ThemeOptions['components'] = {
 			},
 		},
 	},
+	...feedback,
 }

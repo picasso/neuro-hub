@@ -55,9 +55,9 @@ export const AlertComponent: FC<AlertComponentProps> = (props) => {
 		!icon && !isProgress ? null : (
 			<Icon
 				name={icon ?? 'spinner'}
-				color={iconOptions?.color ?? (isProgress ? 'primary' : undefined)}
+				color={iconOptions?.color ?? (isProgress ? 'secondary' : undefined)}
 				fontSize={iconOptions?.size}
-				animation={iconOptions?.animation ?? 'rotate'}
+				animation={iconOptions?.animation ?? (isProgress ? 'rotate' : undefined)}
 				sx={{ mr: iconOptions?.spacing }}
 			/>
 		)
@@ -68,18 +68,16 @@ export const AlertComponent: FC<AlertComponentProps> = (props) => {
 	return (
 		<MuiAlert
 			onClose={onClose}
-			severity={isProgress ? undefined : severity}
-			color={isProgress ? 'primary' : undefined}
+			severity={severity}
 			variant={variant}
 			icon={iconNode}
 			iconMapping={iconMapping}
-			elevation={elevation}
+			elevation={elevation ?? 3}
 			sx={[
 				{ minWidth: { md: 'none', lg: 400, xl: 600 } },
 				{ '.MuiAlert-message': { width: '100%' } },
 				!title && { '.MuiAlert-action': { py: 0.75, pl: 2 } },
 			]}
-			data-severity={severity}
 		>
 			{mergedTitle && <MuiAlertTitle>{simpleMarkdown(mergedTitle, md || {})}</MuiAlertTitle>}
 			{md === false ? mergedMessage : simpleMarkdown(mergedMessage, md)}

@@ -23,7 +23,12 @@ declare module '@mui/material/SvgIcon' {
 
 declare module '@mui/material/Alert' {
 	interface AlertPropsColorOverrides {
-		primary: true
+		progress: true
+	}
+	interface AlertClasses {
+		standardProgress: string
+		filledProgress: string
+		outlinedProgress: string
 	}
 }
 
