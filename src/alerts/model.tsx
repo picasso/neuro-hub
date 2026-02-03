@@ -12,7 +12,7 @@ import { type MarkdownParams, type TemplatedMessage } from '@/utils'
 
 const domain = createDomain('alerts')
 
-// * * * Alert Types ------------------------------------------------------------------------------]
+// * * * Alert types ------------------------------------------------------------------------------]
 
 export type AlertComponentProps = {
 	id?: ToastProps['id']
@@ -53,15 +53,19 @@ export type AlertOptions = {
 	toastOptions?: ToasterProps['toastOptions']
 }
 
-// * * * Gate -------------------------------------------------------------------------------------]
+// * * * gate -------------------------------------------------------------------------------------]
 
 export const AlertGate = createGate({ domain, name: 'AlertGate' })
 
-// * * * Events & Effects -------------------------------------------------------------------------]
+// * * * events -----------------------------------------------------------------------------------]
 
 export const addAlert = domain.createEvent<Alert>('addAlert')
 export const updateOptions = domain.createEvent<Partial<AlertOptions>>('updateOptions')
 const resetOptions = domain.createEvent('resetOptions')
+const incrementOverlay = domain.createEvent('incrementOverlay')
+const decrementOverlay = domain.createEvent('decrementOverlay')
+
+// * * * effects ----------------------------------------------------------------------------------]
 
 export const createAlertFx = domain.createEffect({
 	handler: (options: Alert) => {
@@ -77,10 +81,30 @@ export const createAlertFx = domain.createEffect({
 			iconOptions,
 			md,
 			sx,
+			onDismiss,
+			onAutoClose,
 			...rest
 		} = options
 
 		const alertId = id ?? createAlertId()
+
+		if (overlay) {
+			incrementOverlay()
+		}
+
+		const onDismissProxy: ToastProps['onDismiss'] = overlay
+			? (toast) => {
+					decrementOverlay()
+					onDismiss?.(toast)
+				}
+			: onDismiss
+
+		const onAutoCloseProxy: ToastProps['onAutoClose'] = overlay
+			? (toast) => {
+					decrementOverlay()
+					onAutoClose?.(toast)
+				}
+			: onAutoClose
 
 		const render = (id: number | string): ReactElement => {
 			return (
@@ -100,14 +124,24 @@ export const createAlertFx = domain.createEffect({
 			)
 		}
 
-		toast.custom(render, { id: alertId, ...rest } as ToastProps)
+		toast.custom(render, {
+			id: alertId,
+			onDismiss: onDismissProxy,
+			onAutoClose: onAutoCloseProxy,
+			...rest,
+		} as ToastProps)
 
 		return alertId
 	},
 	name: 'createAlertFx',
 })
 
-// * * * $options ---------------------------------------------------------------------------------]
+// * * * stores -----------------------------------------------------------------------------------]
+
+export const $overlay = domain
+	.createStore<number>(0, { name: '$overlay' })
+	.on(incrementOverlay, (count) => count + 1)
+	.on(decrementOverlay, (count) => Math.max(0, count - 1))
 
 export const $options = domain
 	.createStore<AlertOptions>(
@@ -125,7 +159,7 @@ export const $options = domain
 	.on(updateOptions, (options, update) => merge({}, options, update))
 	.reset(resetOptions)
 
-// * * * Connections ------------------------------------------------------------------------------]
+// * * * connections ------------------------------------------------------------------------------]
 
 // create alert when `addAlert` event triggered and gate is open
 sample({

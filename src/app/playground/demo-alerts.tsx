@@ -7,6 +7,7 @@ import { Button, type ButtonProps, type IconName, TS } from '@/components/ui'
 type DemoConfig = {
 	label: string
 	buttonColor?: ButtonProps['color']
+	buttonVariant?: ButtonProps['variant']
 	leftIcon?: IconName
 	alertOptions: Alert
 }
@@ -61,7 +62,7 @@ const demoSections: DemoSection[] = [
 			},
 			{
 				label: 'Progress',
-				buttonColor: 'primary',
+				buttonColor: 'secondary',
 				alertOptions: {
 					severity: 'progress',
 					title: 'Registering panel...',
@@ -72,13 +73,14 @@ const demoSections: DemoSection[] = [
 			{
 				label: 'Overlay',
 				buttonColor: 'primary',
+				buttonVariant: 'contained',
 				alertOptions: {
 					severity: 'progress',
 					title: 'Loading data...',
 					message: 'Please wait while we process your request',
 					dismissible: false,
 					overlay: true,
-					duration: Infinity,
+					variant: 'filled',
 				},
 			},
 		],
@@ -118,33 +120,36 @@ const demoSections: DemoSection[] = [
 			},
 
 			{
-				label: 'Standard',
+				label: 'Standard & Overlay',
 				buttonColor: 'secondary',
 				alertOptions: {
 					severity: 'progress',
 					variant: 'standard',
 					title: 'Standard variant',
 					message: 'This is the **default** variant with no background fill',
+					overlay: true,
 				},
 			},
 			{
-				label: 'Filled',
+				label: 'Filled & Overlay',
 				buttonColor: 'secondary',
 				alertOptions: {
 					severity: 'progress',
 					variant: 'filled',
 					title: 'Filled variant',
 					message: 'This variant has a **filled** background',
+					overlay: true,
 				},
 			},
 			{
-				label: 'Outlined',
+				label: 'Outlined & Overlay',
 				buttonColor: 'secondary',
 				alertOptions: {
 					severity: 'progress',
 					variant: 'outlined',
 					title: 'Outlined variant',
 					message: 'This variant has an **outlined** border',
+					overlay: true,
 				},
 			},
 		],
@@ -305,8 +310,8 @@ export const AlertsDemo = () => {
 							<Button
 								// eslint-disable-next-line react/no-array-index-key
 								key={`${demo.label}-${index}`}
-								variant="outlined"
 								color={demo.buttonColor}
+								variant={demo.buttonVariant ?? 'outlined'}
 								leftIcon={demo.leftIcon}
 								onClick={() => createAlert(demo.alertOptions)}
 								label={demo.label}
