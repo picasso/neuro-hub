@@ -1,2 +1,9 @@
 export { AlertsPlugin } from './plugin'
-export { createAlert, type Alert } from './model'
+export {
+	createAlert,
+	createAlertFx,
+	removeAlert,
+	updateAlertOptions,
+	resetAlertOptions,
+	type Alert,
+} from './model'

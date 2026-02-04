@@ -30,9 +30,10 @@ const demoSections: DemoSection[] = [
 				},
 			},
 			{
-				label: 'Warning',
+				label: 'Warning & Block Auto Close',
 				buttonColor: 'warning',
 				alertOptions: {
+					disableAutoClose: true,
 					severity: 'warning',
 					message: [
 						'You can **reuse** %s entities, delete *%s* from this panel or `%s` and update panel.',
@@ -43,7 +44,7 @@ const demoSections: DemoSection[] = [
 				},
 			},
 			{
-				label: 'Error',
+				label: 'Error & Title & Disable Close',
 				buttonColor: 'error',
 				alertOptions: {
 					severity: 'error',

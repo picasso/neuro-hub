@@ -1,7 +1,7 @@
 'use client'
 
 import { type AlertProps as MuiAlertProps } from '@mui/material/Alert'
-import { createDomain, sample } from 'effector'
+import { createDomain, type EventCallable, sample } from 'effector'
 import { createGate } from 'effector-react'
 import { isString, merge, uniqueId } from 'lodash'
 import { type ReactElement } from 'react'
@@ -26,21 +26,35 @@ export type AlertComponentProps = {
 	iconOptions?: IconOptions
 	md?: Partial<MarkdownParams> | false
 	sx?: MuiAlertProps['sx']
-	disableClose?: boolean | undefined
+	disableClose?: boolean
+	// if true, the toast will not be closed automatically after the `duration` prop
+	// this is a more explicit alternative to `duration: Infinity`
+	disableAutoClose?: boolean
 }
 
 export type Alert = Omit<
 	ToastProps,
 	| 'description'
-	| 'icon'
-	| 'invert'
 	| 'closeButton'
+	| 'invert'
+	| 'dismissible'
+	| 'icon'
 	| 'action'
 	| 'cancel'
 	| 'actionButtonStyle'
 	| 'cancelButtonStyle'
 > &
 	Omit<AlertComponentProps, 'id'>
+
+// * * * `toast` options that are not overridden by `AlertComponent` options ----------------------]
+//
+// - `duration` - Time in milliseconds that should elapse before automatically closing the toast.
+// - `position` - Position of the toast.
+// - `testId` - Test id for the toast for reliable e2e testing with data-testid attributes.
+// - `toasterId` - The id of the toaster to render the toast in.
+// - `onDismiss` - The function gets called when either the close button is clicked, or the toast is swiped.
+// - `onAutoClose` - Function that gets called when the toast disappears automatically after its timeout (duration prop).
+// - `containerAriaLabel` - Custom ARIA label for the toast container.
 
 export type AlertOptions = {
 	position?: ToasterProps['position']
@@ -67,7 +81,7 @@ const decrementOverlay = domain.createEvent('decrementOverlay')
 
 // * * * effects ----------------------------------------------------------------------------------]
 
-export const createAlertFx = domain.createEffect({
+export const addAlertFx = domain.createEffect({
 	handler: (options: Alert) => {
 		const {
 			id,
@@ -82,7 +96,8 @@ export const createAlertFx = domain.createEffect({
 			md,
 			sx,
 			disableClose,
-			// toast options
+			disableAutoClose,
+			// toast options for overlay control
 			onDismiss,
 			onAutoClose,
 			...rest
@@ -131,12 +146,14 @@ export const createAlertFx = domain.createEffect({
 			id: alertId,
 			onDismiss: onDismissProxy,
 			onAutoClose: onAutoCloseProxy,
+			dismissible: !disableClose,
+			duration: disableAutoClose ? Infinity : undefined,
 			...rest,
 		} as ToastProps)
 
 		return alertId
 	},
-	name: 'createAlertFx',
+	name: 'addAlertFx',
 })
 
 // * * * stores -----------------------------------------------------------------------------------]
@@ -168,12 +185,42 @@ export const $options = domain
 sample({
 	clock: addAlert,
 	filter: AlertGate.status,
-	target: createAlertFx,
+	target: addAlertFx,
+})
+
+// effect for creating alerts via effector helpers ------------------------------------------------]
+
+const createAlertId = (key?: string) => (key ? `alert-${key}` : uniqueId('alert-'))
+
+interface AlertParams extends Alert {
+	id?: string
+	target?: EventCallable<string>
+}
+
+type AlertExtra = Pick<AlertParams, 'target' | 'id'>
+
+const createFx = domain.createEffect<AlertParams, string>(({ id, target, ...alert }) => {
+	const alertId = id ?? createAlertId()
+	addAlert({ id: alertId, ...alert })
+	if (target) target(alertId)
+	return alertId
+})
+
+const removeFx = domain.createEffect<AlertExtra, void>(({ id, target }) => {
+	if (id) {
+		removeAlert(id)
+		if (target) target(id)
+	}
+})
+
+export const createAlertFx = Object.assign(createFx, {
+	props: (alert: AlertParams) => alert,
+	removeFx,
+	remove: removeAlert,
+	alertId: createAlertId,
 })
 
 // * * * helpers ----------------------------------------------------------------------------------]
-
-const createAlertId = (key?: string) => (key ? `alert-${key}` : uniqueId('alert-'))
 
 export function createAlert(alert: Alert['severity'] | Alert, message?: Alert['message']) {
 	const newAlert = isString(alert) ? { severity: alert, message } : alert
@@ -184,4 +231,12 @@ export function createAlert(alert: Alert['severity'] | Alert, message?: Alert['m
 
 export function removeAlert(id: ToastProps['id']) {
 	toast.dismiss(id)
+}
+
+export function updateAlertOptions(options: Partial<AlertOptions>) {
+	updateOptions(options)
+}
+
+export function resetAlertOptions() {
+	resetOptions()
 }
