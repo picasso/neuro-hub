@@ -2,7 +2,7 @@
 
 import MuiAlert, { type AlertProps as MuiAlertProps } from '@mui/material/Alert'
 import MuiAlertTitle from '@mui/material/AlertTitle'
-import { type FC } from 'react'
+import { useCallback, type FC } from 'react'
 import { toast } from 'sonner'
 import { type AlertComponentProps } from './model'
 import { Icon } from '@/components/ui'
@@ -45,11 +45,11 @@ export const AlertComponent: FC<AlertComponentProps> = (props) => {
 
 	const isProgress = severity === 'progress'
 
-	const onClose = () => {
+	const onClose = useCallback(() => {
 		if (!disableClose) {
 			toast.dismiss(id)
 		}
-	}
+	}, [disableClose, id])
 
 	const iconNode =
 		!icon && !isProgress ? null : (
@@ -67,7 +67,7 @@ export const AlertComponent: FC<AlertComponentProps> = (props) => {
 
 	return (
 		<MuiAlert
-			onClose={onClose}
+			onClose={disableClose ? undefined : onClose}
 			severity={severity}
 			variant={variant}
 			icon={iconNode}

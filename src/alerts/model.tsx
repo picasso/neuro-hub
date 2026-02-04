@@ -81,6 +81,8 @@ export const createAlertFx = domain.createEffect({
 			iconOptions,
 			md,
 			sx,
+			disableClose,
+			// toast options
 			onDismiss,
 			onAutoClose,
 			...rest
@@ -120,6 +122,7 @@ export const createAlertFx = domain.createEffect({
 					iconOptions={iconOptions}
 					md={md}
 					sx={sx}
+					disableClose={disableClose}
 				/>
 			)
 		}

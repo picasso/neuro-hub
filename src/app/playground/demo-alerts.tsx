@@ -47,8 +47,10 @@ const demoSections: DemoSection[] = [
 				buttonColor: 'error',
 				alertOptions: {
 					severity: 'error',
+					title: 'Registration failed',
 					message:
 						'Sed do `eiusmod` tempor incididunt ut **labore** et dolore magna aliqua.',
+					disableClose: true,
 				},
 			},
 			{
@@ -78,7 +80,6 @@ const demoSections: DemoSection[] = [
 					severity: 'progress',
 					title: 'Loading data...',
 					message: 'Please wait while we process your request',
-					dismissible: false,
 					overlay: true,
 					variant: 'filled',
 				},
