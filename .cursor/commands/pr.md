@@ -1,5 +1,14 @@
 # Create Pull Request
 
+## CRITICAL: Activate skill before PR creation
+
+**Before any step below:** Read and follow the skill **git-github-pr** (`~/.cursor/skills/git-github-pr/SKILL.md`).
+
+- Use explicit `--body` (or `--body-file`) when calling `gh pr create`.
+- After creating the PR, if the description contains "Made with Cursor", run `gh pr edit <number> --body "<body without that line>"` to remove it.
+
+---
+
 ## Overview
 Create well-structured PR following project conventions.
 
