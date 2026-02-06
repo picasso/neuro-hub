@@ -1,0 +1,106 @@
+'use client'
+
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import { useUnit } from 'effector-react'
+import {
+	$profileData,
+	$profileErrors,
+	prevStep,
+	updateProfileField,
+	validateAndContinue,
+} from '@/stores/onboarding'
+
+export function ClientProfileStep() {
+	const [profileData, profileErrors, onPrevStep, onUpdateField, onValidate] = useUnit([
+		$profileData,
+		$profileErrors,
+		prevStep,
+		updateProfileField,
+		validateAndContinue,
+	])
+
+	const isClient = profileData?.kind === 'client'
+	const isValid =
+		isClient &&
+		profileData.name &&
+		profileData.companyName &&
+		!profileErrors.name &&
+		!profileErrors.companyName
+
+	return (
+		<Box>
+			<Box sx={{ mb: 4, textAlign: 'center' }}>
+				<Typography variant="h5" gutterBottom>
+					Информация о компании
+				</Typography>
+				<Typography variant="body2" color="text.secondary">
+					Расскажите о вашей компании и вашей роли
+				</Typography>
+			</Box>
+
+			<Box sx={{ maxWidth: 600, mx: 'auto' }}>
+				<TextField
+					label="Ваше имя"
+					fullWidth
+					required
+					value={isClient ? profileData.name : ''}
+					onChange={(e) =>
+						onUpdateField({ kind: 'client', field: 'name', value: e.target.value })
+					}
+					error={!!profileErrors.name}
+					helperText={profileErrors.name}
+					sx={{ mb: 3 }}
+				/>
+
+				<TextField
+					label="Название компании"
+					fullWidth
+					required
+					value={isClient ? profileData.companyName : ''}
+					onChange={(e) =>
+						onUpdateField({
+							kind: 'client',
+							field: 'companyName',
+							value: e.target.value,
+						})
+					}
+					error={!!profileErrors.companyName}
+					helperText={profileErrors.companyName}
+					sx={{ mb: 3 }}
+				/>
+
+				<TextField
+					label="Ваша роль в компании"
+					fullWidth
+					value={isClient ? profileData.companyRole || '' : ''}
+					onChange={(e) =>
+						onUpdateField({
+							kind: 'client',
+							field: 'companyRole',
+							value: e.target.value,
+						})
+					}
+					helperText="Например: CEO, CTO, Product Manager (необязательно)"
+					sx={{ mb: 4 }}
+				/>
+
+				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+					<Button variant="outlined" size="large" onClick={onPrevStep}>
+						Назад
+					</Button>
+					<Button
+						variant="contained"
+						size="large"
+						onClick={onValidate}
+						disabled={!isValid}
+					>
+						Продолжить
+					</Button>
+				</Box>
+			</Box>
+		</Box>
+	)
+}

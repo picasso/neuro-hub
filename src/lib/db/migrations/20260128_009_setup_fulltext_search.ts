@@ -4,8 +4,8 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.raw('CREATE EXTENSION IF NOT EXISTS "pg_trgm"')
 
 	await knex.raw(`
-		ALTER TABLE user_profiles 
-		ADD COLUMN search_vector tsvector 
+		ALTER TABLE user_profiles
+		ADD COLUMN search_vector tsvector
 		GENERATED ALWAYS AS (
 			setweight(to_tsvector('english', coalesce(name, '')), 'A') ||
 			setweight(to_tsvector('english', coalesce(bio, '')), 'B')
@@ -13,14 +13,14 @@ export async function up(knex: Knex): Promise<void> {
 	`)
 
 	await knex.raw(`
-		CREATE INDEX user_profiles_search_idx 
-		ON user_profiles 
+		CREATE INDEX user_profiles_search_idx
+		ON user_profiles
 		USING GIN (search_vector)
 	`)
 
 	await knex.raw(`
-		CREATE INDEX user_profiles_name_trgm_idx 
-		ON user_profiles 
+		CREATE INDEX user_profiles_name_trgm_idx
+		ON user_profiles
 		USING GIN (name gin_trgm_ops)
 	`)
 }

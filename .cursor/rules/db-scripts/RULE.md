@@ -1,0 +1,413 @@
+---
+name: Database Scripts Guide
+description: Standards for writing database utility scripts
+---
+
+# Database Scripts Development Guide
+
+Guidelines for creating consistent, maintainable database utility scripts.
+
+## File Organization
+
+```zsh
+scripts/
+├── db/
+│   ├── check-db.ts           # Database inspection
+│   ├── delete-users.ts       # User deletion with cascade
+│   ├── drop-all-tables.ts    # Table dropping utility
+│   └── ...
+└── utils/
+    └── cli-utils.ts          # Centralized CLI utilities
+```
+
+## CLI Utilities
+
+Always use centralized utilities from `scripts/utils/cli-utils.ts`:
+
+### Output Functions
+
+```typescript
+import {
+    pluralize,
+    printDataRow,
+    printEmpty,
+    printError,
+    printInfo,
+    printListItem,
+    printSection,
+    printSuccess,
+    printText,
+    printUsage,
+    printWarning,
+    promptConfirmation,
+} from '../utils/cli-utils'
+```
+
+### Function Reference
+
+**Spacing:**
+- `printEmpty()` - Print empty line (instead of `console.log('')`)
+
+**Headers:**
+- `printSection(title: string)` - Section header with underline
+  - Converts to UPPERCASE
+  - Adds cyan line (━━━) below
+
+**Status Messages:**
+- `printSuccess(message)` - Green with ✓ symbol
+- `printWarning(message)` - Yellow with ▲ symbol
+- `printError(message)` - Red with ✖ symbol
+- `printInfo(message)` - Blue with ◆ symbol
+
+**Data Display:**
+- `printDataRow(fields: [string, value][])` - Structured data
+  - Labels in gray, values in blue.dim
+  - Separators (|) in yellow.dim
+  - Example: `printDataRow([['Email', user.email], ['Role', user.role]])`
+
+**Lists:**
+- `printListItem(text: string, indent?: number)` - Bullet lists
+  - Default: `• text` in blue.dim
+  - Custom indent: `indent * 2` spaces
+
+**Text:**
+- `printText(text: string)` - Plain text output
+
+**Usage Help:**
+- `printUsage(lines: string[])` - Command usage display
+  - Renders "Usage:" header in cyan.dim
+  - All lines in cyan.dim
+
+**User Interaction:**
+- `promptConfirmation(message: string): Promise<boolean>` - Yes/no prompt
+  - Returns true for "yes" or "y"
+  - Prompt text in yellow
+
+**Pluralization:**
+- `pluralize(count: number, singular: string, withoutCount?: boolean): string`
+  - Auto-adds count: `pluralize(5, 'user')` → "5 users"
+  - Without count: `pluralize(1, 'user', true)` → "user"
+
+## Standard Patterns
+
+### Script Structure
+
+```typescript
+// NO console.log - use utilities instead
+import { kysely } from '../../src/lib/db'
+import {
+    printEmpty,
+    printError,
+    printSection,
+    printSuccess,
+    // ... other utilities
+} from '../utils/cli-utils'
+
+async function main() {
+    printEmpty()
+    printSection('Script Name')
+    
+    // ... script logic
+    
+    printEmpty()
+    process.exit(0)
+}
+
+main().catch((error) => {
+    printEmpty()
+    printError('Error: ' + error)
+    printEmpty()
+    process.exit(1)
+})
+```
+
+### Sections
+
+Always follow this pattern for sections:
+
+```typescript
+printEmpty()                                    // space before
+printSection('Section Title')                   // header
+printSuccess('Found ' + pluralize(count, 'item'))  // status
+items.forEach(item => {
+    printDataRow([                              // data rows
+        ['Field', item.field],
+        ['Other', item.other],
+    ])
+})
+```
+
+### User Confirmations
+
+```typescript
+if (!force) {
+    printEmpty()
+    const confirmed = await promptConfirmation('Are you sure you want to proceed?')
+    if (!confirmed) {
+        printEmpty()
+        printInfo('Operation cancelled.')
+        printEmpty()
+        return
+    }
+}
+```
+
+### Error Handling
+
+```typescript
+// Early returns with spacing
+if (!data) {
+    printEmpty()
+    printError('Data not found.')
+    printEmpty()
+    return
+}
+
+// Try-catch blocks
+try {
+    await operation()
+    printSuccess('Operation completed.')
+} catch (error) {
+    printError('Operation failed: ' + error)
+}
+```
+
+### Lists Display
+
+```typescript
+// Simple lists
+printSuccess('Found ' + pluralize(tables.length, 'table'))
+tables.forEach(table => {
+    printListItem(table)        // • table_name (blue.dim)
+})
+
+// Nested lists (with indent)
+items.forEach(item => {
+    printListItem('Item: ' + item.name)
+    printText('  - Detail 1')   // manual indent for non-list text
+    printText('  - Detail 2')
+})
+```
+
+### Structured Data
+
+```typescript
+// Use printDataRow for key-value data
+users.forEach(user => {
+    printDataRow([
+        ['ID', user.id],
+        ['Email', user.email],
+        ['Name', user.name],
+        ['Role', user.role],
+    ])
+})
+// Output: • ID: xxx | Email: yyy | Name: zzz | Role: admin
+```
+
+### Usage Help
+
+```typescript
+if (!validArgs) {
+    printError('Invalid arguments provided.')
+    printEmpty()
+    printUsage([
+        '  yarn script-name --option1          # Description',
+        '  yarn script-name --option2 value    # Description',
+        '  yarn script-name --option1 --force  # Description',
+    ])
+    printEmpty()
+    process.exit(1)
+}
+```
+
+## Color Scheme
+
+**Do not use chalk directly** - use utility functions:
+
+| Usage | Color | Symbol | Function |
+| ------- | ------- | -------- | ---------- |
+| Success | green | ✓ | `printSuccess()` |
+| Warning | yellow | ▲ | `printWarning()` |
+| Error | red | ✖ | `printError()` |
+| Info | blue | ◆ | `printInfo()` |
+| Section headers | cyan | - | `printSection()` |
+| Data values | blue.dim | - | `printDataRow()` |
+| List items | blue.dim | • | `printListItem()` |
+| Usage help | cyan.dim | - | `printUsage()` |
+| Prompts | yellow | - | `promptConfirmation()` |
+
+## Spacing Guidelines
+
+**Always add empty lines:**
+- ✅ Before script starts: `printEmpty()` at beginning of `main()`
+- ✅ Before each section: `printEmpty()` before `printSection()`
+- ✅ Before user prompts: `printEmpty()` before `promptConfirmation()`
+- ✅ After cancellation: `printEmpty()` after `printInfo('Operation cancelled.')`
+- ✅ Before exit: `printEmpty()` before `process.exit()`
+- ✅ In error handlers: `printEmpty()` before and after error message
+
+**Never use:**
+- ❌ `console.log('')` - use `printEmpty()` instead
+- ❌ `console.log()` - use `printText()` or specific utilities
+- ❌ Direct `chalk` calls - use provided utilities
+- ❌ `/* eslint-disable no-console */` - not needed with utilities
+
+## Database Operations
+
+### Safety Checks
+
+```typescript
+// Check environment
+const databaseUrl = process.env.DATABASE_URL || ''
+if (!databaseUrl) {
+    printEmpty()
+    printError('DATABASE_URL environment variable is not set')
+    printEmpty()
+    process.exit(1)
+}
+
+// Prevent localhost operations
+if (databaseUrl.includes('localhost')) {
+    printEmpty()
+    printError('Safety check: Cannot perform on localhost database')
+    printText('   Use this script only for remote databases')
+    printEmpty()
+    process.exit(1)
+}
+```
+
+### Force Flags
+
+```typescript
+// Always support --force to skip confirmations
+const force = process.argv.includes('--force')
+
+if (!force) {
+    const confirmed = await promptConfirmation('Destructive operation. Continue?')
+    if (!confirmed) {
+        printInfo('Operation cancelled.')
+        return
+    }
+}
+```
+
+### Transaction Patterns
+
+```typescript
+// Prefer explicit transactions for multi-step operations
+try {
+    await kysely.transaction().execute(async (trx) => {
+        // All operations in transaction
+        await trx.deleteFrom('table1').where('id', '=', id).execute()
+        await trx.deleteFrom('table2').where('ref_id', '=', id).execute()
+    })
+    printSuccess('Transaction completed.')
+} catch (error) {
+    printError('Transaction failed: ' + error)
+}
+```
+
+## Examples
+
+### Complete Script Template
+
+```typescript
+import { kysely } from '../../src/lib/db'
+import {
+    pluralize,
+    printEmpty,
+    printError,
+    printInfo,
+    printSection,
+    printSuccess,
+    promptConfirmation,
+} from '../utils/cli-utils'
+
+type Args = {
+    force: boolean
+    // ... other args
+}
+
+function parseArgs(): Args {
+    const args = process.argv.slice(2)
+    return {
+        force: args.includes('--force'),
+    }
+}
+
+async function performOperation(force: boolean) {
+    const items = await kysely.selectFrom('table').selectAll().execute()
+    
+    if (items.length === 0) {
+        printEmpty()
+        printInfo('No items found.')
+        printEmpty()
+        return
+    }
+    
+    printEmpty()
+    printSection('Operation Name')
+    printSuccess('Found ' + pluralize(items.length, 'item'))
+    
+    if (!force) {
+        printEmpty()
+        const confirmed = await promptConfirmation('Continue with operation?')
+        if (!confirmed) {
+            printEmpty()
+            printInfo('Operation cancelled.')
+            printEmpty()
+            return
+        }
+    }
+    
+    printEmpty()
+    printInfo('Processing items...')
+    
+    // Perform operation
+    
+    printEmpty()
+    printSuccess('Operation completed.')
+}
+
+async function main() {
+    const args = parseArgs()
+    await performOperation(args.force)
+    
+    printEmpty()
+    process.exit(0)
+}
+
+main().catch((error) => {
+    printEmpty()
+    printError('Error: ' + error)
+    printEmpty()
+    process.exit(1)
+})
+```
+
+## Testing
+
+Before committing:
+1. Run `npm run lint:ci` - must pass with 0 errors
+2. Test with invalid args (should show usage)
+3. Test with `--force` flag (should skip confirmation)
+4. Test cancellation (should show proper spacing)
+5. Test actual operation on dev/test database
+
+## Common Pitfalls
+
+❌ **Don't:**
+- Use `console.log()` directly
+- Import and use `chalk` directly
+- Forget spacing before/after messages
+- Use hardcoded colors
+- Skip pluralization for countable items
+- Forget `--force` flag support
+
+✅ **Do:**
+- Import utilities from `cli-utils.ts`
+- Use `printEmpty()` for spacing
+- Use `pluralize()` for counts
+- Add confirmation prompts for destructive operations
+- Provide clear usage help
+- Follow the color scheme consistently

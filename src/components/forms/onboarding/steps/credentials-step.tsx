@@ -1,0 +1,92 @@
+'use client'
+
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import InputAdornment from '@mui/material/InputAdornment'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import { useUnit } from 'effector-react'
+import { useState } from 'react'
+import {
+	$credentials,
+	prevStep,
+	updateCredentialField,
+	validateCredentialsAndContinue,
+} from '@/stores/onboarding'
+
+export function CredentialsStep() {
+	const [credentials, onPrevStep, onUpdateField, onValidate] = useUnit([
+		$credentials,
+		prevStep,
+		updateCredentialField,
+		validateCredentialsAndContinue,
+	])
+
+	const [showPassword, setShowPassword] = useState(false)
+	const isValid = credentials?.email && credentials?.password
+
+	return (
+		<Box>
+			<Box sx={{ mb: 4, textAlign: 'center' }}>
+				<Typography variant="h5" gutterBottom>
+					Создайте аккаунт
+				</Typography>
+				<Typography variant="body2" color="text.secondary">
+					Введите email и придумайте надежный пароль
+				</Typography>
+			</Box>
+
+			<Box sx={{ maxWidth: 500, mx: 'auto' }}>
+				<TextField
+					label="Email"
+					type="email"
+					fullWidth
+					value={credentials?.email || ''}
+					onChange={(e) => onUpdateField({ field: 'email', value: e.target.value })}
+					sx={{ mb: 3 }}
+				/>
+
+				<TextField
+					label="Пароль"
+					type={showPassword ? 'text' : 'password'}
+					fullWidth
+					value={credentials?.password || ''}
+					onChange={(e) => onUpdateField({ field: 'password', value: e.target.value })}
+					helperText="Минимум 8 символов"
+					slotProps={{
+						input: {
+							endAdornment: (
+								<InputAdornment position="end">
+									<IconButton
+										onClick={() => setShowPassword(!showPassword)}
+										edge="end"
+									>
+										{showPassword ? <VisibilityOff /> : <Visibility />}
+									</IconButton>
+								</InputAdornment>
+							),
+						},
+					}}
+					sx={{ mb: 4 }}
+				/>
+
+				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+					<Button variant="outlined" size="large" onClick={onPrevStep}>
+						Назад
+					</Button>
+					<Button
+						variant="contained"
+						size="large"
+						onClick={onValidate}
+						disabled={!isValid}
+					>
+						Продолжить
+					</Button>
+				</Box>
+			</Box>
+		</Box>
+	)
+}

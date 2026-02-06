@@ -313,6 +313,103 @@ ssl: {
 
 **Дата решения:** 2026-01-25
 
+### 14. Better Auth Hooks: использование ctx.context.returned вместо newSession
+
+**Решение:** Использовать `ctx.context.returned` для получения данных пользователя в `after` hook при sign-up.
+
+**Проблема:**
+При включенной email верификации (`emailVerification: { sendOnSignUp: true }`) Better Auth не создает сессию сразу при регистрации. Пользователь должен сначала подтвердить email, и только потом создается сессия.
+
+**Тестирование показало:**
+
+```zsh
+newSession: false  ← не доступен при sendOnSignUp: true
+returned: true     ← содержит данные созданного пользователя
+```
+
+**Обоснование:**
+- `ctx.context.newSession` доступен только когда сессия создается сразу (без email verification)
+- `ctx.context.returned` содержит результат выполнения endpoint (данные пользователя, token)
+- При email verification сессия создается позже через отдельный endpoint после подтверждения
+- Для создания связанных записей (user_profiles) нужен только user.id, а не полная сессия
+
+**Реализация:**
+
+```typescript
+hooks: {
+  after: createAuthMiddleware(async (ctx) => {
+    if (ctx.path === '/sign-up/email' && ctx.context.returned) {
+      const returned = ctx.context.returned as BetterAuthSignUpReturned
+      const userId = returned.user.id
+      // Создаем user_profile используя userId
+    }
+  }),
+}
+```
+
+**Важно:** Документация Better Auth рекомендует использовать `newSession`, но это работает только при `sendOnSignUp: false`. При включенной email verification приходится использовать `ctx.context.returned` (ну это предположение, не из документации!).
+
+**Дата решения:** 2026-01-28
+
+### 15. Database Schema: Nanoid вместо UUID
+
+**Решение:** Использовать TEXT колонки с Nanoid для всех ID вместо UUID.
+
+**Проблема:**
+Better Auth по умолчанию генерирует Nanoid для ID пользователей, но наши миграции создавали таблицы с UUID колонками и `gen_random_uuid()` defaults.
+
+**Причины перехода на Nanoid:**
+- Better Auth использует Nanoid при `generateId: true` (рекомендованный подход)
+- Nanoid короче UUID (21 символ vs 36), URL-friendly
+- Лучшая производительность генерации (~60% быстрее UUID v4)
+- Collision resistance сопоставим с UUID (1% вероятность за миллион лет при 1000 ID/час)
+
+**Реализация:**
+1. Удалены все UUID-based миграции
+2. Better Auth CLI создал core таблицы (`users`, `sessions`, `accounts`, `verifications`) с TEXT ID
+3. Созданы новые миграции для кастомных таблиц (`user_profiles`, `skills`, `user_skills`) с TEXT ID
+4. В Better Auth config установлен `generateId: true`
+5. В hook для создания профиля используется `nanoid()` для генерации profile.id
+
+**Конфигурация Better Auth:**
+
+```typescript
+advanced: {
+  generateId: true,  // Better Auth генерирует Nanoid для всех ID
+}
+
+user: {
+  modelName: 'users',  // Plural table names
+}
+
+session: {
+  modelName: 'sessions',
+}
+```
+
+**Важные настройки:**
+- `modelName` конфигурация необходима так как Better Auth по умолчанию использует singular names (`user`, `session`), а PostgreSQL best practices рекомендуют plural (`users`, `sessions`)
+- Все foreign key constraints обновлены для работы с TEXT вместо UUID
+- Seeds обновлены для генерации Nanoid в тестовых данных
+
+**Дата решения:** 2026-01-28
+
+### 16. CLI Utilities: Centralized Approach
+
+**Решение:** Создать централизованную библиотеку CLI утилит в `scripts/utils/cli-utils.ts`.
+
+**Обоснование:**
+- Единообразный UX во всех database utility скриптах
+- Централизованная стилизация (цвета, символы, форматирование)
+- Отсутствие прямых вызовов console.log и chalk в скриптах
+- Упрощение поддержки и изменения визуального стиля
+
+**Документация:** `.cursor/rules/db-scripts/RULE.md`
+
+**Компромисс:** Требует импорта утилит, но это компенсируется единообразием и читаемостью.
+
+**Дата решения:** 2026-01-30
+
 ## Технологический стек MVP
 
 ### Frontend

@@ -7,6 +7,18 @@ export {
 	type PaginationInput,
 } from './common'
 export {
+	clientProfileSchema,
+	credentialsSchema,
+	freelancerProfileSchema,
+	onboardingDataSchema,
+	roleSelectionSchema,
+	type ClientProfileInput,
+	type CredentialsInput,
+	type FreelancerProfileInput,
+	type OnboardingDataInput,
+	type RoleSelectionInput,
+} from './onboarding'
+export {
 	addUserSkillsSchema,
 	createUserSchema,
 	updateUserProfileSchema,
