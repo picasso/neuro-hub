@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { AlertsPlugin } from '@/alerts'
 import { ThemeRegistry } from '@/components/providers'
 import { Footer, Header } from '@/components/ui'
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 		<html lang="ru">
 			<body style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
 				<ThemeRegistry>
+					<AlertsPlugin />
 					<Header />
 					<main style={{ flex: 1 }}>{children}</main>
 					<Footer />

@@ -384,6 +384,44 @@ export type ProfileField = { ... }    // used
 
 ---
 
+## 6. Error Handling & Alerts
+
+Based on [src/alerts/README.md](../../src/alerts/README.md). User-facing errors and notifications go through the alerts system only.
+
+### 6.1 Single channel for user-facing errors
+
+❌ **Bad:** `alert()`, custom toasts, or only `console.error` for user-visible errors.
+
+✅ **Good:** Use `@/alerts` — `createAlert()` for one-off, `createAlertFx` in Effector flows.
+
+**Rule:** All user-visible error/success/warning messages use `createAlert` or `createAlertFx` from `@/alerts`. No `alert()`, no ad-hoc toast libs.
+
+### 6.2 Errors that require attention
+
+❌ **Bad:** Error alert with default auto-close (user may miss it).
+
+✅ **Good:** For errors requiring action or reading — `severity: 'error'` and `disableAutoClose: true`. Success/info can keep auto-close.
+
+**Rule:** Critical/error messages: `disableAutoClose: true`. Success/info: allow default auto-close.
+
+### 6.3 Alerts in Effector
+
+❌ **Bad:** Showing alerts inside components (e.g. in `useEffect` or after `effect.doneData` in component).
+
+✅ **Good:** In store: `sample({ clock: effect.doneData })` or `sample({ clock: effect.failData })` → `fn` builds alert props → `target: createAlertFx`.
+
+**Rule:** Wire success/error alerts to effects via `sample` + `createAlertFx` in the model. Components do not show alerts for effect results.
+
+### 6.4 Progress alerts
+
+❌ **Bad:** Progress alert without cleanup when operation finishes.
+
+✅ **Good:** Use `id: createAlertFx.alertId(entityId)`. On success or failure call `createAlertFx.remove(alertId)`, then show result alert if needed.
+
+**Rule:** Long-running operations: show progress with stable `id`, remove that alert when done (success or fail), then show outcome alert.
+
+---
+
 ## Pre-commit Component Checklist
 
 Use this checklist to review components before committing:
@@ -411,6 +449,12 @@ Use this checklist to review components before committing:
 ### React/MUI:
 - [ ] `slotProps` instead of `inputProps`/`InputProps`
 - [ ] No deprecated APIs
+
+### Alerts / Error handling:
+- [ ] User-facing errors via `@/alerts` (createAlert / createAlertFx)
+- [ ] Critical errors use `disableAutoClose: true`
+- [ ] Effect success/error alerts wired in store via sample → createAlertFx
+- [ ] Progress alerts use stable id and remove on completion
 
 ### Code Quality:
 - [ ] Repeated logic extracted to helpers

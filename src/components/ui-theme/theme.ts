@@ -1,5 +1,6 @@
 import { createTheme } from '@mui/material/styles'
-import { LinkBehaviour } from '@/components/ui'
+import { animations } from './animations'
+import { components } from './components'
 
 export const theme = createTheme({
 	cssVariables: true,
@@ -23,24 +24,6 @@ export const theme = createTheme({
 			'sans-serif',
 		].join(','),
 	},
-	components: {
-		MuiLink: {
-			defaultProps: {
-				component: LinkBehaviour,
-			},
-		},
-		MuiButtonBase: {
-			defaultProps: {
-				LinkComponent: LinkBehaviour,
-			},
-		},
-		MuiButton: {
-			styleOverrides: {
-				root: {
-					textTransform: 'none',
-					fontWeight: 600,
-				},
-			},
-		},
-	},
+	components,
+	animations,
 })

@@ -1,0 +1,35 @@
+import { type ThemeOptions } from '@mui/material/styles'
+import { feedback } from './feedback'
+import { LinkBehaviour } from '@/components/ui'
+
+export const components: ThemeOptions['components'] = {
+	MuiLink: {
+		defaultProps: {
+			component: LinkBehaviour,
+		},
+	},
+	MuiButtonBase: {
+		defaultProps: {
+			LinkComponent: LinkBehaviour,
+		},
+	},
+	MuiButton: {
+		styleOverrides: {
+			root: {
+				textTransform: 'none',
+				fontWeight: 600,
+			},
+		},
+	},
+	MuiSvgIcon: {
+		defaultProps: {
+			color: 'action',
+		},
+		styleOverrides: {
+			colorAction: {
+				color: 'var(--mui-palette-grey-500)',
+			},
+		},
+	},
+	...feedback,
+}

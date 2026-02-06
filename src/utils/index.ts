@@ -8,7 +8,16 @@ export {
 	successResponse,
 } from './api-response'
 
-export { assert, dayjs, formatDistance, sleep } from './common'
+export {
+	assert,
+	dayjs,
+	formatDistance,
+	sleep,
+	mergeClasses,
+	templatedMessage,
+	sprintf,
+	type TemplatedMessage,
+} from './common'
 
 export { findChild, findParent } from './dom'
 
@@ -21,3 +30,5 @@ export {
 	UnauthorizedError,
 	ValidationError,
 } from './errors'
+
+export { type MarkdownParams, markdownCss, simpleMarkdown } from './simple-markdown'
