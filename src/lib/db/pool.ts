@@ -11,7 +11,7 @@ export const pool = new Pool(
 		? {
 				host: 'localhost',
 				port: 5432,
-				database: 'neurohub',
+				database: 'neurogig',
 				user: 'postgres',
 				password: 'postgres',
 				max: 20,

@@ -30,14 +30,14 @@ export const howItWorksMetadata: Metadata = createMetadata({
 
 export const loginMetadata: Metadata = createMetadata({
 	title: 'Вход',
-	description: 'Войдите в свой аккаунт NeuroHub',
+	description: 'Войдите в свой аккаунт NeuroGig',
 	path: '/login',
 	noIndex: true,
 })
 
 export const signupMetadata: Metadata = createMetadata({
 	title: 'Регистрация',
-	description: 'Создайте аккаунт на платформе NeuroHub',
+	description: 'Создайте аккаунт на платформе NeuroGig',
 	path: '/signup',
 	noIndex: true,
 })

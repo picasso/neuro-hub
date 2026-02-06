@@ -1,7 +1,5 @@
 'use client'
 
-import Box from '@mui/material/Box'
-import CircularProgress from '@mui/material/CircularProgress'
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper'
 import { useUnit } from 'effector-react'
@@ -12,19 +10,15 @@ import { EmailVerificationStep } from './steps/email-verification-step'
 import { FreelancerProfileStep } from './steps/freelancer-profile-step'
 import { RoleSelectionStep } from './steps/role-selection-step'
 import { SkillsSelectionStep } from './steps/skills-selection-step'
-import { $currentStep, $error, $role, registerUserFx } from '@/stores/onboarding'
+import { $currentStep, $role } from '@/stores/onboarding'
 
-const STEP_LABELS = ['Роль', 'Профиль', 'Навыки', 'Аккаунт', 'Проверка']
+const wizardSteps = {
+	freelancer: ['Роль', 'Профиль', 'Навыки', 'Аккаунт', 'Проверка'],
+	client: ['Роль', 'Профиль', 'Аккаунт', 'Проверка'],
+}
 
 export function OnboardingWizard() {
-	const [currentStep, role, error, isRegistering] = useUnit([
-		$currentStep,
-		$role,
-		$error,
-		registerUserFx.pending,
-	])
-
-	const isLoading = isRegistering
+	const [currentStep, role] = useUnit([$currentStep, $role])
 
 	const renderStep = () => {
 		switch (currentStep) {
@@ -51,32 +45,11 @@ export function OnboardingWizard() {
 		}
 	}
 
-	const getSteps = () => {
-		if (role === 'client') {
-			return ['Роль', 'Профиль', 'Аккаунт', 'Проверка']
-		}
-		return STEP_LABELS
-	}
-
 	return (
 		<Container maxWidth="lg" sx={{ py: 4 }}>
 			<Paper elevation={2} sx={{ p: { xs: 2, md: 4 } }}>
-				<ProgressStepper steps={getSteps()} />
-
-				{error && (
-					<Box sx={{ mb: 3 }}>
-						{/* TODO: handle error display */}
-						{/* <Alert severity="error">{error}</Alert> */}
-					</Box>
-				)}
-
-				{isLoading && (
-					<Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-						<CircularProgress />
-					</Box>
-				)}
-
-				{!isLoading && renderStep()}
+				{role && <ProgressStepper steps={wizardSteps[role]} />}
+				{renderStep()}
 			</Paper>
 		</Container>
 	)

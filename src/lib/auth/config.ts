@@ -33,7 +33,7 @@ export const auth = betterAuth({
 					await resend.emails.send({
 						from: emailConfig.from,
 						to: user.email,
-						subject: 'Восстановление пароля - NeuroHub',
+						subject: 'Восстановление пароля - NeuroGig',
 						html: `
 							<h1>Восстановление пароля</h1>
 							<p>Вы запросили сброс пароля для вашей учетной записи.</p>
@@ -69,7 +69,7 @@ export const auth = betterAuth({
 					await resend.emails.send({
 						from: emailConfig.from,
 						to: user.email,
-						subject: 'Подтвердите ваш email - NeuroHub',
+						subject: 'Подтвердите ваш email - NeuroGig',
 						html: emailHtml,
 					})
 				} catch (error) {
@@ -125,6 +125,9 @@ export const auth = betterAuth({
 		after: createAuthMiddleware(async (ctx) => {
 			if (ctx.path === '/sign-up/email' && ctx.context.returned) {
 				const returned = ctx.context.returned as BetterAuthSignUpReturned
+				if (!returned.user) {
+					return
+				}
 				const userId = returned.user.id
 				const body = ctx.body as {
 					profileData?: {

@@ -6,11 +6,13 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import TelegramIcon from '@mui/icons-material/Telegram'
 import XIcon from '@mui/icons-material/X'
 import Box from '@mui/material/Box'
+import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
-import Typography from '@mui/material/Typography'
+import packageJson from '../../../package.json'
+import { TS } from './text-styled'
 import { contactContent } from '@/config/mocks'
 
 export function Footer() {
@@ -27,18 +29,24 @@ export function Footer() {
 			<Container maxWidth="lg">
 				<Grid container spacing={4}>
 					<Grid size={{ xs: 12, sm: 4 }}>
-						<Typography variant="h6" gutterBottom>
-							NeuroHub
-						</Typography>
-						<Typography variant="body2" color="text.secondary">
+						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+							<TS variant="h6">NeuroGig</TS>
+							<Chip
+								label={`${packageJson.version}`}
+								size="small"
+								color="primary"
+								sx={{ opacity: 0.7 }}
+							/>
+						</Box>
+						<TS variant="body2" color="text.secondary">
 							Платформа для фриланса в сфере генеративного ИИ
-						</Typography>
+						</TS>
 					</Grid>
 
 					<Grid size={{ xs: 12, sm: 4 }}>
-						<Typography variant="h6" gutterBottom>
+						<TS variant="h6" gutterBottom>
 							Для фрилансеров
-						</Typography>
+						</TS>
 						<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
 							<Link href="/projects" color="text.secondary" underline="hover">
 								Найти проекты
@@ -50,9 +58,9 @@ export function Footer() {
 					</Grid>
 
 					<Grid size={{ xs: 12, sm: 4 }}>
-						<Typography variant="h6" gutterBottom>
+						<TS variant="h6" gutterBottom>
 							Для заказчиков
-						</Typography>
+						</TS>
 						<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
 							<Link href="/freelancers" color="text.secondary" underline="hover">
 								Найти фрилансера
@@ -134,9 +142,9 @@ export function Footer() {
 				</Box>
 
 				<Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>
-					<Typography variant="body2" color="text.secondary" align="center">
-						© {new Date().getFullYear()} NeuroHub. Все права защищены.
-					</Typography>
+					<TS variant="body2" color="text.secondary" align="center">
+						© {new Date().getFullYear()} NeuroGig. Все права защищены.
+					</TS>
 				</Box>
 			</Container>
 		</Box>

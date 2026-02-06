@@ -6,13 +6,13 @@ echo "🔄 Exporting data from local PostgreSQL database..."
 
 if [ -z "$DATABASE_URL" ]; then
   echo "❌ DATABASE_URL environment variable is not set"
-  echo "Usage: export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/neurohub"
+  echo "Usage: export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/neurogig"
   exit 1
 fi
 
 EXPORT_DIR="./backups"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-EXPORT_FILE="${EXPORT_DIR}/neurohub_export_${TIMESTAMP}.sql"
+EXPORT_FILE="${EXPORT_DIR}/neurogig_export_${TIMESTAMP}.sql"
 
 mkdir -p "$EXPORT_DIR"
 

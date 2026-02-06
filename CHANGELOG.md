@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.5] - 2026-02-06
+
+### Added
+- Alert and notification system:
+  - Sonner integration for toast notifications
+  - Custom 'progress' severity with theme support
+  - Overlay mode for modal-like alerts
+  - Comprehensive documentation with usage examples
+- Onboarding wizard for user registration:
+  - Multi-step form with role selection (freelancer/client)
+  - Profile information steps (credentials, details, skills)
+  - Email verification step
+  - Progress bar and step navigation
+  - Form validation with Zod schemas
+  - Error handling with alert notifications
+- UI Components:
+  - Icon component with asset management and default colors
+  - Button component with variants and sizes
+  - TextStyled component for typography
+- Development infrastructure:
+  - Debug logger system with conditional logging
+  - Development Playground for component demonstrations
+  - Markdown utility with MUI theme support
+  - Unit tests for utility functions (Jest)
+- Database:
+  - Skills table migration (id, name, category)
+  - User skills table with proficiency levels
+  - Seed data for AI/ML skills (GPT-4, Midjourney, etc.)
+- Architecture Decision #17: Development Playground
+
+### Changed
+- Updated DEVELOPMENT-PLAN.md with completed stages 0.4, 2.3, 2.4, 2.5
+- Updated ARCHITECTURE-DECISIONS.md with Development Playground decision
+
 ## [0.2.2] - 2026-01-25
 
 ### Added
@@ -88,6 +122,7 @@ All notable changes to this project will be documented in this file.
 - Database migrations for users, profiles, sessions, and skills
 - Comprehensive project documentation
 
+[0.2.5]: https://github.com/picasso/neuro-hub/compare/v0.2.2...v0.2.5
 [0.2.2]: https://github.com/picasso/neuro-hub/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/picasso/neuro-hub/compare/v0.1.5...v0.2.1
 [0.1.5]: https://github.com/picasso/neuro-hub/compare/v0.1.4...v0.1.5

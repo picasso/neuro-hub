@@ -1,5 +1,6 @@
 import { betterFetch } from '@better-fetch/fetch'
 import { type NextRequest, NextResponse } from 'next/server'
+import { debugAuthMiddleware } from './middleware/debug-auth'
 import type { Session } from 'better-auth/types'
 
 const RATE_LIMIT_MAP = new Map<string, { count: number; resetTime: number }>()
@@ -40,6 +41,14 @@ function checkRateLimit(key: string): boolean {
 
 export async function proxy(request: NextRequest) {
 	const pathname = request.nextUrl.pathname
+
+	// debug middleware for auth endpoints (development only) - return null if not in debug mode
+	if (pathname.startsWith('/api/auth/')) {
+		const debugResponse = await debugAuthMiddleware(request)
+		if (debugResponse) {
+			return debugResponse
+		}
+	}
 
 	if (publicPaths.some((path) => pathname.startsWith(path))) {
 		return NextResponse.next()
