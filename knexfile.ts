@@ -3,12 +3,13 @@ import type { Knex } from 'knex'
 const config: { [key: string]: Knex.Config } = {
 	development: {
 		client: 'postgresql',
-		connection: process.env.DATABASE_URL || {
+		connection: {
 			host: 'localhost',
 			port: 5432,
 			database: 'neurohub',
 			user: 'postgres',
 			password: 'postgres',
+			ssl: false,
 		},
 		pool: {
 			min: 2,

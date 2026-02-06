@@ -11,5 +11,14 @@
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 	"prettier.requireConfig": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"editor.unicodeHighlight.nonBasicASCII": false
+	"editor.unicodeHighlight.nonBasicASCII": false,
+	"files.exclude": {
+		"**/node_modules": true
+	},
+	"search.exclude": {
+		"**/node_modules": true
+	},
+	"files.watcherExclude": {
+		"**/node_modules/**": true
+	}
 }

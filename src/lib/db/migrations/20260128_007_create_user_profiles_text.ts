@@ -2,8 +2,8 @@ import type { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('user_profiles', (table) => {
-		table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'))
-		table.uuid('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE')
+		table.text('id').primary()
+		table.text('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE')
 		table.string('name', 255)
 		table.string('avatar_url', 500)
 		table.text('bio')
