@@ -29,7 +29,7 @@ export const TextStyled = forwardRef<HTMLSpanElement, TextStyledProps>(
 			children,
 			...props
 		},
-		ref
+		ref,
 	) => {
 		const value = content ?? children
 		return (
@@ -37,7 +37,7 @@ export const TextStyled = forwardRef<HTMLSpanElement, TextStyledProps>(
 				ref={ref}
 				className={mergeClasses('TextStyled-root', className)}
 				variant={variant}
-				component={ inline || inlineBlock ? 'span' : undefined }
+				component={inline || inlineBlock ? 'span' : undefined}
 				sx={[
 					md !== false && markdownCss,
 					{ color },
@@ -51,8 +51,7 @@ export const TextStyled = forwardRef<HTMLSpanElement, TextStyledProps>(
 				{md === false ? value : simpleMarkdown(value, md ?? { br: inline || inlineBlock })}
 			</MuiTypography>
 		)
-
-	}
+	},
 )
 
 export const TS = TextStyled
