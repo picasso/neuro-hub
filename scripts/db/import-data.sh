@@ -24,7 +24,7 @@ if [ -z "$1" ]; then
   echo "  yarn db:import <path_to_file.sql>"
   echo ""
   echo "Example:"
-  echo "  yarn db:import ./backups/neurohub_export_20260125_120000.sql"
+  echo "  yarn db:import ./backups/neurogig_export_20260125_120000.sql"
   exit 1
 fi
 

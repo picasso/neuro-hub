@@ -3,13 +3,13 @@ import type { OpenAPIV3 } from 'openapi-types'
 export const swaggerConfig: OpenAPIV3.Document = {
 	openapi: '3.0.0',
 	info: {
-		title: 'NeuroHub API',
+		title: 'NeuroGig API',
 		version: '1.0.0',
 		description:
-			'API documentation for NeuroHub - AI freelance marketplace platform. Connect AI specialists with clients for generative AI projects.',
+			'API documentation for NeuroGig - AI freelance marketplace platform. Connect AI specialists with clients for generative AI projects.',
 		contact: {
-			name: 'NeuroHub API Support',
-			email: 'api@neurohub.dev',
+			name: 'NeuroGig API Support',
+			email: 'api@neurogig.dev',
 		},
 	},
 	servers: [

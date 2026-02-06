@@ -20,12 +20,12 @@ interface VerificationEmailProps {
 export const VerificationEmail = ({ email, verificationUrl }: VerificationEmailProps) => (
 	<Html>
 		<Head />
-		<Preview>Подтвердите ваш email адрес для NeuroHub</Preview>
+		<Preview>Подтвердите ваш email адрес для NeuroGig</Preview>
 		<Body style={main}>
 			<Container style={container}>
 				<Heading style={h1}>Подтверждение email</Heading>
 				<Text style={text}>
-					Добро пожаловать в NeuroHub! Для завершения регистрации, пожалуйста, подтвердите
+					Добро пожаловать в NeuroGig! Для завершения регистрации, пожалуйста, подтвердите
 					ваш email адрес.
 				</Text>
 				<Text style={text}>Ваш email: {email}</Text>
@@ -40,7 +40,7 @@ export const VerificationEmail = ({ email, verificationUrl }: VerificationEmailP
 				</Link>
 				<Hr style={hr} />
 				<Text style={footer}>
-					Если вы не регистрировались на NeuroHub, просто проигнорируйте это письмо.
+					Если вы не регистрировались на NeuroGig, просто проигнорируйте это письмо.
 				</Text>
 				<Text style={footer}>
 					Эта ссылка действительна в течение 24 часов и может быть использована только
@@ -53,7 +53,7 @@ export const VerificationEmail = ({ email, verificationUrl }: VerificationEmailP
 
 VerificationEmail.PreviewProps = {
 	email: 'user@example.com',
-	verificationUrl: 'https://neurohub.dev/api/auth/verify-email?token=abc123',
+	verificationUrl: 'https://neurogig.dev/api/auth/verify-email?token=abc123',
 } as VerificationEmailProps
 
 const main = {

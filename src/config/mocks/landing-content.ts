@@ -1,7 +1,7 @@
 // mock data for landing page sections
 
 export const heroContent = {
-	title: 'NeuroHub',
+	title: 'NeuroGig',
 	subtitle: 'Платформа для фриланса в сфере генеративного ИИ',
 	description:
 		'Соединяем специалистов по GPT-4, Midjourney, Stable Diffusion с заказчиками, которым нужны качественные результаты',
@@ -103,7 +103,7 @@ export const faqContent = {
 		{
 			id: '1',
 			question: 'Как работает платформа?',
-			answer: 'NeuroHub соединяет заказчиков со специалистами по генеративному ИИ. Заказчики размещают проекты, фрилансеры откликаются, и после согласования условий начинается работа.',
+			answer: 'NeuroGig соединяет заказчиков со специалистами по генеративному ИИ. Заказчики размещают проекты, фрилансеры откликаются, и после согласования условий начинается работа.',
 		},
 		{
 			id: '2',
@@ -147,11 +147,11 @@ export const ctaContent = {
 }
 
 export const contactContent = {
-	email: 'contact@neurohub.io',
+	email: 'contact@neurogig.io',
 	social: {
-		github: 'https://github.com/neurohub',
-		twitter: 'https://twitter.com/neurohub',
-		linkedin: 'https://linkedin.com/company/neurohub',
-		telegram: 'https://t.me/neurohub',
+		github: 'https://github.com/neurogig',
+		twitter: 'https://twitter.com/neurogig',
+		linkedin: 'https://linkedin.com/company/neurogig',
+		telegram: 'https://t.me/neurogig',
 	},
 }

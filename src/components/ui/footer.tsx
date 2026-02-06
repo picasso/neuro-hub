@@ -28,7 +28,7 @@ export function Footer() {
 				<Grid container spacing={4}>
 					<Grid size={{ xs: 12, sm: 4 }}>
 						<Typography variant="h6" gutterBottom>
-							NeuroHub
+							NeuroGig
 						</Typography>
 						<Typography variant="body2" color="text.secondary">
 							Платформа для фриланса в сфере генеративного ИИ
@@ -135,7 +135,7 @@ export function Footer() {
 
 				<Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>
 					<Typography variant="body2" color="text.secondary" align="center">
-						© {new Date().getFullYear()} NeuroHub. Все права защищены.
+						© {new Date().getFullYear()} NeuroGig. Все права защищены.
 					</Typography>
 				</Box>
 			</Container>

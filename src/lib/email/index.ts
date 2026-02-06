@@ -7,6 +7,6 @@ if (!process.env.RESEND_API_KEY) {
 export const resend = new Resend(process.env.RESEND_API_KEY || 'dummy-key-for-development')
 
 export const emailConfig = {
-	from: process.env.EMAIL_FROM || 'NeuroHub <onboarding@resend.dev>',
+	from: process.env.EMAIL_FROM || 'NeuroGig <onboarding@resend.dev>',
 	replyTo: process.env.EMAIL_REPLY_TO,
 }

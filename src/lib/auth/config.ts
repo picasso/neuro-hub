@@ -33,7 +33,7 @@ export const auth = betterAuth({
 					await resend.emails.send({
 						from: emailConfig.from,
 						to: user.email,
-						subject: 'Восстановление пароля - NeuroHub',
+						subject: 'Восстановление пароля - NeuroGig',
 						html: `
 							<h1>Восстановление пароля</h1>
 							<p>Вы запросили сброс пароля для вашей учетной записи.</p>

@@ -19,7 +19,7 @@ export function Header() {
 								fontWeight: 700,
 							}}
 						>
-							NeuroHub
+							NeuroGig
 						</Typography>
 					</Link>
 
