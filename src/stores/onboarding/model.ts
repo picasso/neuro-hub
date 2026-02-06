@@ -598,6 +598,29 @@ sample({
 	target: loadSkillsFx,
 })
 
+// validate credentials and show errors when `submitRegistration` is called with invalid data
+sample({
+	clock: submitRegistration,
+	source: $credentials,
+	filter: (credentials) => {
+		if (!credentials) return false
+		const result = credentialsSchema.safeParse(credentials)
+		return !result.success
+	},
+	fn: (credentials) => {
+		const result = credentialsSchema.safeParse(credentials!)
+		const fieldErrors: CredentialsErrors = {}
+		if (!result.success) {
+			result.error.issues.forEach((err) => {
+				const field = err.path[0] as keyof CredentialsErrors
+				fieldErrors[field] = err.message
+			})
+		}
+		return fieldErrors
+	},
+	target: $credentialsErrors,
+})
+
 // trigger registration when submitRegistration is called (from credentials step)
 sample({
 	clock: submitRegistration,
