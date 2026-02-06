@@ -125,6 +125,9 @@ export const auth = betterAuth({
 		after: createAuthMiddleware(async (ctx) => {
 			if (ctx.path === '/sign-up/email' && ctx.context.returned) {
 				const returned = ctx.context.returned as BetterAuthSignUpReturned
+				if (!returned.user) {
+					return
+				}
 				const userId = returned.user.id
 				const body = ctx.body as {
 					profileData?: {

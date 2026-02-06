@@ -10,6 +10,7 @@ import type {
 	Skill,
 	UpdateSkillLevel,
 } from './types'
+import { createAlertFx } from '@/alerts'
 import { authClient } from '@/lib/auth/client'
 import { onboardingDomain as domain } from '@/lib/logger'
 import {
@@ -49,6 +50,7 @@ const resetCredentials = domain.createEvent('resetCredentials')
 export const setCredentials = domain.createEvent<CredentialsInput>('setCredentials')
 export const updateCredentialField = domain.createEvent<CredentialField>('updateCredentialField')
 export const validateCredentialsAndContinue = domain.createEvent('validateCredentialsAndContinue')
+export const submitRegistration = domain.createEvent('submitRegistration')
 
 export const $credentials = domain.createStore<CredentialsInput | null>(null, {
 	name: '$credentials',
@@ -105,6 +107,34 @@ $profileData.on(updateProfileField, (profile, { kind, field, value }) =>
 		}
 	}),
 )
+
+// * * * $credentialsErrors -----------------------------------------------------------------------]
+
+type CredentialsErrors = {
+	email?: string
+	password?: string
+}
+
+const resetCredentialsErrors = domain.createEvent('resetCredentialsErrors')
+export const $credentialsErrors = domain.createStore<CredentialsErrors>(
+	{},
+	{
+		name: '$credentialsErrors',
+	},
+)
+
+$credentialsErrors.reset(resetCredentialsErrors)
+
+// clear errors when field is updated
+sample({
+	clock: updateCredentialField,
+	source: $credentialsErrors,
+	fn: (errors, { field }) =>
+		produce(errors, (draft) => {
+			delete draft[field as keyof CredentialsErrors]
+		}),
+	target: $credentialsErrors,
+})
 
 // * * * $profileErrors ---------------------------------------------------------------------------]
 
@@ -185,50 +215,112 @@ $error.reset(resetError)
 
 // * * * Effects ----------------------------------------------------------------------------------]
 
+const onboardingId = createAlertFx.alertId('onboarding-register')
+const skillsId = createAlertFx.alertId('onboarding-skills')
+
+type BetterAuthError = {
+	error?: {
+		message?: string
+		code?: string
+		statusCode?: number
+	}
+	message?: string
+	status?: number
+	statusText?: string
+}
+
 export const registerUserFx = createEffect<RegisterUserInput, unknown, Error>(
 	async ({ email, password, name, profileData }) => {
-		const result = await authClient.signUp.email(
-			{
-				email,
-				password,
-				name,
-				callbackURL: '/dashboard',
-				fetchOptions: {
-					onSuccess: () => {},
+		const timerId = setTimeout(() => {
+			createAlertFx({
+				id: onboardingId,
+				severity: 'progress',
+				title: 'Регистрация...',
+				message: 'Создаём ваш аккаунт',
+				disableClose: true,
+				disableAutoClose: true,
+			})
+		}, 800)
+
+		try {
+			const result = await authClient.signUp.email(
+				{
+					email,
+					password,
+					name,
+					callbackURL: '/dashboard',
+					fetchOptions: {
+						onSuccess: () => {},
+						body: {
+							profileData,
+						},
+					},
+				},
+				{
 					body: {
 						profileData,
 					},
 				},
-			},
-			{
-				body: {
-					profileData,
-				},
-			},
-		)
+			)
 
-		if (!result.data) {
-			throw new Error('Registration failed')
+			clearTimeout(timerId)
+
+			if (!result.data) {
+				const error = result.error as BetterAuthError
+				const errorMessage =
+					error?.error?.message || error?.message || 'Не удалось создать аккаунт'
+				throw new Error(errorMessage)
+			}
+
+			return result.data
+		} catch (error) {
+			clearTimeout(timerId)
+			throw error
 		}
-
-		return result.data
 	},
 )
 
 export const loadSkillsFx = createEffect<void, Skill[], Error>(async () => {
-	const response = await fetch('/api/skills?pageSize=100')
+	const timerId = setTimeout(() => {
+		createAlertFx({
+			id: skillsId,
+			severity: 'progress',
+			title: 'Загрузка навыков...',
+			message: 'Получаем список доступных навыков',
+			disableClose: true,
+			disableAutoClose: true,
+		})
+	}, 800)
 
-	if (!response.ok) {
-		throw new Error('Failed to load skills')
+	try {
+		const response = await fetch('/api/skills?pageSize=100')
+
+		clearTimeout(timerId)
+
+		if (!response.ok) {
+			const error = await response.json()
+			throw new Error(error.error?.message || 'Не удалось загрузить навыки')
+		}
+
+		const result = await response.json()
+
+		if (!result.success || !result.data) {
+			throw new Error('Некорректный формат ответа от сервера')
+		}
+
+		return result.data
+	} catch (error) {
+		clearTimeout(timerId)
+		if (error instanceof Error) {
+			throw error
+		}
+		const betterAuthError = error as BetterAuthError
+		const errorMessage =
+			betterAuthError?.error?.message ||
+			betterAuthError?.message ||
+			'Не удалось создать аккаунт'
+		throw new Error(errorMessage)
 	}
-
-	const result = await response.json()
-
-	if (!result.success || !result.data) {
-		throw new Error('Invalid response format')
-	}
-
-	return result.data
 })
 
 // update `$allSkills` when `loadSkillsFx` succeeds
@@ -280,6 +372,7 @@ sample({
 		resetCurrentStep,
 		resetRole,
 		resetCredentials,
+		resetCredentialsErrors,
 		resetProfileData,
 		resetProfileErrors,
 		resetSelectedSkills,
@@ -349,6 +442,7 @@ sample({
 	clock: [
 		setRole,
 		setCredentials,
+		updateCredentialField,
 		setProfileData,
 		updateProfileField,
 		addSkill,
@@ -358,6 +452,29 @@ sample({
 	target: resetError,
 })
 
+// validate credentials and set errors when validation fails
+sample({
+	clock: validateCredentialsAndContinue,
+	source: $credentials,
+	filter: (credentials) => {
+		if (!credentials) return false
+		const result = credentialsSchema.safeParse(credentials)
+		return !result.success
+	},
+	fn: (credentials) => {
+		const result = credentialsSchema.safeParse(credentials!)
+		const fieldErrors: CredentialsErrors = {}
+		if (!result.success) {
+			result.error.issues.forEach((err) => {
+				const field = err.path[0] as keyof CredentialsErrors
+				fieldErrors[field] = err.message
+			})
+		}
+		return fieldErrors
+	},
+	target: $credentialsErrors,
+})
+
 // validate credentials and continue to next step when `validateCredentialsAndContinue` is called
 sample({
 	clock: validateCredentialsAndContinue,
@@ -365,7 +482,6 @@ sample({
 	filter: (credentials) => {
 		if (!credentials) return false
 		const result = credentialsSchema.safeParse(credentials)
-		dev.data({ result })
 		return result.success
 	},
 	target: nextStep,
@@ -424,6 +540,48 @@ sample({
 	target: $error,
 })
 
+// * * * Alert notifications for effects ----------------------------------------------------------]
+
+// remove progress alert when registration finishes
+sample({
+	clock: registerUserFx.finally,
+	fn: () => ({ id: onboardingId }),
+	target: createAlertFx.removeFx,
+})
+
+// show error alert when registration fails
+sample({
+	clock: registerUserFx.failData,
+	fn: (error) =>
+		createAlertFx.props({
+			severity: 'error',
+			title: 'Ошибка регистрации',
+			message: error.message ?? 'Не удалось создать аккаунт',
+			disableAutoClose: true,
+		}),
+	target: createAlertFx,
+})
+
+// remove progress alert when loading skills finishes
+sample({
+	clock: loadSkillsFx.finally,
+	fn: () => ({ id: skillsId }),
+	target: createAlertFx.removeFx,
+})
+
+// show error alert when loading skills fails
+sample({
+	clock: loadSkillsFx.failData,
+	fn: (error) =>
+		createAlertFx.props({
+			severity: 'error',
+			title: 'Ошибка загрузки',
+			message: error.message ?? 'Не удалось загрузить список навыков',
+			disableAutoClose: true,
+		}),
+	target: createAlertFx,
+})
+
 // * * * Automatic effects triggering based on `$currentStep` -------------------------------------]
 
 // trigger `loadSkillsFx` when step 3 is reached (freelancer only, load once)
@@ -440,25 +598,21 @@ sample({
 	target: loadSkillsFx,
 })
 
-// trigger `registerUserFx` when step 5 is reached (after credentials filled on step 4)
+// trigger registration when submitRegistration is called (from credentials step)
 sample({
-	clock: $currentStep,
+	clock: submitRegistration,
 	source: {
 		credentials: $credentials,
 		profile: $profileData,
 		role: $role,
 		skills: $selectedSkills,
-		isRegistering: registerUserFx.pending,
 	},
-	filter: ({ credentials, profile, role, skills, isRegistering }, currentStep) => {
-		return (
-			currentStep === 5 &&
-			!isRegistering &&
-			credentials !== null &&
-			profile !== null &&
-			role !== null &&
-			(role === 'client' || skills.length > 0)
-		)
+	filter: ({ credentials, profile, role, skills }) => {
+		if (!credentials || !profile || !role) return false
+		const credentialsValid = credentialsSchema.safeParse(credentials).success
+		if (!credentialsValid) return false
+		if (role === 'freelancer' && skills.length === 0) return false
+		return true
 	},
 	fn: ({ credentials, profile, role, skills }) => ({
 		email: credentials!.email,
@@ -474,6 +628,13 @@ sample({
 		},
 	}),
 	target: registerUserFx,
+})
+
+// go to step 5 (email verification) when registration succeeds
+sample({
+	clock: registerUserFx.doneData,
+	fn: () => 5 as OnboardingStep,
+	target: setCurrentStep,
 })
 
 // * * * helpers ---------------------------------------------------------------------------------]

@@ -8,17 +8,17 @@ export const roleSelectionSchema = z.object({
 
 export const credentialsSchema = z.object({
 	email: emailSchema,
-	password: z.string().min(8, 'Password must be at least 8 characters'),
+	password: z.string().min(8, 'Пароль должен содержать минимум 8 символов'),
 })
 
 export const freelancerProfileSchema = z.object({
-	name: z.string().min(2, 'Name must be at least 2 characters'),
-	bio: z.string().max(500, 'Bio must be less than 500 characters').optional(),
+	name: z.string().min(2, 'Имя должно содержать минимум 2 символа'),
+	bio: z.string().max(500, 'Описание не должно превышать 500 символов').optional(),
 })
 
 export const clientProfileSchema = z.object({
-	name: z.string().min(2, 'Name must be at least 2 characters'),
-	companyName: z.string().min(2, 'Company name must be at least 2 characters'),
+	name: z.string().min(2, 'Имя должно содержать минимум 2 символа'),
+	companyName: z.string().min(2, 'Название компании должно содержать минимум 2 символа'),
 	companyRole: z.string().optional(),
 })
 

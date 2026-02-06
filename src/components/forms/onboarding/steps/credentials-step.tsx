@@ -12,21 +12,26 @@ import { useUnit } from 'effector-react'
 import { useState } from 'react'
 import {
 	$credentials,
+	$credentialsErrors,
 	prevStep,
+	registerUserFx,
+	submitRegistration,
 	updateCredentialField,
-	validateCredentialsAndContinue,
 } from '@/stores/onboarding'
 
 export function CredentialsStep() {
-	const [credentials, onPrevStep, onUpdateField, onValidate] = useUnit([
-		$credentials,
-		prevStep,
-		updateCredentialField,
-		validateCredentialsAndContinue,
-	])
+	const [credentials, credentialsErrors, isRegistering, onPrevStep, onUpdateField, onSubmit] =
+		useUnit([
+			$credentials,
+			$credentialsErrors,
+			registerUserFx.pending,
+			prevStep,
+			updateCredentialField,
+			submitRegistration,
+		])
 
 	const [showPassword, setShowPassword] = useState(false)
-	const isValid = credentials?.email && credentials?.password
+	const isValid = credentials?.email && credentials?.password && !isRegistering
 
 	return (
 		<Box>
@@ -46,6 +51,8 @@ export function CredentialsStep() {
 					fullWidth
 					value={credentials?.email || ''}
 					onChange={(e) => onUpdateField({ field: 'email', value: e.target.value })}
+					error={!!credentialsErrors.email}
+					helperText={credentialsErrors.email}
 					sx={{ mb: 3 }}
 				/>
 
@@ -53,9 +60,10 @@ export function CredentialsStep() {
 					label="Пароль"
 					type={showPassword ? 'text' : 'password'}
 					fullWidth
-					value={credentials?.password || ''}
+					value={credentials?.password ?? ''}
 					onChange={(e) => onUpdateField({ field: 'password', value: e.target.value })}
-					helperText="Минимум 8 символов"
+					error={!!credentialsErrors.password}
+					helperText={credentialsErrors.password || 'Минимум 8 символов'}
 					slotProps={{
 						input: {
 							endAdornment: (
@@ -77,13 +85,8 @@ export function CredentialsStep() {
 					<Button variant="outlined" size="large" onClick={onPrevStep}>
 						Назад
 					</Button>
-					<Button
-						variant="contained"
-						size="large"
-						onClick={onValidate}
-						disabled={!isValid}
-					>
-						Продолжить
+					<Button variant="contained" size="large" onClick={onSubmit} disabled={!isValid}>
+						{isRegistering ? 'Регистрация...' : 'Продолжить'}
 					</Button>
 				</Box>
 			</Box>
