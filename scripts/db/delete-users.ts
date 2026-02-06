@@ -1,4 +1,17 @@
 import { kysely } from '../../src/lib/db'
+import {
+	pluralize,
+	printDataRow,
+	printEmpty,
+	printError,
+	printInfo,
+	printListItem,
+	printSection,
+	printSuccess,
+	printText,
+	printUsage,
+	promptConfirmation,
+} from '../utils/cli-utils'
 
 type Args = {
 	all: boolean
@@ -15,51 +28,51 @@ function parseArgs(): Args {
 	}
 }
 
-async function promptConfirmation(message: string): Promise<boolean> {
-	const readline = await import('readline')
-	const rl = readline.createInterface({
-		input: process.stdin,
-		output: process.stdout,
-	})
-
-	return new Promise((resolve) => {
-		rl.question(`${message} (yes/no): `, (answer) => {
-			rl.close()
-			resolve(answer.toLowerCase() === 'yes' || answer.toLowerCase() === 'y')
-		})
-	})
-}
-
 async function deleteAllUsers(force: boolean) {
-	const users = await kysely.selectFrom('users').select(['id', 'email']).execute()
+	const users = await kysely.selectFrom('users').select(['id', 'email', 'name', 'role']).execute()
 
 	if (users.length === 0) {
-		console.warn('No users found in database.')
+		printEmpty()
+		printInfo('No users found in database.')
+		printEmpty()
 		return
 	}
 
-	console.warn(`\n⚠️  Found ${users.length} users:`)
+	printEmpty()
+	printSection('Delete All Users')
+
+	const userCount = users.length
+	printSuccess('Found ' + pluralize(userCount, 'user'))
 	users.forEach((user) => {
-		console.warn(`  - ${user.email} (${user.id})`)
+		printDataRow([
+			['Email', user.email],
+			['Name', user.name],
+			['Role', user.role],
+		])
 	})
 
 	if (!force) {
+		printEmpty()
 		const confirmed = await promptConfirmation(
-			`\n⚠️  Are you sure you want to delete ALL ${users.length} users?`,
+			'Are you sure you want to delete ALL ' + pluralize(userCount, 'user') + '?',
 		)
 		if (!confirmed) {
-			console.warn('Operation cancelled.')
+			printEmpty()
+			printInfo('Operation cancelled.')
+			printEmpty()
 			return
 		}
 	}
 
-	console.warn('\n🗑️  Deleting users and related data...')
+	printEmpty()
+	printInfo('Deleting users and related data...')
 
 	for (const user of users) {
 		await deleteUserCascade(user.id, user.email)
 	}
 
-	console.warn(`\n✅ Successfully deleted ${users.length} users.`)
+	printEmpty()
+	printSuccess('Successfully deleted ' + pluralize(userCount, 'user') + '.')
 
 	await showRemainingUsers()
 }
@@ -67,32 +80,47 @@ async function deleteAllUsers(force: boolean) {
 async function deleteUserByEmail(email: string, force: boolean) {
 	const user = await kysely
 		.selectFrom('users')
-		.select(['id', 'email'])
+		.select(['id', 'email', 'name', 'role'])
 		.where('email', '=', email)
 		.executeTakeFirst()
 
 	if (!user) {
-		console.warn(`❌ User with email "${email}" not found.`)
+		printEmpty()
+		printError('User with email "' + email + '" not found.')
+		printEmpty()
 		return
 	}
 
-	console.warn(`\n⚠️  Found user: ${user.email} (${user.id})`)
+	printEmpty()
+	printSection('Delete User')
+
+	printSuccess('Found 1 user')
+	printDataRow([
+		['Email', user.email],
+		['Name', user.name],
+		['Role', user.role],
+	])
 
 	if (!force) {
+		printEmpty()
 		const confirmed = await promptConfirmation(
-			`\n⚠️  Are you sure you want to delete user "${email}"?`,
+			'Are you sure you want to delete user "' + email + '"?',
 		)
 		if (!confirmed) {
-			console.warn('Operation cancelled.')
+			printEmpty()
+			printInfo('Operation cancelled.')
+			printEmpty()
 			return
 		}
 	}
 
-	console.warn('\n🗑️  Deleting user and related data...')
+	printEmpty()
+	printInfo('Deleting user and related data...')
 
 	await deleteUserCascade(user.id, user.email)
 
-	console.warn(`\n✅ Successfully deleted user "${email}".`)
+	printEmpty()
+	printSuccess('Successfully deleted user "' + email + '".')
 
 	await showRemainingUsers()
 }
@@ -110,10 +138,10 @@ async function deleteUserCascade(userId: string, email: string) {
 
 	await kysely.deleteFrom('users').where('id', '=', userId).execute()
 
-	console.warn(`  • User: ${email}`)
-	console.warn(`    - Deleted ${deletedSkills.length} user_skills`)
-	console.warn(`    - Deleted ${deletedProfiles.length} user_profiles`)
-	console.warn(`    - Deleted user record`)
+	printListItem('User: ' + email)
+	printText('    - Deleted ' + deletedSkills.length + ' user_skills')
+	printText('    - Deleted ' + deletedProfiles.length + ' user_profiles')
+	printText('    - Deleted user record')
 }
 
 async function showRemainingUsers() {
@@ -122,13 +150,19 @@ async function showRemainingUsers() {
 		.select(['id', 'email', 'name', 'role'])
 		.execute()
 
-	console.warn(`\n📋 Remaining users: ${remainingUsers.length}`)
+	printEmpty()
+	printSection('Remaining Users')
 
-	if (remainingUsers.length === 0) {
-		console.warn('  (No users left in database)')
-	} else {
+	const userCount = remainingUsers.length
+	printSuccess('Found ' + pluralize(userCount, 'user'))
+
+	if (remainingUsers.length > 0) {
 		remainingUsers.forEach((user) => {
-			console.warn(`  - ${user.email} | ${user.name} | ${user.role}`)
+			printDataRow([
+				['Email', user.email],
+				['Name', user.name],
+				['Role', user.role],
+			])
 		})
 	}
 }
@@ -137,16 +171,19 @@ async function main() {
 	const args = parseArgs()
 
 	if (!args.all && !args.email) {
-		console.error('❌ Error: You must specify either --all or --email <email>')
-		console.warn('\nUsage:')
-		console.warn('  yarn db:delete-users --all              # Delete all users')
-		console.warn('  yarn db:delete-users --email test@test.com  # Delete specific user')
-		console.warn('  yarn db:delete-users --all --force      # Skip confirmation')
+		printError('You must specify either --all or --email <email>')
+		printEmpty()
+		printUsage([
+			'  yarn db:delete-users --all                   # Delete all users',
+			'  yarn db:delete-users --email test@test.com   # Delete specific user',
+			'  yarn db:delete-users --all --force           # Skip confirmation',
+		])
+		printEmpty()
 		process.exit(1)
 	}
 
 	if (args.all && args.email) {
-		console.error('❌ Error: Cannot use --all and --email together')
+		printError('Cannot use --all and --email together')
 		process.exit(1)
 	}
 
@@ -156,10 +193,13 @@ async function main() {
 		await deleteUserByEmail(args.email, args.force)
 	}
 
+	printEmpty()
 	process.exit(0)
 }
 
 main().catch((error) => {
-	console.error('Error:', error)
+	printEmpty()
+	printError('Error: ' + error)
+	printEmpty()
 	process.exit(1)
 })
