@@ -69,7 +69,7 @@ export const auth = betterAuth({
 					await resend.emails.send({
 						from: emailConfig.from,
 						to: user.email,
-						subject: 'Подтвердите ваш email - NeuroHub',
+						subject: 'Подтвердите ваш email - NeuroGig',
 						html: emailHtml,
 					})
 				} catch (error) {

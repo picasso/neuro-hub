@@ -6,7 +6,7 @@ const knexConfig: Knex.Config = {
 	connection: process.env.DATABASE_URL || {
 		host: 'localhost',
 		port: 5432,
-		database: 'neurohub',
+		database: 'neurogig',
 		user: 'postgres',
 		password: 'postgres',
 	},

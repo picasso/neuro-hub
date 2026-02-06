@@ -84,7 +84,7 @@ export function BenefitsSection() {
 					fontWeight={700}
 					sx={{ fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, mb: 6 }}
 				>
-					Почему выбирают NeuroHub
+					Почему выбирают NeuroGig
 				</Typography>
 
 				<Grid container spacing={6}>
