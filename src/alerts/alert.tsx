@@ -2,7 +2,7 @@
 
 import MuiAlert, { type AlertProps as MuiAlertProps } from '@mui/material/Alert'
 import MuiAlertTitle from '@mui/material/AlertTitle'
-import { useCallback, type FC } from 'react'
+import { useCallback } from 'react'
 import { toast } from 'sonner'
 import { type AlertComponentProps } from './model'
 import { Icon } from '@/components/ui'
@@ -29,7 +29,7 @@ const iconMapping: MuiAlertProps['iconMapping'] = {
 	error: <Icon name="error" color="error" />,
 }
 
-export const AlertComponent: FC<AlertComponentProps> = (props) => {
+export function AlertComponent(props: AlertComponentProps) {
 	const {
 		id,
 		title,

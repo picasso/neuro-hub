@@ -287,6 +287,45 @@ const handlePrev = () => {
 
 ---
 
+### 3.3 Component Declaration Style
+
+❌ **Bad** - using `FC` type (unnecessary in modern React):
+
+```tsx
+import type { FC } from 'react'
+
+type HeaderProps = {
+    title: string
+}
+
+export const Header: FC<HeaderProps> = ({ title }) => {
+    return <h1>{title}</h1>
+}
+```
+
+✅ **Good** - function declaration with explicit props typing:
+
+```tsx
+type HeaderProps = {
+    title: string
+}
+
+export function Header({ title }: HeaderProps) {
+    return <h1>{title}</h1>
+}
+```
+
+**Rule:** Use function declarations for all React components. Avoid `FC` type - it's unnecessary in modern React and not recommended by React team.
+
+**Reasons:**
+- Recommended by React team and TypeScript handbook
+- Natural JavaScript syntax, easier to read
+- Works with hoisting - can be used before declaration
+- No extra imports needed
+- Explicit props typing is clearer
+
+---
+
 ## 4. TypeScript - Type Safety
 
 ### 4.1 Implicit type casting with `as`
@@ -440,6 +479,7 @@ Use this checklist to review components before committing:
 - [ ] No `handle*` prefixes for Effector events
 - [ ] No unnecessary wrapper functions
 - [ ] Direct event calls via arrow functions in JSX
+- [ ] Components use `function` declaration (not `const` + `FC`)
 
 ### TypeScript:
 - [ ] Union types use discriminated unions
