@@ -461,6 +461,94 @@ Based on [src/alerts/README.md](../../src/alerts/README.md). User-facing errors 
 
 ---
 
+## 7. Lodash - Data Manipulation
+
+### Use Lodash as default choice for data manipulation
+
+Lodash is included in the bundle and provides significant advantages over native methods.
+
+### Why Lodash?
+
+**1. Runtime Safety (null/undefined handling)**
+
+TypeScript guarantees types at compile time, but runtime data (API responses, user input) can be unexpected. Lodash utilities safely handle null/undefined without throwing exceptions, preventing application crashes in production.
+
+```tsx
+// ❌ native - runtime error if name is undefined
+user.name.toUpperCase() // 💥 cannot read property 'toUpperCase' of undefined
+
+// ✅ lodash - safe, returns undefined
+get(user, 'name', 'Unknown').toUpperCase() // works even if name is missing
+```
+
+**2. Universal API for arrays and objects**
+
+Most collection methods (`map`, `filter`, `forEach`, `reduce`, `find`, `some`, `every`, etc.) work for both arrays and objects, reducing code complexity and improving readability.
+
+```tsx
+// works for both arrays and objects
+map(arrayOrObject, item => transform(item))
+filter(arrayOrObject, predicate)
+forEach(arrayOrObject, iterator)
+```
+
+**3. Short-circuit support**
+
+`forEach` can be stopped by returning `false` - more convenient than `for...of` + `break`.
+
+```tsx
+forEach(items, item => {
+    if (condition) return false // stops iteration
+    process(item)
+})
+```
+
+**4. Shorthand forms**
+
+Cleaner syntax for common operations.
+
+```tsx
+// lodash
+find(users, { id: 123 })
+
+// native
+users?.find(user => user.id === 123)
+```
+
+**5. Rich utility library**
+
+`kebabCase`, `debounce`, `throttle`, `merge`, `cloneDeep`, `uniqueId`, etc. - no native equivalents.
+
+---
+
+### Import Style
+
+❌ **Bad** - imports entire library (breaks tree-shaking):
+
+```tsx
+import _ from 'lodash'
+import lo from 'lodash'
+```
+
+✅ **Good** - named imports (enables tree-shaking):
+
+```tsx
+import { map, find, get, kebabCase } from 'lodash'
+```
+
+---
+
+### When to use native instead?
+
+Only when:
+- You have a clear, measured performance requirement
+- Lodash doesn't provide the needed function
+- The code is simpler without Lodash (rare)
+
+**Default rule:** When in doubt, use Lodash.
+
+---
+
 ## Pre-commit Component Checklist
 
 Use this checklist to review components before committing:
@@ -500,3 +588,7 @@ Use this checklist to review components before committing:
 - [ ] Repeated logic extracted to helpers
 - [ ] TypeScript: `npm run type-check` passes
 - [ ] ESLint: `npm run lint` passes
+
+### Lodash:
+- [ ] Named imports used: `import { map, find } from 'lodash'`
+- [ ] No default imports: avoid `import _` or `import lo`
