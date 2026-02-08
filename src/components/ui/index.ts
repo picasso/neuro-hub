@@ -1,6 +1,6 @@
 export { Footer } from './footer'
 export { Header } from './header'
-export { LinkBehaviour } from './LinkBehaviour'
+export { LinkBehaviour } from './link-behaviour'
 export { Icon, type IconProps } from './icon'
 export { TS, type TextStyledProps } from './text-styled'
 export { type IconName, type IconOptions } from './icon'
