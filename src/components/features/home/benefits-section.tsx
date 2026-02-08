@@ -13,6 +13,7 @@ import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
+import { map } from 'lodash'
 import type { ReactNode } from 'react'
 import { benefitsContent } from '@/config/mocks'
 
@@ -98,7 +99,7 @@ export function BenefitsSection() {
 							{benefitsContent.freelancers.title}
 						</Typography>
 						<Grid container spacing={3} sx={{ width: 1 }}>
-							{benefitsContent.freelancers.items.map((item, index) => {
+							{map(benefitsContent.freelancers.items, (item, index) => {
 								const Icon = freelancerIcons[index]
 								return (
 									<Grid size={{ xs: 12, md: 6 }} key={item.title}>
@@ -123,7 +124,7 @@ export function BenefitsSection() {
 							{benefitsContent.clients.title}
 						</Typography>
 						<Grid container spacing={3} sx={{ width: 1 }}>
-							{benefitsContent.clients.items.map((item, index) => {
+							{map(benefitsContent.clients.items, (item, index) => {
 								const Icon = clientIcons[index]
 								return (
 									<Grid size={{ xs: 12, md: 6 }} key={item.title}>

@@ -14,6 +14,7 @@ import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
+import { filter, map } from 'lodash'
 import { type ReactNode, useState } from 'react'
 import { faqContent } from '@/config/mocks'
 
@@ -38,8 +39,8 @@ export function FaqSection() {
 		setExpanded(isExpanded ? panel : false)
 	}
 
-	const oddQuestions = faqContent.items.filter((_, index) => index % 2 === 0)
-	const evenQuestions = faqContent.items.filter((_, index) => index % 2 === 1)
+	const oddQuestions = filter(faqContent.items, (_, index) => index % 2 === 0)
+	const evenQuestions = filter(faqContent.items, (_, index) => index % 2 === 1)
 
 	return (
 		<Box sx={{ py: 8, bgcolor: 'grey.50' }}>
@@ -57,7 +58,7 @@ export function FaqSection() {
 
 				<Grid container spacing={3}>
 					<Grid size={{ xs: 12, md: 6 }}>
-						{oddQuestions.map((item) => {
+						{map(oddQuestions, (item) => {
 							const iconConfig = faqIcons[item.id]
 							return (
 								<Accordion
@@ -109,7 +110,7 @@ export function FaqSection() {
 					</Grid>
 
 					<Grid size={{ xs: 12, md: 6 }}>
-						{evenQuestions.map((item) => {
+						{map(evenQuestions, (item) => {
 							const iconConfig = faqIcons[item.id]
 							return (
 								<Accordion

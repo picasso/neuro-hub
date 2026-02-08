@@ -14,6 +14,7 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
+import { filter, find, includes, map, some, toLower } from 'lodash'
 import { useState } from 'react'
 import type { UserSkillInput } from '@/lib/validations'
 import {
@@ -39,12 +40,12 @@ export function SkillsSelectionStep() {
 
 	const [searchQuery, setSearchQuery] = useState('')
 
-	const filteredSkills = allSkills.filter((skill) =>
-		skill.name.toLowerCase().includes(searchQuery.toLowerCase()),
+	const filteredSkills = filter(allSkills, (skill) =>
+		includes(toLower(skill.name), toLower(searchQuery)),
 	)
 
 	const isSkillSelected = (skillId: string) => {
-		return selectedSkills.some((s) => s.skillId === skillId)
+		return some(selectedSkills, { skillId })
 	}
 
 	const onSkillToggle = (skill: Skill) => {
@@ -82,8 +83,8 @@ export function SkillsSelectionStep() {
 							Выбрано навыков: {selectedSkills.length}
 						</Typography>
 						<Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
-							{selectedSkills.map((skill) => {
-								const skillData = allSkills.find((s) => s.id === skill.skillId)
+							{map(selectedSkills, (skill) => {
+								const skillData = find(allSkills, { id: skill.skillId })
 								return (
 									<Stack
 										key={skill.skillId}
@@ -155,7 +156,7 @@ export function SkillsSelectionStep() {
 						</Box>
 					) : (
 						<List>
-							{filteredSkills.map((skill) => {
+							{map(filteredSkills, (skill) => {
 								const selected = isSkillSelected(skill.id)
 								return (
 									<ListItem

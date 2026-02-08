@@ -8,6 +8,7 @@ import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useUnit } from 'effector-react'
+import { map } from 'lodash'
 import { $currentStep } from '@/stores/onboarding'
 
 type ProgressStepperProps = {
@@ -24,7 +25,7 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
 	return (
 		<Box sx={{ width: 1, mb: 4 }}>
 			<Stepper activeStep={activeStep} alternativeLabel={!isMobile}>
-				{steps.map((label) => (
+				{map(steps, (label) => (
 					<Step key={label}>
 						<StepLabel>
 							{isMobile ? (

@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { forEach } from 'lodash'
 import { db, testConnection, closeConnection } from './index'
 
 async function main() {
@@ -20,7 +21,7 @@ async function main() {
 				.from('pg_tables')
 				.where('schemaname', 'public')
 			console.log('📋 Available tables:')
-			tables.forEach((table) => {
+			forEach(tables, (table) => {
 				console.log(`   - ${table.tablename}`)
 			})
 			console.log()

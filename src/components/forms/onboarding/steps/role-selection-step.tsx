@@ -8,6 +8,7 @@ import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
+import { map } from 'lodash'
 import type { UserRole } from '@/lib/validations'
 import { $role, setRole } from '@/stores/onboarding'
 
@@ -48,7 +49,7 @@ export function RoleSelectionStep() {
 			</Box>
 
 			<Grid container spacing={3} sx={{ mb: 4 }}>
-				{roleOptions.map((option) => {
+				{map(roleOptions, (option) => {
 					const Icon = option.icon
 					const isSelected = selectedRole === option.value
 

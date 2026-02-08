@@ -13,6 +13,7 @@ import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
+import { map, toUpper } from 'lodash'
 import type { ReactElement } from 'react'
 import { showcaseContent } from '@/config/mocks'
 
@@ -55,7 +56,7 @@ type CaseCardProps = {
 
 function CaseCard({ category, title, description, result, feedback, client }: CaseCardProps) {
 	const config = categoryConfig[category] || categoryConfig['Генерация текста']
-	const clientInitial = client.charAt(0).toUpperCase()
+	const clientInitial = toUpper(client.charAt(0))
 
 	return (
 		<Card
@@ -195,7 +196,7 @@ export function ShowcaseSection() {
 				</Typography>
 
 				<Grid container spacing={4}>
-					{showcaseContent.cases.map((caseItem) => (
+					{map(showcaseContent.cases, (caseItem) => (
 						<Grid size={{ xs: 12, md: 4 }} key={caseItem.id}>
 							<CaseCard
 								category={caseItem.category}

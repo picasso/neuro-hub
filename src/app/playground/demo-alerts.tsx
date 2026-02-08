@@ -1,6 +1,7 @@
 'use client'
 
 import Stack from '@mui/material/Stack'
+import { map } from 'lodash'
 import { type Alert, createAlert } from '@/alerts'
 import { Button, type ButtonProps, type IconName, TS } from '@/components/ui'
 
@@ -303,14 +304,12 @@ const demoSections: DemoSection[] = [
 export const AlertsDemo = () => {
 	return (
 		<Stack spacing={4}>
-			{demoSections.map((section, index) => (
-				// eslint-disable-next-line react/no-array-index-key
+			{map(demoSections, (section, index) => (
 				<Stack key={`${section.title}-${index}`} spacing={1}>
 					<TS variant="h6">{section.title}</TS>
 					<Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-						{section.demos.map((demo, index) => (
+						{map(section.demos, (demo, index) => (
 							<Button
-								// eslint-disable-next-line react/no-array-index-key
 								key={`${demo.label}-${index}`}
 								color={demo.buttonColor}
 								variant={demo.buttonVariant ?? 'outlined'}

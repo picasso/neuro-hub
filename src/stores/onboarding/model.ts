@@ -1,5 +1,6 @@
 import { combine, createEffect, sample } from 'effector'
 import { produce } from 'immer'
+import { find, findIndex } from 'lodash'
 import type {
 	CredentialField,
 	OnboardingStep,
@@ -174,7 +175,7 @@ $selectedSkills.reset(resetSelectedSkills)
 
 $selectedSkills.on(addSkill, (skills, skill) =>
 	produce(skills, (draft) => {
-		const exists = draft.find((s) => s.skillId === skill.skillId)
+		const exists = find(draft, { skillId: skill.skillId })
 		if (!exists) {
 			draft.push(skill)
 		}
@@ -183,7 +184,7 @@ $selectedSkills.on(addSkill, (skills, skill) =>
 
 $selectedSkills.on(removeSkill, (skills, skillId) =>
 	produce(skills, (draft) => {
-		const index = draft.findIndex((s) => s.skillId === skillId)
+		const index = findIndex(draft, { skillId })
 		if (index !== -1) {
 			draft.splice(index, 1)
 		}
@@ -192,7 +193,7 @@ $selectedSkills.on(removeSkill, (skills, skillId) =>
 
 $selectedSkills.on(updateSkillLevel, (skills, { skillId, level }) =>
 	produce(skills, (draft) => {
-		const skill = draft.find((s) => s.skillId === skillId)
+		const skill = find(draft, { skillId })
 		if (skill) {
 			skill.proficiencyLevel = level
 		}

@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import { castArray, defaults, find, includes, isString, map, reduce } from 'lodash'
 
 export type MarkdownParams = {
 	links: string | string[] | null
@@ -25,9 +25,9 @@ export type MarkdownParams = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
-	if (!_.isString(str)) return str
+	if (!isString(str)) return str
 
-	const mod = _.defaults(params || {}, {
+	const mod = defaults(params || {}, {
 		links: null,
 		br: false,
 		nbsp: false,
@@ -43,8 +43,8 @@ export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 		linkReplace = linkReplace.replace('<a', '<a class="components-external-link"')
 
 	// replace links
-	let md = _.reduce(
-		_.castArray(mod.links || []),
+	let md = reduce(
+		castArray(mod.links || []),
 		(msg, link, index) => msg.replace(`$link${index + 1}`, link),
 		str,
 	)
@@ -72,7 +72,7 @@ export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 	if (mod.nbsp) md = md.replace(/([ ])/gm, '&nbsp;')
 
 	// add <p></p> or <br/> if '\n' are found
-	if (_.includes(md, '\n') || (mod.json && _.includes(md, '\\n'))) {
+	if (includes(md, '\n') || (mod.json && includes(md, '\\n'))) {
 		const regex = mod.json ? /\\n/gm : /\n/gm
 		if (mod.br) md = md.replace(regex, '<br/>')
 		else
@@ -87,7 +87,7 @@ export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 	if (md.match(/<[^<]+>/gm) === null) return str
 
 	const body = string2dom(md)
-	const markdown = <>{_.map(body?.childNodes, node2comp)}</>
+	const markdown = <>{map(body?.childNodes, node2comp)}</>
 
 	return mod.container ? <span className="__markdown">{markdown}</span> : markdown
 }
@@ -95,7 +95,7 @@ export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 function string2dom(str: string) {
 	const el = document.createElement('html')
 	el.innerHTML = str
-	return _.find(el.childNodes, { nodeName: 'BODY' })
+	return find(el.childNodes, { nodeName: 'BODY' })
 }
 
 function node2comp(node: HTMLElement | HTMLAnchorElement, index: number) {
@@ -127,7 +127,7 @@ function node2comp(node: HTMLElement | HTMLAnchorElement, index: number) {
 	if (tag === 'p')
 		return (
 			<p key={index} className={className}>
-				{_.map(node.childNodes, node2comp)}
+				{map(node.childNodes, node2comp)}
 			</p>
 		)
 	if (tag === 'a')
@@ -139,7 +139,7 @@ function node2comp(node: HTMLElement | HTMLAnchorElement, index: number) {
 				rel={anchor.rel}
 				target={anchor.target}
 			>
-				{_.map(node.childNodes, node2comp)}
+				{map(node.childNodes, node2comp)}
 			</a>
 		)
 }
