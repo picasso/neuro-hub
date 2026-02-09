@@ -5,7 +5,7 @@ const config: { [key: string]: Knex.Config } = {
 		client: 'postgresql',
 		connection: {
 			host: 'localhost',
-			port: 5432,
+			port: 5433,
 			database: 'neurogig',
 			user: 'postgres',
 			password: 'postgres',

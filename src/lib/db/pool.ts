@@ -11,7 +11,7 @@ export const pool = new Pool(
 	isLocalhost
 		? {
 				host: 'localhost',
-				port: 5432,
+				port: 5433,
 				database: 'neurogig',
 				user: 'postgres',
 				password: 'postgres',
