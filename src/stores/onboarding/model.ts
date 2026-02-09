@@ -1,4 +1,5 @@
 import { combine, createEffect, sample } from 'effector'
+import { createGate } from 'effector-react'
 import { produce } from 'immer'
 import { find, findIndex } from 'lodash'
 import type {
@@ -23,9 +24,13 @@ import {
 	type UserSkillInput,
 } from '@/lib/validations'
 
+// * * * Gate -------------------------------------------------------------------------------------]
+
+export const OnboardingGate = createGate({ domain, name: 'OnboardingGate' })
+
 // * * * $currentStep -----------------------------------------------------------------------------]
 
-const resetCurrentStep = domain.createEvent('resetCurrentStep')
+export const resetCurrentStep = domain.createEvent('resetCurrentStep')
 export const setCurrentStep = domain.createEvent<OnboardingStep>('setCurrentStep')
 export const nextStep = domain.createEvent('nextStep')
 export const prevStep = domain.createEvent('prevStep')
@@ -38,7 +43,7 @@ $currentStep.on(setCurrentStep, (_, step) => step)
 
 // * * * $role ------------------------------------------------------------------------------------]
 
-const resetRole = domain.createEvent('resetRole')
+export const resetRole = domain.createEvent('resetRole')
 export const setRole = domain.createEvent<UserRole>('setRole')
 export const $role = domain.createStore<UserRole | null>(null, { name: '$role' })
 
@@ -384,7 +389,13 @@ sample({
 
 // * * * connections and consequences -------------------------------------------------------------]
 
-// automatically move to step 2 when `setRole` is called
+// reset onboarding when gate closes
+sample({
+	clock: OnboardingGate.close,
+	target: resetOnboarding,
+})
+
+// automatically move to step 2 when setRole is called
 sample({
 	clock: setRole,
 	fn: () => 2 as OnboardingStep,
