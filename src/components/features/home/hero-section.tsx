@@ -70,7 +70,7 @@ export function HeroSection() {
 						href="/signup?role=freelancer"
 						variant="contained"
 						size="large"
-						startIcon={<WorkIcon />}
+						startIcon={<WorkIcon color="primary" />}
 						sx={{
 							bgcolor: 'white',
 							color: 'primary.main',
@@ -91,7 +91,7 @@ export function HeroSection() {
 						href="/signup?role=client"
 						variant="outlined"
 						size="large"
-						startIcon={<BusinessIcon />}
+						startIcon={<BusinessIcon color="warning" />}
 						sx={{
 							borderColor: 'white',
 							color: 'white',
