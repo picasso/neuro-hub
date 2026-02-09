@@ -1,12 +1,12 @@
 'use client'
 
-import EmailIcon from '@mui/icons-material/Email'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
 import { useRouter } from 'next/navigation'
+import { Icon } from '@/components/ui/icon'
 import { $credentials, setCurrentStep } from '@/stores/onboarding'
 
 export function EmailVerificationStep() {
@@ -29,7 +29,7 @@ export function EmailVerificationStep() {
 						mb: 3,
 					}}
 				>
-					<EmailIcon sx={{ fontSize: 40, color: 'white' }} />
+					<Icon name="email" sx={{ fontSize: 40, color: 'white' }} />
 				</Box>
 
 				<Typography variant="h5" gutterBottom>

@@ -1,7 +1,5 @@
 'use client'
 
-import BusinessIcon from '@mui/icons-material/Business'
-import PersonIcon from '@mui/icons-material/Person'
 import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper'
@@ -17,6 +15,7 @@ import { FreelancerProfileStep } from './steps/freelancer-profile-step'
 import { RoleSelectionStep } from './steps/role-selection-step'
 import { SkillsSelectionStep } from './steps/skills-selection-step'
 import type { UserRole } from '@/lib/validations'
+import { Icon } from '@/components/ui/icon'
 import {
 	$currentStep,
 	$role,
@@ -90,7 +89,7 @@ export function OnboardingWizard() {
 					>
 						<Chip
 							label={`Регистрация: ${role === 'freelancer' ? 'Фрилансер' : 'Заказчик'}`}
-							icon={role === 'freelancer' ? <PersonIcon /> : <BusinessIcon />}
+							icon={<Icon name={role === 'freelancer' ? 'person' : 'business'} />}
 							onDelete={() => resetOnboarding()}
 							color="primary"
 							variant="outlined"

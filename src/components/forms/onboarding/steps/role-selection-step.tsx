@@ -1,7 +1,5 @@
 'use client'
 
-import BusinessIcon from '@mui/icons-material/Business'
-import PersonIcon from '@mui/icons-material/Person'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -10,13 +8,15 @@ import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
 import { map } from 'lodash'
 import type { UserRole } from '@/lib/validations'
+import type { ReactElement } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { $role, setRole } from '@/stores/onboarding'
 
 type RoleOption = {
 	value: UserRole
 	title: string
 	description: string
-	icon: typeof PersonIcon
+	icon: ReactElement
 }
 
 const roleOptions: RoleOption[] = [
@@ -24,13 +24,13 @@ const roleOptions: RoleOption[] = [
 		value: 'freelancer',
 		title: 'Фрилансер',
 		description: 'Я ищу интересные проекты и хочу применить свои навыки в AI',
-		icon: PersonIcon,
+		icon: <Icon name="person" sx={{ fontSize: 40 }} />,
 	},
 	{
 		value: 'client',
 		title: 'Заказчик',
 		description: 'Мне нужны специалисты для реализации AI-проектов',
-		icon: BusinessIcon,
+		icon: <Icon name="business" sx={{ fontSize: 40 }} />,
 	},
 ]
 
@@ -50,7 +50,6 @@ export function RoleSelectionStep() {
 
 			<Grid container spacing={3} sx={{ mb: 4 }}>
 				{map(roleOptions, (option) => {
-					const Icon = option.icon
 					const isSelected = selectedRole === option.value
 
 					return (
@@ -85,14 +84,10 @@ export function RoleSelectionStep() {
 											justifyContent: 'center',
 											mx: 'auto',
 											mb: 2,
+											color: isSelected ? 'white' : 'grey.600',
 										}}
 									>
-										<Icon
-											sx={{
-												fontSize: 40,
-												color: isSelected ? 'white' : 'grey.600',
-											}}
-										/>
+										{option.icon}
 									</Box>
 									<Typography variant="h6" gutterBottom>
 										{option.title}

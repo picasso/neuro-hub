@@ -1,7 +1,5 @@
 'use client'
 
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
@@ -10,6 +8,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
 import { useState } from 'react'
+import { Icon } from '@/components/ui/icon'
 import {
 	$credentials,
 	$credentialsErrors,
@@ -72,7 +71,9 @@ export function CredentialsStep() {
 										onClick={() => setShowPassword(!showPassword)}
 										edge="end"
 									>
-										{showPassword ? <VisibilityOff /> : <Visibility />}
+										<Icon
+											name={showPassword ? 'visibility-off' : 'visibility'}
+										/>
 									</IconButton>
 								</InputAdornment>
 							),

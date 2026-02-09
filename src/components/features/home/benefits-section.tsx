@@ -1,13 +1,5 @@
 'use client'
 
-import CodeIcon from '@mui/icons-material/Code'
-import GroupsIcon from '@mui/icons-material/Groups'
-import SearchIcon from '@mui/icons-material/Search'
-import StarIcon from '@mui/icons-material/Star'
-import ThumbUpIcon from '@mui/icons-material/ThumbUp'
-import VerifiedIcon from '@mui/icons-material/Verified'
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
-import VisibilityIcon from '@mui/icons-material/Visibility'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
@@ -15,6 +7,7 @@ import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import { map } from 'lodash'
 import type { ReactNode } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { benefitsContent } from '@/config/mocks'
 
 type BenefitCardProps = {
@@ -70,8 +63,18 @@ function BenefitCard({ icon, title, description }: BenefitCardProps) {
 	)
 }
 
-const freelancerIcons = [GroupsIcon, StarIcon, CodeIcon, VerifiedIcon]
-const clientIcons = [VerifiedUserIcon, VisibilityIcon, ThumbUpIcon, SearchIcon]
+const freelancerIcons = [
+	<Icon name="groups" sx={{ fontSize: 32 }} />,
+	<Icon name="star" sx={{ fontSize: 32 }} />,
+	<Icon name="code" sx={{ fontSize: 32 }} />,
+	<Icon name="verified" sx={{ fontSize: 32 }} />,
+]
+const clientIcons = [
+	<Icon name="verified-user" sx={{ fontSize: 32 }} />,
+	<Icon name="visibility" sx={{ fontSize: 32 }} />,
+	<Icon name="thumb-up" sx={{ fontSize: 32 }} />,
+	<Icon name="search" sx={{ fontSize: 32 }} />,
+]
 
 export function BenefitsSection() {
 	return (
@@ -100,11 +103,10 @@ export function BenefitsSection() {
 						</Typography>
 						<Grid container spacing={3} sx={{ width: 1 }}>
 							{map(benefitsContent.freelancers.items, (item, index) => {
-								const Icon = freelancerIcons[index]
 								return (
 									<Grid size={{ xs: 12, md: 6 }} key={item.title}>
 										<BenefitCard
-											icon={<Icon sx={{ fontSize: 32 }} />}
+											icon={freelancerIcons[index]}
 											title={item.title}
 											description={item.description}
 										/>
@@ -125,11 +127,10 @@ export function BenefitsSection() {
 						</Typography>
 						<Grid container spacing={3} sx={{ width: 1 }}>
 							{map(benefitsContent.clients.items, (item, index) => {
-								const Icon = clientIcons[index]
 								return (
 									<Grid size={{ xs: 12, md: 6 }} key={item.title}>
 										<BenefitCard
-											icon={<Icon sx={{ fontSize: 32 }} />}
+											icon={clientIcons[index]}
 											title={item.title}
 											description={item.description}
 										/>

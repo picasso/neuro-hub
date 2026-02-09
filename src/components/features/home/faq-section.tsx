@@ -1,12 +1,5 @@
 'use client'
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import GavelIcon from '@mui/icons-material/Gavel'
-import InfoIcon from '@mui/icons-material/Info'
-import PaymentIcon from '@mui/icons-material/Payment'
-import PercentIcon from '@mui/icons-material/Percent'
-import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import SearchIcon from '@mui/icons-material/Search'
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
@@ -16,6 +9,7 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { filter, map } from 'lodash'
 import { type ReactNode, useState } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { faqContent } from '@/config/mocks'
 
 type FaqIconConfig = {
@@ -24,12 +18,12 @@ type FaqIconConfig = {
 }
 
 const faqIcons: Record<string, FaqIconConfig> = {
-	'1': { icon: <InfoIcon sx={{ fontSize: 24 }} />, color: '#1e88e5' },
-	'2': { icon: <PercentIcon sx={{ fontSize: 24 }} />, color: '#43a047' },
-	'3': { icon: <PaymentIcon sx={{ fontSize: 24 }} />, color: '#fb8c00' },
-	'4': { icon: <PersonAddIcon sx={{ fontSize: 24 }} />, color: '#8e24aa' },
-	'5': { icon: <SearchIcon sx={{ fontSize: 24 }} />, color: '#e53935' },
-	'6': { icon: <GavelIcon sx={{ fontSize: 24 }} />, color: '#6d4c41' },
+	'1': { icon: <Icon name="info" sx={{ fontSize: 24 }} />, color: '#1e88e5' },
+	'2': { icon: <Icon name="percent" sx={{ fontSize: 24 }} />, color: '#43a047' },
+	'3': { icon: <Icon name="payment" sx={{ fontSize: 24 }} />, color: '#fb8c00' },
+	'4': { icon: <Icon name="person-add" sx={{ fontSize: 24 }} />, color: '#8e24aa' },
+	'5': { icon: <Icon name="search" sx={{ fontSize: 24 }} />, color: '#e53935' },
+	'6': { icon: <Icon name="gavel" sx={{ fontSize: 24 }} />, color: '#6d4c41' },
 }
 
 export function FaqSection() {
@@ -79,7 +73,7 @@ export function FaqSection() {
 									}}
 								>
 									<AccordionSummary
-										expandIcon={<ExpandMoreIcon />}
+										expandIcon={<Icon name="expand-more" />}
 										sx={{
 											'& .MuiAccordionSummary-content': {
 												display: 'flex',
@@ -131,7 +125,7 @@ export function FaqSection() {
 									}}
 								>
 									<AccordionSummary
-										expandIcon={<ExpandMoreIcon />}
+										expandIcon={<Icon name="expand-more" />}
 										sx={{
 											'& .MuiAccordionSummary-content': {
 												display: 'flex',

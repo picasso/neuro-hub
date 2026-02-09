@@ -1,10 +1,5 @@
 'use client'
 
-import ArticleIcon from '@mui/icons-material/Article'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
-import ImageIcon from '@mui/icons-material/Image'
-import VideoLibraryIcon from '@mui/icons-material/VideoLibrary'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -15,6 +10,7 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { map, toUpper } from 'lodash'
 import type { ReactElement } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { showcaseContent } from '@/config/mocks'
 
 type CategoryConfig = {
@@ -26,19 +22,19 @@ type CategoryConfig = {
 
 const categoryConfig: Record<string, CategoryConfig> = {
 	'Генерация текста': {
-		icon: <ArticleIcon sx={{ fontSize: 20 }} />,
+		icon: <Icon name="article" sx={{ fontSize: 20 }} />,
 		gradient: 'linear-gradient(90deg, #5a4fcf 0%, #a78bfa 100%)',
 		chipColor: '#667eea',
 		quoteBg: 'rgba(102, 126, 234, 0.1)',
 	},
 	'Генерация изображений': {
-		icon: <ImageIcon sx={{ fontSize: 20 }} />,
+		icon: <Icon name="image" sx={{ fontSize: 20 }} />,
 		gradient: 'linear-gradient(90deg, #db2777 0%, #f9a8d4 100%)',
 		chipColor: '#f093fb',
 		quoteBg: 'rgba(240, 147, 251, 0.1)',
 	},
 	'Генерация видео': {
-		icon: <VideoLibraryIcon sx={{ fontSize: 20 }} />,
+		icon: <Icon name="video-library" sx={{ fontSize: 20 }} />,
 		gradient: 'linear-gradient(90deg, #0891b2 0%, #67e8f9 100%)',
 		chipColor: '#4facfe',
 		quoteBg: 'rgba(79, 172, 254, 0.1)',
@@ -110,7 +106,8 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 				</Typography>
 
 				<Box sx={{ display: 'flex', gap: 1.5, mb: 2, alignItems: 'flex-start' }}>
-					<CheckCircleIcon
+					<Icon
+						name="check-circle"
 						sx={{ fontSize: 20, color: '#10b981', mt: 0.5, flexShrink: 0 }}
 					/>
 					<Box>
@@ -137,7 +134,8 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 						}}
 					>
 						<Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
-							<FormatQuoteIcon
+							<Icon
+								name="format-quote"
 								sx={{
 									fontSize: 20,
 									color: config.chipColor,
