@@ -2,10 +2,10 @@
 
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
 import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { $credentials, setCurrentStep } from '@/stores/onboarding'
 

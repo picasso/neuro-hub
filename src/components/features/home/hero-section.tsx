@@ -1,12 +1,11 @@
 'use client'
 
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
-import { Icon } from '@/components/ui/icon'
+import { Button } from '@/components/ui/button'
 import { heroContent } from '@/config/mocks'
 
 export function HeroSection() {
@@ -68,7 +67,8 @@ export function HeroSection() {
 						href="/signup?role=freelancer"
 						variant="contained"
 						size="large"
-						startIcon={<Icon name="work" color="primary" />}
+						leftIcon="work"
+						iconOptions={{ color: 'primary' }}
 						sx={{
 							bgcolor: 'white',
 							color: 'primary.main',
@@ -89,7 +89,8 @@ export function HeroSection() {
 						href="/signup?role=client"
 						variant="outlined"
 						size="large"
-						startIcon={<Icon name="business" color="warning" />}
+						leftIcon="business"
+						iconOptions={{ color: 'warning' }}
 						sx={{
 							borderColor: 'white',
 							color: 'white',
@@ -110,7 +111,7 @@ export function HeroSection() {
 				<Button
 					component={Link}
 					href="/login"
-					startIcon={<Icon name="login" />}
+					leftIcon="login"
 					sx={{
 						color: 'white',
 						textDecoration: 'underline',

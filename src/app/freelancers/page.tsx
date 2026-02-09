@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
+import { Button } from '@/components/ui/button'
 
 export { freelancersMetadata as metadata } from '@/config/metadata'
 

@@ -1,7 +1,6 @@
 'use client'
 
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Checkbox from '@mui/material/Checkbox'
 import Chip from '@mui/material/Chip'
 import FormControl from '@mui/material/FormControl'
@@ -17,6 +16,7 @@ import { useUnit } from 'effector-react'
 import { filter, find, includes, map, some, toLower } from 'lodash'
 import { useState } from 'react'
 import type { UserSkillInput } from '@/lib/validations'
+import { Button } from '@/components/ui/button'
 import {
 	$allSkills,
 	$selectedSkills,
