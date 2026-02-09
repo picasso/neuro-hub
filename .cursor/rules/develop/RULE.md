@@ -549,6 +549,92 @@ Only when:
 
 ---
 
+## 8. UI Components - Centralized System
+
+Use centralized wrapper components instead of direct MUI imports. This provides consistent API, better type safety, and easier refactoring.
+
+### 8.1 Icon component
+
+❌ **Bad** - direct MUI icon imports:
+
+```tsx
+import WorkIcon from '@mui/icons-material/Work'
+import BusinessIcon from '@mui/icons-material/Business'
+
+<Button startIcon={<WorkIcon color="primary" />}>
+  Label
+</Button>
+```
+
+✅ **Good** - centralized Icon component:
+
+```tsx
+import { Icon } from '@/components/ui/icon'
+
+<Button leftIcon="work" iconOptions={{ color: 'primary' }}>
+  Label
+</Button>
+```
+
+**Rule:** Always use `Icon` component with kebab-case names. All MUI icons are registered in `assets.tsx`.
+
+---
+
+### 8.2 Button component
+
+❌ **Bad** - direct MUI Button with Icon:
+
+```tsx
+import Button from '@mui/material/Button'
+import LoginIcon from '@mui/icons-material/Login'
+
+<Button startIcon={<LoginIcon />}>Login</Button>
+```
+
+✅ **Good** - centralized Button with icon props:
+
+```tsx
+import { Button } from '@/components/ui/button'
+
+<Button leftIcon="login">Login</Button>
+```
+
+**Rule:** Use `@/components/ui/button` instead of `@mui/material/Button`. Icons via `leftIcon`/`rightIcon` props, options via `iconOptions`.
+
+---
+
+### 8.3 Text component (TS)
+
+❌ **Bad** - direct MUI Typography:
+
+```tsx
+import Typography from '@mui/material/Typography'
+
+<Typography variant="h6">Title</Typography>
+```
+
+✅ **Good** - centralized TS component:
+
+```tsx
+import { TS } from '@/components/ui/text-styled'
+
+<TS variant="h6">Title</TS>
+```
+
+**Rule:** Use `TS` (Text Styled) from `@/components/ui/text-styled` for all text rendering instead of MUI Typography.
+
+---
+
+### Why centralized components?
+
+1. **Consistent API** - all icons use same pattern (`leftIcon="name"`)
+2. **Type safety** - autocomplete for icon names, compile-time validation
+3. **Easy refactoring** - change implementation in one place
+4. **Bundle optimization** - tree-shaking, no duplicate icon imports
+5. **Custom enhancements** - animations, spacing, sizing without prop drilling
+
+---
+
 ## Pre-commit Component Checklist
 
 Use this checklist to review components before committing:
@@ -592,3 +678,10 @@ Use this checklist to review components before committing:
 ### Lodash:
 - [ ] Named imports used: `import { map, find } from 'lodash'`
 - [ ] No default imports: avoid `import _` or `import lo`
+
+### UI Components:
+- [ ] Use `Icon` from `@/components/ui/icon` (not `@mui/icons-material`)
+- [ ] Use `Button` from `@/components/ui/button` (not `@mui/material/Button`)
+- [ ] Use `TS` from `@/components/ui/text-styled` (not `@mui/material/Typography`)
+- [ ] Icons use kebab-case names: `leftIcon="work"`, not `<WorkIcon />`
+- [ ] Button icons via `leftIcon`/`rightIcon` props with optional `iconOptions`
