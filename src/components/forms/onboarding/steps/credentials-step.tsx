@@ -83,12 +83,14 @@ export function CredentialsStep() {
 				/>
 
 				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-					<Button variant="outlined" size="large" onClick={onPrevStep}>
-						Назад
-					</Button>
-					<Button variant="contained" size="large" onClick={onSubmit} disabled={!isValid}>
-						{isRegistering ? 'Регистрация...' : 'Продолжить'}
-					</Button>
+					<Button variant="outlined" size="large" onClick={onPrevStep} label="Назад" />
+					<Button
+						variant="contained"
+						size="large"
+						onClick={onSubmit}
+						disabled={!isValid}
+						label={isRegistering ? 'Регистрация...' : 'Продолжить'}
+					/>
 				</Box>
 			</Box>
 		</Box>

@@ -66,6 +66,7 @@ export function HeroSection() {
 						size="large"
 						leftIcon="work"
 						iconOptions={{ color: 'primary' }}
+						label={heroContent.ctaFreelancer}
 						sx={{
 							bgcolor: 'white',
 							color: 'primary.main',
@@ -77,9 +78,7 @@ export function HeroSection() {
 								bgcolor: 'grey.100',
 							},
 						}}
-					>
-						{heroContent.ctaFreelancer}
-					</Button>
+					/>
 
 					<Button
 						component={Link}
@@ -88,6 +87,7 @@ export function HeroSection() {
 						size="large"
 						leftIcon="business"
 						iconOptions={{ color: 'warning' }}
+						label={heroContent.ctaClient}
 						sx={{
 							borderColor: 'white',
 							color: 'white',
@@ -100,15 +100,14 @@ export function HeroSection() {
 								bgcolor: 'rgba(255, 255, 255, 0.1)',
 							},
 						}}
-					>
-						{heroContent.ctaClient}
-					</Button>
+					/>
 				</Stack>
 
 				<Button
 					component={Link}
 					href="/login"
 					leftIcon="login"
+					label={heroContent.ctaLogin}
 					sx={{
 						color: 'white',
 						textDecoration: 'underline',
@@ -117,9 +116,7 @@ export function HeroSection() {
 							bgcolor: 'transparent',
 						},
 					}}
-				>
-					{heroContent.ctaLogin}
-				</Button>
+				/>
 			</Container>
 		</Box>
 	)

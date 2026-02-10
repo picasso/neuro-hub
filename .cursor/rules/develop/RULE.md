@@ -596,10 +596,25 @@ import LoginIcon from '@mui/icons-material/Login'
 ```tsx
 import { Button } from '@/components/ui/button'
 
-<Button leftIcon="login">Login</Button>
+<Button leftIcon="login" label="Login" />
 ```
 
-**Rule:** Use `@/components/ui/button` instead of `@mui/material/Button`. Icons via `leftIcon`/`rightIcon` props, options via `iconOptions`.
+**Rules:**
+- Use `@/components/ui/button` instead of `@mui/material/Button`
+- Icons via `leftIcon`/`rightIcon` props, options via `iconOptions`
+- **Always use `label` prop for button text, not `children`**
+
+#### When to use `label` vs `children`
+
+**Use `label` prop (default):**
+- Variables: `label={heroContent.ctaClient}`
+- Strings: `label="Продолжить"`
+- Conditionals: `label={isLoading ? 'Загрузка...' : 'Продолжить'}`
+
+**Use `children` (rare):**
+- Only when button contains complex JSX (not just text)
+
+**Default rule:** Always use `label` for simple text. Use `children` only for complex JSX content.
 
 ---
 
@@ -709,3 +724,5 @@ Use this checklist to review components before committing:
 - [ ] Use `TS` from `@/components/ui/text-styled` (not `@mui/material/Typography`)
 - [ ] Icons use kebab-case names: `leftIcon="work"`, not `<WorkIcon />`
 - [ ] Button icons via `leftIcon`/`rightIcon` props with optional `iconOptions`
+- [ ] Button text via `label` prop (not `children`): `label="Text"` or `label={variable}`
+- [ ] TS text via `content` prop (not `children`) for variables/short strings

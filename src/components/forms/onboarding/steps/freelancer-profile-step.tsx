@@ -97,17 +97,14 @@ export function FreelancerProfileStep() {
 				/>
 
 				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-					<Button variant="outlined" size="large" onClick={onPrevStep}>
-						Назад
-					</Button>
+					<Button variant="outlined" size="large" onClick={onPrevStep} label="Назад" />
 					<Button
 						variant="contained"
 						size="large"
 						onClick={onValidate}
 						disabled={!isValid}
-					>
-						Продолжить
-					</Button>
+						label="Продолжить"
+					/>
 				</Box>
 			</Box>
 		</Box>

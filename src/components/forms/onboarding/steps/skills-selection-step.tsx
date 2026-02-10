@@ -200,17 +200,19 @@ export function SkillsSelectionStep() {
 				</Box>
 
 				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-					<Button variant="outlined" size="large" onClick={() => prevStep()}>
-						Назад
-					</Button>
+					<Button
+						variant="outlined"
+						size="large"
+						onClick={() => prevStep()}
+						label="Назад"
+					/>
 					<Button
 						variant="contained"
 						size="large"
 						onClick={onContinue}
 						disabled={selectedSkills.length === 0}
-					>
-						Продолжить
-					</Button>
+						label="Продолжить"
+					/>
 				</Box>
 			</Box>
 		</Box>

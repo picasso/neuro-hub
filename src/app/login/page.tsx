@@ -16,9 +16,7 @@ export default function LoginPage() {
 					sx={{ mb: 4 }}
 					content="Эта страница в разработке"
 				/>
-				<Button variant="contained" href="/">
-					На главную
-				</Button>
+				<Button variant="contained" href="/" label="На главную" />
 			</Box>
 		</Container>
 	)
