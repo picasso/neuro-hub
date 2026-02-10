@@ -1,12 +1,12 @@
 'use client'
 
-import EmailIcon from '@mui/icons-material/Email'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
 import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
+import { TS } from '@/components/ui/text-styled'
 import { $credentials, setCurrentStep } from '@/stores/onboarding'
 
 export function EmailVerificationStep() {
@@ -29,26 +29,30 @@ export function EmailVerificationStep() {
 						mb: 3,
 					}}
 				>
-					<EmailIcon sx={{ fontSize: 40, color: 'white' }} />
+					<Icon name="email" sx={{ fontSize: 40, color: 'white' }} />
 				</Box>
 
-				<Typography variant="h5" gutterBottom>
-					Подтвердите email
-				</Typography>
-				<Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-					Мы отправили письмо на адрес:
-				</Typography>
-				<Typography variant="body1" fontWeight={600} sx={{ mb: 3 }}>
-					{credentials?.email || 'ваш email'}
-				</Typography>
+				<TS variant="h5" gutterBottom content="Подтвердите email" />
+				<TS
+					variant="body2"
+					color="text.secondary"
+					sx={{ mb: 2 }}
+					content="Мы отправили письмо на адрес:"
+				/>
+				<TS
+					variant="body1"
+					fontWeight={600}
+					sx={{ mb: 3 }}
+					content={credentials?.email || 'ваш email'}
+				/>
 			</Box>
 
 			<Box sx={{ maxWidth: 500, mx: 'auto' }}>
 				<Alert severity="info" sx={{ mb: 4 }}>
-					<Typography variant="body2">
+					<TS variant="body2">
 						Проверьте почту и перейдите по ссылке в письме для подтверждения вашего
 						аккаунта. Если письмо не пришло, проверьте папку "Спам".
-					</Typography>
+					</TS>
 				</Alert>
 
 				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -57,17 +61,15 @@ export function EmailVerificationStep() {
 						size="large"
 						onClick={() => router.push('/dashboard' as never)}
 						fullWidth
-					>
-						Готово
-					</Button>
+						label="Готово"
+					/>
 					<Button
 						variant="outlined"
 						size="large"
 						onClick={() => setCurrentStep(2)}
 						fullWidth
-					>
-						Изменить email
-					</Button>
+						label="Изменить email"
+					/>
 				</Box>
 			</Box>
 		</Box>

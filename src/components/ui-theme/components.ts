@@ -19,6 +19,27 @@ export const components: ThemeOptions['components'] = {
 				textTransform: 'none',
 				fontWeight: 600,
 			},
+			outlinedContrast: ({ theme }) => ({
+				borderColor: theme.palette.contrast.main,
+				color: theme.palette.contrast.main,
+				'&:hover': {
+					borderColor: theme.palette.contrast.main,
+					backgroundColor: 'rgba(255, 255, 255, 0.1)',
+				},
+			}),
+			containedContrast: ({ theme }) => ({
+				backgroundColor: theme.palette.contrast.main,
+				color: theme.palette.contrast.contrastText,
+				'&:hover': {
+					backgroundColor: theme.palette.contrast.light,
+				},
+			}),
+			textContrast: ({ theme }) => ({
+				color: theme.palette.contrast.main,
+				'&:hover': {
+					backgroundColor: 'rgba(255, 255, 255, 0.1)',
+				},
+			}),
 		},
 	},
 	MuiSvgIcon: {
@@ -29,6 +50,16 @@ export const components: ThemeOptions['components'] = {
 			colorAction: {
 				color: 'var(--mui-palette-grey-500)',
 			},
+			colorContrast: ({ theme }) => ({
+				color: theme.palette.contrast.main,
+			}),
+		},
+	},
+	MuiTypography: {
+		styleOverrides: {
+			colorContrast: ({ theme }) => ({
+				color: theme.palette.contrast.main,
+			}),
 		},
 	},
 	...feedback,

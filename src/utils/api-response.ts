@@ -1,3 +1,4 @@
+import { forEach } from 'lodash'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 import { AppError, ValidationError } from './errors'
@@ -56,7 +57,7 @@ export function noContentResponse(): NextResponse {
 export function errorResponse(error: unknown): NextResponse<ApiErrorResponse> {
 	if (error instanceof ZodError) {
 		const validationErrors: Record<string, string[]> = {}
-		error.issues.forEach((issue) => {
+		forEach(error.issues, (issue) => {
 			const path = issue.path.join('.')
 			if (!validationErrors[path]) {
 				validationErrors[path] = []

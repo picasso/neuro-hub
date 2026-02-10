@@ -1,10 +1,10 @@
 'use client'
 
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
+import { Button } from '@/components/ui/button'
+import { TS } from '@/components/ui/text-styled'
 import {
 	$profileData,
 	$profileErrors,
@@ -33,12 +33,12 @@ export function ClientProfileStep() {
 	return (
 		<Box>
 			<Box sx={{ mb: 4, textAlign: 'center' }}>
-				<Typography variant="h5" gutterBottom>
-					Информация о компании
-				</Typography>
-				<Typography variant="body2" color="text.secondary">
-					Расскажите о вашей компании и вашей роли
-				</Typography>
+				<TS variant="h5" gutterBottom content="Информация о компании" />
+				<TS
+					variant="body2"
+					color="text.secondary"
+					content="Расскажите о вашей компании и вашей роли"
+				/>
 			</Box>
 
 			<Box sx={{ maxWidth: 600, mx: 'auto' }}>
@@ -88,17 +88,14 @@ export function ClientProfileStep() {
 				/>
 
 				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-					<Button variant="outlined" size="large" onClick={onPrevStep}>
-						Назад
-					</Button>
+					<Button variant="outlined" size="large" onClick={onPrevStep} label="Назад" />
 					<Button
 						variant="contained"
 						size="large"
 						onClick={onValidate}
 						disabled={!isValid}
-					>
-						Продолжить
-					</Button>
+						label="Продолжить"
+					/>
 				</Box>
 			</Box>
 		</Box>

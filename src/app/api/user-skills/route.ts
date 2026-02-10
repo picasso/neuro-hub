@@ -1,3 +1,4 @@
+import { map } from 'lodash'
 import { requireAuth } from '@/lib/auth/server'
 import { kysely } from '@/lib/db'
 import { addUserSkillsSchema } from '@/lib/validations'
@@ -95,7 +96,7 @@ export async function POST(request: Request) {
 
 		await kysely.deleteFrom('user_skills').where('user_id', '=', session.user.id).execute()
 
-		const userSkillsToInsert = validatedData.skills.map((skill) => ({
+		const userSkillsToInsert = map(validatedData.skills, (skill) => ({
 			user_id: session.user.id,
 			skill_id: skill.skillId,
 			proficiency_level: skill.proficiencyLevel,
@@ -107,7 +108,7 @@ export async function POST(request: Request) {
 			.returningAll()
 			.execute()
 
-		const formattedSkills = insertedSkills.map((skill) => ({
+		const formattedSkills = map(insertedSkills, (skill) => ({
 			id: skill.id,
 			userId: skill.user_id,
 			skillId: skill.skill_id,
@@ -200,7 +201,7 @@ export async function GET() {
 			])
 			.execute()
 
-		const formattedSkills = userSkills.map((skill) => ({
+		const formattedSkills = map(userSkills, (skill) => ({
 			id: skill.id,
 			userId: skill.user_id,
 			skillId: skill.skill_id,

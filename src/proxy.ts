@@ -1,4 +1,5 @@
 import { betterFetch } from '@better-fetch/fetch'
+import { some } from 'lodash'
 import { type NextRequest, NextResponse } from 'next/server'
 import { debugAuthMiddleware } from './middleware/debug-auth'
 import type { Session } from 'better-auth/types'
@@ -50,7 +51,7 @@ export async function proxy(request: NextRequest) {
 		}
 	}
 
-	if (publicPaths.some((path) => pathname.startsWith(path))) {
+	if (some(publicPaths, (path) => pathname.startsWith(path))) {
 		return NextResponse.next()
 	}
 
@@ -62,7 +63,7 @@ export async function proxy(request: NextRequest) {
 	})
 
 	if (!session) {
-		if (authPaths.some((path) => pathname.startsWith(path))) {
+		if (some(authPaths, (path) => pathname.startsWith(path))) {
 			return NextResponse.next()
 		}
 		const loginUrl = new URL('/login', request.url)
@@ -70,7 +71,7 @@ export async function proxy(request: NextRequest) {
 		return NextResponse.redirect(loginUrl)
 	}
 
-	if (authPaths.some((path) => pathname.startsWith(path))) {
+	if (some(authPaths, (path) => pathname.startsWith(path))) {
 		return NextResponse.redirect(new URL('/dashboard', request.url))
 	}
 

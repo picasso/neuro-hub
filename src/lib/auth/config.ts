@@ -1,6 +1,7 @@
 import { render } from '@react-email/render'
 import { betterAuth } from 'better-auth'
 import { createAuthMiddleware } from 'better-auth/api'
+import { map } from 'lodash'
 import { nanoid } from 'nanoid'
 import { kysely } from '@/lib/db'
 import { pool } from '@/lib/db/pool'
@@ -159,7 +160,7 @@ export const auth = betterAuth({
 							.execute()
 
 						if (profileData.skills && profileData.skills.length > 0) {
-							const userSkills = profileData.skills.map((skill) => ({
+							const userSkills = map(profileData.skills, (skill) => ({
 								id: nanoid(),
 								user_id: userId,
 								skill_id: skill.skillId,

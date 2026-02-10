@@ -1,10 +1,5 @@
 'use client'
 
-import EmailIcon from '@mui/icons-material/Email'
-import GitHubIcon from '@mui/icons-material/GitHub'
-import LinkedInIcon from '@mui/icons-material/LinkedIn'
-import TelegramIcon from '@mui/icons-material/Telegram'
-import XIcon from '@mui/icons-material/X'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
@@ -12,6 +7,7 @@ import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import packageJson from '../../../package.json'
+import { Icon } from './icon'
 import { TS } from './text-styled'
 import { contactContent } from '@/config/mocks'
 
@@ -86,7 +82,7 @@ export function Footer() {
 					}}
 				>
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-						<EmailIcon sx={{ fontSize: 20, color: 'text.secondary' }} />
+						<Icon name="email" sx={{ fontSize: 20, color: 'text.secondary' }} />
 						<Link
 							href={`mailto:${contactContent.email}`}
 							color="text.secondary"
@@ -106,7 +102,7 @@ export function Footer() {
 							size="small"
 							sx={{ color: 'text.secondary' }}
 						>
-							<GitHubIcon />
+							<Icon name="git-hub" />
 						</IconButton>
 						<IconButton
 							component="a"
@@ -116,7 +112,7 @@ export function Footer() {
 							size="small"
 							sx={{ color: 'text.secondary' }}
 						>
-							<XIcon />
+							<Icon name="x" />
 						</IconButton>
 						<IconButton
 							component="a"
@@ -126,7 +122,7 @@ export function Footer() {
 							size="small"
 							sx={{ color: 'text.secondary' }}
 						>
-							<LinkedInIcon />
+							<Icon name="linked-in" />
 						</IconButton>
 						<IconButton
 							component="a"
@@ -136,7 +132,7 @@ export function Footer() {
 							size="small"
 							sx={{ color: 'text.secondary' }}
 						>
-							<TelegramIcon />
+							<Icon name="telegram" />
 						</IconButton>
 					</Box>
 				</Box>

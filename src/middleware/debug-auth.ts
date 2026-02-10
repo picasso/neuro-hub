@@ -1,3 +1,4 @@
+import { includes } from 'lodash'
 import { type NextRequest, NextResponse } from 'next/server'
 
 type DebugPattern = {
@@ -48,7 +49,7 @@ export async function debugAuthMiddleware(request: NextRequest): Promise<NextRes
 		}
 
 		for (const debugPattern of DEBUG_PATTERNS) {
-			if (email.includes(debugPattern.pattern)) {
+			if (includes(email, debugPattern.pattern)) {
 				if (debugPattern.delay) {
 					await new Promise((resolve) => setTimeout(resolve, debugPattern.delay))
 				}

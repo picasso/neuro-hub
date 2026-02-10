@@ -1,15 +1,14 @@
 'use client'
 
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
+import { TS } from '@/components/ui/text-styled'
 import {
 	$credentials,
 	$credentialsErrors,
@@ -36,12 +35,12 @@ export function CredentialsStep() {
 	return (
 		<Box>
 			<Box sx={{ mb: 4, textAlign: 'center' }}>
-				<Typography variant="h5" gutterBottom>
-					Создайте аккаунт
-				</Typography>
-				<Typography variant="body2" color="text.secondary">
-					Введите email и придумайте надежный пароль
-				</Typography>
+				<TS variant="h5" gutterBottom content="Создайте аккаунт" />
+				<TS
+					variant="body2"
+					color="text.secondary"
+					content="Введите email и придумайте надежный пароль"
+				/>
 			</Box>
 
 			<Box sx={{ maxWidth: 500, mx: 'auto' }}>
@@ -72,7 +71,9 @@ export function CredentialsStep() {
 										onClick={() => setShowPassword(!showPassword)}
 										edge="end"
 									>
-										{showPassword ? <VisibilityOff /> : <Visibility />}
+										<Icon
+											name={showPassword ? 'visibility-off' : 'visibility'}
+										/>
 									</IconButton>
 								</InputAdornment>
 							),
@@ -82,12 +83,14 @@ export function CredentialsStep() {
 				/>
 
 				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-					<Button variant="outlined" size="large" onClick={onPrevStep}>
-						Назад
-					</Button>
-					<Button variant="contained" size="large" onClick={onSubmit} disabled={!isValid}>
-						{isRegistering ? 'Регистрация...' : 'Продолжить'}
-					</Button>
+					<Button variant="outlined" size="large" onClick={onPrevStep} label="Назад" />
+					<Button
+						variant="contained"
+						size="large"
+						onClick={onSubmit}
+						disabled={!isValid}
+						label={isRegistering ? 'Регистрация...' : 'Продолжить'}
+					/>
 				</Box>
 			</Box>
 		</Box>

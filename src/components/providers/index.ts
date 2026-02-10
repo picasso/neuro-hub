@@ -1,1 +1,1 @@
-export { ThemeRegistry } from './ThemeRegistry'
+export { ThemeRegistry } from './theme-registry'

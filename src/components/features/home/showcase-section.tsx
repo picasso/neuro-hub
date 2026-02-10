@@ -1,10 +1,5 @@
 'use client'
 
-import ArticleIcon from '@mui/icons-material/Article'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
-import ImageIcon from '@mui/icons-material/Image'
-import VideoLibraryIcon from '@mui/icons-material/VideoLibrary'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -12,8 +7,10 @@ import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
+import { map, toUpper } from 'lodash'
 import type { ReactElement } from 'react'
+import { Icon } from '@/components/ui/icon'
+import { TS } from '@/components/ui/text-styled'
 import { showcaseContent } from '@/config/mocks'
 
 type CategoryConfig = {
@@ -25,19 +22,19 @@ type CategoryConfig = {
 
 const categoryConfig: Record<string, CategoryConfig> = {
 	'Генерация текста': {
-		icon: <ArticleIcon sx={{ fontSize: 20 }} />,
+		icon: <Icon name="article" sx={{ fontSize: 20 }} />,
 		gradient: 'linear-gradient(90deg, #5a4fcf 0%, #a78bfa 100%)',
 		chipColor: '#667eea',
 		quoteBg: 'rgba(102, 126, 234, 0.1)',
 	},
 	'Генерация изображений': {
-		icon: <ImageIcon sx={{ fontSize: 20 }} />,
+		icon: <Icon name="image" sx={{ fontSize: 20 }} />,
 		gradient: 'linear-gradient(90deg, #db2777 0%, #f9a8d4 100%)',
 		chipColor: '#f093fb',
 		quoteBg: 'rgba(240, 147, 251, 0.1)',
 	},
 	'Генерация видео': {
-		icon: <VideoLibraryIcon sx={{ fontSize: 20 }} />,
+		icon: <Icon name="video-library" sx={{ fontSize: 20 }} />,
 		gradient: 'linear-gradient(90deg, #0891b2 0%, #67e8f9 100%)',
 		chipColor: '#4facfe',
 		quoteBg: 'rgba(79, 172, 254, 0.1)',
@@ -55,7 +52,7 @@ type CaseCardProps = {
 
 function CaseCard({ category, title, description, result, feedback, client }: CaseCardProps) {
 	const config = categoryConfig[category] || categoryConfig['Генерация текста']
-	const clientInitial = client.charAt(0).toUpperCase()
+	const clientInitial = toUpper(client.charAt(0))
 
 	return (
 		<Card
@@ -100,25 +97,24 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 			</Box>
 
 			<CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 3 }}>
-				<Typography variant="h5" gutterBottom fontWeight={700} sx={{ mb: 2 }}>
-					{title}
-				</Typography>
+				<TS variant="h5" gutterBottom fontWeight={700} sx={{ mb: 2 }} content={title} />
 
-				<Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-					{description}
-				</Typography>
+				<TS variant="body2" color="text.secondary" sx={{ mb: 2 }} content={description} />
 
 				<Box sx={{ display: 'flex', gap: 1.5, mb: 2, alignItems: 'flex-start' }}>
-					<CheckCircleIcon
+					<Icon
+						name="check-circle"
 						sx={{ fontSize: 20, color: '#10b981', mt: 0.5, flexShrink: 0 }}
 					/>
 					<Box>
-						<Typography variant="body2" fontWeight={600} color="#10b981" gutterBottom>
-							Результат:
-						</Typography>
-						<Typography variant="body2" color="text.secondary">
-							{result}
-						</Typography>
+						<TS
+							variant="body2"
+							fontWeight={600}
+							color="#10b981"
+							gutterBottom
+							content="Результат:"
+						/>
+						<TS variant="body2" color="text.secondary" content={result} />
 					</Box>
 				</Box>
 
@@ -136,7 +132,8 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 						}}
 					>
 						<Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
-							<FormatQuoteIcon
+							<Icon
+								name="format-quote"
 								sx={{
 									fontSize: 20,
 									color: config.chipColor,
@@ -144,9 +141,12 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 									flexShrink: 0,
 								}}
 							/>
-							<Typography variant="body2" fontStyle="italic" color="text.secondary">
-								{feedback}
-							</Typography>
+							<TS
+								variant="body2"
+								fontStyle="italic"
+								color="text.secondary"
+								content={feedback}
+							/>
 						</Box>
 						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 							<Avatar
@@ -160,9 +160,12 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 							>
 								{clientInitial}
 							</Avatar>
-							<Typography variant="caption" color="text.secondary" fontWeight={600}>
-								{client}
-							</Typography>
+							<TS
+								variant="caption"
+								color="text.secondary"
+								fontWeight={600}
+								content={client}
+							/>
 						</Box>
 					</Box>
 				</Box>
@@ -175,27 +178,25 @@ export function ShowcaseSection() {
 	return (
 		<Box sx={{ py: 8, bgcolor: 'background.paper' }}>
 			<Container maxWidth="lg">
-				<Typography
+				<TS
 					variant="h3"
 					component="h2"
 					align="center"
 					gutterBottom
 					fontWeight={700}
+					content={showcaseContent.title}
 					sx={{ fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, mb: 2 }}
-				>
-					{showcaseContent.title}
-				</Typography>
-				<Typography
+				/>
+				<TS
 					variant="h6"
 					align="center"
 					color="text.secondary"
+					content={showcaseContent.subtitle}
 					sx={{ mb: 6, fontWeight: 400 }}
-				>
-					{showcaseContent.subtitle}
-				</Typography>
+				/>
 
 				<Grid container spacing={4}>
-					{showcaseContent.cases.map((caseItem) => (
+					{map(showcaseContent.cases, (caseItem) => (
 						<Grid size={{ xs: 12, md: 4 }} key={caseItem.id}>
 							<CaseCard
 								category={caseItem.category}

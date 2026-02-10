@@ -2,10 +2,10 @@
 
 import Autocomplete from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
+import { Button } from '@/components/ui/button'
+import { TS } from '@/components/ui/text-styled'
 import {
 	$profileData,
 	$profileErrors,
@@ -40,12 +40,12 @@ export function FreelancerProfileStep() {
 	return (
 		<Box>
 			<Box sx={{ mb: 4, textAlign: 'center' }}>
-				<Typography variant="h5" gutterBottom>
-					Расскажите о себе
-				</Typography>
-				<Typography variant="body2" color="text.secondary">
-					Эта информация поможет заказчикам найти вас
-				</Typography>
+				<TS variant="h5" gutterBottom content="Расскажите о себе" />
+				<TS
+					variant="body2"
+					color="text.secondary"
+					content="Эта информация поможет заказчикам найти вас"
+				/>
 			</Box>
 
 			<Box sx={{ maxWidth: 600, mx: 'auto' }}>
@@ -97,17 +97,14 @@ export function FreelancerProfileStep() {
 				/>
 
 				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-					<Button variant="outlined" size="large" onClick={onPrevStep}>
-						Назад
-					</Button>
+					<Button variant="outlined" size="large" onClick={onPrevStep} label="Назад" />
 					<Button
 						variant="contained"
 						size="large"
 						onClick={onValidate}
 						disabled={!isValid}
-					>
-						Продолжить
-					</Button>
+						label="Продолжить"
+					/>
 				</Box>
 			</Box>
 		</Box>

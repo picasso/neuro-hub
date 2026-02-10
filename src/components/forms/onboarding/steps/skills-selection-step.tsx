@@ -1,7 +1,6 @@
 'use client'
 
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Checkbox from '@mui/material/Checkbox'
 import Chip from '@mui/material/Chip'
 import FormControl from '@mui/material/FormControl'
@@ -12,10 +11,12 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
+import { filter, find, includes, map, some, toLower } from 'lodash'
 import { useState } from 'react'
 import type { UserSkillInput } from '@/lib/validations'
+import { Button } from '@/components/ui/button'
+import { TS } from '@/components/ui/text-styled'
 import {
 	$allSkills,
 	$selectedSkills,
@@ -39,12 +40,12 @@ export function SkillsSelectionStep() {
 
 	const [searchQuery, setSearchQuery] = useState('')
 
-	const filteredSkills = allSkills.filter((skill) =>
-		skill.name.toLowerCase().includes(searchQuery.toLowerCase()),
+	const filteredSkills = filter(allSkills, (skill) =>
+		includes(toLower(skill.name), toLower(searchQuery)),
 	)
 
 	const isSkillSelected = (skillId: string) => {
-		return selectedSkills.some((s) => s.skillId === skillId)
+		return some(selectedSkills, { skillId })
 	}
 
 	const onSkillToggle = (skill: Skill) => {
@@ -67,23 +68,26 @@ export function SkillsSelectionStep() {
 	return (
 		<Box>
 			<Box sx={{ mb: 4, textAlign: 'center' }}>
-				<Typography variant="h5" gutterBottom>
-					Выберите ваши навыки
-				</Typography>
-				<Typography variant="body2" color="text.secondary">
-					Отметьте навыки, которыми вы владеете
-				</Typography>
+				<TS variant="h5" gutterBottom content="Выберите ваши навыки" />
+				<TS
+					variant="body2"
+					color="text.secondary"
+					content="Отметьте навыки, которыми вы владеете"
+				/>
 			</Box>
 
 			<Box sx={{ maxWidth: 800, mx: 'auto' }}>
 				{selectedSkills.length > 0 && (
 					<Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-						<Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-							Выбрано навыков: {selectedSkills.length}
-						</Typography>
+						<TS
+							variant="body2"
+							color="text.secondary"
+							sx={{ mb: 1 }}
+							content={`Выбрано навыков: ${selectedSkills.length}`}
+						/>
 						<Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
-							{selectedSkills.map((skill) => {
-								const skillData = allSkills.find((s) => s.id === skill.skillId)
+							{map(selectedSkills, (skill) => {
+								const skillData = find(allSkills, { id: skill.skillId })
 								return (
 									<Stack
 										key={skill.skillId}
@@ -143,19 +147,23 @@ export function SkillsSelectionStep() {
 				>
 					{isLoading ? (
 						<Box sx={{ p: 3, textAlign: 'center' }}>
-							<Typography variant="body2" color="text.secondary">
-								Загрузка навыков...
-							</Typography>
+							<TS
+								variant="body2"
+								color="text.secondary"
+								content="Загрузка навыков..."
+							/>
 						</Box>
 					) : filteredSkills.length === 0 ? (
 						<Box sx={{ p: 3, textAlign: 'center' }}>
-							<Typography variant="body2" color="text.secondary">
-								Навыки не найдены
-							</Typography>
+							<TS
+								variant="body2"
+								color="text.secondary"
+								content="Навыки не найдены"
+							/>
 						</Box>
 					) : (
 						<List>
-							{filteredSkills.map((skill) => {
+							{map(filteredSkills, (skill) => {
 								const selected = isSkillSelected(skill.id)
 								return (
 									<ListItem
@@ -175,9 +183,7 @@ export function SkillsSelectionStep() {
 											}
 											label={
 												<Box>
-													<Typography variant="subtitle2">
-														{skill.name}
-													</Typography>
+													<TS variant="subtitle2" content={skill.name} />
 													<Chip
 														size="small"
 														label={skill.category.replace('_', ' ')}
@@ -194,17 +200,19 @@ export function SkillsSelectionStep() {
 				</Box>
 
 				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-					<Button variant="outlined" size="large" onClick={() => prevStep()}>
-						Назад
-					</Button>
+					<Button
+						variant="outlined"
+						size="large"
+						onClick={() => prevStep()}
+						label="Назад"
+					/>
 					<Button
 						variant="contained"
 						size="large"
 						onClick={onContinue}
 						disabled={selectedSkills.length === 0}
-					>
-						Продолжить
-					</Button>
+						label="Продолжить"
+					/>
 				</Box>
 			</Box>
 		</Box>

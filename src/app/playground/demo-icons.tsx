@@ -2,6 +2,7 @@
 
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
+import { map } from 'lodash'
 import { Icon, type IconName, type IconProps, TS } from '@/components/ui'
 
 export const IconsDemo = () => {
@@ -39,7 +40,7 @@ export const IconsDemo = () => {
 					Available Icons
 				</TS>
 				<Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-					{availableIcons.map(({ name, color }) => (
+					{map(availableIcons, ({ name, color }) => (
 						<Stack key={name} alignItems="center" spacing={0.5}>
 							<Icon name={name} fontSize="large" color={color} />
 							<TS variant="caption" color="text.secondary">
@@ -55,7 +56,7 @@ export const IconsDemo = () => {
 					Colors
 				</TS>
 				<Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-					{colors.map(({ color, name = 'info' }) => (
+					{map(colors, ({ color, name = 'info' }) => (
 						<Stack key={color} alignItems="center" spacing={0.5}>
 							<Icon name={name} fontSize="large" color={color} />
 							<TS variant="caption" color="text.secondary">
@@ -91,7 +92,7 @@ export const IconsDemo = () => {
 					Sizes (fontSize)
 				</TS>
 				<Stack direction="row" spacing={3} alignItems="center">
-					{sizes.map(({ size, name = 'info' }) => (
+					{map(sizes, ({ size, name = 'info' }) => (
 						<Stack key={size} alignItems="center" spacing={0.5}>
 							<Icon name={name} fontSize={size} />
 							<TS variant="caption" color="text.secondary">

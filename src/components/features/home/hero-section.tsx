@@ -1,14 +1,11 @@
 'use client'
 
-import BusinessIcon from '@mui/icons-material/Business'
-import LoginIcon from '@mui/icons-material/Login'
-import WorkIcon from '@mui/icons-material/Work'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { TS } from '@/components/ui/text-styled'
 import { heroContent } from '@/config/mocks'
 
 export function HeroSection() {
@@ -16,38 +13,39 @@ export function HeroSection() {
 		<Box
 			sx={{
 				background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-				color: 'white',
 				py: { xs: 8, md: 12 },
 				textAlign: 'center',
 			}}
 		>
 			<Container maxWidth="md">
-				<Typography
+				<TS
 					variant="h2"
 					component="h1"
 					gutterBottom
+					color="contrast"
+					content={heroContent.title}
 					sx={{
 						fontWeight: 800,
 						fontSize: { xs: '2.5rem', md: '3.5rem' },
 					}}
-				>
-					{heroContent.title}
-				</Typography>
+				/>
 
-				<Typography
+				<TS
 					variant="h5"
+					color="contrast"
+					content={heroContent.subtitle}
 					sx={{
 						fontSize: { xs: '1.25rem', sm: '1.5rem' },
 						mb: 2,
 						fontWeight: 500,
 						opacity: 0.95,
 					}}
-				>
-					{heroContent.subtitle}
-				</Typography>
+				/>
 
-				<Typography
+				<TS
 					variant="body1"
+					color="contrast"
+					content={heroContent.description}
 					sx={{
 						mb: 4,
 						fontSize: { xs: '1rem', sm: '1.1rem' },
@@ -55,9 +53,7 @@ export function HeroSection() {
 						maxWidth: 600,
 						mx: 'auto',
 					}}
-				>
-					{heroContent.description}
-				</Typography>
+				/>
 
 				<Stack
 					direction={{ xs: 'column', sm: 'row' }}
@@ -70,7 +66,9 @@ export function HeroSection() {
 						href="/signup?role=freelancer"
 						variant="contained"
 						size="large"
-						startIcon={<WorkIcon />}
+						leftIcon="work"
+						iconOptions={{ color: 'primary' }}
+						label={heroContent.ctaFreelancer}
 						sx={{
 							bgcolor: 'white',
 							color: 'primary.main',
@@ -82,48 +80,44 @@ export function HeroSection() {
 								bgcolor: 'grey.100',
 							},
 						}}
-					>
-						{heroContent.ctaFreelancer}
-					</Button>
+					/>
 
 					<Button
 						component={Link}
 						href="/signup?role=client"
 						variant="outlined"
+						color="contrast"
 						size="large"
-						startIcon={<BusinessIcon />}
+						leftIcon="business"
+						iconOptions={{ color: 'contrast' }}
+						label={heroContent.ctaClient}
 						sx={{
-							borderColor: 'white',
-							color: 'white',
 							px: 4,
 							py: 1.5,
 							fontSize: '1.1rem',
 							fontWeight: 600,
 							'&:hover': {
-								borderColor: 'white',
 								bgcolor: 'rgba(255, 255, 255, 0.1)',
 							},
 						}}
-					>
-						{heroContent.ctaClient}
-					</Button>
+					/>
 				</Stack>
 
 				<Button
 					component={Link}
 					href="/login"
-					startIcon={<LoginIcon />}
+					color="contrast"
+					leftIcon="login"
+					iconOptions={{ color: 'contrast' }}
+					label={heroContent.ctaLogin}
 					sx={{
-						color: 'white',
 						textDecoration: 'underline',
 						'&:hover': {
 							textDecoration: 'underline',
 							bgcolor: 'transparent',
 						},
 					}}
-				>
-					{heroContent.ctaLogin}
-				</Button>
+				/>
 			</Container>
 		</Box>
 	)

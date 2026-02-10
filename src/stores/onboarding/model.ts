@@ -1,5 +1,7 @@
 import { combine, createEffect, sample } from 'effector'
+import { createGate } from 'effector-react'
 import { produce } from 'immer'
+import { find, findIndex } from 'lodash'
 import type {
 	CredentialField,
 	OnboardingStep,
@@ -22,9 +24,13 @@ import {
 	type UserSkillInput,
 } from '@/lib/validations'
 
+// * * * Gate -------------------------------------------------------------------------------------]
+
+export const OnboardingGate = createGate({ domain, name: 'OnboardingGate' })
+
 // * * * $currentStep -----------------------------------------------------------------------------]
 
-const resetCurrentStep = domain.createEvent('resetCurrentStep')
+export const resetCurrentStep = domain.createEvent('resetCurrentStep')
 export const setCurrentStep = domain.createEvent<OnboardingStep>('setCurrentStep')
 export const nextStep = domain.createEvent('nextStep')
 export const prevStep = domain.createEvent('prevStep')
@@ -37,7 +43,7 @@ $currentStep.on(setCurrentStep, (_, step) => step)
 
 // * * * $role ------------------------------------------------------------------------------------]
 
-const resetRole = domain.createEvent('resetRole')
+export const resetRole = domain.createEvent('resetRole')
 export const setRole = domain.createEvent<UserRole>('setRole')
 export const $role = domain.createStore<UserRole | null>(null, { name: '$role' })
 
@@ -174,7 +180,7 @@ $selectedSkills.reset(resetSelectedSkills)
 
 $selectedSkills.on(addSkill, (skills, skill) =>
 	produce(skills, (draft) => {
-		const exists = draft.find((s) => s.skillId === skill.skillId)
+		const exists = find(draft, { skillId: skill.skillId })
 		if (!exists) {
 			draft.push(skill)
 		}
@@ -183,7 +189,7 @@ $selectedSkills.on(addSkill, (skills, skill) =>
 
 $selectedSkills.on(removeSkill, (skills, skillId) =>
 	produce(skills, (draft) => {
-		const index = draft.findIndex((s) => s.skillId === skillId)
+		const index = findIndex(draft, { skillId })
 		if (index !== -1) {
 			draft.splice(index, 1)
 		}
@@ -192,7 +198,7 @@ $selectedSkills.on(removeSkill, (skills, skillId) =>
 
 $selectedSkills.on(updateSkillLevel, (skills, { skillId, level }) =>
 	produce(skills, (draft) => {
-		const skill = draft.find((s) => s.skillId === skillId)
+		const skill = find(draft, { skillId })
 		if (skill) {
 			skill.proficiencyLevel = level
 		}
@@ -383,7 +389,13 @@ sample({
 
 // * * * connections and consequences -------------------------------------------------------------]
 
-// automatically move to step 2 when `setRole` is called
+// reset onboarding when gate closes
+sample({
+	clock: OnboardingGate.close,
+	target: resetOnboarding,
+})
+
+// automatically move to step 2 when setRole is called
 sample({
 	clock: setRole,
 	fn: () => 2 as OnboardingStep,
