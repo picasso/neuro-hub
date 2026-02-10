@@ -5,7 +5,7 @@ import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Link from '@mui/material/Link'
 import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
+import { TS } from './text-styled'
 
 export function Header() {
 	return (
@@ -13,14 +13,13 @@ export function Header() {
 			<Container maxWidth="lg">
 				<Toolbar disableGutters>
 					<Link href="/" underline="none" color="inherit" sx={{ flexGrow: 1 }}>
-						<Typography
+						<TS
 							variant="h6"
+							content="NeuroGig"
 							sx={{
 								fontWeight: 700,
 							}}
-						>
-							NeuroGig
-						</Typography>
+						/>
 					</Link>
 
 					<Box sx={{ display: 'flex', gap: 2 }}>

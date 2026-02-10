@@ -11,12 +11,12 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
 import { filter, find, includes, map, some, toLower } from 'lodash'
 import { useState } from 'react'
 import type { UserSkillInput } from '@/lib/validations'
 import { Button } from '@/components/ui/button'
+import { TS } from '@/components/ui/text-styled'
 import {
 	$allSkills,
 	$selectedSkills,
@@ -68,20 +68,23 @@ export function SkillsSelectionStep() {
 	return (
 		<Box>
 			<Box sx={{ mb: 4, textAlign: 'center' }}>
-				<Typography variant="h5" gutterBottom>
-					Выберите ваши навыки
-				</Typography>
-				<Typography variant="body2" color="text.secondary">
-					Отметьте навыки, которыми вы владеете
-				</Typography>
+				<TS variant="h5" gutterBottom content="Выберите ваши навыки" />
+				<TS
+					variant="body2"
+					color="text.secondary"
+					content="Отметьте навыки, которыми вы владеете"
+				/>
 			</Box>
 
 			<Box sx={{ maxWidth: 800, mx: 'auto' }}>
 				{selectedSkills.length > 0 && (
 					<Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-						<Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-							Выбрано навыков: {selectedSkills.length}
-						</Typography>
+						<TS
+							variant="body2"
+							color="text.secondary"
+							sx={{ mb: 1 }}
+							content={`Выбрано навыков: ${selectedSkills.length}`}
+						/>
 						<Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
 							{map(selectedSkills, (skill) => {
 								const skillData = find(allSkills, { id: skill.skillId })
@@ -144,15 +147,19 @@ export function SkillsSelectionStep() {
 				>
 					{isLoading ? (
 						<Box sx={{ p: 3, textAlign: 'center' }}>
-							<Typography variant="body2" color="text.secondary">
-								Загрузка навыков...
-							</Typography>
+							<TS
+								variant="body2"
+								color="text.secondary"
+								content="Загрузка навыков..."
+							/>
 						</Box>
 					) : filteredSkills.length === 0 ? (
 						<Box sx={{ p: 3, textAlign: 'center' }}>
-							<Typography variant="body2" color="text.secondary">
-								Навыки не найдены
-							</Typography>
+							<TS
+								variant="body2"
+								color="text.secondary"
+								content="Навыки не найдены"
+							/>
 						</Box>
 					) : (
 						<List>
@@ -176,9 +183,7 @@ export function SkillsSelectionStep() {
 											}
 											label={
 												<Box>
-													<Typography variant="subtitle2">
-														{skill.name}
-													</Typography>
+													<TS variant="subtitle2" content={skill.name} />
 													<Chip
 														size="small"
 														label={skill.category.replace('_', ' ')}

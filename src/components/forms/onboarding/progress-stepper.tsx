@@ -5,10 +5,10 @@ import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Stepper from '@mui/material/Stepper'
 import { useTheme } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useUnit } from 'effector-react'
 import { map } from 'lodash'
+import { TS } from '@/components/ui/text-styled'
 import { $currentStep } from '@/stores/onboarding'
 
 type ProgressStepperProps = {
@@ -29,9 +29,9 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
 					<Step key={label}>
 						<StepLabel>
 							{isMobile ? (
-								<Typography variant="caption">{label}</Typography>
+								<TS variant="caption" content={label} />
 							) : (
-								<Typography variant="body2">{label}</Typography>
+								<TS variant="body2" content={label} />
 							)}
 						</StepLabel>
 					</Step>
@@ -39,9 +39,11 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
 			</Stepper>
 			{isMobile && (
 				<Box sx={{ mt: 2, textAlign: 'center' }}>
-					<Typography variant="body2" color="text.secondary">
-						Шаг {currentStep} из {steps.length}
-					</Typography>
+					<TS
+						variant="body2"
+						color="text.secondary"
+						content={`Шаг ${currentStep} из ${steps.length}`}
+					/>
 				</Box>
 			)}
 		</Box>

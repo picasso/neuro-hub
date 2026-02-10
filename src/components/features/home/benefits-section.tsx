@@ -4,10 +4,10 @@ import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
-import Typography from '@mui/material/Typography'
 import { map } from 'lodash'
 import type { ReactNode } from 'react'
 import { Icon } from '@/components/ui/icon'
+import { TS } from '@/components/ui/text-styled'
 import { benefitsContent } from '@/config/mocks'
 
 type BenefitCardProps = {
@@ -52,12 +52,8 @@ function BenefitCard({ icon, title, description }: BenefitCardProps) {
 				{icon}
 			</Box>
 			<Box sx={{ display: 'flex', flexDirection: 'column' }}>
-				<Typography variant="h6" gutterBottom fontWeight={600}>
-					{title}
-				</Typography>
-				<Typography variant="body2" color="text.secondary">
-					{description}
-				</Typography>
+				<TS variant="h6" gutterBottom fontWeight={600} content={title} />
+				<TS variant="body2" color="text.secondary" content={description} />
 			</Box>
 		</Paper>
 	)
@@ -80,27 +76,25 @@ export function BenefitsSection() {
 	return (
 		<Box sx={{ py: 8, bgcolor: 'grey.50' }}>
 			<Container maxWidth="lg">
-				<Typography
+				<TS
 					variant="h3"
 					component="h2"
 					align="center"
 					gutterBottom
 					fontWeight={700}
+					content="Почему выбирают NeuroGig"
 					sx={{ fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, mb: 6 }}
-				>
-					Почему выбирают NeuroGig
-				</Typography>
+				/>
 
 				<Grid container spacing={6}>
 					<Grid size={{ xs: 12 }}>
-						<Typography
+						<TS
 							variant="h5"
 							gutterBottom
 							fontWeight={600}
+							content={benefitsContent.freelancers.title}
 							sx={{ mb: 3, color: 'primary.main' }}
-						>
-							{benefitsContent.freelancers.title}
-						</Typography>
+						/>
 						<Grid container spacing={3} sx={{ width: 1 }}>
 							{map(benefitsContent.freelancers.items, (item, index) => {
 								return (
@@ -117,14 +111,13 @@ export function BenefitsSection() {
 					</Grid>
 
 					<Grid size={{ xs: 12 }}>
-						<Typography
+						<TS
 							variant="h5"
 							gutterBottom
 							fontWeight={600}
+							content={benefitsContent.clients.title}
 							sx={{ mb: 3, color: 'secondary.main' }}
-						>
-							{benefitsContent.clients.title}
-						</Typography>
+						/>
 						<Grid container spacing={3} sx={{ width: 1 }}>
 							{map(benefitsContent.clients.items, (item, index) => {
 								return (

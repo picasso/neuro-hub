@@ -4,12 +4,12 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
 import { map } from 'lodash'
 import type { UserRole } from '@/lib/validations'
 import type { ReactElement } from 'react'
 import { Icon } from '@/components/ui/icon'
+import { TS } from '@/components/ui/text-styled'
 import { $role, setRole } from '@/stores/onboarding'
 
 type RoleOption = {
@@ -40,12 +40,12 @@ export function RoleSelectionStep() {
 	return (
 		<Box>
 			<Box sx={{ mb: 4, textAlign: 'center' }}>
-				<Typography variant="h5" gutterBottom>
-					Выберите вашу роль
-				</Typography>
-				<Typography variant="body2" color="text.secondary">
-					Это поможет нам персонализировать ваш опыт
-				</Typography>
+				<TS variant="h5" gutterBottom content="Выберите вашу роль" />
+				<TS
+					variant="body2"
+					color="text.secondary"
+					content="Это поможет нам персонализировать ваш опыт"
+				/>
 			</Box>
 
 			<Grid container spacing={3} sx={{ mb: 4 }}>
@@ -89,12 +89,12 @@ export function RoleSelectionStep() {
 									>
 										{option.icon}
 									</Box>
-									<Typography variant="h6" gutterBottom>
-										{option.title}
-									</Typography>
-									<Typography variant="body2" color="text.secondary">
-										{option.description}
-									</Typography>
+									<TS variant="h6" gutterBottom content={option.title} />
+									<TS
+										variant="body2"
+										color="text.secondary"
+										content={option.description}
+									/>
 								</CardContent>
 							</Card>
 						</Grid>

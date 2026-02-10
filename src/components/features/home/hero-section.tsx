@@ -3,9 +3,9 @@
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { TS } from '@/components/ui/text-styled'
 import { heroContent } from '@/config/mocks'
 
 export function HeroSection() {
@@ -19,32 +19,31 @@ export function HeroSection() {
 			}}
 		>
 			<Container maxWidth="md">
-				<Typography
+				<TS
 					variant="h2"
 					component="h1"
 					gutterBottom
+					content={heroContent.title}
 					sx={{
 						fontWeight: 800,
 						fontSize: { xs: '2.5rem', md: '3.5rem' },
 					}}
-				>
-					{heroContent.title}
-				</Typography>
+				/>
 
-				<Typography
+				<TS
 					variant="h5"
+					content={heroContent.subtitle}
 					sx={{
 						fontSize: { xs: '1.25rem', sm: '1.5rem' },
 						mb: 2,
 						fontWeight: 500,
 						opacity: 0.95,
 					}}
-				>
-					{heroContent.subtitle}
-				</Typography>
+				/>
 
-				<Typography
+				<TS
 					variant="body1"
+					content={heroContent.description}
 					sx={{
 						mb: 4,
 						fontSize: { xs: '1rem', sm: '1.1rem' },
@@ -52,9 +51,7 @@ export function HeroSection() {
 						maxWidth: 600,
 						mx: 'auto',
 					}}
-				>
-					{heroContent.description}
-				</Typography>
+				/>
 
 				<Stack
 					direction={{ xs: 'column', sm: 'row' }}

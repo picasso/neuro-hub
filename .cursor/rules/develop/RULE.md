@@ -611,6 +611,7 @@ import { Button } from '@/components/ui/button'
 import Typography from '@mui/material/Typography'
 
 <Typography variant="h6">Title</Typography>
+<Typography variant="body1">{user.name}</Typography>
 ```
 
 ✅ **Good** - centralized TS component:
@@ -618,10 +619,33 @@ import Typography from '@mui/material/Typography'
 ```tsx
 import { TS } from '@/components/ui/text-styled'
 
-<TS variant="h6">Title</TS>
+<TS variant="h6" content="Title" />
+<TS variant="body1" content={user.name} />
 ```
 
 **Rule:** Use `TS` (Text Styled) from `@/components/ui/text-styled` for all text rendering instead of MUI Typography.
+
+---
+
+#### When to use `content` vs `children`
+
+**Use `content` prop (most cases):**
+- Variables/dynamic values: `content={heroContent.title}`
+- Short strings: `content="Создайте аккаунт"`
+- Template strings: `content={`Шаг ${currentStep} из ${steps.length}`}`
+- Numbers: `content={count}`
+
+**Use `children` (rare cases):**
+- Only for long string literals in code (2+ lines):
+
+```tsx
+<TS variant="body2">
+  Проверьте почту и перейдите по ссылке в письме для подтверждения вашего
+  аккаунта. Если письмо не пришло, проверьте папку "Спам".
+</TS>
+```
+
+**Default rule:** Use `content` prop by default. Use `children` only for long multi-line string literals.
 
 ---
 

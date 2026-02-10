@@ -7,10 +7,10 @@ import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
 import { map, toUpper } from 'lodash'
 import type { ReactElement } from 'react'
 import { Icon } from '@/components/ui/icon'
+import { TS } from '@/components/ui/text-styled'
 import { showcaseContent } from '@/config/mocks'
 
 type CategoryConfig = {
@@ -97,13 +97,9 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 			</Box>
 
 			<CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 3 }}>
-				<Typography variant="h5" gutterBottom fontWeight={700} sx={{ mb: 2 }}>
-					{title}
-				</Typography>
+				<TS variant="h5" gutterBottom fontWeight={700} sx={{ mb: 2 }} content={title} />
 
-				<Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-					{description}
-				</Typography>
+				<TS variant="body2" color="text.secondary" sx={{ mb: 2 }} content={description} />
 
 				<Box sx={{ display: 'flex', gap: 1.5, mb: 2, alignItems: 'flex-start' }}>
 					<Icon
@@ -111,12 +107,14 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 						sx={{ fontSize: 20, color: '#10b981', mt: 0.5, flexShrink: 0 }}
 					/>
 					<Box>
-						<Typography variant="body2" fontWeight={600} color="#10b981" gutterBottom>
-							Результат:
-						</Typography>
-						<Typography variant="body2" color="text.secondary">
-							{result}
-						</Typography>
+						<TS
+							variant="body2"
+							fontWeight={600}
+							color="#10b981"
+							gutterBottom
+							content="Результат:"
+						/>
+						<TS variant="body2" color="text.secondary" content={result} />
 					</Box>
 				</Box>
 
@@ -143,9 +141,12 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 									flexShrink: 0,
 								}}
 							/>
-							<Typography variant="body2" fontStyle="italic" color="text.secondary">
-								{feedback}
-							</Typography>
+							<TS
+								variant="body2"
+								fontStyle="italic"
+								color="text.secondary"
+								content={feedback}
+							/>
 						</Box>
 						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 							<Avatar
@@ -159,9 +160,12 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 							>
 								{clientInitial}
 							</Avatar>
-							<Typography variant="caption" color="text.secondary" fontWeight={600}>
-								{client}
-							</Typography>
+							<TS
+								variant="caption"
+								color="text.secondary"
+								fontWeight={600}
+								content={client}
+							/>
 						</Box>
 					</Box>
 				</Box>
@@ -174,24 +178,22 @@ export function ShowcaseSection() {
 	return (
 		<Box sx={{ py: 8, bgcolor: 'background.paper' }}>
 			<Container maxWidth="lg">
-				<Typography
+				<TS
 					variant="h3"
 					component="h2"
 					align="center"
 					gutterBottom
 					fontWeight={700}
+					content={showcaseContent.title}
 					sx={{ fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, mb: 2 }}
-				>
-					{showcaseContent.title}
-				</Typography>
-				<Typography
+				/>
+				<TS
 					variant="h6"
 					align="center"
 					color="text.secondary"
+					content={showcaseContent.subtitle}
 					sx={{ mb: 6, fontWeight: 400 }}
-				>
-					{showcaseContent.subtitle}
-				</Typography>
+				/>
 
 				<Grid container spacing={4}>
 					{map(showcaseContent.cases, (caseItem) => (

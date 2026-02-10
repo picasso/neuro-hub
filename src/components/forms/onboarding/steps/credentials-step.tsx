@@ -4,11 +4,11 @@ import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
 import { useUnit } from 'effector-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
+import { TS } from '@/components/ui/text-styled'
 import {
 	$credentials,
 	$credentialsErrors,
@@ -35,12 +35,12 @@ export function CredentialsStep() {
 	return (
 		<Box>
 			<Box sx={{ mb: 4, textAlign: 'center' }}>
-				<Typography variant="h5" gutterBottom>
-					Создайте аккаунт
-				</Typography>
-				<Typography variant="body2" color="text.secondary">
-					Введите email и придумайте надежный пароль
-				</Typography>
+				<TS variant="h5" gutterBottom content="Создайте аккаунт" />
+				<TS
+					variant="body2"
+					color="text.secondary"
+					content="Введите email и придумайте надежный пароль"
+				/>
 			</Box>
 
 			<Box sx={{ maxWidth: 500, mx: 'auto' }}>

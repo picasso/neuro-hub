@@ -6,10 +6,10 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
 import { filter, map } from 'lodash'
 import { type ReactNode, useState } from 'react'
 import { Icon } from '@/components/ui/icon'
+import { TS } from '@/components/ui/text-styled'
 import { faqContent } from '@/config/mocks'
 
 type FaqIconConfig = {
@@ -39,16 +39,15 @@ export function FaqSection() {
 	return (
 		<Box sx={{ py: 8, bgcolor: 'grey.50' }}>
 			<Container maxWidth="lg">
-				<Typography
+				<TS
 					variant="h3"
 					component="h2"
 					align="center"
 					gutterBottom
 					fontWeight={700}
+					content={faqContent.title}
 					sx={{ fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, mb: 6 }}
-				>
-					{faqContent.title}
-				</Typography>
+				/>
 
 				<Grid container spacing={3}>
 					<Grid size={{ xs: 12, md: 6 }}>
@@ -91,12 +90,10 @@ export function FaqSection() {
 										>
 											{iconConfig.icon}
 										</Box>
-										<Typography fontWeight={600}>{item.question}</Typography>
+										<TS fontWeight={600} content={item.question} />
 									</AccordionSummary>
 									<AccordionDetails sx={{ pt: 0, pl: 6 }}>
-										<Typography color="text.secondary">
-											{item.answer}
-										</Typography>
+										<TS color="text.secondary" content={item.answer} />
 									</AccordionDetails>
 								</Accordion>
 							)
@@ -143,12 +140,10 @@ export function FaqSection() {
 										>
 											{iconConfig.icon}
 										</Box>
-										<Typography fontWeight={600}>{item.question}</Typography>
+										<TS fontWeight={600} content={item.question} />
 									</AccordionSummary>
 									<AccordionDetails sx={{ pt: 0, pl: 6 }}>
-										<Typography color="text.secondary">
-											{item.answer}
-										</Typography>
+										<TS color="text.secondary" content={item.answer} />
 									</AccordionDetails>
 								</Accordion>
 							)
