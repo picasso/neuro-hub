@@ -22,15 +22,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	) => {
 		const options = useMemo(
 			() => ({
-				sx: {
-					// color: getThemeColor(iconOptions?.color, {
-					// 	important: true,
-					// }),
-					// fontSize: getFontSize(iconOptions?.size, iconOptions?.fontSize, size),
+				sx: castArray({
 					ml: rightIcon ? iconOptions?.spacing : undefined,
 					mr: leftIcon ? iconOptions?.spacing : undefined,
-				} as const,
+				}),
+				color: iconOptions?.color,
 				animation: iconOptions?.animation,
+				fontSize: iconOptions?.size,
 			}),
 			[iconOptions, leftIcon, rightIcon],
 		)

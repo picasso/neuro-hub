@@ -13,7 +13,6 @@ export function HeroSection() {
 		<Box
 			sx={{
 				background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-				color: 'white',
 				py: { xs: 8, md: 12 },
 				textAlign: 'center',
 			}}
@@ -23,6 +22,7 @@ export function HeroSection() {
 					variant="h2"
 					component="h1"
 					gutterBottom
+					color="contrast"
 					content={heroContent.title}
 					sx={{
 						fontWeight: 800,
@@ -32,6 +32,7 @@ export function HeroSection() {
 
 				<TS
 					variant="h5"
+					color="contrast"
 					content={heroContent.subtitle}
 					sx={{
 						fontSize: { xs: '1.25rem', sm: '1.5rem' },
@@ -43,6 +44,7 @@ export function HeroSection() {
 
 				<TS
 					variant="body1"
+					color="contrast"
 					content={heroContent.description}
 					sx={{
 						mb: 4,
@@ -84,19 +86,17 @@ export function HeroSection() {
 						component={Link}
 						href="/signup?role=client"
 						variant="outlined"
+						color="contrast"
 						size="large"
 						leftIcon="business"
-						iconOptions={{ color: 'warning' }}
+						iconOptions={{ color: 'contrast' }}
 						label={heroContent.ctaClient}
 						sx={{
-							borderColor: 'white',
-							color: 'white',
 							px: 4,
 							py: 1.5,
 							fontSize: '1.1rem',
 							fontWeight: 600,
 							'&:hover': {
-								borderColor: 'white',
 								bgcolor: 'rgba(255, 255, 255, 0.1)',
 							},
 						}}
@@ -106,10 +106,11 @@ export function HeroSection() {
 				<Button
 					component={Link}
 					href="/login"
+					color="contrast"
 					leftIcon="login"
+					iconOptions={{ color: 'contrast' }}
 					label={heroContent.ctaLogin}
 					sx={{
-						color: 'white',
 						textDecoration: 'underline',
 						'&:hover': {
 							textDecoration: 'underline',

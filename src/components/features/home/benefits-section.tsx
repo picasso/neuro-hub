@@ -5,13 +5,12 @@ import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import { map } from 'lodash'
-import type { ReactNode } from 'react'
-import { Icon } from '@/components/ui/icon'
+import { Icon, type IconName } from '@/components/ui/icon'
 import { TS } from '@/components/ui/text-styled'
 import { benefitsContent } from '@/config/mocks'
 
 type BenefitCardProps = {
-	icon: ReactNode
+	icon: IconName
 	title: string
 	description: string
 }
@@ -49,7 +48,7 @@ function BenefitCard({ icon, title, description }: BenefitCardProps) {
 					borderRadius: 2,
 				}}
 			>
-				{icon}
+				<Icon name={icon} sx={{ fontSize: 32 }} color="contrast" />
 			</Box>
 			<Box sx={{ display: 'flex', flexDirection: 'column' }}>
 				<TS variant="h6" gutterBottom fontWeight={600} content={title} />
@@ -59,18 +58,8 @@ function BenefitCard({ icon, title, description }: BenefitCardProps) {
 	)
 }
 
-const freelancerIcons = [
-	<Icon name="groups" sx={{ fontSize: 32 }} />,
-	<Icon name="star" sx={{ fontSize: 32 }} />,
-	<Icon name="code" sx={{ fontSize: 32 }} />,
-	<Icon name="verified" sx={{ fontSize: 32 }} />,
-]
-const clientIcons = [
-	<Icon name="verified-user" sx={{ fontSize: 32 }} />,
-	<Icon name="visibility" sx={{ fontSize: 32 }} />,
-	<Icon name="thumb-up" sx={{ fontSize: 32 }} />,
-	<Icon name="search" sx={{ fontSize: 32 }} />,
-]
+const freelancerIcons: IconName[] = ['groups', 'star', 'code', 'verified']
+const clientIcons: IconName[] = ['verified-user', 'visibility', 'thumb-up', 'search']
 
 export function BenefitsSection() {
 	return (
