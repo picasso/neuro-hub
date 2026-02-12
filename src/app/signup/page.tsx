@@ -1,5 +1,5 @@
-import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
+import Stack from '@mui/material/Stack'
 import { Suspense } from 'react'
 import { OnboardingWizard } from '@/components/forms/onboarding'
 
@@ -9,16 +9,9 @@ export default function SignupPage() {
 	return (
 		<Suspense
 			fallback={
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						minHeight: '60vh',
-					}}
-				>
+				<Stack justifyContent="center" alignItems="center" sx={{ minHeight: '60vh' }}>
 					<CircularProgress />
-				</Box>
+				</Stack>
 			}
 		>
 			<OnboardingWizard />

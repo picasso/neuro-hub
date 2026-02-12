@@ -199,7 +199,7 @@ export function SkillsSelectionStep() {
 					)}
 				</Box>
 
-				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+				<Stack direction="row" justifyContent="space-between">
 					<Button
 						variant="outlined"
 						size="large"
@@ -213,7 +213,7 @@ export function SkillsSelectionStep() {
 						disabled={selectedSkills.length === 0}
 						label="Продолжить"
 					/>
-				</Box>
+				</Stack>
 			</Box>
 		</Box>
 	)

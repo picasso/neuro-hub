@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
+import Stack from '@mui/material/Stack'
 import { map } from 'lodash'
 import { Icon, type IconName } from '@/components/ui/icon'
 import { TS } from '@/components/ui/text-styled'
@@ -50,10 +51,10 @@ function BenefitCard({ icon, title, description }: BenefitCardProps) {
 			>
 				<Icon name={icon} sx={{ fontSize: 32 }} color="contrast" />
 			</Box>
-			<Box sx={{ display: 'flex', flexDirection: 'column' }}>
+			<Stack>
 				<TS variant="h6" gutterBottom fontWeight={600} content={title} />
 				<TS variant="body2" color="text.secondary" content={description} />
-			</Box>
+			</Stack>
 		</Paper>
 	)
 }

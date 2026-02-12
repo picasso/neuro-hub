@@ -1,6 +1,7 @@
 'use client'
 
 import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import { useUnit } from 'effector-react'
 import { Button } from '@/components/ui/button'
@@ -87,7 +88,7 @@ export function ClientProfileStep() {
 					sx={{ mb: 4 }}
 				/>
 
-				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+				<Stack direction="row" justifyContent="space-between">
 					<Button variant="outlined" size="large" onClick={onPrevStep} label="Назад" />
 					<Button
 						variant="contained"
@@ -96,7 +97,7 @@ export function ClientProfileStep() {
 						disabled={!isValid}
 						label="Продолжить"
 					/>
-				</Box>
+				</Stack>
 			</Box>
 		</Box>
 	)
