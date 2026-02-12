@@ -24,6 +24,7 @@ export const debugStores = {
 	meta: false,
 	tasks: true,
 	onboarding: true,
+	auth: true,
 }
 
 // * * * generic watched domain -------------------------------------------------------------------]
@@ -230,3 +231,7 @@ export const onboardingDomain = createDomainWatched(
 	onboardingConfig,
 	debugStores.onboarding,
 )
+
+// * * * auth ------------------------------------------------------------------------------------]
+
+export const authDomain = createDomainWatched('auth', {}, debugStores.auth)

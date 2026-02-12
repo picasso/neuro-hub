@@ -199,18 +199,24 @@ interface AlertParams extends Alert {
 
 type AlertExtra = Pick<AlertParams, 'target' | 'id'>
 
-const createFx = domain.createEffect<AlertParams, string>(({ id, target, ...alert }) => {
-	const alertId = id ?? createAlertId()
-	addAlert({ id: alertId, ...alert })
-	if (target) target(alertId)
-	return alertId
+const createFx = domain.createEffect<AlertParams, string>({
+	handler: ({ id, target, ...alert }) => {
+		const alertId = id ?? createAlertId()
+		addAlert({ id: alertId, ...alert })
+		if (target) target(alertId)
+		return alertId
+	},
+	name: 'createAlertFx',
 })
 
-const removeFx = domain.createEffect<AlertExtra, void>(({ id, target }) => {
-	if (id) {
-		removeAlert(id)
-		if (target) target(id)
-	}
+const removeFx = domain.createEffect<AlertExtra, void>({
+	handler: ({ id, target }) => {
+		if (id) {
+			removeAlert(id)
+			if (target) target(id)
+		}
+	},
+	name: 'removeAlertFx',
 })
 
 export const createAlertFx = Object.assign(createFx, {

@@ -1,4 +1,4 @@
-import { combine, createEffect, sample } from 'effector'
+import { combine, sample } from 'effector'
 import { createGate } from 'effector-react'
 import { produce } from 'immer'
 import { find, findIndex } from 'lodash'
@@ -235,8 +235,8 @@ type BetterAuthError = {
 	statusText?: string
 }
 
-export const registerUserFx = createEffect<RegisterUserInput, unknown, Error>(
-	async ({ email, password, name, profileData }) => {
+export const registerUserFx = domain.createEffect<RegisterUserInput, unknown, Error>({
+	handler: async ({ email, password, name, profileData }) => {
 		const timerId = setTimeout(() => {
 			createAlertFx({
 				id: onboardingId,
@@ -284,49 +284,53 @@ export const registerUserFx = createEffect<RegisterUserInput, unknown, Error>(
 			throw error
 		}
 	},
-)
+	name: 'registerUserFx',
+})
 
-export const loadSkillsFx = createEffect<void, Skill[], Error>(async () => {
-	const timerId = setTimeout(() => {
-		createAlertFx({
-			id: skillsId,
-			severity: 'progress',
-			title: 'Загрузка навыков...',
-			message: 'Получаем список доступных навыков',
-			disableClose: true,
-			disableAutoClose: true,
-		})
-	}, 800)
+export const loadSkillsFx = domain.createEffect<void, Skill[], Error>({
+	handler: async () => {
+		const timerId = setTimeout(() => {
+			createAlertFx({
+				id: skillsId,
+				severity: 'progress',
+				title: 'Загрузка навыков...',
+				message: 'Получаем список доступных навыков',
+				disableClose: true,
+				disableAutoClose: true,
+			})
+		}, 800)
 
-	try {
-		const response = await fetch('/api/skills?pageSize=100')
+		try {
+			const response = await fetch('/api/skills?pageSize=100')
 
-		clearTimeout(timerId)
+			clearTimeout(timerId)
 
-		if (!response.ok) {
-			const error = await response.json()
-			throw new Error(error.error?.message || 'Не удалось загрузить навыки')
+			if (!response.ok) {
+				const error = await response.json()
+				throw new Error(error.error?.message || 'Не удалось загрузить навыки')
+			}
+
+			const result = await response.json()
+
+			if (!result.success || !result.data) {
+				throw new Error('Некорректный формат ответа от сервера')
+			}
+
+			return result.data
+		} catch (error) {
+			clearTimeout(timerId)
+			if (error instanceof Error) {
+				throw error
+			}
+			const betterAuthError = error as BetterAuthError
+			const errorMessage =
+				betterAuthError?.error?.message ||
+				betterAuthError?.message ||
+				'Не удалось создать аккаунт'
+			throw new Error(errorMessage)
 		}
-
-		const result = await response.json()
-
-		if (!result.success || !result.data) {
-			throw new Error('Некорректный формат ответа от сервера')
-		}
-
-		return result.data
-	} catch (error) {
-		clearTimeout(timerId)
-		if (error instanceof Error) {
-			throw error
-		}
-		const betterAuthError = error as BetterAuthError
-		const errorMessage =
-			betterAuthError?.error?.message ||
-			betterAuthError?.message ||
-			'Не удалось создать аккаунт'
-		throw new Error(errorMessage)
-	}
+	},
+	name: 'loadSkillsFx',
 })
 
 // update `$allSkills` when `loadSkillsFx` succeeds
@@ -502,15 +506,13 @@ sample({
 // validate profile and continue to next step when `validateAndContinue` is called
 sample({
 	clock: validateAndContinue,
-	source: {
-		profileData: $profileData,
-	},
-	filter: ({ profileData }) => {
+	source: $profileData,
+	filter: (profileData) => {
 		if (!profileData) return false
 		const result = validateProfileData(profileData)
 		return !result.success
 	},
-	fn: ({ profileData }) => {
+	fn: (profileData) => {
 		const result = validateProfileData(profileData!)
 		const fieldErrors: ProfileErrors = {}
 		if (!result.success) {
@@ -527,10 +529,8 @@ sample({
 // go to next step if validation succeeded
 sample({
 	clock: validateAndContinue,
-	source: {
-		profileData: $profileData,
-	},
-	filter: ({ profileData }) => {
+	source: $profileData,
+	filter: (profileData) => {
 		if (!profileData) return false
 		const result = validateProfileData(profileData)
 		return result.success
@@ -657,6 +657,7 @@ sample({
 		profileData: {
 			name: profile!.name,
 			bio: profile!.kind === 'freelancer' ? profile!.bio : undefined,
+			specialization: profile!.kind === 'freelancer' ? profile!.specialization : undefined,
 			companyName: profile!.kind === 'client' ? profile!.companyName : undefined,
 			companyRole: profile!.kind === 'client' ? profile!.companyRole : undefined,
 			skills: role === 'freelancer' && skills.length > 0 ? skills : undefined,
