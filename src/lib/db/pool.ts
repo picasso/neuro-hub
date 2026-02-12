@@ -1,11 +1,10 @@
-import { includes } from 'lodash'
 import pg from 'pg'
 
 const { Pool } = pg
 
-const connectionString = process.env.DATABASE_URL
-const isRailway = includes(connectionString, 'railway.app')
-const isLocalhost = includes(connectionString, 'localhost') || !connectionString
+const connectionString = process.env.DATABASE_URL ?? ''
+const isRailway = connectionString.includes('railway.app')
+const isLocalhost = connectionString.includes('localhost') || !connectionString
 
 export const pool = new Pool(
 	isLocalhost

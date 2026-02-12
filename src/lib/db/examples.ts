@@ -36,8 +36,12 @@ export async function exampleQueries() {
 	const insertedUser = await kysely
 		.insertInto('users')
 		.values({
+			id: 'example-user-id',
 			email: 'new@example.com',
+			name: 'New User',
 			role: 'freelancer',
+			emailVerified: false,
+			image: null,
 		})
 		.returningAll()
 		.executeTakeFirst()
@@ -45,20 +49,23 @@ export async function exampleQueries() {
 	await kysely
 		.updateTable('users')
 		.set({
-			email_verified: true,
-			email_verified_at: new Date(),
+			emailVerified: true,
 		})
-		.where('id', '=', 'some-uuid')
+		.where('id', '=', 'example-user-id')
 		.execute()
 
-	await kysely.deleteFrom('users').where('id', '=', 'some-uuid').execute()
+	await kysely.deleteFrom('users').where('id', '=', 'example-user-id').execute()
 
 	const transaction = await kysely.transaction().execute(async (trx) => {
 		const user = await trx
 			.insertInto('users')
 			.values({
+				id: 'example-tx-user-id',
 				email: 'tx@example.com',
+				name: 'Tx User',
 				role: 'client',
+				emailVerified: false,
+				image: null,
 			})
 			.returningAll()
 			.executeTakeFirstOrThrow()
@@ -66,6 +73,7 @@ export async function exampleQueries() {
 		await trx
 			.insertInto('user_profiles')
 			.values({
+				id: user.id,
 				user_id: user.id,
 				name: 'Test User',
 			})

@@ -10,17 +10,43 @@ export type Generated<T> =
 		? ColumnType<S, I | undefined, U>
 		: ColumnType<T, T | undefined, T>
 
+export type Json = JsonValue
+
+export type JsonArray = JsonValue[]
+
+export type JsonObject = {
+	[x: string]: JsonValue | undefined
+}
+
+export type JsonPrimitive = boolean | number | string | null
+
+export type JsonValue = JsonArray | JsonObject | JsonPrimitive
+
 export type Timestamp = ColumnType<Date, Date | string, Date | string>
 
-export interface Account {
-	access_token: string | null
-	account_id: string
-	created_at: Generated<Timestamp | null>
-	expires_at: Timestamp | null
-	id: Generated<string>
+export interface Accounts {
+	accessToken: string | null
+	accessTokenExpiresAt: Timestamp | null
+	accountId: string
+	createdAt: Generated<Timestamp>
+	id: string
+	idToken: string | null
 	password: string | null
-	provider_id: string
-	refresh_token: string | null
+	providerId: string
+	refreshToken: string | null
+	refreshTokenExpiresAt: Timestamp | null
+	scope: string | null
+	updatedAt: Timestamp
+	userId: string
+}
+
+export interface FreelancerProfiles {
+	availability: string | null
+	created_at: Generated<Timestamp | null>
+	experience: string | null
+	hourly_rate: number | null
+	id: Generated<string>
+	specialization: string | null
 	updated_at: Generated<Timestamp | null>
 	user_id: string
 }
@@ -37,19 +63,35 @@ export interface KnexMigrationsLock {
 	is_locked: number | null
 }
 
-export interface Sessions {
+export interface PortfolioItems {
+	category: string | null
 	created_at: Generated<Timestamp | null>
-	expires_at: Timestamp
+	description: string | null
+	freelancer_profile_id: string
 	id: Generated<string>
-	ip_address: string | null
-	user_agent: string | null
-	user_id: string
+	media_type: string | null
+	media_url: string
+	title: string
+	tools_used: Json | null
+	updated_at: Generated<Timestamp | null>
+}
+
+export interface Sessions {
+	createdAt: Generated<Timestamp>
+	expiresAt: Timestamp
+	id: string
+	ipAddress: string | null
+	token: string
+	updatedAt: Timestamp
+	userAgent: string | null
+	userId: string
 }
 
 export interface Skills {
 	category: string | null
 	created_at: Generated<Timestamp | null>
-	id: Generated<string>
+	id: string
+	legacy_id: string | null
 	name: string
 }
 
@@ -59,7 +101,7 @@ export interface UserProfiles {
 	company_name: string | null
 	company_role: string | null
 	created_at: Generated<Timestamp | null>
-	id: Generated<string>
+	id: string
 	name: string | null
 	search_vector: Generated<string | null>
 	updated_at: Generated<Timestamp | null>
@@ -67,42 +109,44 @@ export interface UserProfiles {
 }
 
 export interface Users {
-	created_at: Generated<Timestamp | null>
+	createdAt: Generated<Timestamp>
 	email: string
-	email_verified: Generated<boolean | null>
-	email_verified_at: Timestamp | null
-	id: Generated<string>
+	emailVerified: boolean
+	id: string
 	image: string | null
-	name: string | null
-	password_hash: string | null
+	name: string
 	role: string
-	updated_at: Generated<Timestamp | null>
+	updatedAt: Generated<Timestamp>
 }
 
 export interface UserSkills {
 	created_at: Generated<Timestamp | null>
-	id: Generated<string>
+	id: string
+	legacy_skill_id: string | null
 	proficiency_level: string | null
 	skill_id: string
 	user_id: string
 }
 
-export interface Verification {
-	created_at: Generated<Timestamp | null>
-	expires_at: Timestamp
-	id: Generated<string>
+export interface Verifications {
+	createdAt: Generated<Timestamp>
+	expiresAt: Timestamp
+	id: string
 	identifier: string
+	updatedAt: Generated<Timestamp>
 	value: string
 }
 
 export interface DB {
-	account: Account
+	accounts: Accounts
+	freelancer_profiles: FreelancerProfiles
 	knex_migrations: KnexMigrations
 	knex_migrations_lock: KnexMigrationsLock
+	portfolio_items: PortfolioItems
 	sessions: Sessions
 	skills: Skills
 	user_profiles: UserProfiles
 	user_skills: UserSkills
 	users: Users
-	verification: Verification
+	verifications: Verifications
 }
