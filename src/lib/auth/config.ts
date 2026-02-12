@@ -134,6 +134,7 @@ export const auth = betterAuth({
 					profileData?: {
 						name: string
 						bio?: string
+						specialization?: string
 						companyName?: string
 						companyRole?: string
 						skills?: Array<{
@@ -150,16 +151,54 @@ export const auth = betterAuth({
 						await kysely
 							.insertInto('user_profiles')
 							.values({
-								id: nanoid(),
+								id: userId,
 								user_id: userId,
 								name: profileData.name,
 								bio: profileData.bio || null,
 								company_name: profileData.companyName || null,
 								company_role: profileData.companyRole || null,
+								updated_at: new Date(),
 							})
+							.onConflict((oc) =>
+								oc.column('user_id').doUpdateSet({
+									name: profileData.name,
+									bio: profileData.bio || null,
+									company_name: profileData.companyName || null,
+									company_role: profileData.companyRole || null,
+									updated_at: new Date(),
+								}),
+							)
 							.execute()
 
+						// Create/update freelancer profile if freelancer-only fields are present.
+						// We infer "freelancer" either by having specialization or skills in the sign-up payload.
+						const isFreelancerPayload =
+							!!profileData.specialization ||
+							(Array.isArray(profileData.skills) && profileData.skills.length > 0)
+
+						if (isFreelancerPayload) {
+							await kysely
+								.insertInto('freelancer_profiles')
+								.values({
+									user_id: userId,
+									specialization: profileData.specialization ?? null,
+									updated_at: new Date(),
+								})
+								.onConflict((oc) =>
+									oc.column('user_id').doUpdateSet({
+										specialization: profileData.specialization ?? null,
+										updated_at: new Date(),
+									}),
+								)
+								.execute()
+						}
+
 						if (profileData.skills && profileData.skills.length > 0) {
+							await kysely
+								.deleteFrom('user_skills')
+								.where('user_id', '=', userId)
+								.execute()
+
 							const userSkills = map(profileData.skills, (skill) => ({
 								id: nanoid(),
 								user_id: userId,
