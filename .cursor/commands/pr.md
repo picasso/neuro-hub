@@ -28,10 +28,12 @@ Create well-structured PR following project conventions.
    - Verify active account has access to target repository
    - For organization repos, ensure correct account is active
    - Test access: `gh repo view <owner>/<repo> --json name,owner`
-   - **If authentication is NOT confirmed:**
+   - **If the needed account is already logged in but not active:**
+     - Automatically switch to it: `gh auth switch -u <account>`
+     - Re-run `gh auth status` and `gh repo view <owner>/<repo> --json name,owner` to confirm access
+   - **If authentication is still NOT confirmed:**
      - **STOP and ask the user:**
        - Which account should be active?
-       - Should we switch accounts? (`gh auth switch -u <account>`)
        - Should we proceed with web interface instead?
      - **Do not proceed** until user confirms the solution
    - **Only continue to step 1** after authentication is verified working
