@@ -32,9 +32,3 @@
 - [ ] Types are properly defined
 - [ ] No linter warnings
 - [ ] Documentation updated (if needed)
-
-## Related Issues
-
-<!-- Link related issues -->
-
-Closes #
