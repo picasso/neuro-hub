@@ -21,7 +21,7 @@ This logger wraps Effector domains and automatically logs all events, stores, an
 // ❌ BAD - anonymous units with auto-generated IDs
 const $users = domain.createStore([])
 const userAdded = domain.createEvent()
-const loadUsersFx = domain.createEffect(handler)
+const loadUsersFx = domain.createEffect({ handler, name: 'loadUsersFx' })
 
 // ✅ GOOD - named units that appear clearly in logs
 const $users = domain.createStore([], { name: '$users' })
@@ -399,7 +399,7 @@ This ensures zero performance impact in production.
 // BAD - will show as "store-1", "event-2" in logs
 const $users = domain.createStore([])
 const userAdded = domain.createEvent()
-const loadUsersFx = domain.createEffect(handler)
+const loadUsersFx = domain.createEffect({ handler, name: 'loadUsersFx' })
 ```
 
 ### ✅ Named Units

@@ -67,3 +67,6 @@ logs
 
 # OS
 Thumbs.db
+
+# Cursor project skills (keep local)
+.cursor/skills/railway-*

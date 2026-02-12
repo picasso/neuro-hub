@@ -116,21 +116,21 @@
 ## ЭТАП 3: Профиль фрилансера
 
 ### 3.1 База данных профиля
-- [ ] Миграция таблицы `freelancer_profiles` (user_id, hourly_rate, availability, bio, experience)
-- [ ] Миграция таблицы `portfolio_items` (id, user_id, title, description, media_url, category, tools_used)
+- [ ] Миграция таблицы `freelancer_profiles` (id UUID, user_id TEXT, hourly_rate, availability, bio/experience)
+- [ ] Миграция таблицы `portfolio_items` (id UUID, freelancer_profile_id UUID, title, description, media_url, category, tools_used)
 - [ ] Миграция таблицы `huggingface_spaces` (id, user_id, space_url, title, description)
 - [ ] Миграция таблицы `reviews` (id, project_id, client_id, freelancer_id, rating, comment)
 
 ### 3.2 API endpoints профиля фрилансера
-- [ ] `GET /api/freelancers/:id` - получение профиля фрилансера
-- [ ] `PUT /api/freelancers/:id` - обновление профиля
-- [ ] `GET /api/freelancers/:id/portfolio` - получение портфолио
-- [ ] `POST /api/freelancers/:id/portfolio` - добавление работы в портфолио
-- [ ] `DELETE /api/freelancers/:id/portfolio/:itemId` - удаление из портфолио
-- [ ] `GET /api/freelancers/:id/reviews` - получение отзывов
-- [ ] `GET /api/freelancers/:id/stats` - статистика фрилансера
-- [ ] `POST /api/freelancers/:id/huggingface` - добавление HF Space
-- [ ] `DELETE /api/freelancers/:id/huggingface/:spaceId` - удаление HF Space
+- [ ] `GET /api/freelancers/:profileId` - получение профиля фрилансера (domain UUID)
+- [ ] `PUT /api/freelancers/:profileId` - обновление профиля (owner-only, ownership через freelancer_profiles.user_id)
+- [ ] `GET /api/freelancers/:profileId/portfolio` - получение портфолио
+- [ ] `POST /api/freelancers/:profileId/portfolio` - добавление работы в портфолио
+- [ ] `DELETE /api/freelancers/:profileId/portfolio/:itemId` - удаление из портфолио
+- [ ] `GET /api/freelancers/:profileId/reviews` - получение отзывов
+- [ ] `GET /api/freelancers/:profileId/stats` - статистика фрилансера
+- [ ] `POST /api/freelancers/:profileId/huggingface` - добавление HF Space
+- [ ] `DELETE /api/freelancers/:profileId/huggingface/:spaceId` - удаление HF Space
 
 ### 3.3 UI профиля фрилансера
 - [ ] Страница профиля с основной информацией
