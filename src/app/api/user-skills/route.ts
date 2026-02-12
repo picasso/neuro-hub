@@ -1,9 +1,9 @@
 import { map } from 'lodash'
+import { nanoid } from 'nanoid'
 import { requireAuth } from '@/lib/auth/server'
 import { kysely } from '@/lib/db'
 import { addUserSkillsSchema } from '@/lib/validations'
 import { createdResponse, errorResponse, successResponse } from '@/utils/api-response'
-import { UnauthorizedError } from '@/utils/errors'
 
 /**
  * @swagger
@@ -59,10 +59,10 @@ import { UnauthorizedError } from '@/utils/errors'
  *                     properties:
  *                       id:
  *                         type: string
- *                         format: uuid
+ *                         example: "V1StGXR8_Z5jdHi6B-myT"
  *                       userId:
  *                         type: string
- *                         format: uuid
+ *                         example: "usr_2aF9k3LmN0pQ"
  *                       skillId:
  *                         type: string
  *                         format: uuid
@@ -87,26 +87,26 @@ import { UnauthorizedError } from '@/utils/errors'
 export async function POST(request: Request) {
 	try {
 		const session = await requireAuth()
-		if (!session) {
-			throw new UnauthorizedError()
-		}
 
 		const body = await request.json()
 		const validatedData = addUserSkillsSchema.parse(body)
 
-		await kysely.deleteFrom('user_skills').where('user_id', '=', session.user.id).execute()
+		const insertedSkills = await kysely.transaction().execute(async (trx) => {
+			await trx.deleteFrom('user_skills').where('user_id', '=', session.user.id).execute()
 
-		const userSkillsToInsert = map(validatedData.skills, (skill) => ({
-			user_id: session.user.id,
-			skill_id: skill.skillId,
-			proficiency_level: skill.proficiencyLevel,
-		}))
+			const userSkillsToInsert = map(validatedData.skills, (skill) => ({
+				id: nanoid(),
+				user_id: session.user.id,
+				skill_id: skill.skillId,
+				proficiency_level: skill.proficiencyLevel,
+			}))
 
-		const insertedSkills = await kysely
-			.insertInto('user_skills')
-			.values(userSkillsToInsert)
-			.returningAll()
-			.execute()
+			return await trx
+				.insertInto('user_skills')
+				.values(userSkillsToInsert)
+				.returningAll()
+				.execute()
+		})
 
 		const formattedSkills = map(insertedSkills, (skill) => ({
 			id: skill.id,
@@ -150,10 +150,10 @@ export async function POST(request: Request) {
  *                     properties:
  *                       id:
  *                         type: string
- *                         format: uuid
+ *                         example: "V1StGXR8_Z5jdHi6B-myT"
  *                       userId:
  *                         type: string
- *                         format: uuid
+ *                         example: "usr_2aF9k3LmN0pQ"
  *                       skillId:
  *                         type: string
  *                         format: uuid
@@ -182,9 +182,6 @@ export async function POST(request: Request) {
 export async function GET() {
 	try {
 		const session = await requireAuth()
-		if (!session) {
-			throw new UnauthorizedError()
-		}
 
 		const userSkills = await kysely
 			.selectFrom('user_skills')

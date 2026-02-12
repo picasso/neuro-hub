@@ -1,6 +1,20 @@
+import { z } from 'zod'
 import { kysely } from '@/lib/db'
 import { paginationSchema } from '@/lib/validations'
 import { errorResponse, successResponse } from '@/utils/api-response'
+
+const skillsQuerySchema = paginationSchema.extend({
+	category: z
+		.enum([
+			'text_generation',
+			'image_generation',
+			'video_generation',
+			'audio_generation',
+			'programming',
+			'consulting',
+		])
+		.optional(),
+})
 
 /**
  * @swagger
@@ -59,8 +73,7 @@ export async function GET(request: Request) {
 		const { searchParams } = new URL(request.url)
 		const params = Object.fromEntries(searchParams.entries())
 
-		const { page, pageSize } = paginationSchema.parse(params)
-		const category = searchParams.get('category')
+		const { page, pageSize, category } = skillsQuerySchema.parse(params)
 
 		const offset = (page - 1) * pageSize
 

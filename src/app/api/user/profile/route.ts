@@ -2,7 +2,6 @@ import { requireAuth } from '@/lib/auth/server'
 import { kysely } from '@/lib/db'
 import { updateUserProfileSchema } from '@/lib/validations'
 import { errorResponse, successResponse } from '@/utils/api-response'
-import { UnauthorizedError } from '@/utils/errors'
 
 /**
  * @swagger
@@ -55,10 +54,10 @@ import { UnauthorizedError } from '@/utils/errors'
  *                   properties:
  *                     id:
  *                       type: string
- *                       format: uuid
+ *                       example: "usr_2aF9k3LmN0pQ"
  *                     userId:
  *                       type: string
- *                       format: uuid
+ *                       example: "usr_2aF9k3LmN0pQ"
  *                     name:
  *                       type: string
  *                     bio:
@@ -91,52 +90,37 @@ import { UnauthorizedError } from '@/utils/errors'
 export async function PUT(request: Request) {
 	try {
 		const session = await requireAuth()
-		if (!session) {
-			throw new UnauthorizedError()
-		}
 
 		const body = await request.json()
 		const validatedData = updateUserProfileSchema.parse(body)
 
-		const existingProfile = await kysely
-			.selectFrom('user_profiles')
-			.selectAll()
-			.where('user_id', '=', session.user.id)
-			.executeTakeFirst()
-
-		let profile
-
-		if (existingProfile) {
-			profile = await kysely
-				.updateTable('user_profiles')
-				.set({
+		const profile = await kysely
+			.insertInto('user_profiles')
+			.values({
+				id: session.user.id,
+				user_id: session.user.id,
+				name: validatedData.name,
+				bio: validatedData.bio,
+				avatar_url: validatedData.avatarUrl,
+				company_name: validatedData.companyName,
+				company_role: validatedData.companyRole,
+				updated_at: new Date(),
+			})
+			.onConflict((oc) =>
+				oc.column('user_id').doUpdateSet({
 					name: validatedData.name,
 					bio: validatedData.bio,
 					avatar_url: validatedData.avatarUrl,
 					company_name: validatedData.companyName,
 					company_role: validatedData.companyRole,
 					updated_at: new Date(),
-				})
-				.where('user_id', '=', session.user.id)
-				.returningAll()
-				.executeTakeFirstOrThrow()
-		} else {
-			profile = await kysely
-				.insertInto('user_profiles')
-				.values({
-					user_id: session.user.id,
-					name: validatedData.name,
-					bio: validatedData.bio,
-					avatar_url: validatedData.avatarUrl,
-					company_name: validatedData.companyName,
-					company_role: validatedData.companyRole,
-				})
-				.returningAll()
-				.executeTakeFirstOrThrow()
-		}
+				}),
+			)
+			.returningAll()
+			.executeTakeFirstOrThrow()
 
 		return successResponse({
-			id: profile.id,
+			id: profile.user_id,
 			userId: profile.user_id,
 			name: profile.name,
 			bio: profile.bio,
@@ -173,14 +157,16 @@ export async function PUT(request: Request) {
  *                   type: boolean
  *                   example: true
  *                 data:
+ *                   description: Profile or null if profile is not created yet
+ *                   nullable: true
  *                   type: object
  *                   properties:
  *                     id:
  *                       type: string
- *                       format: uuid
+ *                       example: "usr_2aF9k3LmN0pQ"
  *                     userId:
  *                       type: string
- *                       format: uuid
+ *                       example: "usr_2aF9k3LmN0pQ"
  *                     name:
  *                       type: string
  *                     bio:
@@ -203,19 +189,10 @@ export async function PUT(request: Request) {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *       404:
- *         description: Profile not found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
  */
 export async function GET() {
 	try {
 		const session = await requireAuth()
-		if (!session) {
-			throw new UnauthorizedError()
-		}
 
 		const profile = await kysely
 			.selectFrom('user_profiles')
@@ -228,7 +205,7 @@ export async function GET() {
 		}
 
 		return successResponse({
-			id: profile.id,
+			id: profile.user_id,
 			userId: profile.user_id,
 			name: profile.name,
 			bio: profile.bio,
