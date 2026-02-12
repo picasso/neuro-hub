@@ -1,6 +1,6 @@
 # Vercel Deployment - Быстрый старт
 
-Краткое руководство для быстрого деплоя NeuroHub на Vercel.
+Краткое руководство для быстрого деплоя NeuroGig на Vercel.
 
 ## 🚀 Шаг 1: Создайте проект на Vercel
 
@@ -51,7 +51,7 @@ curl https://your-app.vercel.app/api/health
 ## 🌐 Шаг 5: Настройте custom domain (опционально)
 
 1. **Settings** → **Domains** → **Add**
-2. Введите ваш домен: `neurohub.com`
+2. Введите ваш домен: `neurogig.ru`
 3. Добавьте DNS записи у вашего DNS провайдера:
 
    ```yaml
@@ -72,8 +72,8 @@ curl https://your-app.vercel.app/api/health
 После добавления домена:
 
 ```bash
-NEXT_PUBLIC_APP_URL=https://neurohub.com
-BETTER_AUTH_URL=https://neurohub.com
+NEXT_PUBLIC_APP_URL=https://neurogig.ru
+BETTER_AUTH_URL=https://neurogig.ru
 ```
 
 ## 📊 Шаг 6: Включите мониторинг (опционально)

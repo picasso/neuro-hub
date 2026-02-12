@@ -62,12 +62,12 @@ yarn db:migrate:production
 
 ```bash
 # 1. Экспортируйте локальные данные
-export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/neurohub"
+export DATABASE_URL="postgresql://postgres:postgres@localhost:5433/neurogig"
 yarn db:export
 
 # 2. Импортируйте в Railway
 export RAILWAY_DATABASE_URL="postgresql://..."
-yarn db:import ./backups/neurohub_export_20260125_120000.sql
+yarn db:import ./backups/neurogig_export_20260125_120000.sql
 ```
 
 ## ✅ Шаг 5: Проверьте результат

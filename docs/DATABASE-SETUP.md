@@ -2,7 +2,10 @@
 
 ## Overview
 
-Проект использует PostgreSQL 16 с Knex.js в качестве query builder для работы с базой данных.
+Проект использует PostgreSQL 16.
+
+- **Knex** — только для миграций и seed’ов
+- **Kysely** — для всех runtime-запросов в приложении (type-safe SQL)
 
 ## Quick Start
 
@@ -17,7 +20,7 @@ cp env.example .env
 Убедитесь, что `DATABASE_URL` настроен правильно:
 
 ```env
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/neurohub
+DATABASE_URL=postgresql://postgres:postgres@localhost:5433/neurogig
 ```
 
 ### 2. Запуск PostgreSQL через Docker
@@ -73,88 +76,75 @@ yarn db:seed
 
 ### Текущие таблицы (после миграций)
 
-#### users
-Основная таблица пользователей:
+Ниже — “каноническая” схема в терминах последнего ADR: **auth IDs = TEXT**, **domain IDs = UUID**.
+Подробности и мотивация: см. `ARCHITECTURE-DECISIONS.md` (mixed IDs).
+
+#### Better Auth (core tables)
+
+Core таблицы Better Auth используют **opaque string IDs (TEXT)** и могут иметь camelCase колонки.
+
+#### users (Better Auth)
+
+- `id` (TEXT, Primary Key, opaque auth id)
+- `email` (TEXT)
+- `name` (TEXT)
+- `role` (TEXT: `freelancer | client`)
+- `emailVerified` (Boolean)
+- `image` (TEXT, nullable)
+- `createdAt`, `updatedAt` (Timestamps)
+
+#### user_profiles (owned-by-user, 1:1)
+
+- `user_id` (TEXT, FK → `users.id`, UNIQUE)
+- `id` (TEXT) — для новых записей **равен** `user_id` (см. ADR)
+- `name`, `avatar_url`, `bio`, `company_name`, `company_role`
+- `created_at`, `updated_at`
+
+#### skills (domain catalog)
+
 - `id` (UUID, Primary Key)
-- `email` (String, Unique)
-- `password_hash` (String, nullable для OAuth)
-- `role` (Enum: 'freelancer' | 'client')
-- `email_verified` (Boolean)
-- `created_at`, `updated_at` (Timestamps)
+- `legacy_id` (TEXT, nullable) — сохранён для отладки/rollback после миграции id → UUID
+- `name` (unique), `category`, `created_at`
 
-Индексы: `email`, `role`
+#### user_skills (user ↔ skills)
 
-#### user_profiles
-Профили пользователей:
-- `id` (UUID, Primary Key)
-- `user_id` (UUID, Foreign Key -> users.id, Unique)
-- `name` (String)
-- `avatar_url` (String)
-- `bio` (Text)
-- `company_name` (String, для клиентов)
-- `company_role` (String, для клиентов)
-- `created_at`, `updated_at` (Timestamps)
-
-#### sessions
-Сессии для Better Auth:
-- `id` (UUID, Primary Key)
-- `user_id` (UUID, Foreign Key -> users.id)
-- `token` (String, Unique)
-- `expires_at` (Timestamp)
-- `created_at` (Timestamp)
-
-Индексы: `user_id`, `token`, `expires_at`
-
-#### skills
-Предустановленные навыки для фрилансеров:
-- `id` (UUID, Primary Key)
-- `name` (String, Unique)
-- `category` (Enum: text_generation, image_generation, video_generation, audio_generation, programming, consulting)
-- `created_at` (Timestamp)
-
-#### user_skills
-Связь пользователей с навыками:
-- `id` (UUID, Primary Key)
-- `user_id` (UUID, Foreign Key -> users.id)
-- `skill_id` (UUID, Foreign Key -> skills.id)
-- `proficiency_level` (Enum: beginner, intermediate, advanced, expert)
-- `created_at` (Timestamp)
+- `id` (TEXT, Primary Key)
+- `user_id` (TEXT, FK → `users.id`)
+- `skill_id` (UUID, FK → `skills.id`)
+- `legacy_skill_id` (TEXT, nullable) — сохранён после миграции
+- `proficiency_level`, `created_at`
 
 Unique constraint: (`user_id`, `skill_id`)
 
-## Test Data
+#### freelancer_profiles (domain)
 
-После запуска `yarn db:seed` в базе будут созданы:
+- `id` (UUID, Primary Key)
+- `user_id` (TEXT, FK → `users.id`, UNIQUE)
+- `specialization`, `hourly_rate`, `availability`, `experience`
+- `created_at`, `updated_at`
 
-### Тестовые пользователи
+#### portfolio_items (domain)
 
-**Фрилансер:**
-- Email: `freelancer@test.com`
-- Password: `password` (хеш уже в БД)
-- Навыки: GPT-4 (expert), Midjourney (advanced), LangChain (intermediate)
+- `id` (UUID, Primary Key)
+- `freelancer_profile_id` (UUID, FK → `freelancer_profiles.id`)
+- `media_url`, `media_type`, `title`, `description`, `category`, `tools_used`
+- `created_at`, `updated_at`
 
-**Клиент:**
-- Email: `client@test.com`
-- Password: `password` (хеш уже в БД)
-- Компания: Tech Startup Inc
+## Seed Data
 
-### Предустановленные навыки
-
-- **Text Generation:** GPT-4, Claude 3.5, Gemini Pro, и др.
-- **Image Generation:** Midjourney, Stable Diffusion, DALL-E 3, и др.
-- **Video Generation:** Runway, Pika Labs, Synthesia
-- **Audio Generation:** ElevenLabs, Murf AI, Suno AI
-- **Programming:** LangChain, OpenAI API, Hugging Face
-- **Consulting:** Prompt Engineering, AI Strategy
+После запуска `yarn db:seed` в базе будут **предустановленные навыки** (`skills`).
+Пользователи/профили не сидируются намеренно — они создаются через Better Auth и onboarding.
 
 ## Connection Pooling
 
-Knex.js настроен с connection pooling:
+Пул подключений настроен через `pg.Pool` (см. `src/lib/db/pool.ts`):
 
 ```typescript
-pool: {
-  min: 2,  // минимум 2 соединения
-  max: 10  // максимум 10 соединений
+{
+  max: 20,
+  min: 2,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 }
 ```
 
@@ -184,14 +174,14 @@ docker compose up -d postgres
 ### Ошибка подключения к БД
 
 ```bash
-# Проверить, что PostgreSQL слушает на порту 5432
+# Проверить, что PostgreSQL слушает на порту 5433 (docker-compose пробрасывает 5433 -> 5432)
 docker compose ps
 
 # Проверить переменную DATABASE_URL
 echo $DATABASE_URL
 
 # Проверить подключение напрямую
-docker compose exec postgres psql -U postgres -d neurohub -c "SELECT 1"
+docker compose exec postgres psql -U postgres -d neurogig -c "SELECT 1"
 ```
 
 ### Ошибка миграций

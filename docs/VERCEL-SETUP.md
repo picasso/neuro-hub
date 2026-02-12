@@ -1,6 +1,6 @@
 # Vercel Deployment Setup Guide
 
-Полное руководство по настройке Vercel для production деплоя NeuroHub.
+Полное руководство по настройке Vercel для production деплоя NeuroGig.
 
 ## Оглавление
 
@@ -88,7 +88,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
 ```bash
 RESEND_API_KEY=re_xxxxxxxxxxxxx
-EMAIL_FROM=NeuroHub <noreply@your-domain.com>
+EMAIL_FROM=NeuroGig <noreply@your-domain.com>
 EMAIL_REPLY_TO=support@your-domain.com
 ```
 
@@ -107,8 +107,8 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 #### File Upload (если используете)
 
 ```bash
-UPLOADTHING_SECRET=sk_live_xxxxxxxxxxxxx
-UPLOADTHING_APP_ID=your_app_id
+# Vercel Blob (portfolio uploads)
+BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 ```
 
 #### Monitoring (опционально)
@@ -192,14 +192,14 @@ curl https://your-app.vercel.app/api/health
 
 1. Откройте **Settings** → **Domains**
 2. Нажмите **Add**
-3. Введите ваш домен: `neurohub.com`
+3. Введите ваш домен: `neurogig.ru`
 4. Нажмите **Add**
 
 ### 2. Настройка DNS
 
 Vercel покажет DNS записи для добавления:
 
-#### Для root domain (neurohub.com)
+#### Для root domain (neurogig.ru)
 
 ```zsh
 Type: A
@@ -235,8 +235,8 @@ Value: cname.vercel-dns.com
 После добавления домена обновите:
 
 ```bash
-NEXT_PUBLIC_APP_URL=https://neurohub.com
-BETTER_AUTH_URL=https://neurohub.com
+NEXT_PUBLIC_APP_URL=https://neurogig.ru
+BETTER_AUTH_URL=https://neurogig.ru
 ```
 
 Vercel автоматически пересоберет проект.

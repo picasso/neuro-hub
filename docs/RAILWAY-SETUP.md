@@ -1,6 +1,6 @@
 # Railway PostgreSQL Setup Guide
 
-Полное руководство по настройке Railway PostgreSQL для production окружения NeuroHub.
+Полное руководство по настройке Railway PostgreSQL для production окружения NeuroGig.
 
 ## Оглавление
 
@@ -108,13 +108,13 @@ yarn db:migrate:production
 
 ```bash
 # 1. Убедитесь, что DATABASE_URL указывает на локальную БД
-export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/neurohub"
+export DATABASE_URL="postgresql://postgres:postgres@localhost:5433/neurogig"
 
 # 2. Запустите экспорт
 yarn db:export
 ```
 
-Файл будет сохранен в `./backups/neurohub_export_YYYYMMDD_HHMMSS.sql`
+Файл будет сохранен в `./backups/neurogig_export_YYYYMMDD_HHMMSS.sql`
 
 ### Импорт данных в Railway
 
@@ -123,7 +123,7 @@ yarn db:export
 export RAILWAY_DATABASE_URL="<railway_database_url>"
 
 # 2. Запустите импорт
-yarn db:import ./backups/neurohub_export_20260125_120000.sql
+yarn db:import ./backups/neurogig_export_20260125_120000.sql
 ```
 
 ⚠️ **ВНИМАНИЕ**: Импорт перезапишет существующие данные!
