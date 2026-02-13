@@ -6,6 +6,7 @@ import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
+import Stack from '@mui/material/Stack'
 import packageJson from '../../../package.json'
 import { Icon } from './icon'
 import { TS } from './text-styled'
@@ -25,7 +26,7 @@ export function Footer() {
 			<Container maxWidth="lg">
 				<Grid container spacing={4}>
 					<Grid size={{ xs: 12, sm: 4 }}>
-						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+						<Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
 							<TS variant="h6">NeuroGig</TS>
 							<Chip
 								label={`${packageJson.version}`}
@@ -33,7 +34,7 @@ export function Footer() {
 								color="primary"
 								sx={{ opacity: 0.7 }}
 							/>
-						</Box>
+						</Stack>
 						<TS variant="body2" color="text.secondary">
 							Платформа для фриланса в сфере генеративного ИИ
 						</TS>
@@ -43,28 +44,28 @@ export function Footer() {
 						<TS variant="h6" gutterBottom>
 							Для фрилансеров
 						</TS>
-						<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+						<Stack spacing={1}>
 							<Link href="/projects" color="text.secondary" underline="hover">
 								Найти проекты
 							</Link>
 							<Link href="/how-it-works" color="text.secondary" underline="hover">
 								Как это работает
 							</Link>
-						</Box>
+						</Stack>
 					</Grid>
 
 					<Grid size={{ xs: 12, sm: 4 }}>
 						<TS variant="h6" gutterBottom>
 							Для заказчиков
 						</TS>
-						<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+						<Stack spacing={1}>
 							<Link href="/freelancers" color="text.secondary" underline="hover">
 								Найти фрилансера
 							</Link>
 							<Link href="/post-project" color="text.secondary" underline="hover">
 								Разместить проект
 							</Link>
-						</Box>
+						</Stack>
 					</Grid>
 				</Grid>
 
@@ -81,7 +82,7 @@ export function Footer() {
 						gap: 2,
 					}}
 				>
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+					<Stack direction="row" alignItems="center" spacing={1}>
 						<Icon name="email" sx={{ fontSize: 20, color: 'text.secondary' }} />
 						<Link
 							href={`mailto:${contactContent.email}`}
@@ -91,9 +92,9 @@ export function Footer() {
 						>
 							{contactContent.email}
 						</Link>
-					</Box>
+					</Stack>
 
-					<Box sx={{ display: 'flex', gap: 1 }}>
+					<Stack direction="row" spacing={1}>
 						<IconButton
 							component="a"
 							href={contactContent.social.github}
@@ -134,7 +135,7 @@ export function Footer() {
 						>
 							<Icon name="telegram" />
 						</IconButton>
-					</Box>
+					</Stack>
 				</Box>
 
 				<Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>

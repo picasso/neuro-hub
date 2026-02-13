@@ -9,14 +9,15 @@
 Экспорт данных из локальной PostgreSQL базы данных.
 
 **Использование:**
+
 ```bash
-export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/neurohub"
+export DATABASE_URL="postgresql://postgres:postgres@localhost:5433/neurogig"
 yarn db:export
 ```
 
 **Что делает:**
 - Создает полный дамп базы данных (структура + данные)
-- Сохраняет в `./backups/neurohub_export_YYYYMMDD_HHMMSS.sql`
+- Сохраняет в `./backups/neurogig_export_YYYYMMDD_HHMMSS.sql`
 - Использует `pg_dump` с флагами `--no-owner --no-acl`
 
 **Требования:**
@@ -30,9 +31,10 @@ yarn db:export
 Импорт данных в Railway PostgreSQL базу данных.
 
 **Использование:**
+
 ```bash
 export RAILWAY_DATABASE_URL="postgresql://..."
-yarn db:import ./backups/neurohub_export_20260125_120000.sql
+yarn db:import ./backups/neurogig_export_20260125_120000.sql
 ```
 
 **Что делает:**
@@ -55,6 +57,7 @@ yarn db:import ./backups/neurohub_export_20260125_120000.sql
 Безопасный запуск миграций в production окружении.
 
 **Использование:**
+
 ```bash
 export DATABASE_URL="<railway_database_url>"
 yarn db:migrate:production
@@ -79,6 +82,7 @@ yarn db:migrate:production
 Создание бэкапа Railway PostgreSQL базы данных.
 
 **Использование:**
+
 ```bash
 export RAILWAY_DATABASE_URL="postgresql://..."
 yarn db:backup:railway
@@ -98,11 +102,13 @@ yarn db:backup:railway
 ## Установка зависимостей
 
 ### macOS
+
 ```bash
 brew install postgresql
 ```
 
 ### Ubuntu/Debian
+
 ```bash
 sudo apt-get update
 sudo apt-get install postgresql-client
@@ -119,12 +125,12 @@ sudo apt-get install postgresql-client
 
 ```bash
 # 1. Экспортируйте локальные данные
-export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/neurohub"
+export DATABASE_URL="postgresql://postgres:postgres@localhost:5433/neurogig"
 yarn db:export
 
 # 2. Импортируйте в Railway
 export RAILWAY_DATABASE_URL="<railway_url>"
-yarn db:import ./backups/neurohub_export_20260125_120000.sql
+yarn db:import ./backups/neurogig_export_20260125_120000.sql
 ```
 
 ### Регулярные бэкапы Railway
@@ -152,10 +158,10 @@ yarn db:migrate:rollback
 
 ## Переменные окружения
 
-| Переменная | Описание | Где использовать |
-|------------|----------|------------------|
-| `DATABASE_URL` | URL локальной или Railway БД | export-data.sh, migrate-production.sh |
-| `RAILWAY_DATABASE_URL` | URL Railway БД | import-data.sh, backup-railway.sh |
+| Переменная             | Описание                     | Где использовать                          |
+| ---------------------- | ---------------------------- | ----------------------------------------- |
+| `DATABASE_URL`         | URL локальной или Railway БД | `export-data.sh`, `migrate-production.sh` |
+| `RAILWAY_DATABASE_URL` | URL Railway БД               | `import-data.sh`, `backup-railway.sh`     |
 
 ---
 
@@ -184,6 +190,7 @@ yarn db:migrate:rollback
 ### Permission denied
 
 Убедитесь, что скрипты исполняемые:
+
 ```bash
 chmod +x scripts/db/*.sh
 ```

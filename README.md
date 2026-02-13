@@ -1,10 +1,10 @@
-# NeuroHub
+# NeuroGig
 
 Platform for freelancing in the field of generative AI.
 
 ## 📋 Overview
 
-NeuroHub is a specialized freelance marketplace connecting AI specialists with clients who need generative AI services. The platform focuses on modern generative models (GPT-4, Midjourney, Stable Diffusion, DALL-E, etc.) and provides unique features for showcasing AI capabilities.
+NeuroGig is a specialized freelance marketplace connecting AI specialists with clients who need generative AI services. The platform focuses on modern generative models (GPT-4, Midjourney, Stable Diffusion, DALL-E, etc.) and provides unique features for showcasing AI capabilities.
 
 Key features:
 
@@ -33,7 +33,9 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
 - **API**: Next.js API Routes (RESTful)
 - **API Documentation**: OpenAPI 3.0 (Scalar)
 - **Database**: PostgreSQL 16
-- **Query Builder**: Knex.js 3+
+- **Query Builder**:
+  - Knex (migrations + seeds only)
+  - Kysely (runtime queries in the app)
 - **Authentication**: Better Auth 1+ (cookie-based sessions, OAuth)
 
 ### Development Tools
@@ -96,7 +98,7 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
     NODE_ENV=development
     PORT=3000
     NEXT_PUBLIC_APP_URL=http://localhost:3000
-    DATABASE_URL=postgresql://postgres:postgres@localhost:5432/neurohub
+    DATABASE_URL=postgresql://postgres:postgres@localhost:5433/neurogig
     BETTER_AUTH_SECRET=your-secret-key-here
     BETTER_AUTH_URL=http://localhost:3000
     ```
@@ -104,13 +106,13 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
 4. **Start the database**
 
     ```bash
-    docker-compose up -d postgres
+    docker compose up -d postgres
     ```
 
 5. **Run database migrations**
 
     ```bash
-    yarn knex migrate:latest
+    yarn db:migrate
     ```
 
 6. **Start development server**
@@ -176,16 +178,16 @@ See [docs/RAILWAY-SETUP.md](docs/RAILWAY-SETUP.md) for Railway PostgreSQL setup 
 
 ```bash
 # Start all services
-docker-compose up
+docker compose up
 
 # Start in detached mode
-docker-compose up -d
+docker compose up -d
 
 # Stop services
-docker-compose down
+docker compose down
 
 # View logs
-docker-compose logs -f app
+docker compose logs -f app
 ```
 
 ### Production Build
@@ -215,6 +217,9 @@ NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
 DATABASE_URL=<your-railway-database-url>
 BETTER_AUTH_SECRET=<generate-secure-random-string>
 BETTER_AUTH_URL=https://your-app.vercel.app
+
+# Vercel Blob (portfolio uploads)
+BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 ```
 
 **Documentation:**

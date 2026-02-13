@@ -12,4 +12,10 @@ export {
 	updated,
 } from './debug-effector'
 
-export { genericDomain, genericMuteDomain, metaDomain, onboardingDomain } from './watched'
+export {
+	authDomain,
+	genericDomain,
+	genericMuteDomain,
+	metaDomain,
+	onboardingDomain,
+} from './watched'

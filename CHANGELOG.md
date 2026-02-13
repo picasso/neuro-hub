@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.3] - 2026-02-13
+
+### Added
+- Freelancer profile (Stage 3):
+  - Public profile page `/freelancers/[profileId]` with skills and portfolio gallery
+  - Portfolio items CRUD with direct uploads to Vercel Blob
+  - Dashboard `/dashboard` for editing freelancer profile and portfolio
+  - API endpoints for freelancers, portfolio, and blob upload token exchange
+
+### Changed
+- Updated DEVELOPMENT-PLAN.md: marked Stage 3.1–3.3 tasks as completed (HF/reviews remain pending)
+
+### Fixed
+- Portfolio `tools_used` persistence for `jsonb` column
+- Role handling on sign-up: client users are created with `role=client` and do not get freelancer profiles
+
 ## [0.2.5] - 2026-02-06
 
 ### Added
@@ -123,6 +139,7 @@ All notable changes to this project will be documented in this file.
 - Comprehensive project documentation
 
 [0.2.5]: https://github.com/picasso/neuro-hub/compare/v0.2.2...v0.2.5
+[0.3.3]: https://github.com/picasso/neuro-hub/compare/v0.2.5...v0.3.3
 [0.2.2]: https://github.com/picasso/neuro-hub/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/picasso/neuro-hub/compare/v0.1.5...v0.2.1
 [0.1.5]: https://github.com/picasso/neuro-hub/compare/v0.1.4...v0.1.5

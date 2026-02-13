@@ -553,6 +553,38 @@ Only when:
 
 Use centralized wrapper components instead of direct MUI imports. This provides consistent API, better type safety, and easier refactoring.
 
+### 8.0 Layout: Stack vs Box
+
+**Rule:** Prefer `Stack` for simple flex layouts (row/column with spacing & alignment).
+
+❌ **Bad** - repeated `Box` + `display: 'flex'` everywhere:
+
+```tsx
+import Box from '@mui/material/Box'
+
+<Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+  <Link href="/a">A</Link>
+  <Link href="/b">B</Link>
+</Box>
+```
+
+✅ **Good** - `Stack` expresses intent and reduces noise:
+
+```tsx
+import Stack from '@mui/material/Stack'
+
+<Stack direction="row" spacing={2} alignItems="center">
+  <Link href="/a">A</Link>
+  <Link href="/b">B</Link>
+</Stack>
+```
+
+**When `Box` is still OK:**
+- you need a generic wrapper without “stack semantics”
+- you need custom CSS that is not simply “row/column + spacing”
+
+---
+
 ### 8.1 Icon component
 
 ❌ **Bad** - direct MUI icon imports:

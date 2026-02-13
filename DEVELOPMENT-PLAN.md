@@ -116,34 +116,35 @@
 ## ЭТАП 3: Профиль фрилансера
 
 ### 3.1 База данных профиля
-- [ ] Миграция таблицы `freelancer_profiles` (user_id, hourly_rate, availability, bio, experience)
-- [ ] Миграция таблицы `portfolio_items` (id, user_id, title, description, media_url, category, tools_used)
+- [x] Миграция таблицы `freelancer_profiles` (id UUID, user_id TEXT, hourly_rate, availability, bio/experience)
+- [x] Миграция таблицы `portfolio_items` (id UUID, freelancer_profile_id UUID, title, description, media_url, category, tools_used)
 - [ ] Миграция таблицы `huggingface_spaces` (id, user_id, space_url, title, description)
 - [ ] Миграция таблицы `reviews` (id, project_id, client_id, freelancer_id, rating, comment)
 
 ### 3.2 API endpoints профиля фрилансера
-- [ ] `GET /api/freelancers/:id` - получение профиля фрилансера
-- [ ] `PUT /api/freelancers/:id` - обновление профиля
-- [ ] `GET /api/freelancers/:id/portfolio` - получение портфолио
-- [ ] `POST /api/freelancers/:id/portfolio` - добавление работы в портфолио
-- [ ] `DELETE /api/freelancers/:id/portfolio/:itemId` - удаление из портфолио
-- [ ] `GET /api/freelancers/:id/reviews` - получение отзывов
-- [ ] `GET /api/freelancers/:id/stats` - статистика фрилансера
-- [ ] `POST /api/freelancers/:id/huggingface` - добавление HF Space
-- [ ] `DELETE /api/freelancers/:id/huggingface/:spaceId` - удаление HF Space
+- [x] `GET /api/freelancers/:profileId` - получение публичного профиля фрилансера (domain UUID)
+- [x] `PUT /api/freelancers/:profileId` - обновление профиля (owner-only, ownership через freelancer_profiles.user_id)
+- [x] `GET /api/freelancers/me` - получение/создание профиля текущего фрилансера (authed)
+- [x] `GET /api/freelancers/:profileId/portfolio` - получение портфолио
+- [x] `POST /api/freelancers/:profileId/portfolio` - добавление работы в портфолио
+- [x] `DELETE /api/freelancers/:profileId/portfolio/:itemId` - удаление из портфолио
+- [x] `POST /api/blob/portfolio-upload` - direct-upload token exchange для Vercel Blob (owner-only)
+- [ ] `GET /api/freelancers/:profileId/reviews` - получение отзывов
+- [ ] `GET /api/freelancers/:profileId/stats` - статистика фрилансера
+- [ ] `POST /api/freelancers/:profileId/huggingface` - добавление HF Space
+- [ ] `DELETE /api/freelancers/:profileId/huggingface/:spaceId` - удаление HF Space
 
 ### 3.3 UI профиля фрилансера
-- [ ] Страница профиля с основной информацией
-- [ ] Компонент карточки профиля (для листингов)
-- [ ] Секция навыков с тегами и уровнями владения
-- [ ] Галерея портфолио (изображения, видео, аудио, тексты)
-- [ ] Модальное окно детального просмотра работы из портфолио
+- [x] Страница профиля с основной информацией (публичная)
+- [x] Секция навыков с тегами и уровнями владения
+- [x] Галерея портфолио (изображения, видео, аудио, PDF)
+- [x] Модальное окно детального просмотра работы из портфолио
+- [x] Секция отзывов (UI заглушка)
+- [x] Секция статистики (UI заглушка)
+- [x] Dashboard `/dashboard` с guard-redirect на `/login?next=/dashboard`
+- [x] Форма редактирования профиля фрилансера
+- [x] Форма добавления/удаления работ в портфолио (с загрузкой медиа в Vercel Blob)
 - [ ] Встраивание Hugging Face Spaces через iframe
-- [ ] Секция отзывов с рейтингом
-- [ ] Секция статистики (графики с Effector)
-- [ ] Форма редактирования профиля
-- [ ] Форма добавления работы в портфолио
-- [ ] Форма добавления HF Space
 
 ### 3.4 Система рейтинга
 - [ ] Расчёт среднего рейтинга

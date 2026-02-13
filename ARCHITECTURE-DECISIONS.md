@@ -394,7 +394,56 @@ session: {
 
 **Дата решения:** 2026-01-28
 
-### 16. CLI Utilities: Centralized Approach
+### 16. Database Schema (Update): Mixed IDs вместо “Nanoid для всех”
+
+**Решение:** Уточняем решение из пункта 15.  
+Оставляем **TEXT/Nanoid** только там, где это диктует Better Auth (core auth tables), но вводим **UUID** для доменных сущностей продукта.
+
+- **Auth/Core (Better Auth):** `users.id` и core таблицы Better Auth (`sessions`, `accounts`, `verifications`) остаются **TEXT (opaque string IDs)**.
+- **Domain (наши сущности):** новые доменные таблицы используют **UUID primary key** (например: `freelancer_profiles.id`, `portfolio_items.id`, `projects.id`, `orders.id`, `reviews.id`).
+- Все связи доменных сущностей на пользователя делаем через `user_id: TEXT` (FK → `users.id`).
+
+**Почему меняем подход (почему “Nanoid для всех” больше не подходит):**
+- Better Auth действительно проще оставить на TEXT IDs (он генерирует ID до БД, и это уже работает у нас).
+- Но для доменных сущностей UUID дают стандартность и совместимость:
+  - стабильные публичные URL доменных ресурсов (не завязываемся на auth-id в URL)
+  - проще внешние интеграции/экспорт/аналитика
+  - единый формат идентификаторов для ресурсов продукта (портфолио/профиль/проекты/и т.д.)
+
+**Роутинг/публичные идентификаторы:**
+- Публичные страницы доменных ресурсов используют **domain UUID**:
+  - `/freelancers/[profileId]`, где `profileId = freelancer_profiles.id (UUID)`
+
+**Связи доменных сущностей (важно):**
+- `portfolio_items` привязываем к профилю фрилансера через `portfolio_items.freelancer_profile_id (UUID FK → freelancer_profiles.id)`.
+- Ownership проверяем через `freelancer_profiles.user_id (TEXT FK → users.id)`, а не через `portfolio_items.user_id`.
+
+**Правило миграций (чтобы не было дрейфа схемы):**
+- Применённые миграции считаем **immutable**: не редактируем “задним числом”.
+- Любые изменения схемы делаем **новой** миграцией.
+
+**Owned-by-user таблицы:**
+- `user_profiles` считаем **owned-by-user (1:1)**:
+  - идентификатор ресурса — `user_id`
+  - `user_profiles.id` не используем как публичный идентификатор (в API/URL)
+  - API профиля пользователя остаётся `GET/PUT /api/user/profile` (по сессии)
+
+**Миграции/технический план перехода:**
+1. **Мигрировать `skills.id` → UUID**, потому что `skills` — доменная сущность/справочник:
+    - создать новый UUID для каждой строки `skills`
+    - обновить ссылки `user_skills.skill_id` по маппингу старый id → новый UUID
+    - обновить seed `001_skills.ts`, чтобы больше не генерировал `nanoid()`
+2. Обновить Zod валидации и swagger примеры под mixed IDs:
+    - `userId` (auth) — string (TEXT), **не UUID**
+    - `skillId/profileId/itemId/...` (domain) — UUID
+3. Обновить Kysely types (`yarn db:generate-types`) после миграций.
+
+**Компромисс:**
+- В системе будут два типа ID (auth string vs domain UUID). Это требует дисциплины в API/валидациях и явных соглашений.
+
+**Дата решения:** 2026-02-11
+
+### 17. CLI Utilities: Centralized Approach
 
 **Решение:** Создать централизованную библиотеку CLI утилит в `scripts/utils/cli-utils.ts`.
 
@@ -410,7 +459,7 @@ session: {
 
 **Дата решения:** 2026-01-30
 
-### 17. Development Playground
+### 18. Development Playground
 
 **Решение:** Создать `/playground` роут для демонстрации UI компонентов.
 

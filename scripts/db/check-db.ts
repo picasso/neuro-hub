@@ -17,9 +17,10 @@ async function checkDatabase() {
 	const userCount = users.length
 	printSuccess('Found ' + pluralize(userCount, 'user'))
 	users.forEach((user) => {
+		const emailStatus = user.emailVerified ? 'verified' : 'not verified'
 		printDataRow([
 			['ID', user.id],
-			['Email', user.email],
+			['Email', user.email + ' [' + emailStatus + ']'],
 			['Name', user.name],
 			['Role', user.role],
 		])

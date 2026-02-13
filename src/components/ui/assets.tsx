@@ -5,6 +5,7 @@ import article from '@mui/icons-material/Article'
 import business from '@mui/icons-material/Business'
 import checkCircle from '@mui/icons-material/CheckCircle'
 import code from '@mui/icons-material/Code'
+import deleteOutline from '@mui/icons-material/DeleteOutline'
 import doneOutline from '@mui/icons-material/DoneOutline'
 import doNotDisturb from '@mui/icons-material/DoNotDisturb'
 import email from '@mui/icons-material/Email'
@@ -36,7 +37,7 @@ import warning from '@mui/icons-material/WarningAmber'
 import work from '@mui/icons-material/Work'
 import x from '@mui/icons-material/X'
 import { kebabCase, reduce } from 'lodash'
-import { type FC } from 'react'
+import { type ComponentType } from 'react'
 import { customIcons } from './icons'
 import type { SvgIconProps } from '@mui/material/SvgIcon'
 
@@ -45,6 +46,7 @@ const muiIcons = {
 	business,
 	checkCircle,
 	code,
+	deleteOutline,
 	doNotDisturb,
 	doneOutline,
 	email,
@@ -100,7 +102,7 @@ const library = reduce(
 		acc[kebabCase(key.replace(/Outline$/, '')) as MuiIconName] = value
 		return acc
 	},
-	{} as Record<MuiIconName, FC<SvgIconProps>>,
+	{} as Record<MuiIconName, ComponentType<SvgIconProps>>,
 )
 
 // alias names that are added to the icon library for existing icons

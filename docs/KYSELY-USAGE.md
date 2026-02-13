@@ -51,8 +51,13 @@ const users = await kysely
 const newUser = await kysely
   .insertInto('users')
   .values({
+    // Better Auth обычно создаёт users сам, но пример вставки оставляем для админ/скриптов.
+    id: 'usr_example',
     email: 'new@example.com',
+    name: 'New User',
     role: 'freelancer',
+    emailVerified: false,
+    image: null,
   })
   .returningAll()
   .executeTakeFirst()
@@ -64,8 +69,7 @@ const newUser = await kysely
 await kysely
   .updateTable('users')
   .set({
-    email_verified: true,
-    email_verified_at: new Date(),
+    emailVerified: true,
   })
   .where('id', '=', userId)
   .execute()
@@ -86,13 +90,20 @@ await kysely
 const result = await kysely.transaction().execute(async (trx) => {
   const user = await trx
     .insertInto('users')
-    .values({ email: 'tx@example.com', role: 'client' })
+    .values({
+      id: 'usr_example_tx',
+      email: 'tx@example.com',
+      name: 'Tx User',
+      role: 'client',
+      emailVerified: false,
+      image: null,
+    })
     .returningAll()
     .executeTakeFirstOrThrow()
 
   await trx
     .insertInto('user_profiles')
-    .values({ user_id: user.id, name: 'Test User' })
+    .values({ id: user.id, user_id: user.id, name: 'Test User' })
     .execute()
 
   return user

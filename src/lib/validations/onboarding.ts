@@ -14,6 +14,10 @@ export const credentialsSchema = z.object({
 export const freelancerProfileSchema = z.object({
 	name: z.string().min(2, 'Имя должно содержать минимум 2 символа'),
 	bio: z.string().max(500, 'Описание не должно превышать 500 символов').optional(),
+	specialization: z
+		.string()
+		.max(255, 'Специализация не должна превышать 255 символов')
+		.optional(),
 })
 
 export const clientProfileSchema = z.object({
@@ -27,7 +31,7 @@ export const onboardingDataSchema = z.object({
 	email: emailSchema,
 	password: z.string().min(8),
 	profile: z.union([freelancerProfileSchema, clientProfileSchema]),
-	skills: addUserSkillsSchema.optional(),
+	skills: addUserSkillsSchema.shape.skills.optional(),
 })
 
 export type RoleSelectionInput = z.infer<typeof roleSelectionSchema>

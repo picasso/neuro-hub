@@ -1,23 +1,30 @@
-import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import Container from '@mui/material/Container'
-import { Button } from '@/components/ui/button'
-import { TS } from '@/components/ui/text-styled'
+import Stack from '@mui/material/Stack'
+import { Suspense } from 'react'
+import { LoginForm } from './login-form'
+import { loginMetadata } from '@/config/metadata'
 
-export { loginMetadata as metadata } from '@/config/metadata'
+export const metadata = loginMetadata
 
 export default function LoginPage() {
 	return (
-		<Container maxWidth="md">
-			<Box sx={{ mt: 8, mb: 8, textAlign: 'center' }}>
-				<TS variant="h3" gutterBottom content="Вход" />
-				<TS
-					variant="body1"
-					color="text.secondary"
-					sx={{ mb: 4 }}
-					content="Эта страница в разработке"
-				/>
-				<Button variant="contained" href="/" label="На главную" />
-			</Box>
-		</Container>
+		<Suspense
+			fallback={
+				<Container maxWidth="md">
+					<Stack
+						sx={{
+							justifyContent: 'center',
+							alignItems: 'center',
+							minHeight: '60vh',
+						}}
+					>
+						<CircularProgress />
+					</Stack>
+				</Container>
+			}
+		>
+			<LoginForm />
+		</Suspense>
 	)
 }

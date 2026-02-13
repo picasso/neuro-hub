@@ -1,5 +1,7 @@
 export {
+	authIdSchema,
 	emailSchema,
+	idSchema,
 	idParamSchema,
 	paginationSchema,
 	uuidSchema,
@@ -30,3 +32,11 @@ export {
 	type UserRole,
 	type UserSkillInput,
 } from './user'
+export {
+	createPortfolioItemSchema,
+	freelancerProfileIdParamSchema,
+	portfolioItemIdParamSchema,
+	updateFreelancerProfileSchema,
+	type CreatePortfolioItemInput,
+	type UpdateFreelancerProfileInput,
+} from './freelancers'

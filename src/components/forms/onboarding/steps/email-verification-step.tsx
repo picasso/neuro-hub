@@ -2,6 +2,7 @@
 
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import { useUnit } from 'effector-react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -55,7 +56,7 @@ export function EmailVerificationStep() {
 					</TS>
 				</Alert>
 
-				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+				<Stack spacing={2}>
 					<Button
 						variant="contained"
 						size="large"
@@ -70,7 +71,7 @@ export function EmailVerificationStep() {
 						fullWidth
 						label="Изменить email"
 					/>
-				</Box>
+				</Stack>
 			</Box>
 		</Box>
 	)

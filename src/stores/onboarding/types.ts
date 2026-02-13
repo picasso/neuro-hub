@@ -55,6 +55,7 @@ export type RegisterUserInput = {
 	profileData: {
 		name: string
 		bio?: string
+		specialization?: string
 		companyName?: string
 		companyRole?: string
 		skills?: Array<{
