@@ -70,3 +70,6 @@ Thumbs.db
 
 # Cursor project skills (keep local)
 .cursor/skills/railway-*
+
+# Miscellaneous
+src/FIXES.md
