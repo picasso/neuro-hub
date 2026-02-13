@@ -1,3 +1,4 @@
+import { sql } from 'kysely'
 import { requireRole } from '@/lib/auth/server'
 import { kysely } from '@/lib/db'
 import { createPortfolioItemSchema, freelancerProfileIdParamSchema } from '@/lib/validations'
@@ -145,7 +146,10 @@ export async function POST(request: Request, context: RouteContext) {
 				media_url: validated.mediaUrl,
 				media_type: validated.mediaType ?? null,
 				category: validated.category ?? null,
-				tools_used: validated.toolsUsed ?? null,
+				// `tools_used` is jsonb; pg will serialize arrays as PG array literals unless we cast explicitly.
+				tools_used: validated.toolsUsed?.length
+					? sql`${JSON.stringify(validated.toolsUsed)}::jsonb`
+					: null,
 				updated_at: new Date(),
 			})
 			.returningAll()

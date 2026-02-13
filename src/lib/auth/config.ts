@@ -131,6 +131,7 @@ export const auth = betterAuth({
 				}
 				const userId = returned.user.id
 				const body = ctx.body as {
+					role?: 'freelancer' | 'client'
 					profileData?: {
 						name: string
 						bio?: string
@@ -145,6 +146,8 @@ export const auth = betterAuth({
 				}
 
 				const profileData = body.profileData
+				const role =
+					body.role ?? (returned.user.role as 'freelancer' | 'client' | undefined)
 
 				if (profileData) {
 					try {
@@ -170,13 +173,8 @@ export const auth = betterAuth({
 							)
 							.execute()
 
-						// Create/update freelancer profile if freelancer-only fields are present.
-						// We infer "freelancer" either by having specialization or skills in the sign-up payload.
-						const isFreelancerPayload =
-							!!profileData.specialization ||
-							(Array.isArray(profileData.skills) && profileData.skills.length > 0)
-
-						if (isFreelancerPayload) {
+						// Create/update freelancer profile only for freelancer role.
+						if (role === 'freelancer') {
 							await kysely
 								.insertInto('freelancer_profiles')
 								.values({

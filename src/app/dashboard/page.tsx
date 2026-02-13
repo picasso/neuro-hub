@@ -11,14 +11,15 @@ import { getOrCreateFreelancerProfileByUserId } from '@/lib/db/queries/freelance
 export default async function DashboardPage() {
 	const session = await getSession()
 
-	if (!session) {
-		redirect('/login?next=/dashboard')
-	}
+	if (!session) redirect('/login?next=/dashboard')
 
 	const freelancerProfile =
 		session.user.role === 'freelancer'
 			? await getOrCreateFreelancerProfileByUserId(session.user.id)
 			: null
+
+	// safety: user can be deleted while a stale session cookie still exists
+	if (session.user.role === 'freelancer' && !freelancerProfile) redirect('/login?next=/dashboard')
 
 	return (
 		<Container maxWidth="md">
@@ -31,7 +32,7 @@ export default async function DashboardPage() {
 					sx={{ mb: 2 }}
 				/>
 
-				{session.user.role === 'freelancer' ? (
+				{session.user.role === 'freelancer' && freelancerProfile ? (
 					<Box sx={{ mt: 4 }}>
 						<TS
 							variant="body2"
@@ -39,8 +40,8 @@ export default async function DashboardPage() {
 							content="Публичная страница профиля:"
 							sx={{ mb: 1 }}
 						/>
-						<Link href={`/freelancers/${freelancerProfile?.id}`} underline="hover">
-							{`/freelancers/${freelancerProfile?.id}`}
+						<Link href={`/freelancers/${freelancerProfile.id}`} underline="hover">
+							{`/freelancers/${freelancerProfile.id}`}
 						</Link>
 
 						<Box sx={{ mt: 4 }}>
@@ -50,7 +51,7 @@ export default async function DashboardPage() {
 						<Box sx={{ mt: 5 }}>
 							<PortfolioEditor
 								userId={session.user.id}
-								profileId={freelancerProfile!.id}
+								profileId={freelancerProfile.id}
 							/>
 						</Box>
 					</Box>

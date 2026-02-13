@@ -236,7 +236,7 @@ type BetterAuthError = {
 }
 
 export const registerUserFx = domain.createEffect<RegisterUserInput, unknown, Error>({
-	handler: async ({ email, password, name, profileData }) => {
+	handler: async ({ email, password, name, role, profileData }) => {
 		const timerId = setTimeout(() => {
 			createAlertFx({
 				id: onboardingId,
@@ -258,12 +258,14 @@ export const registerUserFx = domain.createEffect<RegisterUserInput, unknown, Er
 					fetchOptions: {
 						onSuccess: () => {},
 						body: {
+							role,
 							profileData,
 						},
 					},
 				},
 				{
 					body: {
+						role,
 						profileData,
 					},
 				},

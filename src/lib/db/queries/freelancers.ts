@@ -1,4 +1,8 @@
+import type { FreelancerProfiles } from '@/types/database'
+import type { Selectable } from 'kysely'
 import { kysely } from '@/lib/db'
+
+type FreelancerProfileRow = Selectable<FreelancerProfiles>
 
 export type PublicFreelancerProfile = {
 	userId: string
@@ -113,22 +117,43 @@ export async function getPublicFreelancerProfileByProfileId(
 	}
 }
 
-export async function getOrCreateFreelancerProfileByUserId(userId: string) {
-	const created = await kysely
-		.insertInto('freelancer_profiles')
-		.values({
-			user_id: userId,
-			updated_at: new Date(),
-		})
-		.onConflict((oc) => oc.column('user_id').doNothing())
-		.returningAll()
+export async function getOrCreateFreelancerProfileByUserId(
+	userId: string,
+): Promise<FreelancerProfileRow | null> {
+	// extra safety: if the user was deleted but some code still calls this helper
+	const userExists = await kysely
+		.selectFrom('users')
+		.select(['id'])
+		.where('id', '=', userId)
 		.executeTakeFirst()
+
+	if (!userExists) return null
+
+	let created: FreelancerProfileRow | undefined
+
+	try {
+		created = await kysely
+			.insertInto('freelancer_profiles')
+			.values({
+				user_id: userId,
+				updated_at: new Date(),
+			})
+			.onConflict((oc) => oc.column('user_id').doNothing())
+			.returningAll()
+			.executeTakeFirst()
+	} catch (error) {
+		// postgres fk violation (user deleted in-between check and insert)
+		if ((error as { code?: string } | null)?.code === '23503') return null
+		throw error
+	}
 
 	if (created) return created
 
-	return await kysely
+	const existing = await kysely
 		.selectFrom('freelancer_profiles')
 		.selectAll()
 		.where('user_id', '=', userId)
-		.executeTakeFirstOrThrow()
+		.executeTakeFirst()
+
+	return existing ?? null
 }
