@@ -19,6 +19,37 @@ Application `internal state` is based on immutable data structures. Immutable da
 
 Use [Immer](https://immerjs.github.io/immer/) to work with immutable state in a more convenient way. Here is an overview how to update objects and collections with immer: [Update Patterns](https://immerjs.github.io/immer/update-patterns/).
 
+## ESLint: effector plugin
+
+This codebase uses `eslint-plugin-effector` and enables these configs:
+
+- `effector/recommended`
+- `effector/scope`
+
+### No `.getState()` for orchestration (race conditions)
+
+**CRITICAL:** Avoid `store.getState()` in runtime orchestration (effects, sampling logic, UI handlers). It can read a value that is not consistent with the current reactive graph and lead to race conditions.
+
+Prefer Effector-native patterns:
+
+- `sample({ source, clock, fn, target })`
+- `attach({ source, effect, mapParams })`
+- `store.watch(fn)` (for debug/logging; note: it calls immediately with current state)
+
+```ts
+// ❌ BAD
+const value = $store.getState()
+someEvent(value)
+
+// ✅ GOOD
+sample({
+  clock: someEvent,
+  source: $store,
+  fn: (value) => value,
+  target: someOtherEvent,
+})
+```
+
 ## Domain Structure
 
 ### Watched Domains

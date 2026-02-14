@@ -1,12 +1,4 @@
-import {
-	createDomain,
-	type Domain,
-	type Effect,
-	type Event,
-	is,
-	type Store,
-	type Unit,
-} from 'effector'
+import { createDomain, type Domain, type Effect, type Event, type Store, type Unit } from 'effector'
 import {
 	get,
 	has,
@@ -116,9 +108,7 @@ export function createDomainWatched(
 }
 
 function watch(unit: Unit<AnyType>, fn: (payload: AnyType) => AnyType) {
-	if (is.store(unit)) fn(unit.getState())
-	const $watchUnit = (is.store(unit) ? unit.updates : unit) as AnyType
-	$watchUnit.watch(fn)
+	;(unit as AnyType).watch(fn)
 }
 
 function isGate(name: string) {
