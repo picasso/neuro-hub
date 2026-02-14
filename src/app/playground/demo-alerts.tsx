@@ -2,7 +2,7 @@
 
 import Stack from '@mui/material/Stack'
 import { map } from 'lodash'
-import { type Alert, createAlert } from '@/alerts'
+import { type Alert, createAlert, createAlertFx, removeAlert, updateAlert } from '@/alerts'
 import { Button, type ButtonProps, type IconName, TS } from '@/components/ui'
 
 type DemoConfig = {
@@ -71,7 +71,9 @@ const demoSections: DemoSection[] = [
 					severity: 'progress',
 					title: 'Registering panel...',
 					message: 'Lorem `ipsum` dolor sit amet, **consectetur** adipiscing elit',
+					progress: 35,
 					disableClose: true,
+					disableAutoClose: true,
 				},
 			},
 			{
@@ -83,7 +85,10 @@ const demoSections: DemoSection[] = [
 					title: 'Loading data...',
 					message: 'Please wait while we process your request',
 					overlay: true,
+					progress: 10,
 					variant: 'filled',
+					disableAutoClose: true,
+					disableProgressCaption: true,
 				},
 			},
 		],
@@ -314,7 +319,33 @@ export const AlertsDemo = () => {
 								color={demo.buttonColor}
 								variant={demo.buttonVariant ?? 'outlined'}
 								leftIcon={demo.leftIcon}
-								onClick={() => createAlert(demo.alertOptions)}
+								onClick={() => {
+									if (demo.alertOptions.progress) {
+										const id = createAlertFx.alertId(demo.label)
+										let progress = demo.alertOptions.progress
+										const timerId = setInterval(() => {
+											dev.log(`${demo.label} progress: [${progress}]`)
+											if (progress > 100) {
+												clearInterval(timerId)
+												removeAlert(id)
+												dev.log(
+													`{!${demo.label} progress}: [${progress}] - completed`,
+												)
+											} else {
+												updateAlert({ id, progress })
+												progress += 10
+											}
+										}, 1000)
+										createAlert({
+											id,
+											...demo.alertOptions,
+											onDismiss: () => clearInterval(timerId),
+											onAutoClose: () => clearInterval(timerId),
+										})
+									} else {
+										createAlert(demo.alertOptions)
+									}
+								}}
 								label={demo.label}
 							/>
 						))}

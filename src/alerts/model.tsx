@@ -1,24 +1,31 @@
 'use client'
 
 import { type AlertProps as MuiAlertProps } from '@mui/material/Alert'
-import { createDomain, type EventCallable, sample } from 'effector'
+import { type EventCallable, sample } from 'effector'
 import { createGate } from 'effector-react'
-import { isString, merge, uniqueId } from 'lodash'
+import { produce, castDraft } from 'immer'
+import { forEach, isString, merge, set, uniqueId } from 'lodash'
 import { type ReactElement } from 'react'
 import { toast, type ExternalToast as ToastProps, type ToasterProps } from 'sonner'
 import { AlertComponent } from './alert'
 import { type IconName, type IconOptions } from '@/components/ui'
+import { createDomainWatched } from '@/lib/logger'
 import { type MarkdownParams, type TemplatedMessage } from '@/utils'
 
-const domain = createDomain('alerts')
+const domain = createDomainWatched('alerts')
 
 // * * * Alert types ------------------------------------------------------------------------------]
 
+export type AlertId = Exclude<NonNullable<ToastProps['id']>, number>
+
 export type AlertComponentProps = {
-	id?: ToastProps['id']
+	id?: AlertId
 	severity: NonNullable<MuiAlertProps['severity']> | 'progress'
 	title?: TemplatedMessage
 	message?: MuiAlertProps['children'] | TemplatedMessage
+	// 0..100 for determinate progress UI
+	progress?: number
+	disableProgressCaption?: boolean
 	variant?: MuiAlertProps['variant']
 	elevation?: MuiAlertProps['elevation']
 	overlay?: boolean
@@ -31,9 +38,9 @@ export type AlertComponentProps = {
 	// this is a more explicit alternative to `duration: Infinity`
 	disableAutoClose?: boolean
 }
-
-export type Alert = Omit<
+type AllowedToastProps = Omit<
 	ToastProps,
+	| 'id'
 	| 'description'
 	| 'closeButton'
 	| 'invert'
@@ -43,8 +50,14 @@ export type Alert = Omit<
 	| 'cancel'
 	| 'actionButtonStyle'
 	| 'cancelButtonStyle'
-> &
-	Omit<AlertComponentProps, 'id'>
+	| 'richColors'
+	| 'style'
+	| 'unstyled'
+	| 'classNames'
+	| 'className'
+	| 'descriptionClassName'
+>
+type TKeys = keyof AllowedToastProps
 
 // * * * `toast` options that are not overridden by `AlertComponent` options ----------------------]
 //
@@ -55,6 +68,8 @@ export type Alert = Omit<
 // - `onDismiss` - The function gets called when either the close button is clicked, or the toast is swiped.
 // - `onAutoClose` - Function that gets called when the toast disappears automatically after its timeout (duration prop).
 // - `containerAriaLabel` - Custom ARIA label for the toast container.
+
+export type Alert = AllowedToastProps & AlertComponentProps
 
 export type AlertOptions = {
 	position?: ToasterProps['position']
@@ -67,6 +82,10 @@ export type AlertOptions = {
 	toastOptions?: ToasterProps['toastOptions']
 }
 
+type AlertWithId = Omit<Alert, 'id'> & { id: AlertId }
+type AlertPatch = { id: AlertId } & Partial<Omit<Alert, 'id' | 'overlay' | TKeys>>
+type Alerts = Record<AlertId, Alert>
+
 // * * * gate -------------------------------------------------------------------------------------]
 
 export const AlertGate = createGate({ domain, name: 'AlertGate' })
@@ -74,82 +93,59 @@ export const AlertGate = createGate({ domain, name: 'AlertGate' })
 // * * * events -----------------------------------------------------------------------------------]
 
 export const addAlert = domain.createEvent<Alert>('addAlert')
+const upsertAlert = domain.createEvent<AlertWithId>('upsertAlert')
+const patchAlert = domain.createEvent<AlertPatch>('patchAlert')
+const deleteAlert = domain.createEvent<AlertId>('deleteAlert')
 export const updateOptions = domain.createEvent<Partial<AlertOptions>>('updateOptions')
 const resetOptions = domain.createEvent('resetOptions')
 const incrementOverlay = domain.createEvent('incrementOverlay')
 const decrementOverlay = domain.createEvent('decrementOverlay')
 
+// * * * $alerts ----------------------------------------------------------------------------------]
+
+export const $alerts = domain.createStore<Alerts>({}, { name: '$alerts' })
+
+$alerts.on(upsertAlert, (alerts, { id, ...alert }) =>
+	produce(alerts, (draft) => {
+		draft[id] = castDraft(alert)
+	}),
+)
+
+$alerts.on(patchAlert, (alerts, { id, ...patch }) =>
+	produce(alerts, (draft) => {
+		if (alerts[id]) {
+			forEach(patch, (value, key) => {
+				set(draft[id], key, value)
+			})
+		}
+	}),
+)
+
+$alerts.on(deleteAlert, (alerts, id) =>
+	produce(alerts, (draft) => {
+		if (alerts[id]) {
+			delete draft[id]
+		}
+	}),
+)
+
 // * * * effects ----------------------------------------------------------------------------------]
 
-export const addAlertFx = domain.createEffect({
+export const addAlertFx = domain.createEffect<Alert, AlertId>({
 	handler: (options: Alert) => {
-		const {
-			id,
-			severity,
-			title,
-			message,
-			variant,
-			elevation,
-			overlay,
-			icon,
-			iconOptions,
-			md,
-			sx,
-			disableClose,
-			disableAutoClose,
-			// toast options for overlay control
-			onDismiss,
-			onAutoClose,
-			...rest
-		} = options
+		const alertId = (options.id ?? createAlertId()) as AlertId
 
-		const alertId = id ?? createAlertId()
+		// store as a single source of truth
+		const stored: AlertWithId = { ...options, id: alertId }
+		upsertAlert(stored)
 
-		if (overlay) {
-			incrementOverlay()
-		}
+		// overlay lifecycle (immutable after create)
+		if (stored.overlay) incrementOverlay()
 
-		const onDismissProxy: ToastProps['onDismiss'] = overlay
-			? (toast) => {
-					decrementOverlay()
-					onDismiss?.(toast)
-				}
-			: onDismiss
-
-		const onAutoCloseProxy: ToastProps['onAutoClose'] = overlay
-			? (toast) => {
-					decrementOverlay()
-					onAutoClose?.(toast)
-				}
-			: onAutoClose
-
-		const render = (id: number | string): ReactElement => {
-			return (
-				<AlertComponent
-					id={id}
-					severity={severity}
-					title={title}
-					message={message}
-					elevation={elevation}
-					variant={variant}
-					overlay={overlay}
-					icon={icon}
-					iconOptions={iconOptions}
-					md={md}
-					sx={sx}
-					disableClose={disableClose}
-				/>
-			)
-		}
-
-		toast.custom(render, {
-			id: alertId,
-			onDismiss: onDismissProxy,
-			onAutoClose: onAutoCloseProxy,
-			dismissible: !disableClose,
-			duration: disableAutoClose ? Infinity : undefined,
-			...rest,
-		} as ToastProps)
+		toast.custom(
+			(id): ReactElement => <AlertComponent id={String(id) as AlertId} />,
+			buildToastProps(stored),
+		)
 
 		return alertId
 	},
@@ -228,11 +224,49 @@ export const createAlertFx = Object.assign(createFx, {
 
 // * * * helpers ----------------------------------------------------------------------------------]
 
+function buildToastProps({
+	id,
+	position,
+	duration,
+	overlay,
+	onDismiss,
+	onAutoClose,
+	testId,
+	toasterId,
+	disableClose,
+	disableAutoClose,
+}: Alert): ToastProps {
+	const onDismissProxy: ToastProps['onDismiss'] = (toast) => {
+		if (overlay) decrementOverlay()
+		onDismiss?.(toast)
+		if (id) deleteAlert(id)
+	}
+	const onAutoCloseProxy: ToastProps['onAutoClose'] = (toast) => {
+		if (overlay) decrementOverlay()
+		onAutoClose?.(toast)
+		if (id) deleteAlert(id)
+	}
+	return {
+		id,
+		position,
+		duration: duration ? duration : disableAutoClose ? Infinity : undefined,
+		testId,
+		toasterId,
+		onDismiss: onDismissProxy,
+		onAutoClose: onAutoCloseProxy,
+		dismissible: !disableClose,
+	} as ToastProps
+}
+
 export function createAlert(alert: Alert['severity'] | Alert, message?: Alert['message']) {
 	const newAlert = isString(alert) ? { severity: alert, message } : alert
-	const id = createAlertId()
-	addAlert({ id, ...newAlert })
+	const id = createAlertId() as AlertId
+	addAlert({ id, ...newAlert } as Alert)
 	return id
+}
+
+export function updateAlert(alert: AlertPatch) {
+	patchAlert(alert)
 }
 
 export function removeAlert(id: ToastProps['id']) {

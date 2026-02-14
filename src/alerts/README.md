@@ -2,6 +2,10 @@
 
 Notifications with overlay support based on **Sonner** and **Effector**.
 
+## Linting notes (Effector)
+
+This project enables `eslint-plugin-effector` (`effector/recommended`, `effector/scope`). In particular, avoid `.getState()` for orchestration — prefer `sample` / `attach` (the linter enforces `effector/no-getState`).
+
 ## Basic Usage
 
 ### Simple alert
@@ -38,7 +42,39 @@ createAlert({
     severity: 'progress',
     title: 'Loading...',
     message: 'Please wait while we process your request',
+    progress: 0,
 })
+```
+
+### Updating an existing alert (updateAlert)
+
+When you create an alert with a stable `id`, you can update it later (for example, to show upload progress).
+
+`updateAlert()` patches the Effector `$alerts` store. `AlertComponent` reads from the store (via `useStoreMap`), so React updates the UI automatically.
+
+**Note:** Updating toast options (like `duration`, `position`, etc.) is not guaranteed after creation — treat those as “create-time” options. If you need to change toast-level options, dismiss and create a new alert.
+
+```tsx
+import { createAlert, createAlertFx, updateAlert, removeAlert } from '@/alerts'
+
+const id = createAlertFx.alertId('upload')
+
+createAlert({
+    id,
+    severity: 'progress',
+    title: 'Uploading…',
+    message: 'Preparing upload',
+    progress: 0,
+    overlay: true,
+    disableClose: true,
+    disableAutoClose: true,
+})
+
+// later, patch only what you need
+updateAlert({ id, progress: 42, message: 'Uploading file (42%)' })
+
+// cleanup
+removeAlert(id)
 ```
 
 ### Variants
@@ -87,6 +123,11 @@ createAlert({
 ```
 
 ## Special Features
+
+## Notes on options: Toaster vs Toast
+
+- **Global** `Toaster` options (all toasts) are managed via `updateAlertOptions()` and live in the `$options` store.
+- **Per-toast** options (single toast) are provided per alert and are applied when the toast is shown/updated (e.g. `duration`, `position`).
 
 ### Overlay Mode
 

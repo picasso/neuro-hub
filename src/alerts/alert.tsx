@@ -2,25 +2,15 @@
 
 import MuiAlert, { type AlertProps as MuiAlertProps } from '@mui/material/Alert'
 import MuiAlertTitle from '@mui/material/AlertTitle'
+import Box from '@mui/material/Box'
+import LinearProgress from '@mui/material/LinearProgress'
+import { useStoreMap } from 'effector-react'
+import { isNumber } from 'lodash'
 import { useCallback } from 'react'
 import { toast } from 'sonner'
-import { type AlertComponentProps } from './model'
-import { Icon } from '@/components/ui'
+import { $alerts, type AlertId } from './model'
+import { Icon, TS } from '@/components/ui'
 import { simpleMarkdown, templatedMessage } from '@/utils'
-
-// export interface AlertProps {
-// 	id: number
-// 	text: string | ReactNode
-// 	title?: string
-// 	disableClose?: boolean
-// 	severity?: 'success' | 'info' | 'warning' | 'error' | 'progress'
-// 	variant?: MuiAlertProps['variant']
-// 	elevation?: MuiAlertProps['elevation']
-// 	icon?: IconName
-// 	iconOptions?: IconOptions
-// 	status?: number
-// 	statusText?: string
-// }
 
 const iconMapping: MuiAlertProps['iconMapping'] = {
 	success: <Icon name="check" color="success" />,
@@ -29,21 +19,33 @@ const iconMapping: MuiAlertProps['iconMapping'] = {
 	error: <Icon name="error" color="error" />,
 }
 
-export function AlertComponent(props: AlertComponentProps) {
+export function AlertComponent({ id }: { id: AlertId }) {
+	const alert = useStoreMap({
+		store: $alerts,
+		keys: [String(id)],
+		fn: (alerts, [key]) => alerts[key],
+	})
+
+	if (!alert) {
+		return null
+	}
+
 	const {
-		id,
 		title,
 		message,
 		severity,
+		progress,
+		disableProgressCaption = false,
 		elevation,
 		variant,
 		icon,
 		iconOptions,
 		md,
 		disableClose,
-	} = props
+	} = alert
 
 	const isProgress = severity === 'progress'
+	const progressValue = isNumber(progress) ? Math.min(100, Math.max(0, progress)) : undefined
 
 	const onClose = useCallback(() => {
 		if (!disableClose) {
@@ -81,6 +83,19 @@ export function AlertComponent(props: AlertComponentProps) {
 		>
 			{mergedTitle && <MuiAlertTitle>{simpleMarkdown(mergedTitle, md || {})}</MuiAlertTitle>}
 			{md === false ? mergedMessage : simpleMarkdown(mergedMessage, md)}
+
+			{progressValue !== undefined ? (
+				<Box sx={{ mt: 1 }}>
+					<LinearProgress variant="determinate" value={progressValue} />
+					{!disableProgressCaption && (
+						<TS
+							variant="caption"
+							sx={{ display: 'block', mt: 0.5 }}
+							content={`${Math.round(progressValue)}%`}
+						/>
+					)}
+				</Box>
+			) : null}
 		</MuiAlert>
 	)
 }
