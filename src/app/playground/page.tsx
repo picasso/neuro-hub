@@ -8,6 +8,7 @@ import Tabs from '@mui/material/Tabs'
 import { useState } from 'react'
 import { AlertsDemo } from './demo-alerts'
 import { IconsDemo } from './demo-icons'
+import { UploaderDemo } from './demo-uploader'
 import { TS } from '@/components/ui'
 
 interface TabPanelProps {
@@ -47,6 +48,7 @@ export default function PlaygroundPage() {
 						<Tab label="Icon" />
 						<Tab label="Button" />
 						<Tab label="Alerts" />
+						<Tab label="Uploader" />
 					</Tabs>
 				</Box>
 
@@ -64,6 +66,10 @@ export default function PlaygroundPage() {
 					<Stack direction="row" spacing={2}>
 						<AlertsDemo />
 					</Stack>
+				</TabPanel>
+
+				<TabPanel value={activeTab} index={3}>
+					<UploaderDemo />
 				</TabPanel>
 			</Box>
 		</Container>
