@@ -48,6 +48,7 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
 
 ### Key Dependencies
 
+```zsh
 "dependencies": {
   "@emotion/*": "...",                       // Стилизация (CSS-in-JS)
   "@mui/material": "...",                    // UI компоненты
@@ -62,6 +63,7 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
   "react": "...",                            // UI library
   "zod": "..."                               // Schema validation
 }
+```
 
 ## 🚀 Getting Started
 
@@ -171,6 +173,25 @@ yarn db:backup:railway           # Backup Railway database
 ```
 
 See [docs/RAILWAY-SETUP.md](docs/RAILWAY-SETUP.md) for Railway PostgreSQL setup guide.
+
+## 🧰 Troubleshooting
+
+### Restart local PostgreSQL (Docker)
+
+```bash
+# check status
+docker compose ps
+
+# restart only Postgres
+docker compose restart postgres
+
+# if you need a clean restart (keeps volumes/data)
+docker compose down
+docker compose up -d postgres
+
+# watch Postgres logs
+docker compose logs -f postgres
+```
 
 ## 🐳 Docker
 

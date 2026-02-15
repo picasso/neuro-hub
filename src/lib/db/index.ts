@@ -1,22 +1,5 @@
-import knex, { type Knex } from 'knex'
+import { kysely } from './kysely'
 import { pool } from './pool'
-
-const knexConfig: Knex.Config = {
-	client: 'pg',
-	connection: process.env.DATABASE_URL || {
-		host: 'localhost',
-		port: 5433,
-		database: 'neurogig',
-		user: 'postgres',
-		password: 'postgres',
-	},
-	pool: {
-		min: 2,
-		max: 10,
-	},
-}
-
-export const db: Knex = knex(knexConfig)
 
 export { kysely } from './kysely'
 export { pool } from './pool'
@@ -32,6 +15,6 @@ export const testConnection = async (): Promise<boolean> => {
 }
 
 export const closeConnection = async (): Promise<void> => {
-	await db.destroy()
+	await kysely.destroy()
 	await pool.end()
 }
