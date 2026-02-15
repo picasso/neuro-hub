@@ -1,13 +1,14 @@
-import { alpha, createTheme } from '@mui/material/styles'
+import { alpha, createTheme, lighten } from '@mui/material/styles'
 import { animations } from './animations'
 import { components } from './components'
 
+const primaryColor = '#1dbf73'
 export const theme = createTheme({
 	cssVariables: true,
 	palette: {
 		mode: 'light',
 		primary: {
-			main: '#1dbf73',
+			main: primaryColor,
 			dark: '#169e5f',
 			light: '#35d48d',
 		},
@@ -20,6 +21,7 @@ export const theme = createTheme({
 		background: {
 			default: '#f7f7f7',
 			paper: '#ffffff',
+			block: lighten(primaryColor, 0.9),
 		},
 		text: {
 			primary: '#404145',
@@ -31,7 +33,7 @@ export const theme = createTheme({
 			selected: alpha('#404145', 0.06),
 			disabled: alpha('#404145', 0.26),
 			disabledBackground: alpha('#404145', 0.08),
-			focus: alpha('#1dbf73', 0.2),
+			focus: alpha(primaryColor, 0.2),
 		},
 		error: {
 			main: '#e53935',

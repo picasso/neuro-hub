@@ -22,6 +22,10 @@ declare module '@mui/material/styles' {
 	interface PaletteOptions {
 		contrast?: PaletteOptions['primary']
 	}
+	// allow extra background slots (e.g. `background.block`)
+	interface TypeBackground {
+		block: string
+	}
 }
 
 declare module '@mui/material/SvgIcon' {
