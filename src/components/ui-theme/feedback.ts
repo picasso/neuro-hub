@@ -14,9 +14,10 @@ export const feedback: ThemeOptions['components'] = {
 	MuiAlert: {
 		styleOverrides: {
 			root: ({ theme }) => ({
-				borderRadius: theme.spacing(1),
+				borderRadius: 8,
+				border: `1px solid ${theme.palette.divider}`,
 				'&.MuiAlert-outlined': {
-					borderWidth: 2,
+					borderWidth: 1,
 				},
 				'span.__code': {
 					position: 'relative',
@@ -63,23 +64,56 @@ export const feedback: ThemeOptions['components'] = {
 			outlined: ({ theme }) => ({
 				backgroundColor: theme.palette.background.paper,
 			}),
-			standardProgress: ({ theme }: { theme: Theme }) => ({
-				backgroundColor: lighten(theme.palette.secondary.main, 0.9),
-				color: theme.palette.secondary.dark,
+			standardInfo: ({ theme }: { theme: Theme }) => ({
+				backgroundColor: lighten(theme.palette.info.main, 0.92),
+				color: theme.palette.text.primary,
+				borderColor: lighten(theme.palette.info.main, 0.7),
 				'& .MuiAlert-icon': {
-					color: theme.palette.secondary.light,
+					color: theme.palette.info.main,
+				},
+			}),
+			standardSuccess: ({ theme }: { theme: Theme }) => ({
+				backgroundColor: lighten(theme.palette.success.main, 0.9),
+				color: theme.palette.text.primary,
+				borderColor: lighten(theme.palette.success.main, 0.7),
+				'& .MuiAlert-icon': {
+					color: theme.palette.success.main,
+				},
+			}),
+			standardWarning: ({ theme }: { theme: Theme }) => ({
+				backgroundColor: lighten(theme.palette.warning.main, 0.9),
+				color: theme.palette.text.primary,
+				borderColor: lighten(theme.palette.warning.main, 0.7),
+				'& .MuiAlert-icon': {
+					color: theme.palette.warning.main,
+				},
+			}),
+			standardError: ({ theme }: { theme: Theme }) => ({
+				backgroundColor: lighten(theme.palette.error.main, 0.92),
+				color: theme.palette.text.primary,
+				borderColor: lighten(theme.palette.error.main, 0.7),
+				'& .MuiAlert-icon': {
+					color: theme.palette.error.main,
+				},
+			}),
+			standardProgress: ({ theme }: { theme: Theme }) => ({
+				backgroundColor: lighten(theme.palette.primary.main, 0.9),
+				color: theme.palette.text.primary,
+				borderColor: lighten(theme.palette.primary.main, 0.7),
+				'& .MuiAlert-icon': {
+					color: theme.palette.primary.main,
 				},
 			}),
 			filledProgress: ({ theme }: { theme: Theme }) => ({
-				backgroundColor: theme.palette.secondary.main,
-				color: theme.palette.secondary.contrastText,
+				backgroundColor: theme.palette.primary.main,
+				color: theme.palette.common.white,
 			}),
 			outlinedProgress: ({ theme }: { theme: Theme }) => ({
 				backgroundColor: theme.palette.background.paper,
-				borderColor: theme.palette.secondary.main,
+				borderColor: lighten(theme.palette.primary.main, 0.6),
 				borderStyle: 'solid',
-				borderWidth: 2,
-				color: theme.palette.secondary.dark,
+				borderWidth: 1,
+				color: theme.palette.text.primary,
 			}),
 		},
 	},

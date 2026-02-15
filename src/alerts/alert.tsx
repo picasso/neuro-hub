@@ -86,7 +86,25 @@ export function AlertComponent({ id }: { id: AlertId }) {
 
 			{progressValue !== undefined ? (
 				<Box sx={{ mt: 1 }}>
-					<LinearProgress variant="determinate" value={progressValue} />
+					<LinearProgress
+						variant="determinate"
+						value={progressValue}
+						sx={(theme) => ({
+							height: 6,
+							borderRadius: 999,
+							backgroundColor:
+								isProgress && variant === 'filled'
+									? theme.palette.primary.dark
+									: theme.palette.action.disabledBackground,
+							'& .MuiLinearProgress-bar': {
+								borderRadius: 999,
+								backgroundColor:
+									isProgress && variant === 'filled'
+										? theme.palette.secondary.main
+										: undefined,
+							},
+						})}
+					/>
 					{!disableProgressCaption && (
 						<TS
 							variant="caption"

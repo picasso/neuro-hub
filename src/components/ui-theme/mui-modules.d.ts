@@ -1,7 +1,12 @@
 import { type ThemeAnimations } from './animations'
-import { type ThemeColors } from './types'
-
-type PaletteColor = ThemeColors['primary']
+type PropMainColors = {
+	primary: true
+	secondary: true
+	error: true
+	info: true
+	success: true
+	warning: true
+}
 
 declare module '@mui/material/styles' {
 	interface Theme {

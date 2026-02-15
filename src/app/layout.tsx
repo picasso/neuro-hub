@@ -1,3 +1,4 @@
+import { fontSans } from './fonts'
 import type { ReactNode } from 'react'
 import { AlertsPlugin } from '@/alerts'
 import { ThemeRegistry } from '@/components/providers'
@@ -13,7 +14,10 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
 	return (
 		<html lang="ru">
-			<body style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+			<body
+				className={fontSans.variable}
+				style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
+			>
 				<ThemeRegistry>
 					<AlertsPlugin />
 					<Header />
