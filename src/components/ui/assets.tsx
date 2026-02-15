@@ -4,7 +4,10 @@
 import article from '@mui/icons-material/Article'
 import business from '@mui/icons-material/Business'
 import checkCircle from '@mui/icons-material/CheckCircle'
+import close from '@mui/icons-material/Close'
 import code from '@mui/icons-material/Code'
+import collectionsBookmark from '@mui/icons-material/CollectionsBookmarkTwoTone'
+import collections from '@mui/icons-material/CollectionsTwoTone'
 import deleteOutline from '@mui/icons-material/DeleteOutline'
 import doneOutline from '@mui/icons-material/DoneOutline'
 import doNotDisturb from '@mui/icons-material/DoNotDisturb'
@@ -46,6 +49,9 @@ const muiIcons = {
 	business,
 	checkCircle,
 	code,
+	collectionsBookmark,
+	collections,
+	close,
 	deleteOutline,
 	doNotDisturb,
 	doneOutline,
