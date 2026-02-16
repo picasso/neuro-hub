@@ -1,17 +1,17 @@
 'use client'
 
-'use client'
-
+import IconButton from '@mui/material/IconButton'
+import InputAdornment from '@mui/material/InputAdornment'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import { alpha, darken, lighten } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
-import { isFunction, join, keys } from 'lodash'
-import { useCallback, useEffect, useState, type ChangeEvent } from 'react'
+import { isFunction, join, keys, replace } from 'lodash'
+import { useCallback, useEffect, useState } from 'react'
 import { useDropzone, type Accept, type FileError, type FileRejection } from 'react-dropzone'
-import { Icon } from './icon'
+import { Icon, type IconName } from './icon'
 import { TS } from './text-styled'
-import { fileSize } from '@/utils'
+import { fileSize, sprintf } from '@/utils'
 
 export type FileUploaderProps = {
 	value: File | null
@@ -21,67 +21,9 @@ export type FileUploaderProps = {
 	maxSizeBytes?: number
 	helperText?: string
 	dropOnly?: boolean
-}
-
-function acceptLabelFrom(accept?: Accept) {
-	return accept ? join(keys(accept), ', ') : null
-}
-
-function fileExtension(name: string) {
-	const idx = name.lastIndexOf('.')
-	if (idx === -1) return null
-	return name.slice(idx).toLowerCase()
-}
-
-function isFileAccepted(file: File, accept?: Accept) {
-	if (!accept) return true
-
-	const ext = fileExtension(file.name)
-	for (const [mime, exts] of Object.entries(accept)) {
-		if (mime === file.type) return true
-
-		if (mime.endsWith('/*')) {
-			const prefix = mime.slice(0, -1) // keep trailing slash
-			if (file.type.startsWith(prefix)) return true
-		}
-
-		if (ext && exts?.some((e) => e.toLowerCase() === ext)) return true
-	}
-
-	return false
-}
-
-function validatePickedFile(
-	file: File,
-	opts: { maxSizeBytes?: number; accept?: Accept },
-): FileError | null {
-	if (opts.maxSizeBytes && file.size > opts.maxSizeBytes) {
-		return { code: 'file-too-large', message: 'file-too-large' }
-	}
-	if (opts.accept && !isFileAccepted(file, opts.accept)) {
-		return { code: 'file-invalid-type', message: 'file-invalid-type' }
-	}
-	return null
-}
-
-function buildFileErrorMessage(
-	error: FileError,
-	ctx: { file: File; maxSizeBytes?: number; acceptLabel: string | null },
-): string {
-	switch (error.code) {
-		case 'file-too-large': {
-			const limit = ctx.maxSizeBytes ? ` Максимум: ${fileSize(ctx.maxSizeBytes)}.` : ''
-			return `Файл слишком большой: ${fileSize(ctx.file.size)}.${limit}`
-		}
-		case 'file-invalid-type': {
-			const allowed = ctx.acceptLabel ? ` Разрешены: ${ctx.acceptLabel}.` : ''
-			return `Недопустимый тип файла.${allowed}`
-		}
-		case 'too-many-files':
-			return 'Можно выбрать только один файл.'
-		default:
-			return error.message || 'Не удалось выбрать файл.'
-	}
+	placeholder?: string
+	title?: string
+	titleIcon?: IconName | false
 }
 
 export function FileUploader({
@@ -92,9 +34,13 @@ export function FileUploader({
 	maxSizeBytes,
 	helperText,
 	dropOnly,
+	placeholder = 'Выберите файл',
+	title = 'Медиафайл',
+	titleIcon = 'collections-bookmark',
 }: FileUploaderProps) {
 	const [inputKey, setInputKey] = useState(0)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
+	const [acceptLabel] = useState<string | null>(() => (accept ? join(keys(accept), ', ') : null))
 
 	const setFileValue = useCallback(
 		(file: File | null) => {
@@ -102,6 +48,7 @@ export function FileUploader({
 		},
 		[onChangeAction],
 	)
+
 	const onUpdate = useCallback(
 		(file: File | null) => {
 			setErrorMessage(null)
@@ -122,23 +69,20 @@ export function FileUploader({
 			const error = rejection?.errors?.[0]
 			if (!rejection || !error) {
 				setErrorMessage(null)
-				return
+			} else {
+				setErrorMessage(
+					buildErrorMessage(error, {
+						file: rejection.file,
+						maxSize: maxSizeBytes,
+						accept: acceptLabel,
+					}),
+				)
 			}
-			setErrorMessage(
-				buildFileErrorMessage(error, {
-					file: rejection.file,
-					maxSizeBytes,
-					acceptLabel: acceptLabelFrom(accept),
-				}),
-			)
 		},
-		[accept, maxSizeBytes],
+		[acceptLabel, maxSizeBytes],
 	)
 
-	// string for native input accept
-	const htmlInput = accept ? { accept: join(keys(accept), ',') } : undefined
-
-	const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
+	const { getRootProps, getInputProps, inputRef, isDragActive, isDragReject } = useDropzone({
 		accept,
 		disabled,
 		maxFiles: 1,
@@ -150,34 +94,10 @@ export function FileUploader({
 		noKeyboard: true,
 	})
 
-	const onPickFile = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) => {
-			const next = e.target.files?.[0] ?? null
-			if (!next) {
-				onUpdate(null)
-				return
-			}
-
-			const validationError = validatePickedFile(next, { maxSizeBytes, accept })
-			if (validationError) {
-				setErrorMessage(
-					buildFileErrorMessage(validationError, {
-						file: next,
-						maxSizeBytes,
-						acceptLabel: acceptLabelFrom(accept),
-					}),
-				)
-				setFileValue(null)
-				setInputKey((k) => k + 1)
-				return
-			}
-
-			onUpdate(next)
-		},
-		[accept, maxSizeBytes, onUpdate, setFileValue],
-	)
-
-	dev.log({ isDragReject, isDragActive })
+	const openFileDialog = useCallback(() => {
+		if (disabled) return
+		inputRef.current?.click()
+	}, [disabled, inputRef])
 
 	return (
 		<Stack spacing={1.5}>
@@ -196,12 +116,9 @@ export function FileUploader({
 					bgcolor: (theme) =>
 						isDragReject
 							? lighten(theme.palette.error.light, 0.4)
-							: // 'error.main'
-								isDragActive
+							: isDragActive
 								? 'primary.light'
 								: 'background.block',
-					// ? alpha(theme.palette.primary.light, 0.35)
-					// : alpha(theme.palette.primary.light, 0.12),
 					color: isDragActive ? 'contrast.main' : undefined,
 					cursor: disabled ? 'not-allowed' : 'default',
 					userSelect: 'none',
@@ -209,18 +126,21 @@ export function FileUploader({
 			>
 				<input key={inputKey} {...getInputProps()} />
 				<Stack direction="row" alignItems="center" gap={1} sx={{ mb: 3 }}>
-					<Icon
-						name="collections-bookmark"
-						fontSize="medium"
-						color="inherit"
-						sx={{ color: isDragActive ? 'common.white' : 'primary.main' }}
-					/>
-					<TS
-						strong
-						variant="body1"
-						content="Портфолио"
-						sx={{ color: isDragActive ? 'common.white' : 'primary.main' }}
-					/>
+					{titleIcon ? (
+						<Icon
+							name={titleIcon}
+							fontSize="medium"
+							color={isDragActive ? 'contrast' : 'primary'}
+						/>
+					) : null}
+					{title ? (
+						<TS
+							strong
+							variant="body1"
+							content={title}
+							color={isDragActive ? 'contrast' : 'primary'}
+						/>
+					) : null}
 				</Stack>
 				<Stack gap={0.5}>
 					<TS
@@ -234,42 +154,92 @@ export function FileUploader({
 					/>
 					{dropOnly ? null : (
 						<TextField
-							key={inputKey}
-							type="file"
 							size="small"
 							disabled={disabled}
-							onChange={onPickFile}
+							value={value?.name ?? ''}
+							placeholder={placeholder}
+							onClick={openFileDialog}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter' || e.key === ' ') {
+									e.preventDefault()
+									openFileDialog()
+								}
+							}}
 							error={!!errorMessage}
 							slotProps={{
-								htmlInput,
+								htmlInput: {
+									accept: acceptLabel ?? undefined,
+									readOnly: true,
+								},
+								input: {
+									readOnly: true,
+									endAdornment:
+										!disabled && value ? (
+											<InputAdornment position="end">
+												<IconButton
+													title="Очистить файл"
+													aria-label="Очистить файл"
+													size="small"
+													onClick={(e) => {
+														e.preventDefault()
+														e.stopPropagation()
+														onUpdate(null)
+													}}
+												>
+													<Icon name="close" fontSize="small" />
+												</IconButton>
+											</InputAdornment>
+										) : undefined,
+								},
 							}}
 							sx={({ palette }) => ({
 								borderRadius: 2,
-								'&::file-selector-button': {
-									display: 'none',
-								},
 								'& .MuiInputBase-root': {
 									backgroundColor: alpha(
-										isDragReject ? palette.error.dark : palette.primary.light,
+										isDragReject
+											? palette.error.dark
+											: isDragActive
+												? lighten(palette.primary.light, 1)
+												: palette.primary.light,
 										0.15,
 									),
 									color: isDragReject
 										? palette.contrast.main
-										: darken(palette.primary.dark, 0.2),
+										: isDragActive
+											? palette.contrast.main
+											: darken(palette.primary.dark, 0.2),
 								},
-								'& .MuiOutlinedInput-notchedOutline.MuiOutlinedInput-notchedOutline':
-									{
-										borderColor: alpha(
-											isDragReject
-												? palette.error.light
-												: palette.primary.light,
-											0.3,
-										),
-									},
-								'&:hover .MuiOutlinedInput-notchedOutline.MuiOutlinedInput-notchedOutline':
-									{ borderColor: alpha(palette.primary.light, 0.5) },
+								'& .MuiInputBase-input': {
+									cursor: disabled ? 'not-allowed' : 'pointer',
+									caretColor: 'transparent',
+									userSelect: 'none',
+								},
+								'& .MuiInputBase-root .MuiOutlinedInput-notchedOutline': {
+									borderColor: alpha(
+										isDragReject ? palette.error.light : palette.primary.light,
+										0.3,
+									),
+								},
+								'&:hover .MuiInputBase-root .MuiOutlinedInput-notchedOutline': {
+									borderColor: alpha(palette.primary.light, 0.7),
+								},
+								// error styles
 								'& .MuiInputBase-root.Mui-error': {
 									backgroundColor: lighten(palette.error.dark, 0.9),
+									color: palette.error.dark,
+								},
+								'& .Mui-error .MuiOutlinedInput-notchedOutline': {
+									borderColor: alpha(palette.error.dark, 0.5),
+								},
+								// clear icon button styles
+								'& .MuiInputAdornment-positionEnd .MuiSvgIcon-root': {
+									color: isDragReject
+										? palette.error.dark
+										: isDragActive
+											? alpha(palette.contrast.main, 0.5)
+											: palette.primary.dark,
+								},
+								'& .Mui-error .MuiInputAdornment-positionEnd .MuiSvgIcon-root': {
 									color: palette.error.dark,
 								},
 							})}
@@ -280,23 +250,19 @@ export function FileUploader({
 							<TS
 								variant="caption"
 								content="Выбран файл: "
-								sx={{
-									opacity: 0.6,
-									color: isDragActive ? 'common.white' : 'text.secondary',
-								}}
+								color={isDragActive ? 'contrast' : 'text.secondary'}
+								sx={{ opacity: 0.6 }}
 							/>
 							<TS
 								variant="caption"
 								content={value.name}
-								sx={{ color: isDragActive ? 'common.white' : 'text.secondary' }}
+								color={isDragActive ? 'contrast' : 'text.secondary'}
 							/>
 							<TS
 								variant="caption"
 								content={`(${fileSize(value.size)})`}
-								sx={{
-									opacity: 0.8,
-									color: isDragActive ? 'common.white' : 'primary.dark',
-								}}
+								color={isDragActive ? 'contrast' : 'primary.dark'}
+								sx={{ opacity: 0.8 }}
 							/>
 						</Stack>
 					) : null}
@@ -312,11 +278,11 @@ export function FileUploader({
 						<TS
 							variant="caption"
 							content={helperText}
+							color={isDragActive ? 'contrast' : 'primary.dark'}
 							sx={{
 								display: 'block',
 								pt: 2,
 								opacity: 0.7,
-								color: isDragActive ? 'common.white' : 'primary.dark',
 							}}
 						/>
 					) : null}
@@ -324,4 +290,28 @@ export function FileUploader({
 			</Paper>
 		</Stack>
 	)
+}
+
+const errors = {
+	'file-too-large': 'Файл слишком большой: **%s**.%s',
+	'file-maximum': ' Допустимый размер: **%s**.',
+	'file-invalid-type': 'Недопустимый тип файла: **%s**.%s',
+	'file-allowed': ' Разрешены только: **%s**.',
+	'too-many-files': 'Можно выбрать только один файл.',
+	default: 'Не удалось выбрать файл.',
+} as const
+
+function buildErrorMessage(
+	error: FileError,
+	{ file, maxSize, accept }: { file: File; maxSize?: number; accept: string | null },
+): string {
+	const message = errors[error.code as keyof typeof errors] ?? errors.default
+	if (error.code === 'file-too-large') {
+		const limit = maxSize ? sprintf(errors['file-maximum'], fileSize(maxSize, 0)) : ''
+		return sprintf(message, fileSize(file.size), limit)
+	} else if (error.code === 'file-invalid-type') {
+		const allowed = accept ? sprintf(errors['file-allowed'], replace(accept, /\*/g, '✳︎')) : ''
+		return sprintf(message, file.type, allowed)
+	}
+	return message
 }

@@ -21,10 +21,13 @@ export function UploaderDemo() {
 					'application/pdf': [],
 				}}
 				maxSizeBytes={50 * 1024 * 1024}
+				title="Портфолио"
+				placeholder="Выберите медиафайл для портфолио"
 				helperText="Ничто в настоящей Декларации не может быть истолковано, как предоставление какомулибо государству, группе лиц или отдельным лицам права заниматься какойлибо деятельностью или совершать действия, направленные к уничтожению прав и свобод, изложенных в настоящей Декларации."
 			/>
 			<TS variant="h5" content="Uploader (drop only)" />
 			<FileUploader
+				titleIcon={false}
 				value={file2}
 				onChangeAction={setFile2}
 				dropOnly
