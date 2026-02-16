@@ -450,22 +450,22 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@better-auth/cli@^1.4.17":
-  version "1.4.17"
-  resolved "https://registry.yarnpkg.com/@better-auth/cli/-/cli-1.4.17.tgz#15228187629589dba4fb5b275c52a070dc7292c8"
-  integrity sha512-GT0epRZCRAxwDnDNVsAVXx2W4PNjBfm8NwrtjxfYKRHsnrCHkT0N/cZyKCYG1sReN/wlsyYk8bJ6f1N1P4VT8w==
+"@better-auth/cli@^1.4.18":
+  version "1.4.18"
+  resolved "https://registry.yarnpkg.com/@better-auth/cli/-/cli-1.4.18.tgz#7be305675b43ed68c04a928438f689171f5170e4"
+  integrity sha512-T7koP/fNpP0+hZ3INNj+A2bx2B/6783XPE8xKjldndmdhG3orJZFkzKWzlXPJYh1jX56tFOfcvDMNErzE40LjQ==
   dependencies:
     "@babel/core" "^7.28.4"
     "@babel/preset-react" "^7.27.1"
     "@babel/preset-typescript" "^7.27.1"
-    "@better-auth/core" "1.4.17"
-    "@better-auth/telemetry" "1.4.17"
+    "@better-auth/core" "1.4.18"
+    "@better-auth/telemetry" "1.4.18"
     "@better-auth/utils" "0.3.0"
     "@clack/prompts" "^0.11.0"
     "@mrleebo/prisma-ast" "^0.13.0"
     "@prisma/client" "^5.22.0"
     "@types/pg" "^8.15.5"
-    better-auth "^1.4.17"
+    better-auth "^1.4.18"
     better-sqlite3 "^12.2.0"
     c12 "^3.2.0"
     chalk "^5.6.2"
@@ -480,18 +480,18 @@
     yocto-spinner "^0.2.3"
     zod "^4.3.5"
 
-"@better-auth/core@1.4.17":
-  version "1.4.17"
-  resolved "https://registry.yarnpkg.com/@better-auth/core/-/core-1.4.17.tgz#975fd8cb2029835f50958cde28154d8fa62dc367"
-  integrity sha512-WSaEQDdUO6B1CzAmissN6j0lx9fM9lcslEYzlApB5UzFaBeAOHNUONTdglSyUs6/idiZBoRvt0t/qMXCgIU8ug==
+"@better-auth/core@1.4.18":
+  version "1.4.18"
+  resolved "https://registry.yarnpkg.com/@better-auth/core/-/core-1.4.18.tgz#d424ccbf2e7754b7a7581c841dd64811b2700dd4"
+  integrity sha512-q+awYgC7nkLEBdx2sW0iJjkzgSHlIxGnOpsN1r/O1+a4m7osJNHtfK2mKJSL1I+GfNyIlxJF8WvD/NLuYMpmcg==
   dependencies:
     "@standard-schema/spec" "^1.0.0"
     zod "^4.3.5"
 
-"@better-auth/telemetry@1.4.17":
-  version "1.4.17"
-  resolved "https://registry.yarnpkg.com/@better-auth/telemetry/-/telemetry-1.4.17.tgz#1929f103807fb9010342cbcaf32e73a45a267830"
-  integrity sha512-R1BC4e/bNjQbXu7lG6ubpgmsPj7IMqky5DvMlzAtnAJWJhh99pMh/n6w5gOHa0cqDZgEAuj75IPTxv+q3YiInA==
+"@better-auth/telemetry@1.4.18":
+  version "1.4.18"
+  resolved "https://registry.yarnpkg.com/@better-auth/telemetry/-/telemetry-1.4.18.tgz#9290df1b20c5376cb6820ae6704f682d7c676a4e"
+  integrity sha512-e5rDF8S4j3Um/0LIVATL2in9dL4lfO2fr2v1Wio4qTMRbfxqnUDTa+6SZtwdeJrbc4O+a3c+IyIpjG9Q/6GpfQ==
   dependencies:
     "@better-auth/utils" "0.3.0"
     "@better-fetch/fetch" "1.1.21"
@@ -2627,13 +2627,13 @@ baseline-browser-mapping@^2.8.3, baseline-browser-mapping@^2.9.0:
   resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.9.15.tgz#6baaa0069883f50a99cdb31b56646491f47c05d7"
   integrity sha512-kX8h7K2srmDyYnXRIppo4AH/wYgzWVCs+eKr3RusRSQ5PvRYoEFmR/I0PbdTjKFAoKqp5+kbxnNTFO9jOfSVJg==
 
-better-auth@^1.4.17:
-  version "1.4.17"
-  resolved "https://registry.yarnpkg.com/better-auth/-/better-auth-1.4.17.tgz#a6f6176042900690df880ed349ca27ec0620291c"
-  integrity sha512-VmHGQyKsEahkEs37qguROKg/6ypYpNF13D7v/lkbO7w7Aivz0Bv2h+VyUkH4NzrGY0QBKXi1577mGhDCVwp0ew==
+better-auth@^1.4.17, better-auth@^1.4.18:
+  version "1.4.18"
+  resolved "https://registry.yarnpkg.com/better-auth/-/better-auth-1.4.18.tgz#460cfa3f71d2da9ffcbfc1ad4d87977a4d51b5d5"
+  integrity sha512-bnyifLWBPcYVltH3RhS7CM62MoelEqC6Q+GnZwfiDWNfepXoQZBjEvn4urcERC7NTKgKq5zNBM8rvPvRBa6xcg==
   dependencies:
-    "@better-auth/core" "1.4.17"
-    "@better-auth/telemetry" "1.4.17"
+    "@better-auth/core" "1.4.18"
+    "@better-auth/telemetry" "1.4.18"
     "@better-auth/utils" "0.3.0"
     "@better-fetch/fetch" "1.1.21"
     "@noble/ciphers" "^2.0.0"
@@ -6036,12 +6036,7 @@ prelude-ls@^1.2.1:
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
 
-prettier@^3.4.2:
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.8.0.tgz#f72cf71505133f40cfa2ef77a2668cdc558fcd69"
-  integrity sha512-yEPsovQfpxYfgWNhCfECjG5AQaO+K3dp6XERmOepyPDVqcJm+bjyCVO3pmU+nAPe0N5dDvekfGezt/EIiRe1TA==
-
-prettier@^3.5.3, prettier@^3.6.2:
+prettier@^3.4.2, prettier@^3.5.3, prettier@^3.6.2:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.8.1.tgz#edf48977cf991558f4fcbd8a3ba6015ba2a3a173"
   integrity sha512-UOnG6LftzbdaHZcKoPFtOcCKztrQ57WkHDeRD9t/PTQtmT0NHSeWWepj6pS0z/N7+08BHFDQVUrfmfMRcZwbMg==
