@@ -19,8 +19,11 @@ export const updateFreelancerProfileSchema = z.object({
 export const createPortfolioItemSchema = z.object({
 	title: z.string().min(2).max(255),
 	description: z.string().max(5000).optional(),
-	mediaUrl: z.string().url(),
+	mediaUrl: z.url(),
 	mediaType: z.string().max(50).optional(),
+	mediaWidth: z.number().int().positive().optional(),
+	mediaHeight: z.number().int().positive().optional(),
+	caption: z.string().max(5000).optional(),
 	category: z.string().max(100).optional(),
 	toolsUsed: z.array(z.string().min(1).max(100)).optional(),
 })

@@ -33,6 +33,9 @@ export type PublicFreelancerProfile = {
 		description: string | null
 		mediaUrl: string
 		mediaType: string | null
+		mediaWidth: number | null
+		mediaHeight: number | null
+		caption: string | null
 		category: string | null
 		toolsUsed: unknown
 		createdAt: Date | null
@@ -109,6 +112,9 @@ export async function getPublicFreelancerProfileByProfileId(
 			description: p.description,
 			mediaUrl: p.media_url,
 			mediaType: p.media_type,
+			mediaWidth: p.media_width,
+			mediaHeight: p.media_height,
+			caption: p.caption,
 			category: p.category,
 			toolsUsed: p.tools_used,
 			createdAt: p.created_at,

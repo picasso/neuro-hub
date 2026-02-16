@@ -70,6 +70,15 @@ type RouteContext = {
  *               mediaType:
  *                 type: string
  *                 example: "image/png"
+ *               mediaWidth:
+ *                 type: integer
+ *                 example: 1200
+ *               mediaHeight:
+ *                 type: integer
+ *                 example: 800
+ *               caption:
+ *                 type: string
+ *                 example: "Скриншот главного экрана"
  *               category:
  *                 type: string
  *                 example: "chatbots"
@@ -108,6 +117,9 @@ export async function GET(_: Request, context: RouteContext) {
 				description: p.description,
 				mediaUrl: p.media_url,
 				mediaType: p.media_type,
+				mediaWidth: p.media_width,
+				mediaHeight: p.media_height,
+				caption: p.caption,
 				category: p.category,
 				toolsUsed: p.tools_used,
 				createdAt: p.created_at,
@@ -145,6 +157,9 @@ export async function POST(request: Request, context: RouteContext) {
 				description: validated.description ?? null,
 				media_url: validated.mediaUrl,
 				media_type: validated.mediaType ?? null,
+				media_width: validated.mediaWidth ?? null,
+				media_height: validated.mediaHeight ?? null,
+				caption: validated.caption ?? null,
 				category: validated.category ?? null,
 				// `tools_used` is jsonb; pg will serialize arrays as PG array literals unless we cast explicitly.
 				tools_used: validated.toolsUsed?.length
@@ -161,6 +176,9 @@ export async function POST(request: Request, context: RouteContext) {
 			description: inserted.description,
 			mediaUrl: inserted.media_url,
 			mediaType: inserted.media_type,
+			mediaWidth: inserted.media_width,
+			mediaHeight: inserted.media_height,
+			caption: inserted.caption,
 			category: inserted.category,
 			toolsUsed: inserted.tools_used,
 			createdAt: inserted.created_at,

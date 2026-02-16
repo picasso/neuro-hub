@@ -6255,6 +6255,11 @@ react-is@^19.2.3:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.3.tgz#eec2feb69c7fb31f77d0b5c08c10ae1c88886b29"
   integrity sha512-qJNJfu81ByyabuG7hPFEbXqNcWSU3+eVus+KJs+0ncpGfMyYdvSmxiJxbWR65lYi1I+/0HBcliO029gc4F+PnA==
 
+react-photo-album@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/react-photo-album/-/react-photo-album-3.5.0.tgz#76b9e7445dcaf66cb37c5eca1e46c6c356f4b17d"
+  integrity sha512-U/MOTePXH5nlFA7uTxZuW87pChLMWDEoJElvU+lROJRIcFPa3S+fBnFVFe/77WsIuzEKzsG7FBWMiGlKm4gnJg==
+
 react-transition-group@^4.4.5:
   version "4.4.5"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.5.tgz#e53d4e3f3344da8521489fbef8f2581d42becdd1"

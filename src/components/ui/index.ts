@@ -6,3 +6,14 @@ export { TS, type TextStyledProps } from './text-styled'
 export { type IconName, type IconOptions } from './icon'
 export { Button, type ButtonProps } from './button'
 export { FileUploader, type FileUploaderProps } from './file-uploader'
+export {
+	Portfolio,
+	type PortfolioMediaItem,
+	type PortfolioMediaKind,
+	type PortfolioProps,
+} from './portfolio'
+export {
+	PortfolioViewer,
+	type PortfolioViewerItem,
+	type PortfolioViewerProps,
+} from './portfolio-viewer'
