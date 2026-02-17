@@ -1,6 +1,7 @@
 import { fontSans } from './fonts'
 import type { ReactNode } from 'react'
 import { AlertsPlugin } from '@/alerts'
+import { DbHealthAlert } from '@/components/db-health-alert'
 import { ThemeRegistry } from '@/components/providers'
 import { Footer, Header } from '@/components/ui'
 
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 			>
 				<ThemeRegistry>
 					<AlertsPlugin />
+					<DbHealthAlert />
 					<Header />
 					<main style={{ flex: 1 }}>{children}</main>
 					<Footer />
