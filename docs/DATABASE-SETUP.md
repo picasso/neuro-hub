@@ -39,7 +39,10 @@ docker compose logs postgres
 ### 3. Запуск миграций
 
 ```bash
-# Применить все миграции
+# 1) Создать core таблицы Better Auth (users/sessions/accounts/verifications)
+yarn db:auth:migrate
+
+# 2) Применить доменные миграции (Knex)
 yarn db:migrate
 
 # Проверить статус миграций

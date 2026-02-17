@@ -64,6 +64,14 @@ jobs:
             --clean \
             --file="./backups/railway/backup_${TIMESTAMP}.sql" || echo "Backup not created (database might be empty)"
 
+      - name: Run Better Auth migrations
+        if: ${{ !inputs.skip_migrations }}
+        env:
+          DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+        run: |
+          echo "Running Better Auth migrations..."
+          yes | npx @better-auth/cli migrate
+
       - name: Run migrations
         if: ${{ !inputs.skip_migrations }}
         env:

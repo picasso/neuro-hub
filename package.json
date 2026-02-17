@@ -16,6 +16,7 @@
 		"type-check": "tsc --noEmit",
 		"test": "jest --passWithNoTests",
 		"test:watch": "jest --watch --passWithNoTests",
+		"db:auth:migrate": "yes | npx @better-auth/cli migrate",
 		"db:migrate": "tsx node_modules/.bin/knex migrate:latest --knexfile knexfile.ts",
 		"db:migrate:make": "tsx node_modules/.bin/knex migrate:make --knexfile knexfile.ts",
 		"db:migrate:rollback": "tsx node_modules/.bin/knex migrate:rollback --knexfile knexfile.ts",

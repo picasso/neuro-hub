@@ -111,10 +111,15 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
     docker compose up -d postgres
     ```
 
-5. **Run database migrations**
+5. **Run database migrations & seeds**
 
     ```bash
+    # 1) Create Better Auth core tables (users/sessions/accounts/verifications)
+    yarn db:auth:migrate
+
+    # 2) Run domain migrations (Knex)
     yarn db:migrate
+    yarn db:seed
     ```
 
 6. **Start development server**

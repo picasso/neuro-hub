@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pictures } from '../index'
+import { sleep } from '@/utils/common'
 
 export const runtime = 'nodejs'
 
@@ -8,9 +9,15 @@ type RouteContext = {
 	params: Promise<{ file: string }>
 }
 
-export async function GET(_: Request, context: RouteContext) {
+export async function GET(request: Request, context: RouteContext) {
 	if (process.env.NODE_ENV !== 'development') {
 		return new Response('Not found', { status: 404 })
+	}
+
+	const url = new URL(request.url)
+	const slowMs = Number(url.searchParams.get('slowMs') ?? 0)
+	if (slowMs > 0) {
+		await sleep(Math.min(Math.max(slowMs, 0), 5000))
 	}
 
 	const { file } = await context.params

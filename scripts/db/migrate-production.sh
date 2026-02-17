@@ -50,7 +50,17 @@ else
 fi
 
 echo ""
-echo "4️⃣ Running migrations..."
+echo "4️⃣ Running Better Auth migrations..."
+if yes | npx @better-auth/cli migrate; then
+  echo "✅ Better Auth migrations completed"
+else
+  echo ""
+  echo "❌ Better Auth migration error!"
+  exit 1
+fi
+
+echo ""
+echo "5️⃣ Running Knex migrations..."
 if NODE_ENV=production yarn db:migrate; then
   echo ""
   echo "✅ Migrations completed successfully!"
