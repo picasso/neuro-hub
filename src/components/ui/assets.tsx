@@ -2,6 +2,7 @@
 // MUI icons --------------------------------------------------------------------------------------]
 //
 import article from '@mui/icons-material/Article'
+import mediaPdf from '@mui/icons-material/ArticleTwoTone'
 import business from '@mui/icons-material/Business'
 import checkCircle from '@mui/icons-material/CheckCircle'
 import close from '@mui/icons-material/Close'
@@ -23,10 +24,12 @@ import info from '@mui/icons-material/Info'
 import infoOutline from '@mui/icons-material/InfoOutline'
 import linkedIn from '@mui/icons-material/LinkedIn'
 import login from '@mui/icons-material/Login'
+import mediaVideo from '@mui/icons-material/OndemandVideoTwoTone'
 import payment from '@mui/icons-material/Payment'
 import percent from '@mui/icons-material/Percent'
 import person from '@mui/icons-material/Person'
 import personAdd from '@mui/icons-material/PersonAdd'
+import mediaImage from '@mui/icons-material/PhotoSizeSelectActualTwoTone'
 import search from '@mui/icons-material/Search'
 import star from '@mui/icons-material/Star'
 import telegram from '@mui/icons-material/Telegram'
@@ -36,6 +39,7 @@ import verifiedUser from '@mui/icons-material/VerifiedUser'
 import videoLibrary from '@mui/icons-material/VideoLibrary'
 import visibility from '@mui/icons-material/Visibility'
 import visibilityOff from '@mui/icons-material/VisibilityOff'
+import mediaAudio from '@mui/icons-material/VolumeUpTwoTone'
 import warning from '@mui/icons-material/WarningAmber'
 import work from '@mui/icons-material/Work'
 import x from '@mui/icons-material/X'
@@ -65,6 +69,10 @@ const muiIcons = {
 	image,
 	info,
 	infoOutline,
+	mediaImage,
+	mediaVideo,
+	mediaAudio,
+	mediaPdf,
 	linkedIn,
 	login,
 	payment,

@@ -73,3 +73,10 @@ Thumbs.db
 
 # Miscellaneous
 src/FIXES.md
+
+# Playground local pictures (keep local)
+src/app/playground/pictures/*.jpg
+src/app/playground/pictures/*.jpeg
+src/app/playground/pictures/*.png
+src/app/playground/pictures/*.webp
+src/app/playground/pictures/*.gif
