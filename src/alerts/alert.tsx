@@ -10,13 +10,13 @@ import { useCallback } from 'react'
 import { toast } from 'sonner'
 import { $alerts, type AlertId } from './model'
 import { Icon, TS } from '@/components/ui'
-import { simpleMarkdown, templatedMessage } from '@/utils'
+import { markdownCss, simpleMarkdown, templatedMessage } from '@/utils'
 
 const iconMapping: MuiAlertProps['iconMapping'] = {
-	success: <Icon name="check" color="success" />,
-	info: <Icon name="info" color="info" />,
-	warning: <Icon name="warning" color="warning" />,
-	error: <Icon name="error" color="error" />,
+	success: <Icon name="done-filled" color="success" />,
+	info: <Icon name="info-filled" color="info" />,
+	warning: <Icon name="warning-filled" color="warning" />,
+	error: <Icon name="error-filled" color="error" />,
 }
 
 export function AlertComponent({ id }: { id: AlertId }) {
@@ -76,6 +76,7 @@ export function AlertComponent({ id }: { id: AlertId }) {
 			iconMapping={iconMapping}
 			elevation={elevation ?? 3}
 			sx={[
+				md !== false && markdownCss,
 				{ minWidth: { md: 'none', lg: 400, xl: 600 } },
 				{ '.MuiAlert-message': { width: '100%' } },
 				!title && { '.MuiAlert-action': { py: 0.75, pl: 2 } },
@@ -100,7 +101,7 @@ export function AlertComponent({ id }: { id: AlertId }) {
 								borderRadius: 999,
 								backgroundColor:
 									isProgress && variant === 'filled'
-										? theme.palette.secondary.main
+										? theme.palette.contrast.main
 										: undefined,
 							},
 						})}
@@ -110,6 +111,7 @@ export function AlertComponent({ id }: { id: AlertId }) {
 							variant="caption"
 							sx={{ display: 'block', mt: 0.5 }}
 							content={`${Math.round(progressValue)}%`}
+							color={isProgress && variant === 'filled' ? 'contrast' : 'primary.dark'}
 						/>
 					)}
 				</Box>
