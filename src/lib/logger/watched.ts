@@ -72,39 +72,31 @@ export const authDomain = createDomainWatched('auth', {}, debugStores.auth)
 
 const viewerConfig: ConfigLogger = {
 	colors: {
+		$currentIndex: 'green',
 		$targetIndex: 'data',
-		$ready: 'green',
-		$fade: 'query',
-		$fadeOpacity: 'query',
-		$loaders: 'data',
-		$preloading: 'red',
-		completedFade: 'orange',
-		fadeInDelayed: 'fx',
-		resetTransition: 'red',
+		$phase: 'query',
+		navigated: 'red',
+		fadeCompleted: 'blue',
+		fadeOutDone: 'orange',
+		fadeInDone: 'green',
+		preloadImageFx_root: 'blue',
+		preloadImageFx_done: 'green',
 	},
 	filter: {
 		gate: false,
 		gate_root: true,
-		setTargetIndex: false,
-		startedLoader: false,
-		preloaded: false,
-		startedFadeOut: false,
-		startedFadeIn: false,
-		resetFade: false,
-		resetLoaders: false,
-		resetPreloading: false,
-		resetFadeOpacity: false,
-		resetTargetIndex: false,
+		opened: false,
+		closed: false,
 	},
 	fn: {
-		$targetIndex: (index: number) => String(index),
-		$ready: (ready: boolean) => (ready ? 'ready' : 'not ready'),
-		$fade: (fade: { in: boolean; out: boolean }) =>
-			fade.in ? 'fading in' : fade.out ? 'fading out' : 'off',
-		$fadeOpacity: (opacity: number) => `opacity:${opacity}`,
-		$loaders: (loaders: { right: boolean; left: boolean }) =>
-			loaders.right ? 'next loader' : loaders.left ? 'prev loader' : 'off',
-		$preloading: (preloading: boolean) => (preloading ? 'loading...' : 'completed'),
+		$currentIndex: (index: number | null) => (index !== null ? String(index) : 'closed'),
+		$targetIndex: (index: number | null) => (index !== null ? String(index) : 'closed'),
+		$phase: (phase: { _: string }) => phase._,
+		navigated: (payload: {
+			direction: 'left' | 'right'
+			nextIndex: number
+			nextKind: string
+		}) => `${payload.direction} {->} ${payload.nextIndex}:${payload.nextKind}`,
 	},
 }
 

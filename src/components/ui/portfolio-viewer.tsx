@@ -11,7 +11,7 @@ import { useUnit } from 'effector-react'
 import { random, uniqueId } from 'lodash'
 import Image from 'next/image'
 import { delay } from 'patronum'
-import { type TransitionEventHandler, useCallback, useEffect, useMemo, useState } from 'react'
+import { type TransitionEventHandler, useCallback, useEffect } from 'react'
 import { type MediaKind, type MediaItem, MediaPlaceholder } from './portfolio-item'
 import { Icon, type IconName } from '@/components/ui/icon'
 import { TS } from '@/components/ui/text-styled'
@@ -23,7 +23,6 @@ const fadeTransition = `opacity ${500}ms ease-in-out`
 export type PortfolioViewerProps = {
 	items: MediaItem[]
 	openIndex: number | null
-	onChangeIndex: (index: number) => void
 	onClose: () => void
 	borderRadius?: number
 }
@@ -31,94 +30,72 @@ export type PortfolioViewerProps = {
 export function PortfolioViewer({
 	items,
 	openIndex,
-	onChangeIndex,
 	onClose,
 	borderRadius = 6,
 }: PortfolioViewerProps) {
-	const [targetIndex, ready, fadeOpacity, loaders, preloading] = useUnit([
-		$targetIndex,
-		$ready,
+	const [currentIndex, fadeOpacity, isTransitioning, loaderDirection] = useUnit([
+		$currentIndex,
 		$fadeOpacity,
-		$loaders,
-		$preloading,
+		$isTransitioning,
+		$loaderDirection,
 	])
-	const [isOpen, setIsOpen] = useState(false)
 
-	// set `isOpen` to true when `openIndex` is not null and
-	// reset all stores when `openIndex` is provided
 	useEffect(() => {
-		if (!isOpen && openIndex !== null) setIsOpen(true)
-		if (isOpen && openIndex === null) setIsOpen(false)
-	}, [isOpen, openIndex])
+		if (openIndex !== null) opened(openIndex)
+	}, [openIndex])
 
-	// sync `targetIndex` with `openIndex` when viewer is open
-	useEffect(() => {
-		if (isOpen) setTargetIndex(openIndex!)
-	}, [isOpen, openIndex])
+	// viewer Dialog `open/close` driven by parent prop;
+	// stores keep last valid data during Dialog exit animation
+	const isOpen = openIndex !== null
+	const onDialogExited = useCallback(() => closed(), [])
 
-	// sync `targetIndex` with `openIndex` when state is ready and
-	// `openIndex` is not equal to `targetIndex` (we are inside the transition)
-	useEffect(() => {
-		if (openIndex === null) return
-		if (ready && targetIndex !== null && openIndex !== targetIndex) {
-			onChangeIndex(targetIndex)
-		}
-	}, [ready, openIndex, targetIndex, onChangeIndex])
-
-	// proxy `onClose` to reset all stores
-	const onCloseProxy = useCallback(() => {
-		onClose()
-		resetAll()
-	}, [onClose])
-
-	const onNext = useCallback(() => {
-		if (items.length <= 0 || targetIndex === null) return
-		const index = (targetIndex + 1) % items.length
-		setTargetIndex(index)
-		startedLoader('right')
-	}, [items.length, targetIndex])
-
-	const onPrev = useCallback(() => {
-		if (items.length <= 0 || targetIndex === null) return
-		const index = (targetIndex - 1 + items.length) % items.length
-		setTargetIndex(index)
-		startedLoader('left')
-	}, [items.length, targetIndex])
-
-	const next = useMemo(() => {
-		const nextItem = targetIndex === null ? null : items[targetIndex]
-		return !nextItem
-			? null
-			: {
-					url: getSlowUrl({ index: targetIndex!, mediaUrl: nextItem.mediaUrl }),
-					width: nextItem.mediaWidth ?? 1200,
-					height: nextItem.mediaHeight ?? 900,
-					kind: getMediaKind(nextItem.mediaType),
-				}
-	}, [items, targetIndex])
-
-	// reset `preloading` when next item is not an `image`
-	useEffect(() => {
-		if (next?.kind !== 'image') preloaded()
-	}, [next?.kind])
-
-	const { title, caption, mediaWidth, mediaHeight, mediaUrl, mediaType } = items[openIndex!] ?? {}
-	const kind = useMemo(() => getMediaKind(mediaType), [mediaType])
-	const nextKind = next?.kind ?? 'unknown'
+	const item = currentIndex !== null ? items[currentIndex] : null
+	const { title, caption, mediaWidth, mediaHeight, mediaUrl, mediaType } = item ?? {}
+	const kind = getMediaKind(mediaType)
 
 	const width = mediaWidth ?? 1200
 	const height = mediaHeight ?? 900
 	const isPortrait = width < height
 
 	const canNavigate = items.length > 1 && isOpen
-	const isTransitioning = !!loaders.left || !!loaders.right
 	const hasPrev = canNavigate && !isTransitioning
 	const hasNext = canNavigate && !isTransitioning
 
+	const onCloseProxy = useCallback(() => {
+		onClose()
+	}, [onClose])
+
+	const onNext = useCallback(() => {
+		if (currentIndex === null || items.length <= 1) return
+		const nextIndex = (currentIndex + 1) % items.length
+		const nextItem = items[nextIndex]
+		navigated({
+			direction: 'right',
+			nextIndex,
+			nextUrl: getSlowUrl({ index: nextIndex, mediaUrl: nextItem.mediaUrl }),
+			nextKind: getMediaKind(nextItem.mediaType),
+		})
+	}, [currentIndex, items])
+
+	const onPrev = useCallback(() => {
+		if (currentIndex === null || items.length <= 1) return
+		const nextIndex = (currentIndex - 1 + items.length) % items.length
+		const nextItem = items[nextIndex]
+		navigated({
+			direction: 'left',
+			nextIndex,
+			nextUrl: getSlowUrl({ index: nextIndex, mediaUrl: nextItem.mediaUrl }),
+			nextKind: getMediaKind(nextItem.mediaType),
+		})
+	}, [currentIndex, items])
+
 	const onTransitionEnd: TransitionEventHandler = useCallback((event) => {
 		if (event.propertyName !== 'opacity') return
-		completedFade()
+		fadeCompleted()
 	}, [])
+
+	const isLoaderLeft = loaderDirection === 'left'
+	const isLoaderRight = loaderDirection === 'right'
 
 	return (
 		<Dialog
@@ -126,9 +103,12 @@ export function PortfolioViewer({
 			onClose={onCloseProxy}
 			fullWidth
 			maxWidth="md"
-			slotProps={{ paper: { sx: { border: 'none', borderRadius: 1 } } }}
+			slotProps={{
+				paper: { sx: { border: 'none', borderRadius: 1 } },
+				transition: { onExited: onDialogExited },
+			}}
 		>
-			<DialogContent sx={{ p: 0, opacity: openIndex === null ? 0 : 1 }}>
+			<DialogContent sx={{ p: 0 }}>
 				<Stack
 					direction="row"
 					alignItems="center"
@@ -159,17 +139,17 @@ export function PortfolioViewer({
 					<Stack direction="row" alignItems="center" spacing={1}>
 						<IconButton aria-label="Предыдущий" onClick={onPrev} disabled={!hasPrev}>
 							<Icon
-								name={loaders.left ? 'spinner' : 'expand-more'}
-								color={loaders.left ? 'primary' : 'inherit'}
-								animation={loaders.left ? 'rotate' : undefined}
+								name={isLoaderLeft ? 'spinner' : 'expand-more'}
+								color={isLoaderLeft ? 'primary' : hasPrev ? 'inherit' : 'disabled'}
+								animation={isLoaderLeft ? 'rotate' : undefined}
 								sx={{ transform: 'rotate(90deg)' }}
 							/>
 						</IconButton>
 						<IconButton aria-label="Следующий" onClick={onNext} disabled={!hasNext}>
 							<Icon
-								name={loaders.right ? 'spinner' : 'expand-more'}
-								color={loaders.right ? 'primary' : 'inherit'}
-								animation={loaders.right ? 'rotate' : undefined}
+								name={isLoaderRight ? 'spinner' : 'expand-more'}
+								color={isLoaderRight ? 'primary' : hasNext ? 'inherit' : 'disabled'}
+								animation={isLoaderRight ? 'rotate' : undefined}
 								sx={{ transform: 'rotate(-90deg)' }}
 							/>
 						</IconButton>
@@ -179,38 +159,7 @@ export function PortfolioViewer({
 					</Stack>
 				</Stack>
 
-				<MediaPlaceholder
-					kind={kind}
-					sx={{
-						p: 4,
-						minHeight: 420,
-						borderRadius: 0,
-						opacity: openIndex === null ? 0 : 1,
-					}}
-				>
-					{preloading && next && nextKind === 'image' && (
-						<Box
-							sx={{
-								position: 'absolute',
-								width: 1,
-								height: 1,
-								overflow: 'hidden',
-								opacity: 0,
-								pointerEvents: 'none',
-							}}
-						>
-							<Image
-								src={next.url}
-								width={next.width}
-								height={next.height}
-								priority
-								alt=""
-								loading="eager"
-								onLoad={() => preloaded()}
-								onError={() => resetOnError(openIndex!)}
-							/>
-						</Box>
-					)}
+				<MediaPlaceholder kind={kind} sx={{ p: 4, minHeight: 420, borderRadius: 0 }}>
 					{!mediaUrl ? null : kind === 'image' ? (
 						<Image
 							src={mediaUrl}
@@ -306,145 +255,136 @@ export function PortfolioViewer({
 						</Stack>
 					)}
 				</MediaPlaceholder>
-				{/*
-				{!!description && (
-					<Box sx={{ p: 2, pt: 0 }}>
-						<TS variant="body2" color="text.secondary" content={description} />
-					</Box>
-				)} */}
 			</DialogContent>
 		</Dialog>
 	)
 }
 
-// * * * stores -----------------------------------------------------------------------------------]
+// * * * types ------------------------------------------------------------------------------------]
 
-type Loaders = {
-	left?: boolean
-	right?: boolean
+type Phase =
+	| { _: 'idle' }
+	| { _: 'preloading'; direction: 'left' | 'right' }
+	| { _: 'fading-out'; direction: 'left' | 'right' }
+	| { _: 'switching' }
+	| { _: 'fading-in' }
+
+type NavigatePayload = {
+	direction: 'left' | 'right'
+	nextIndex: number
+	nextUrl: string
+	nextKind: MediaKind
 }
 
-type Fade = {
-	in?: boolean
-	out?: boolean
-}
+// * * * events -----------------------------------------------------------------------------------]
 
-const resetAll = domain.createEvent('resetAll')
+const opened = domain.createEvent<number>('opened')
+const closed = domain.createEvent('closed')
+const navigated = domain.createEvent<NavigatePayload>('navigated')
+const fadeCompleted = domain.createEvent('fadeCompleted')
+const fadeOutDone = domain.createEvent('fadeOutDone')
+const fadeInDone = domain.createEvent('fadeInDone')
+
+// * * * effects ----------------------------------------------------------------------------------]
+
+const preloadImageFx = domain.createEffect<string, void>({
+	handler: (url) =>
+		new Promise<void>((resolve, reject) => {
+			const img = new window.Image()
+			img.onload = () => resolve()
+			img.onerror = () => reject(new Error('preload failed'))
+			img.src = url
+		}),
+	name: 'preloadImageFx',
+})
+
+// * * * $currentIndex ----------------------------------------------------------------------------]
+
+const $currentIndex = domain.createStore<number | null>(null, { name: '$currentIndex' })
+
+$currentIndex.on(opened, (_, index) => index)
+$currentIndex.on(closed, () => null)
 
 // * * * $targetIndex -----------------------------------------------------------------------------]
 
-const resetTargetIndex = domain.createEvent('resetTargetIndex')
-const resetOnError = domain.createEvent<number>('resetOnError')
-const setTargetIndex = domain.createEvent<number>('setTargetIndex')
 const $targetIndex = domain.createStore<number | null>(null, { name: '$targetIndex' })
 
-$targetIndex.reset(resetTargetIndex)
-$targetIndex.on(setTargetIndex, (_, update) => update)
+$targetIndex.on(opened, (_, index) => index)
+$targetIndex.on(closed, () => null)
+$targetIndex.on(navigated, (_, { nextIndex }) => nextIndex)
 
-// * * * $loaders ---------------------------------------------------------------------------------]
+// * * * $phase -----------------------------------------------------------------------------------]
 
-const resetLoaders = domain.createEvent('resetLoaders')
-const startedLoader = domain.createEvent<'left' | 'right'>('startedLoader')
-const $loaders = domain.createStore<Loaders>({}, { name: '$loaders' })
+const $phase = domain.createStore<Phase>({ _: 'idle' }, { name: '$phase' })
 
-$loaders.reset(resetLoaders)
-$loaders.on(startedLoader, (_, update) => ({ [update]: true }))
+$phase.on(opened, (): Phase => ({ _: 'idle' }))
+$phase.on(closed, (): Phase => ({ _: 'idle' }))
+$phase.on(
+	navigated,
+	(_, { nextKind, direction }): Phase =>
+		nextKind === 'image' ? { _: 'preloading', direction } : { _: 'fading-out', direction },
+)
+$phase.on(preloadImageFx.done, (phase): Phase => {
+	if (phase._ !== 'preloading') return phase
+	return { _: 'fading-out', direction: phase.direction }
+})
+$phase.on(preloadImageFx.fail, (): Phase => ({ _: 'idle' }))
+$phase.on(fadeOutDone, (): Phase => ({ _: 'switching' }))
+$phase.on(fadeInDone, (): Phase => ({ _: 'idle' }))
 
-// * * * $preloading ------------------------------------------------------------------------------]
+// * * * derived stores ---------------------------------------------------------------------------]
 
-const resetPreloading = domain.createEvent('resetPreloading')
-const preloaded = domain.createEvent('preloaded')
-const $preloading = domain.createStore<boolean>(false, { name: '$preloading' })
-const $ready = domain.createStore<boolean>(true, { name: '$ready' })
-
-$preloading.reset(resetPreloading)
-
-// * * * $fade ------------------------------------------------------------------------------------]
-
-const resetFade = domain.createEvent('resetFade')
-const resetFadeOpacity = domain.createEvent('resetFadeOpacity')
-const startedFadeIn = domain.createEvent('startedFadeIn')
-const startedFadeOut = domain.createEvent('startedFadeOut')
-const completedFade = domain.createEvent('completedFade')
-const fadeInDelayed = domain.createEvent('fadeInDelayed')
-
-const $fade = domain.createStore<Fade>({}, { name: '$fade' })
-const $fadeOpacity = domain.createStore<number>(1, { name: '$fadeOpacity' })
-
-$fade.reset(resetFade)
-$fade.on(startedFadeIn, () => ({ in: true }))
-$fade.on(startedFadeOut, () => ({ out: true }))
-$fadeOpacity.reset(resetFadeOpacity)
-$fadeOpacity.on(startedFadeOut, () => 0)
-$fadeOpacity.on(startedFadeIn, () => 1)
+const $fadeOpacity = $phase.map((p) => (p._ === 'fading-out' || p._ === 'switching' ? 0 : 1))
+const $isTransitioning = $phase.map((p) => p._ !== 'idle')
+const $loaderDirection = $phase.map((p) => (p._ === 'preloading' ? p.direction : null))
 
 // * * * connections and consequences -------------------------------------------------------------]
 
-// reset all stores on `resetAll` event or `PortfolioViewerGate` is opened
+// navigated + image -> start preload
 sample({
-	clock: [resetAll],
-	target: [resetTargetIndex, resetLoaders, resetPreloading, resetFade, resetFadeOpacity],
+	clock: navigated,
+	filter: ({ nextKind }) => nextKind === 'image',
+	fn: ({ nextUrl }) => nextUrl,
+	target: preloadImageFx,
 })
 
-// reset all stores on `error` - reset all except `targetIndex`
-// use given index to restore `targetIndex`
+// preload failed -> restore targetIndex to currentIndex
 sample({
-	clock: resetOnError,
-	target: [resetLoaders, resetPreloading, resetFade, resetFadeOpacity, setTargetIndex],
+	clock: preloadImageFx.fail,
+	source: $currentIndex,
+	target: $targetIndex,
 })
 
-// start `$preloading` when `$loaders` is activated
+// fadeCompleted during fading-out -> trigger fadeOutDone
 sample({
-	clock: $loaders,
-	filter: ({ left, right }) => !!(left || right),
-	fn: () => true,
-	target: $preloading,
+	clock: fadeCompleted,
+	source: $phase,
+	filter: (phase) => phase._ === 'fading-out',
+	target: fadeOutDone,
 })
 
-// set `$ready` to false when preloading is started
+// fadeCompleted during fading-in -> trigger fadeInDone
 sample({
-	clock: $preloading,
-	filter: (preloading) => preloading,
-	fn: () => false,
-	target: $ready,
+	clock: fadeCompleted,
+	source: $phase,
+	filter: (phase) => phase._ === 'fading-in',
+	target: fadeInDone,
 })
 
-// reset `$preloading` when preloaded event is triggered
+// fadeOutDone -> update $currentIndex from $targetIndex (dialog resizes while invisible)
 sample({
-	clock: preloaded,
-	fn: () => false,
-	target: $preloading,
+	clock: fadeOutDone,
+	source: $targetIndex,
+	target: $currentIndex,
 })
 
-// start fade-out when preloading is complete
+// delay after switch -> start fade-in (guarded: only if still in switching phase)
 sample({
-	clock: preloaded,
-	source: $loaders,
-	filter: ({ left, right }) => !!(left || right),
-	target: startedFadeOut,
-})
-
-// set `$ready` to true when fade-out is complete and delay fade-in to avoid flickering
-sample({
-	clock: completedFade,
-	source: $fade,
-	filter: (fade) => !!fade.out,
-	fn: () => true,
-	target: [$ready, fadeInDelayed],
-})
-
-// delay fade-in to avoid flickering and reset `$loaders`
-sample({
-	clock: delay(fadeInDelayed, 300),
-	target: [startedFadeIn, resetLoaders],
-})
-
-// reset `$fade` when fade-in is complete
-sample({
-	clock: completedFade,
-	source: $fade,
-	filter: (fade) => !!fade.in,
-	target: resetFade,
+	clock: delay(fadeOutDone, 300),
+	source: $phase,
+	filter: (phase) => phase._ === 'switching',
+	fn: (): Phase => ({ _: 'fading-in' }),
+	target: $phase,
 })
 
 // * * * helpers ----------------------------------------------------------------------------------]
@@ -459,7 +399,6 @@ export function getMediaKind(mediaType?: string | null): MediaKind {
 }
 
 function getSlowUrl({ index, mediaUrl }: { index: number; mediaUrl: string }) {
-	// demo helper: slow down only in viewer to reproduce resizing artifact
 	if (!isDevelopment) return mediaUrl
 	if (typeof window === 'undefined') return mediaUrl
 	if (!mediaUrl.startsWith('/playground/pictures/')) return mediaUrl

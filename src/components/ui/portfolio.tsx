@@ -17,7 +17,6 @@ export function Portfolio({ items }: PortfolioProps) {
 			<PortfolioViewer
 				items={items}
 				openIndex={openIndex}
-				onChangeIndex={(index) => setOpenIndex(index)}
 				onClose={() => setOpenIndex(null)}
 			/>
 		</>

@@ -46,7 +46,9 @@ controlled viewer or custom open behavior.
 
 ### `PortfolioViewer`
 
-Controlled modal viewer with next/prev navigation and keyboard support.
+Modal viewer with next/prev navigation and crossfade transitions between items.
+Navigation state is managed internally via Effector (`$phase` state machine);
+the parent only provides the initial index and a close callback.
 
 **Import:** `@/components/ui/portfolio-viewer` (not exported from the barrel). It uses React hooks,
 so it must only be used from Client Components.
@@ -55,14 +57,12 @@ so it must only be used from Client Components.
 
 - `items: MediaItem[]`
 - `openIndex: number | null` — `null` means closed
-- `onChangeIndex: (index: number) => void`
 - `onClose: () => void`
 - `borderRadius?: number`
 
 **Keyboard**
 
-- `ArrowLeft` / `ArrowRight`: previous / next item
-- `Escape`: close
+- `Escape`: close (handled by MUI Dialog)
 
 ## Example
 

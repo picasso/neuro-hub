@@ -197,6 +197,9 @@ export const components: ThemeOptions['components'] = {
 			colorContrast: ({ theme }) => ({
 				color: theme.palette.contrast.main,
 			}),
+			colorDisabled: {
+				color: 'var(--mui-palette-grey-300)',
+			},
 		},
 	},
 	MuiTypography: {
