@@ -16,6 +16,6 @@ export {
 	authDomain,
 	genericDomain,
 	genericMuteDomain,
-	metaDomain,
+	viewerDomain,
 	onboardingDomain,
 } from './watched'
