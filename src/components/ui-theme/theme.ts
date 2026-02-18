@@ -26,6 +26,8 @@ export const theme = createTheme({
 		text: {
 			primary: '#404145',
 			secondary: '#62646a',
+			dimmed: '#808288',
+			pale: alpha('#ffffff', 0.6),
 		},
 		divider: '#e4e5e7',
 		action: {

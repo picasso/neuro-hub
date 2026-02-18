@@ -22,9 +22,14 @@ declare module '@mui/material/styles' {
 	interface PaletteOptions {
 		contrast?: PaletteOptions['primary']
 	}
+
 	// allow extra background slots (e.g. `background.block`)
 	interface TypeBackground {
 		block: string
+	}
+	interface TypeText {
+		dimmed: string
+		pale: string
 	}
 }
 
@@ -76,6 +81,15 @@ declare module '@mui/material/Typography' {
 		contrast: true
 	}
 	interface TypographyClasses {
+		colorContrast: string
+	}
+}
+
+declare module '@mui/material/Link' {
+	interface LinkPropsColorOverrides {
+		contrast: true
+	}
+	interface LinkClasses {
 		colorContrast: string
 	}
 }

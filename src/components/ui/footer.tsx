@@ -20,7 +20,7 @@ export function Footer() {
 				py: 6,
 				px: 2,
 				mt: 'auto',
-				backgroundColor: 'primary.main',
+				background: 'linear-gradient(to bottom, #169e5f, #1dbf73)',
 				color: 'contrast.main',
 			}}
 		>
@@ -32,7 +32,6 @@ export function Footer() {
 							<Chip
 								label={`${packageJson.version}`}
 								size="small"
-								// color="contrast"
 								sx={{
 									color: 'contrast.main',
 									opacity: 0.9,
@@ -40,7 +39,7 @@ export function Footer() {
 								}}
 							/>
 						</Stack>
-						<TS variant="body2" color="contrast.light">
+						<TS variant="body2" color="text.pale">
 							Платформа для фриланса в сфере генеративного ИИ
 						</TS>
 					</Grid>
@@ -50,10 +49,10 @@ export function Footer() {
 							Для фрилансеров
 						</TS>
 						<Stack spacing={1}>
-							<Link href="/projects" color="contrast.light" underline="hover">
+							<Link href="/projects" color="contrast" underline="hover">
 								Найти проекты
 							</Link>
-							<Link href="/how-it-works" color="contrast.light" underline="hover">
+							<Link href="/how-it-works" color="contrast" underline="hover">
 								Как это работает
 							</Link>
 						</Stack>
@@ -64,10 +63,10 @@ export function Footer() {
 							Для заказчиков
 						</TS>
 						<Stack spacing={1}>
-							<Link href="/freelancers" color="contrast.light" underline="hover">
+							<Link href="/freelancers" color="contrast" underline="hover">
 								Найти фрилансера
 							</Link>
-							<Link href="/post-project" color="contrast.light" underline="hover">
+							<Link href="/post-project" color="contrast" underline="hover">
 								Разместить проект
 							</Link>
 						</Stack>
@@ -79,7 +78,7 @@ export function Footer() {
 						mt: 4,
 						pt: 3,
 						borderTop: 1,
-						borderColor: 'divider',
+						borderColor: 'text.pale',
 						display: 'flex',
 						flexDirection: { xs: 'column', sm: 'row' },
 						alignItems: 'center',
@@ -88,10 +87,10 @@ export function Footer() {
 					}}
 				>
 					<Stack direction="row" alignItems="center" spacing={1}>
-						<Icon name="email" sx={{ fontSize: 20, color: 'contrast.light' }} />
+						<Icon name="email" sx={{ fontSize: 20, color: 'text.pale' }} />
 						<Link
 							href={`mailto:${contactContent.email}`}
-							color="contrast.light"
+							color="contrast"
 							underline="hover"
 							sx={{ typography: 'body2' }}
 						>
@@ -107,7 +106,7 @@ export function Footer() {
 							rel="noopener noreferrer"
 							size="small"
 						>
-							<Icon name="git-hub" sx={{ color: 'contrast.light' }} />
+							<Icon name="git-hub" sx={{ color: 'text.pale' }} />
 						</IconButton>
 						<IconButton
 							component="a"
@@ -116,7 +115,7 @@ export function Footer() {
 							rel="noopener noreferrer"
 							size="small"
 						>
-							<Icon name="x" sx={{ color: 'contrast.light' }} />
+							<Icon name="x" sx={{ color: 'text.pale' }} />
 						</IconButton>
 						<IconButton
 							component="a"
@@ -125,7 +124,7 @@ export function Footer() {
 							rel="noopener noreferrer"
 							size="small"
 						>
-							<Icon name="linked-in" sx={{ color: 'contrast.light' }} />
+							<Icon name="linked-in" sx={{ color: 'text.pale' }} />
 						</IconButton>
 						<IconButton
 							component="a"
@@ -134,13 +133,13 @@ export function Footer() {
 							rel="noopener noreferrer"
 							size="small"
 						>
-							<Icon name="telegram" sx={{ color: 'contrast.light' }} />
+							<Icon name="telegram" sx={{ color: 'text.pale' }} />
 						</IconButton>
 					</Stack>
 				</Box>
 
-				<Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>
-					<TS variant="body2" color="contrast.light" align="center">
+				<Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'text.pale' }}>
+					<TS variant="body2" color="text.pale" align="center">
 						© {new Date().getFullYear()} NeuroGig. Все права защищены.
 					</TS>
 				</Box>

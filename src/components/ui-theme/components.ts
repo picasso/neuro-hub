@@ -10,14 +10,28 @@ export const components: ThemeOptions['components'] = {
 		styleOverrides: {
 			root: ({ theme }) => ({
 				color: theme.palette.primary.main,
-				textDecorationColor: alpha(theme.palette.primary.main, 0.4),
-				textUnderlineOffset: '0.15em',
+				textDecorationColor: 'transparent',
+				textUnderlineOffset: '0.25em',
 				'&:hover': {
 					color: theme.palette.primary.dark,
-					textDecorationColor: alpha(theme.palette.primary.dark, 0.5),
+					textDecorationColor: alpha(theme.palette.primary.dark, 0.7),
 				},
 			}),
 		},
+		variants: [
+			{
+				props: { color: 'contrast' },
+				style: ({ theme }) => ({
+					color: alpha(theme.palette.contrast.main, 0.75),
+					textDecorationColor: 'transparent',
+					textUnderlineOffset: '0.25em',
+					'&:hover, &:focus-visible': {
+						color: theme.palette.contrast.main,
+						textDecorationColor: alpha(theme.palette.contrast.main, 0.7),
+					},
+				}),
+			},
+		],
 	},
 	MuiButtonBase: {
 		defaultProps: {
