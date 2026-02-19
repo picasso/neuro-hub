@@ -17,7 +17,12 @@ export function Header() {
 	const isAuthed = !!session?.user?.id
 
 	return (
-		<AppBar position="static" color="default" elevation={1}>
+		<AppBar
+			position="static"
+			color="default"
+			elevation={0}
+			sx={{ borderBottom: `1px solid`, borderColor: 'primary.main' }}
+		>
 			<Container maxWidth="lg">
 				<Toolbar disableGutters>
 					<Link href="/" underline="none" color="inherit" sx={{ flexGrow: 1 }}>

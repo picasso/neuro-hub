@@ -1,3 +1,4 @@
+import { darken, lighten } from '@mui/material/styles'
 import { castArray, defaults, find, includes, isString, map, reduce } from 'lodash'
 
 export type MarkdownParams = {
@@ -27,7 +28,7 @@ export type MarkdownParams = {
 export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 	if (!isString(str)) return str
 
-	const mod = defaults(params || {}, {
+	const mod = defaults({}, params ?? {}, {
 		links: null,
 		br: false,
 		nbsp: false,
@@ -74,14 +75,13 @@ export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 	// add <p></p> or <br/> if '\n' are found
 	if (includes(md, '\n') || (mod.json && includes(md, '\\n'))) {
 		const regex = mod.json ? /\\n/gm : /\n/gm
-		if (mod.br) md = md.replace(regex, '<br/>')
+		if (mod.br) md = md.replace(regex, '<br />')
 		else
 			md = md
 				.split(mod.json ? '\\n' : '\n')
 				.map((line) => `<p>${line}</p>`)
 				.join('')
 	}
-
 	// return earlier if 'raw' output requested or no tags are found
 	if (mod.raw) return md
 	if (md.match(/<[^<]+>/gm) === null) return str
@@ -146,39 +146,49 @@ function node2comp(node: HTMLElement | HTMLAnchorElement, index: number) {
 
 export const markdownCss = {
 	'& br': {
-		marginBottom: '2px',
+		marginBottom: '3px',
+	},
+	'& a': {
+		color: 'var(--mui-palette-primary-dark)',
+		letterSpacing: '0.25px',
+		fontWeight: 700,
+		textDecoration: 'none',
+		'&:hover': {
+			textDecoration: 'underline',
+		},
 	},
 	'span.__code': {
 		position: 'relative',
 		padding: '1px 6px 2px',
 		borderRadius: '6px',
-		backgroundColor: 'rgba(0, 0, 0, 0.05)',
 		letterSpacing: '0.5px',
-		border: '1px solid var(--mui-palette-text-disabled)',
 		'&.__e': {
-			backgroundColor: 'var(--mui-palette-error-light)',
-			color: 'var(--mui-palette-error-dark)',
-			borderColor: 'var(--mui-palette-error-main)',
+			backgroundColor: lighten('#FF2020', 0.78),
+			color: darken('#ff2020', 0.3),
+			borderColor: darken('#ff2020', 0.8),
 		},
 		'&.__q': {
-			backgroundColor: 'var(--mui-palette-secondary-light)',
-			color: 'var(--mui-palette-secondary-dark)',
-			borderColor: 'var(--mui-palette-secondary-main)',
+			backgroundColor: lighten('#cc0096', 0.78),
+			color: darken('#cc0096', 0.1),
+			borderColor: darken('#cc0096', 0.8),
 		},
 		'&.__s': {
-			backgroundColor: 'var(--mui-palette-success-light)',
-			color: 'var(--mui-palette-success-dark)',
-			borderColor: 'var(--mui-palette-success-main)',
+			backgroundColor: lighten('#2fb344', 0.6),
+			color: darken('#1f993f', 0.4),
+			borderColor: darken('#1f993f', 0.8),
 		},
 		'&.__i': {
-			backgroundColor: 'var(--mui-palette-info-light)',
-			color: 'var(--mui-palette-info-dark)',
-			borderColor: 'var(--mui-palette-info-main)',
+			backgroundColor: lighten('#1e88e5', 0.7),
+			color: darken('#0070c9', 0.2),
+			borderColor: darken('#0070c9', 0.7),
 		},
 		'&.__w': {
-			backgroundColor: 'var(--mui-palette-warning-light)',
-			color: 'var(--mui-palette-warning-dark)',
-			borderColor: 'var(--mui-palette-warning-main)',
+			backgroundColor: lighten('#fb8c00', 0.7),
+			color: darken('#fb8c00', 0.4),
+			borderColor: darken('#fb8c00', 0.8),
+			// backgroundColor: 'var(--mui-palette-LinearProgress-warningBg)',
+			// color: 'var(--mui-palette-warning-dark)',
+			// borderColor: 'var(--mui-palette-warning-main)',
 		},
 	},
 }

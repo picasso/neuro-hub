@@ -1,7 +1,12 @@
 import { type ThemeAnimations } from './animations'
-import { type ThemeColors } from './types'
-
-type PaletteColor = ThemeColors['primary']
+type PropMainColors = {
+	primary: true
+	secondary: true
+	error: true
+	info: true
+	success: true
+	warning: true
+}
 
 declare module '@mui/material/styles' {
 	interface Theme {
@@ -16,6 +21,15 @@ declare module '@mui/material/styles' {
 	}
 	interface PaletteOptions {
 		contrast?: PaletteOptions['primary']
+	}
+
+	// allow extra background slots (e.g. `background.block`)
+	interface TypeBackground {
+		block: string
+	}
+	interface TypeText {
+		dimmed: string
+		pale: string
 	}
 }
 
@@ -67,6 +81,15 @@ declare module '@mui/material/Typography' {
 		contrast: true
 	}
 	interface TypographyClasses {
+		colorContrast: string
+	}
+}
+
+declare module '@mui/material/Link' {
+	interface LinkPropsColorOverrides {
+		contrast: true
+	}
+	interface LinkClasses {
 		colorContrast: string
 	}
 }

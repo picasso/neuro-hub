@@ -15,6 +15,11 @@ const nextConfig = {
 	images: {
 		formats: ['image/avif', 'image/webp'],
 		remotePatterns: [],
+		localPatterns: [
+			// playground dev-only route: /playground/pictures/<file>?slowMs=900&v=...
+			// we omit `search` to allow any query string.
+			{ pathname: '/playground/pictures/**' },
+		],
 	},
 	webpack: (config, { isServer }) => {
 		if (isServer) {

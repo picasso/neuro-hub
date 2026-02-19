@@ -160,7 +160,7 @@ If user agrees:
    - Identify what was added/changed/fixed
    - Group changes by category
 
-3. **Propose CHANGELOG entry**
+3. **Propose CHANGELOG entry (in English)**
 
    ```zsh
    Proposed CHANGELOG entry for version 0.2.1:
@@ -206,6 +206,7 @@ If user agrees:
 
 **Important:**
 - Always follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format
+- **Write all CHANGELOG entries in English** (project convention)
 - Use categories: Added, Changed, Deprecated, Removed, Fixed, Security
 - Keep entries clear and user-focused
 - Don't update CHANGELOG without user agreement on content

@@ -64,13 +64,16 @@ export interface KnexMigrationsLock {
 }
 
 export interface PortfolioItems {
+	caption: string | null
 	category: string | null
 	created_at: Generated<Timestamp | null>
 	description: string | null
 	freelancer_profile_id: string
 	id: Generated<string>
+	media_height: number | null
 	media_type: string | null
 	media_url: string
+	media_width: number | null
 	title: string
 	tools_used: Json | null
 	updated_at: Generated<Timestamp | null>

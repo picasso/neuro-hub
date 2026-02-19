@@ -2,48 +2,50 @@
 
 import MuiAlert, { type AlertProps as MuiAlertProps } from '@mui/material/Alert'
 import MuiAlertTitle from '@mui/material/AlertTitle'
+import Box from '@mui/material/Box'
+import LinearProgress from '@mui/material/LinearProgress'
+import { useStoreMap } from 'effector-react'
+import { isNumber } from 'lodash'
 import { useCallback } from 'react'
 import { toast } from 'sonner'
-import { type AlertComponentProps } from './model'
-import { Icon } from '@/components/ui'
-import { simpleMarkdown, templatedMessage } from '@/utils'
-
-// export interface AlertProps {
-// 	id: number
-// 	text: string | ReactNode
-// 	title?: string
-// 	disableClose?: boolean
-// 	severity?: 'success' | 'info' | 'warning' | 'error' | 'progress'
-// 	variant?: MuiAlertProps['variant']
-// 	elevation?: MuiAlertProps['elevation']
-// 	icon?: IconName
-// 	iconOptions?: IconOptions
-// 	status?: number
-// 	statusText?: string
-// }
+import { $alerts, type AlertId } from './model'
+import { Icon, TS } from '@/components/ui'
+import { markdownCss, simpleMarkdown, templatedMessage } from '@/utils'
 
 const iconMapping: MuiAlertProps['iconMapping'] = {
-	success: <Icon name="check" color="success" />,
-	info: <Icon name="info" color="info" />,
-	warning: <Icon name="warning" color="warning" />,
-	error: <Icon name="error" color="error" />,
+	success: <Icon name="done-filled" color="success" />,
+	info: <Icon name="info-filled" color="info" />,
+	warning: <Icon name="warning-filled" color="warning" />,
+	error: <Icon name="error-filled" color="error" />,
 }
 
-export function AlertComponent(props: AlertComponentProps) {
+export function AlertComponent({ id }: { id: AlertId }) {
+	const alert = useStoreMap({
+		store: $alerts,
+		keys: [String(id)],
+		fn: (alerts, [key]) => alerts[key],
+	})
+
+	if (!alert) {
+		return null
+	}
+
 	const {
-		id,
 		title,
 		message,
 		severity,
+		progress,
+		disableProgressCaption = false,
 		elevation,
 		variant,
 		icon,
 		iconOptions,
 		md,
 		disableClose,
-	} = props
+	} = alert
 
 	const isProgress = severity === 'progress'
+	const progressValue = isNumber(progress) ? Math.min(100, Math.max(0, progress)) : undefined
 
 	const onClose = useCallback(() => {
 		if (!disableClose) {
@@ -74,6 +76,7 @@ export function AlertComponent(props: AlertComponentProps) {
 			iconMapping={iconMapping}
 			elevation={elevation ?? 3}
 			sx={[
+				md !== false && markdownCss,
 				{ minWidth: { md: 'none', lg: 400, xl: 600 } },
 				{ '.MuiAlert-message': { width: '100%' } },
 				!title && { '.MuiAlert-action': { py: 0.75, pl: 2 } },
@@ -81,6 +84,38 @@ export function AlertComponent(props: AlertComponentProps) {
 		>
 			{mergedTitle && <MuiAlertTitle>{simpleMarkdown(mergedTitle, md || {})}</MuiAlertTitle>}
 			{md === false ? mergedMessage : simpleMarkdown(mergedMessage, md)}
+
+			{progressValue !== undefined ? (
+				<Box sx={{ mt: 1 }}>
+					<LinearProgress
+						variant="determinate"
+						value={progressValue}
+						sx={(theme) => ({
+							height: 6,
+							borderRadius: 999,
+							backgroundColor:
+								isProgress && variant === 'filled'
+									? theme.palette.primary.dark
+									: theme.palette.action.disabledBackground,
+							'& .MuiLinearProgress-bar': {
+								borderRadius: 999,
+								backgroundColor:
+									isProgress && variant === 'filled'
+										? theme.palette.contrast.main
+										: undefined,
+							},
+						})}
+					/>
+					{!disableProgressCaption && (
+						<TS
+							variant="caption"
+							sx={{ display: 'block', mt: 0.5 }}
+							content={`${Math.round(progressValue)}%`}
+							color={isProgress && variant === 'filled' ? 'contrast' : 'primary.dark'}
+						/>
+					)}
+				</Box>
+			) : null}
 		</MuiAlert>
 	)
 }

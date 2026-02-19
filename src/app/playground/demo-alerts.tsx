@@ -2,7 +2,7 @@
 
 import Stack from '@mui/material/Stack'
 import { map } from 'lodash'
-import { type Alert, createAlert } from '@/alerts'
+import { type Alert, createAlert, createAlertFx, removeAlert, updateAlert } from '@/alerts'
 import { Button, type ButtonProps, type IconName, TS } from '@/components/ui'
 
 type DemoConfig = {
@@ -27,7 +27,7 @@ const demoSections: DemoSection[] = [
 				buttonColor: 'info',
 				alertOptions: {
 					severity: 'info',
-					message: 'Lorem `ipsum` dolor sit **amet**, consectetur adipiscing elit',
+					message: 'Lorem `#ipsum` dolor sit **amet**, consectetur adipiscing elit',
 				},
 			},
 			{
@@ -37,7 +37,7 @@ const demoSections: DemoSection[] = [
 					disableAutoClose: true,
 					severity: 'warning',
 					message: [
-						'You can **reuse** %s entities, delete *%s* from this panel or `%s` and update panel.',
+						'You can **reuse** %s entities, delete *%s* from this panel or `!%s` and update panel.',
 						23,
 						'duplicate compounds',
 						'cancel registration',
@@ -51,7 +51,7 @@ const demoSections: DemoSection[] = [
 					severity: 'error',
 					title: 'Registration failed',
 					message:
-						'Sed do `eiusmod` tempor incididunt ut **labore** et dolore magna aliqua.',
+						'Sed do `!eiusmod` tempor incididunt ut **labore** et dolore magna aliqua.',
 					disableClose: true,
 				},
 			},
@@ -61,7 +61,7 @@ const demoSections: DemoSection[] = [
 				alertOptions: {
 					severity: 'success',
 					title: 'Registered successfully',
-					message: 'Lorem `ipsum dolor` sit amet, **consectetur** adipiscing elit',
+					message: 'Lorem `?ipsum dolor` sit amet, **consectetur** adipiscing elit',
 				},
 			},
 			{
@@ -70,8 +70,10 @@ const demoSections: DemoSection[] = [
 				alertOptions: {
 					severity: 'progress',
 					title: 'Registering panel...',
-					message: 'Lorem `ipsum` dolor sit amet, **consectetur** adipiscing elit',
+					message: 'Lorem `*ipsum` dolor sit amet, **consectetur** adipiscing elit',
+					progress: 35,
 					disableClose: true,
+					disableAutoClose: true,
 				},
 			},
 			{
@@ -81,9 +83,12 @@ const demoSections: DemoSection[] = [
 				alertOptions: {
 					severity: 'progress',
 					title: 'Loading data...',
-					message: 'Please wait while we process your request',
+					message: 'Please `wait while we process` your request',
 					overlay: true,
+					progress: 10,
 					variant: 'filled',
+					disableAutoClose: true,
+					disableProgressCaption: true,
 				},
 			},
 		],
@@ -109,6 +114,7 @@ const demoSections: DemoSection[] = [
 					variant: 'filled',
 					title: 'Filled variant',
 					message: 'This variant has a **filled** background',
+					disableAutoClose: true,
 				},
 			},
 			{
@@ -207,10 +213,10 @@ const demoSections: DemoSection[] = [
 		demos: [
 			{
 				label: 'Custom Icon',
-				buttonColor: 'success',
+				buttonColor: 'info',
 				alertOptions: {
 					severity: 'info',
-					icon: 'error',
+					icon: 'email',
 					title: 'Custom icon',
 					message: 'Using **warning** icon instead of default info icon',
 				},
@@ -228,10 +234,10 @@ const demoSections: DemoSection[] = [
 			},
 			{
 				label: 'Sized & Colored',
-				buttonColor: 'success',
+				buttonColor: 'warning',
 				alertOptions: {
 					severity: 'warning',
-					icon: 'done',
+					icon: 'media-audio',
 					iconOptions: { size: 'large', color: 'error' },
 					title: 'Sized & colored icon',
 					message: 'Large **error** icon with error color',
@@ -276,24 +282,31 @@ const demoSections: DemoSection[] = [
 		demos: [
 			{
 				label: 'With Markdown',
-				buttonColor: 'warning',
+				buttonColor: 'success',
 				alertOptions: {
 					severity: 'success',
 					title: 'With Markdown',
 					message: [
-						'Supports **bold**, *italic*, `code`, and [%s](%s) formatting',
+						'Supports **bold**, *italic*, `code` and [%s](%s) formatting\n' +
+							'And colored `!code` and `?code` and `*code` and `+code` and `#code`',
 						'links',
 						'https://example.com',
 					],
+					disableAutoClose: true,
+					md: { br: true },
 				},
 			},
 			{
 				label: 'Without Markdown',
-				buttonColor: 'warning',
+				buttonColor: 'error',
 				alertOptions: {
 					severity: 'error',
 					title: 'Without Markdown',
-					message: 'This shows **raw** text without *markdown* `parsing`',
+					message:
+						'This shows **raw** text without *markdown* `parsing`' +
+						'--|--|--|--|--|--|--|--|--|--|--|' +
+						'And colored `!code` and `?code` and `*code` and `+code` and `#code`',
+					disableAutoClose: true,
 					md: false,
 				},
 			},
@@ -314,7 +327,33 @@ export const AlertsDemo = () => {
 								color={demo.buttonColor}
 								variant={demo.buttonVariant ?? 'outlined'}
 								leftIcon={demo.leftIcon}
-								onClick={() => createAlert(demo.alertOptions)}
+								onClick={() => {
+									if (demo.alertOptions.progress) {
+										const id = createAlertFx.alertId(demo.label)
+										let progress = demo.alertOptions.progress
+										const timerId = setInterval(() => {
+											dev.log(`${demo.label} progress: [${progress}]`)
+											if (progress > 100) {
+												clearInterval(timerId)
+												removeAlert(id)
+												dev.log(
+													`{!${demo.label} progress}: [${progress}] - completed`,
+												)
+											} else {
+												updateAlert({ id, progress })
+												progress += 10
+											}
+										}, 1000)
+										createAlert({
+											id,
+											...demo.alertOptions,
+											onDismiss: () => clearInterval(timerId),
+											onAutoClose: () => clearInterval(timerId),
+										})
+									} else {
+										createAlert(demo.alertOptions)
+									}
+								}}
 								label={demo.label}
 							/>
 						))}

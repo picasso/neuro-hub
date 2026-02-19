@@ -21,6 +21,8 @@ export {
 
 export { findChild, findParent } from './dom'
 
+export { fileSize } from './file'
+
 export {
 	AppError,
 	ConflictError,

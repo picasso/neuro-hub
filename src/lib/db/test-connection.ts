@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { forEach } from 'lodash'
-import { db, testConnection, closeConnection } from './index'
+import { db, closeKnexConnection } from './knex'
+import { testConnection, closeConnection } from './index'
 
 async function main() {
 	console.log('🔍 Testing database connection...\n')
@@ -34,6 +35,7 @@ async function main() {
 	}
 
 	await closeConnection()
+	await closeKnexConnection()
 	process.exit(isConnected ? 0 : 1)
 }
 

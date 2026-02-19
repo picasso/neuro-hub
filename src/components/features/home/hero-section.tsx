@@ -12,7 +12,7 @@ export function HeroSection() {
 	return (
 		<Box
 			sx={{
-				background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+				background: 'linear-gradient(135deg, #169e5f 0%, #764ba2 100%)',
 				py: { xs: 8, md: 12 },
 				textAlign: 'center',
 			}}

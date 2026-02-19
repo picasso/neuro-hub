@@ -14,9 +14,10 @@ export const feedback: ThemeOptions['components'] = {
 	MuiAlert: {
 		styleOverrides: {
 			root: ({ theme }) => ({
-				borderRadius: theme.spacing(1),
+				borderRadius: 8,
+				border: `1px solid ${theme.palette.divider}`,
 				'&.MuiAlert-outlined': {
-					borderWidth: 2,
+					borderWidth: 1,
 				},
 				'span.__code': {
 					position: 'relative',
@@ -37,7 +38,7 @@ export const feedback: ThemeOptions['components'] = {
 					opacity: 0.25,
 				},
 				br: {
-					marginBottom: 5,
+					marginBottom: 2,
 				},
 				'br + br': {
 					marginBottom: 0,
@@ -51,7 +52,7 @@ export const feedback: ThemeOptions['components'] = {
 			message: {
 				color: 'inherit',
 				fontSize: '0.875rem',
-				fontWeight: 400,
+				fontWeight: 500,
 				lineHeight: '1.5rem',
 			},
 			action: {
@@ -63,23 +64,74 @@ export const feedback: ThemeOptions['components'] = {
 			outlined: ({ theme }) => ({
 				backgroundColor: theme.palette.background.paper,
 			}),
-			standardProgress: ({ theme }: { theme: Theme }) => ({
-				backgroundColor: lighten(theme.palette.secondary.main, 0.9),
-				color: theme.palette.secondary.dark,
+			filled: {
+				borderColor: 'rgba(0, 0, 0, 0.12)',
+			},
+			standardInfo: ({ theme }: { theme: Theme }) => ({
+				backgroundColor: lighten(theme.palette.info.main, 0.8),
+				color: theme.palette.text.primary,
+				borderColor: lighten(theme.palette.info.main, 0.7),
 				'& .MuiAlert-icon': {
-					color: theme.palette.secondary.light,
+					color: theme.palette.info.main,
+				},
+				'& .MuiIconButton-root .MuiSvgIcon-colorAction': {
+					color: theme.palette.info.dark,
+				},
+			}),
+			standardSuccess: ({ theme }: { theme: Theme }) => ({
+				backgroundColor: lighten(theme.palette.success.main, 0.8),
+				color: theme.palette.text.primary,
+				borderColor: lighten(theme.palette.success.main, 0.7),
+				'& .MuiAlert-icon': {
+					color: theme.palette.success.main,
+				},
+				'& .MuiIconButton-root .MuiSvgIcon-colorAction': {
+					color: theme.palette.success.dark,
+				},
+			}),
+			standardWarning: ({ theme }: { theme: Theme }) => ({
+				backgroundColor: lighten(theme.palette.warning.main, 0.85),
+				color: theme.palette.text.primary,
+				borderColor: lighten(theme.palette.warning.main, 0.7),
+				'& .MuiAlert-icon': {
+					color: theme.palette.warning.main,
+				},
+				'& .MuiIconButton-root .MuiSvgIcon-colorAction': {
+					color: theme.palette.warning.dark,
+				},
+			}),
+			standardError: ({ theme }: { theme: Theme }) => ({
+				backgroundColor: lighten(theme.palette.error.main, 0.85),
+				color: theme.palette.text.primary,
+				borderColor: lighten(theme.palette.error.main, 0.7),
+				'& .MuiAlert-icon': {
+					color: theme.palette.error.main,
+				},
+				'& .MuiIconButton-root .MuiSvgIcon-colorAction': {
+					color: theme.palette.error.dark,
+				},
+			}),
+			standardProgress: ({ theme }: { theme: Theme }) => ({
+				backgroundColor: lighten(theme.palette.primary.main, 0.75),
+				color: theme.palette.text.primary,
+				borderColor: lighten(theme.palette.primary.main, 0.7),
+				'& .MuiAlert-icon': {
+					color: theme.palette.primary.main,
+				},
+				'& .MuiIconButton-root .MuiSvgIcon-colorAction': {
+					color: theme.palette.primary.dark,
 				},
 			}),
 			filledProgress: ({ theme }: { theme: Theme }) => ({
-				backgroundColor: theme.palette.secondary.main,
-				color: theme.palette.secondary.contrastText,
+				backgroundColor: theme.palette.primary.main,
+				color: theme.palette.common.white,
 			}),
 			outlinedProgress: ({ theme }: { theme: Theme }) => ({
 				backgroundColor: theme.palette.background.paper,
-				borderColor: theme.palette.secondary.main,
+				borderColor: lighten(theme.palette.primary.main, 0.6),
 				borderStyle: 'solid',
-				borderWidth: 2,
-				color: theme.palette.secondary.dark,
+				borderWidth: 1,
+				color: theme.palette.text.primary,
 			}),
 		},
 	},

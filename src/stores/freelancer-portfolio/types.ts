@@ -6,6 +6,9 @@ export type PortfolioForm = {
 	category: string
 	toolsUsed: string
 	file: File | null
+	mediaWidth: number | null
+	mediaHeight: number | null
+	caption: string
 }
 
 export type PortfolioItem = {
@@ -14,6 +17,9 @@ export type PortfolioItem = {
 	description: string | null
 	mediaUrl: string
 	mediaType: string | null
+	mediaWidth: number | null
+	mediaHeight: number | null
+	caption: string | null
 	category: string | null
 	toolsUsed: unknown
 	createdAt: string | Date | null

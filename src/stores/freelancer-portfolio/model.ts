@@ -47,6 +47,9 @@ export const $form = domain.createStore<PortfolioForm>(
 		category: '',
 		toolsUsed: '',
 		file: null,
+		mediaWidth: null,
+		mediaHeight: null,
+		caption: '',
 	},
 	{ name: '$form' },
 )
@@ -123,11 +126,58 @@ export const uploadPortfolioMediaFx = domain.createEffect<
 	name: 'uploadPortfolioMediaFx',
 })
 
+export const computeImageDimensionsFx = domain.createEffect<
+	File,
+	{ width: number; height: number } | null,
+	Error
+>({
+	handler: async (file) => {
+		if (!file.type.startsWith('image/')) return null
+
+		try {
+			const bitmap = await createImageBitmap(file)
+			const dims = { width: bitmap.width, height: bitmap.height }
+			bitmap.close?.()
+			if (!dims.width || !dims.height) return null
+			return dims
+		} catch (_error) {
+			// fallback for browsers without createImageBitmap support
+			const url = URL.createObjectURL(file)
+			try {
+				const img = new Image()
+				img.decoding = 'async'
+				img.src = url
+
+				// prefer decode() when available
+				if (img.decode) {
+					await img.decode()
+				} else {
+					await new Promise<void>((resolve, reject) => {
+						img.onload = () => resolve()
+						img.onerror = () => reject(new Error('Failed to load image'))
+					})
+				}
+
+				if (!img.naturalWidth || !img.naturalHeight) return null
+				return { width: img.naturalWidth, height: img.naturalHeight }
+			} catch (_error2) {
+				return null
+			} finally {
+				URL.revokeObjectURL(url)
+			}
+		}
+	},
+	name: 'computeImageDimensionsFx',
+})
+
 export const createPortfolioItemFx = domain.createEffect<
 	{
 		profileId: string
 		title: string
 		description?: string
+		mediaWidth?: number
+		mediaHeight?: number
+		caption?: string
 		category?: string
 		toolsUsed?: string[]
 		mediaUrl: string
@@ -140,6 +190,9 @@ export const createPortfolioItemFx = domain.createEffect<
 		profileId,
 		title,
 		description,
+		mediaWidth,
+		mediaHeight,
+		caption,
 		category,
 		toolsUsed,
 		mediaUrl,
@@ -151,6 +204,9 @@ export const createPortfolioItemFx = domain.createEffect<
 			body: JSON.stringify({
 				title,
 				description: description || undefined,
+				mediaWidth,
+				mediaHeight,
+				caption: caption || undefined,
 				category: category || undefined,
 				toolsUsed: toolsUsed?.length ? toolsUsed : undefined,
 				mediaUrl,
@@ -222,6 +278,31 @@ sample({
 
 $portfolio.on(loadPortfolioFx.doneData, (_, items) => items)
 
+// clear derived image dimensions on file change
+sample({
+	clock: portfolioFormUpdated,
+	filter: (update) => 'file' in update,
+	fn: () => ({ mediaWidth: null, mediaHeight: null }),
+	target: portfolioFormUpdated,
+})
+
+// compute image dimensions when file selected
+sample({
+	clock: portfolioFormUpdated,
+	filter: (update) => 'file' in update && !!update.file,
+	fn: (update) => update.file!,
+	target: computeImageDimensionsFx,
+})
+
+sample({
+	clock: computeImageDimensionsFx.doneData,
+	fn: (dims) => ({
+		mediaWidth: dims?.width ?? null,
+		mediaHeight: dims?.height ?? null,
+	}),
+	target: portfolioFormUpdated,
+})
+
 // Submit: upload -> create -> refresh
 sample({
 	clock: submitPortfolioItem,
@@ -246,6 +327,9 @@ sample({
 		profileId: context!.profileId,
 		title: form.title.trim(),
 		description: form.description.trim() || undefined,
+		mediaWidth: form.mediaWidth ?? undefined,
+		mediaHeight: form.mediaHeight ?? undefined,
+		caption: form.caption.trim() || undefined,
 		category: form.category.trim() || undefined,
 		toolsUsed: form.toolsUsed
 			.split(',')

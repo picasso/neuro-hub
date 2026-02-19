@@ -2,38 +2,48 @@
 // MUI icons --------------------------------------------------------------------------------------]
 //
 import article from '@mui/icons-material/Article'
+import mediaPdf from '@mui/icons-material/ArticleTwoTone'
 import business from '@mui/icons-material/Business'
 import checkCircle from '@mui/icons-material/CheckCircle'
+import close from '@mui/icons-material/Close'
 import code from '@mui/icons-material/Code'
+import collectionsBookmark from '@mui/icons-material/CollectionsBookmarkTwoTone'
+import collections from '@mui/icons-material/CollectionsTwoTone'
 import deleteOutline from '@mui/icons-material/DeleteOutline'
 import doneOutline from '@mui/icons-material/DoneOutline'
 import doNotDisturb from '@mui/icons-material/DoNotDisturb'
 import email from '@mui/icons-material/Email'
-import errorOutline from '@mui/icons-material/ErrorOutline'
+import error from '@mui/icons-material/ErrorOutline'
+import errorFilled from '@mui/icons-material/ErrorTwoTone'
 import expandMore from '@mui/icons-material/ExpandMore'
 import formatQuote from '@mui/icons-material/FormatQuote'
 import gavel from '@mui/icons-material/Gavel'
 import gitHub from '@mui/icons-material/GitHub'
 import groups from '@mui/icons-material/Groups'
 import image from '@mui/icons-material/Image'
-import info from '@mui/icons-material/Info'
-import infoOutline from '@mui/icons-material/InfoOutline'
+import info from '@mui/icons-material/InfoOutline'
+import infoFilled from '@mui/icons-material/InfoTwoTone'
 import linkedIn from '@mui/icons-material/LinkedIn'
 import login from '@mui/icons-material/Login'
+import mediaVideo from '@mui/icons-material/OndemandVideoTwoTone'
 import payment from '@mui/icons-material/Payment'
 import percent from '@mui/icons-material/Percent'
 import person from '@mui/icons-material/Person'
 import personAdd from '@mui/icons-material/PersonAdd'
+import mediaImage from '@mui/icons-material/PhotoSizeSelectActualTwoTone'
 import search from '@mui/icons-material/Search'
 import star from '@mui/icons-material/Star'
 import telegram from '@mui/icons-material/Telegram'
 import thumbUp from '@mui/icons-material/ThumbUp'
 import verified from '@mui/icons-material/Verified'
 import verifiedUser from '@mui/icons-material/VerifiedUser'
+import doneFilled from '@mui/icons-material/VerifiedUserTwoTone'
 import videoLibrary from '@mui/icons-material/VideoLibrary'
 import visibility from '@mui/icons-material/Visibility'
 import visibilityOff from '@mui/icons-material/VisibilityOff'
-import warning from '@mui/icons-material/WarningAmber'
+import mediaAudio from '@mui/icons-material/VolumeUpTwoTone'
+import warning from '@mui/icons-material/WarningAmberOutlined'
+import warningFilled from '@mui/icons-material/WarningTwoTone'
 import work from '@mui/icons-material/Work'
 import x from '@mui/icons-material/X'
 import { kebabCase, reduce } from 'lodash'
@@ -43,14 +53,21 @@ import type { SvgIconProps } from '@mui/material/SvgIcon'
 
 const muiIcons = {
 	article,
+	infoFilled,
+	warningFilled,
 	business,
 	checkCircle,
 	code,
+	collectionsBookmark,
+	collections,
+	close,
 	deleteOutline,
 	doNotDisturb,
 	doneOutline,
+	doneFilled,
 	email,
-	errorOutline,
+	errorFilled,
+	error,
 	expandMore,
 	formatQuote,
 	gavel,
@@ -58,7 +75,10 @@ const muiIcons = {
 	groups,
 	image,
 	info,
-	infoOutline,
+	mediaImage,
+	mediaVideo,
+	mediaAudio,
+	mediaPdf,
 	linkedIn,
 	login,
 	payment,

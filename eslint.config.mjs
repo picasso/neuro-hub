@@ -1,8 +1,12 @@
+import { fileURLToPath, URL } from 'node:url'
 import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
+import effectorPlugin from 'eslint-plugin-effector'
 import importPlugin from 'eslint-plugin-import'
 import reactPlugin from 'eslint-plugin-react'
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
+
+const tsconfigRootDir = fileURLToPath(new URL('.', import.meta.url))
 
 const eslintConfig = [
 	{
@@ -23,12 +27,15 @@ const eslintConfig = [
 	{
 		files: ['**/*.{ts,tsx}'],
 		plugins: {
+			effector: effectorPlugin,
 			import: importPlugin,
 			react: reactPlugin,
 			'react-hooks': reactHooksPlugin,
 		},
 		languageOptions: {
 			parserOptions: {
+				project: ['./tsconfig.json'],
+				tsconfigRootDir,
 				ecmaFeatures: {
 					jsx: true,
 				},
@@ -40,6 +47,8 @@ const eslintConfig = [
 			},
 		},
 		rules: {
+			...effectorPlugin.flatConfigs.recommended.rules,
+			...effectorPlugin.flatConfigs.scope.rules,
 			'no-console': ['warn', { allow: ['warn', 'error'] }],
 			'no-duplicate-imports': 'warn',
 			'no-unneeded-ternary': 'warn',
