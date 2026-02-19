@@ -102,4 +102,3 @@ isProject: false
 - Mixed media: понятные плейсхолдеры
 - `yarn lint` + `yarn type-check` проходят
 - Playground demo работает
-
