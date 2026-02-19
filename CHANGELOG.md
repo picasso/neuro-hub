@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.4] - 2026-02-18
+
+### Added
+- MUI Link `color="contrast"` for dark backgrounds (footer)
+- FileUploader component and playground
+- DB health alert and safe get-session in dev
+- ESLint effector plugin configs
+
+### Changed
+- Portfolio viewer: single state machine ($phase) instead of multiple stores
+- Alerts: store-driven progress, custom styles and icons
+- Theme: new tokens and component styling
+
+### Fixed
+- simpleMarkdown: defaults handling
+- Better Auth: migration order, Postgres connection limit in dev
+
 ## [0.3.3] - 2026-02-13
 
 ### Added
@@ -139,6 +156,7 @@ All notable changes to this project will be documented in this file.
 - Comprehensive project documentation
 
 [0.2.5]: https://github.com/picasso/neuro-hub/compare/v0.2.2...v0.2.5
+[0.3.4]: https://github.com/picasso/neuro-hub/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/picasso/neuro-hub/compare/v0.2.5...v0.3.3
 [0.2.2]: https://github.com/picasso/neuro-hub/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/picasso/neuro-hub/compare/v0.1.5...v0.2.1
