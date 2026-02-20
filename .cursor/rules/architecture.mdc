@@ -1,0 +1,33 @@
+---
+description: This rule sets the project structure.
+alwaysApply: false
+---
+
+# Architecture
+
+## Directory Structure
+
+Feature-Based Structure: Components organized by business domain rather than technical type.
+
+src/
+├── app/                  # Next.js App Router
+│   ├── (auth)/           # auth routes (grouped)
+│   ├── api/              # API routes (RESTful)
+│   └── layout.tsx
+├── components/
+│   ├── ui/               # base UI components
+│   ├── forms/
+│   └── features/
+├── lib/
+│   ├── db/               # Kysely client and queries
+│   ├── auth/
+│   └── validations/
+├── utils/                # pure utilities, no side effects
+└── types/                # shared TypeScript types
+
+## Key Patterns
+
+- Feature-based organization in components/features/
+- Database queries via lib/db/ (Kysely)
+- Business logic in lib/ or API route handlers
+- Shared types are defined once in types/ and imported everywhere
