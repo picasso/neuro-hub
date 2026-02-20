@@ -80,3 +80,8 @@ src/app/playground/pictures/*.jpeg
 src/app/playground/pictures/*.png
 src/app/playground/pictures/*.webp
 src/app/playground/pictures/*.gif
+src/app/playground-old/pictures/*.jpg
+src/app/playground-old/pictures/*.jpeg
+src/app/playground-old/pictures/*.png
+src/app/playground-old/pictures/*.webp
+src/app/playground-old/pictures/*.gif
