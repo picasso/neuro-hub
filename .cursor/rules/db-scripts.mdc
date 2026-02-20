@@ -1,8 +1,7 @@
 ---
-name: Database Scripts Guide
-description: Standards for writing database utility scripts
+description: Guidelines for creating database utility scripts.
+globs: ["scripts/**/*"]
 ---
-
 # Database Scripts Development Guide
 
 Guidelines for creating consistent, maintainable database utility scripts.

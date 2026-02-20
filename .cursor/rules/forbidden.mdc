@@ -1,0 +1,46 @@
+---
+name: Forbidden Practices
+description: Practices & anti-patterns that are strictly forbidden in this codebase.
+alwaysApply: true
+---
+
+# Forbidden Practices
+
+## Never Do
+
+- `eval()`, `Function()` with user input
+- `innerHTML` without sanitization
+- Storing passwords in plain text
+- Committing `.env` files
+- Disabling TypeScript strict mode
+- Disable ESLint rules without justification
+- Ignoring lint errors
+- Direct SQL queries without parameters
+- Exposing internal errors in API responses
+- Hardcoded URLs for API endpoints
+- Storing tokens in localStorage (use cookies)
+- Store sensitive data in localStorage
+- Use `any` type (use `unknown` and narrow)
+- Use `var` (use `const` or `let`)
+- Mutate state directly
+- Use index as React key for dynamic lists
+- Use synchronous file operations in API routes
+
+## Deprecated Patterns (Legacy Code Only)
+
+- `getServerSideProps` - use Server Components instead
+- `pages/` directory - we've fully migrated to App Router
+- `styled-components` / `@emotion` / MUI `sx` prop - use Tailwind CSS instead
+- `@mui/material` - use shadcn/ui + Radix UI instead
+- `moment.js` - use `Day.js` or native Intl API
+
+## Performance Anti-patterns
+
+- Avoid `useEffect` for data fetching (use Effector stores or effects)
+- Don't create objects/arrays in render (use useMemo)
+- Never fetch in client components when server fetch is possible
+
+## Сarelessness Anti-patterns
+
+- Avoid completing code implementation without Typescript and ESLint error checking
+- Avoid creating markdown documents without checking .md files with a linter

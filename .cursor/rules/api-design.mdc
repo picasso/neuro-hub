@@ -1,0 +1,48 @@
+---
+description: REST API design patterns for endpoints, responses, and status codes
+globs: ["src/app/api/**/*"]
+---
+
+# API Design Rules
+
+## REST Endpoints
+
+- Use nouns in plural form
+- Versioning: `/api/v1/resource`
+- Proper HTTP methods and status codes
+- Unified response format
+
+## Response Format
+
+```ts
+// success
+{
+  "data": { ... },
+  "meta": { "page": 1, "total": 100 }
+}
+
+// error
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid input",
+    "details": [...]
+  }
+}
+```
+
+## HTTP Status Codes
+
+| Code | Meaning |
+| ------ | --------- |
+| 200 | Success |
+| 201 | Created |
+| 204 | No Content (delete) |
+| 400 | Bad Request |
+| 401 | Unauthorized |
+| 403 | Forbidden |
+| 404 | Not Found |
+| 409 | Conflict |
+| 422 | Unprocessable Entity |
+| 429 | Too Many Requests |
+| 500 | Internal Server Error |

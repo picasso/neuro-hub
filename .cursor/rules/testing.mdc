@@ -1,0 +1,35 @@
+---
+description: Testing patterns for unit, integration, and e2e tests
+globs: ["**/*.test.*", "**/*.spec.*", "__tests__/**/*", "e2e/**/*"]
+---
+
+# Testing Rules
+
+## Coverage Requirements
+
+- Unit tests: 80% minimum
+- Integration tests: all API endpoints
+- E2E tests: critical user flows
+
+## Testing Patterns
+
+- AAA: Arrange-Act-Assert
+- Describe/it structure
+- Mocks for external dependencies
+- Factories for test data
+
+## What to Test
+
+- Business logic
+- API endpoints (auth, validation, responses)
+- Components (rendering, interactions)
+- Hooks (state changes, side effects)
+- Security (auth checks, input validation)
+
+## Pre-commit Checks
+
+- [ ] `yarn run lint` without errors
+- [ ] `yarn run type-check` without errors
+- [ ] `yarn run test` all passing
+- [ ] No secrets in code
+- [ ] No console.log in production code

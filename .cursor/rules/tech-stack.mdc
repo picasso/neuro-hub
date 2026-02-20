@@ -1,6 +1,6 @@
 ---
-name: Tech Stack
-description: This rule sets context about what the project's Tech Stack.
+description: Technology stack versions and frameworks for the project.
+alwaysApply: true
 ---
 
 # Tech Stack
@@ -9,7 +9,7 @@ Ignore commented items!
 
 ## Build & Development
 
-- Base build system: Vite 7+ (not for Next.js projects, only for regular React)
+- Base build system: Next.js
 - Package manager: Yarn Classic 1.x
 - Runtime: Node.js 24 LTS
 - Use Docker as multi-stage containerization with Nginx
@@ -17,6 +17,7 @@ Ignore commented items!
 ## Frontend
 
 - Framework: Next.js 16+ (App Router)
+- React: 19.2.x (Server Components priority)
 - Language: TypeScript 5.9+ (strict mode)
 - UI components: shadcn/ui (Radix UI primitives)
 - Styling: Tailwind CSS 4+
@@ -27,7 +28,10 @@ Ignore commented items!
 
 - Runtime: Node.js 24 LTS
 - API: Next.js API Routes (RESTful) with OpenAPI/Swagger documentation
-- Database: PostgreSQL 16 with Knex.js SQL query builder
+- Database: PostgreSQL 18.2.x
+- Kysely 0.28+ for type-safe database queries
+- Knex.js SQL query builder Knex.js 3+ for migrations only
+- Zod 4+ for data validation
 - Authentication: Better Auth with cookie-based sessions
 <!-- - Cache: Redis for session storage and rate limiting -->
 <!-- - Queue: BullMQ for background jobs -->
@@ -42,6 +46,6 @@ Ignore commented items!
 ## Key Dependencies
 
 - better-auth for authentication and authorization
+- resend for transactional emails
+- Vercel Blob for file uploads
 <!-- - stripe@14 for payments -->
-<!-- - resend for transactional emails -->
-<!-- - uploadthing for file uploads -->

@@ -1,6 +1,7 @@
 ---
 name: Code Style Guide
 description: This rule defines your formatting preferences.
+globs: ["src/**/*", "scripts/**/*"]
 ---
 
 # Code Implementation Guidelines
@@ -22,8 +23,7 @@ Follow these rules when you write code:
 
 ## Formatting (enforced by ESLint + Prettier)
 
-- 4 spaces for indentation
-- Use tabs
+- Tabs for indentation
 - Single quotes for strings
 - No semicolons
 - 100 character line limit
@@ -36,11 +36,11 @@ Follow these rules when you write code:
 
 ## Naming Conventions
 
-- Components: PascalCase (kebab-case for filename user-profile.tsx)
-- Hooks: camelCase with 'use' prefix (kebab-case for filename use-auth.ts)
-- Utilities: camelCase (kebab-case for filename format-сurrency.ts)
+- Components: PascalCase (kebab-case for filename `user-profile.tsx`)
+- Hooks: camelCase with `use` prefix (kebab-case for filename `use-auth.ts`)
+- Utilities: camelCase (kebab-case for filename `format-сurrency.ts`)
 - Types: PascalCase with descriptive suffix (UserCreateInput)
-- Constants: SCREAMING_SNAKE_CASE
+- Constants: SCREAMING_SNAKE_CASE (`MAX_RETRIES`)
 
 ## Component Structure
 
@@ -58,7 +58,7 @@ Always structure React components in this order:
 Imports are automatically sorted by ESLint in this order:
 
 1. builtin - Node.js built-in modules (fs, path, etc.)
-2. external - npm packages (@mui, next, react, etc.)
+2. external - npm packages (next, react, etc.)
 3. internal - internal aliases (@/components, @/lib, @/utils)
 4. parent - relative parent imports (../)
 5. sibling - relative sibling imports (./)

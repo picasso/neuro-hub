@@ -1,6 +1,7 @@
 ---
 name: effector
 description: This rule provides standards for frontend state-management framework.
+globs: ["src/**/*"]
 ---
 
 # Overview
@@ -43,10 +44,10 @@ someEvent(value)
 
 // ✅ GOOD
 sample({
-  clock: someEvent,
-  source: $store,
-  fn: (value) => value,
-  target: someOtherEvent,
+    clock: someEvent,
+    source: $store,
+    fn: (value) => value,
+    target: someOtherEvent,
 })
 ```
 
@@ -178,7 +179,6 @@ $target.on(resetEmptyTarget, (store) =>
         draft.plates = createEmptyPlate(store.dimension)
     }),
 )
-
 ```
 
 ### Using `sample()` for Logic
@@ -230,7 +230,7 @@ export const $storeName = domain.createStore<Store>({}, { name: '$storeName' })
 $storeName.reset(resetStoreName)
 $storeName.on(updatedStoreName, updateStore<Store>)
 
-// * * * Effects ----------------------------------------------------------------------------------]
+// * * * effects ----------------------------------------------------------------------------------]
 
 export const loadDataFx = domain.createEffect({
     handler: async (params) => {
@@ -239,7 +239,7 @@ export const loadDataFx = domain.createEffect({
     name: 'loadDataFx',
 })
 
-// * * * Computed stores --------------------------------------------------------------------------]
+// * * * $canSubmit (computed) --------------------------------------------------------------------]
 
 export const $isLoading = loadDataFx.pending
 

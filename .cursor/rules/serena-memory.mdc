@@ -1,0 +1,73 @@
+---
+description: Guidelines for updating Serena MCP memory after completing tasks to maintain project knowledge
+alwaysApply: true
+---
+
+# Serena Memory Updates
+
+Update Serena memory after completing significant tasks to maintain project knowledge across sessions.
+
+## When to Update
+
+Update memory after:
+
+- Completing a new feature implementation
+- Making architectural decisions
+- Fixing complex bugs with non-obvious solutions
+- Establishing new patterns or conventions
+- Discovering important codebase relationships
+- Setting up or modifying infrastructure
+
+## What to Record
+
+### Do Record
+
+- Stable patterns confirmed across multiple files
+- Key architectural decisions and rationale
+- Important file paths and their purposes
+- Solutions to recurring problems
+- Debugging insights and root causes
+- User preferences for workflow/tools
+
+### Do NOT Record
+
+- Session-specific context or temporary state
+- Information that might be incomplete
+- Speculative conclusions from single file reads
+- Details that duplicate existing documentation
+
+## Memory File Conventions
+
+| File | Purpose |
+| ------ | --------- |
+| `architecture.md` | System design, component relationships |
+| `patterns.md` | Reusable code patterns and conventions |
+| `debugging.md` | Solutions to recurring issues |
+| `decisions.md` | ADRs and architectural decisions |
+
+## Update Commands
+
+```markdown
+# List existing memories
+mcp__serena__list_memories
+
+# Read a memory
+mcp__serena__read_memory {"memory_file_name": "patterns.md"}
+
+# Write new memory
+mcp__serena__write_memory {"memory_file_name": "architecture.md", "content": "..."}
+
+# Edit existing memory
+mcp__serena__edit_memory {"memory_file_name": "patterns.md", "needle": "...", "repl": "...", "mode": "literal"}
+```
+
+## Example Update
+
+After implementing a new authentication flow:
+
+```bash
+mcp__serena__write_memory {
+  "memory_file_name": "architecture.md",
+  "content": "## Authentication Flow\n\n- Uses NextAuth.js v5 with JWT strategy\n- Session checked in middleware for protected routes\n- Role-based access via RBAC middleware\n- Key files: lib/auth.ts, middleware.ts"
+}
+```
