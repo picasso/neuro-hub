@@ -61,7 +61,8 @@ yarn db:check     # Inspect DB
 
 ```zsh
 .cursor/
-├── mcp.json           # MCP servers (shadcn-ui, serena)
+├── agents/            # Task-specific agents (see Available Agents)
+├── mcp.json           # MCP servers (see table below)
 ├── rules/             # Project rules (.mdc)
 │   ├── tech-stack.mdc
 │   ├── react-nextjs.mdc
@@ -123,6 +124,32 @@ Details: [.cursor/rules/security.mdc](.cursor/rules/security.mdc)
 ```
 
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+
+---
+
+## Available Agents
+
+| Agent | Mode | Description |
+|-------|------|-------------|
+| `code-reviewer` | readonly | Security, performance, maintainability review |
+| `test-engineer` | - | Unit, integration, e2e tests |
+| `fullstack-dev` | - | Complete feature implementation |
+| `api-gateway` | - | Public/private APIs with rate limiting |
+| `mcp-builder` | - | MCP server creation |
+| `cursor-expert` | readonly | Cursor IDE features, shortcuts, MCP config |
+
+### Using Agents
+
+```markdown
+# Automatic delegation
+Agent delegates based on description field
+
+# Explicit invocation
+/code-reviewer review my changes
+
+# Parallel execution
+/code-reviewer and /test-engineer analyze this feature
+```
 
 ---
 
