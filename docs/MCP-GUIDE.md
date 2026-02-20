@@ -374,18 +374,27 @@ Example TODO:
 
 ### 3. PostgreSQL MCP
 
-**Package:** `@modelcontextprotocol/server-postgres`
+**Package:** `@modelcontextprotocol/server-postgres` (⚠️ deprecated, but still works)
 
-**Description:** Direct PostgreSQL interaction.
+**Description:** Direct PostgreSQL interaction. Official server provides only `query` tool — no list_tables/describe_table/get_schema.
 
 **Tools:**
 
 | Tool | Description |
 |------|-------------|
-| `query` | Execute SQL query |
-| `list_tables` | List tables |
-| `describe_table` | Table structure |
-| `get_schema` | Database schema |
+| `query` | Execute read-only SQL query |
+
+**Workaround for schema:** use `information_schema`:
+
+```sql
+-- List tables
+SELECT table_schema, table_name FROM information_schema.tables WHERE table_schema = 'public';
+
+-- Describe table
+SELECT column_name, data_type, is_nullable FROM information_schema.columns WHERE table_name = 'users';
+```
+
+**Alternatives** (with list_tables/describe_table): pgEdge Postgres MCP, DBHub, MadeByNando mcp-postgres-server.
 
 **Configuration:**
 
@@ -445,40 +454,43 @@ Using PostgreSQL MCP and Prisma schema:
 
 **Package:** `@modelcontextprotocol/server-memory`
 
-**Description:** Persistent memory between sessions.
+**Description:** Persistent memory through a local knowledge graph (entities, relations, observations).
 
 **Tools:**
 
 | Tool | Description |
 |------|-------------|
-| `store` | Save data |
-| `retrieve` | Get data |
-| `list_keys` | List keys |
-| `delete` | Delete data |
+| `create_entities` | Add entities with initial observations |
+| `create_relations` | Define connections between entities |
+| `add_observations` | Append facts to existing entities |
+| `delete_entities` | Remove entities and cascading relations |
+| `delete_observations` | Remove specific facts from entities |
+| `delete_relations` | Remove connections |
+| `read_graph` | Retrieve the complete graph structure |
+| `search_nodes` | Query entities by name, type, or observation content |
+| `open_nodes` | Retrieve specific entities by name |
 
 **Use Cases:**
-- Remembering user preferences
+- Remembering user preferences as entities/observations
+- Storing project context in a graph
 - Caching analysis results
-- Storing project context
 
 #### 📝 Assignment 4: Persistent Context
 
 **Prompt:**
 
 ```text
-Using Memory MCP:
+Using Memory MCP (knowledge graph):
 
-1. Create structure for storing:
-   - Code style preferences
-   - Frequently used patterns
-   - Component templates
+1. Create entity "project_preferences" with observations:
+   - Code style: tabs, single quotes
+   - Framework: Next.js
 
-2. Implement functions:
-   - save_preference(key, value)
-   - get_preference(key)
-   - apply_preferences_to_code(code)
+2. Create entity "user" and relation to project_preferences
 
-3. Test saving and restoration
+3. Use search_nodes to find entities by type
+
+4. Use read_graph to display structure
 ```
 
 ---
@@ -582,65 +594,92 @@ without losing critical information.
 
 ---
 
-### 7. Web to MCP
+### 7. Firecrawl MCP (Web scraping / Documentation)
 
-**Package:** `@anthropic-ai/web-to-mcp`
+**Note:** `@anthropic-ai/web-to-mcp` is no longer on npm — package removed.
 
-**Description:** Web content conversion to MCP format.
+**Package:** `firecrawl-mcp`
+
+**Description:** Web scraping, crawling, content extraction. Use Firecrawl instead of Web to MCP.
 
 **Capabilities:**
+- Web scraping and crawling
+- Search and content extraction
 - Documentation parsing
-- Code example extraction
-- Information structuring
+- Deep research with autonomous agent
+
+**Config:** Requires `FIRECRAWL_API_KEY` from [firecrawl.dev](https://firecrawl.dev/app/api-keys)
+
+```json
+{
+  "firecrawl": {
+    "command": "npx",
+    "args": ["-y", "firecrawl-mcp"],
+    "env": {
+      "FIRECRAWL_API_KEY": "${env:FIRECRAWL_API_KEY}"
+    }
+  }
+}
+```
 
 #### 📝 Assignment 7: Documentation Import
 
 **Prompt:**
 
 ```text
-Using Web to MCP:
+Using Firecrawl MCP:
 
-1. Import React 19 documentation:
+1. Scrape React 19 documentation URL
+2. Extract:
    - Server Components
    - Actions
    - Hooks changes
 
-2. Convert to structured format:
+3. Convert to structured format:
    - Concepts with examples
    - API reference
-   - Migration guide
-
-3. Create local knowledge base in .cursor/knowledge/
 ```
 
 ---
 
 ### 8. Ref MCP
 
-**Package:** `@anthropic-ai/ref-mcp`
+**Note:** `@anthropic-ai/ref-mcp` is no longer on npm — package removed.
 
-**Description:** Reference and dependency analysis.
+**Package:** `ref-tools-mcp`
+
+**Description:** Documentation search for APIs, libraries, services. Token-efficient context for coding agents.
 
 **Capabilities:**
-- Dependency graph
-- Usage search
-- Change impact
+- `ref_search_documentation` — search technical docs
+- `ref_read_url` — fetch URL content as markdown
+- Session-based filtering, relevant section extraction (~5k tokens)
 
-#### 📝 Assignment 8: Impact Analysis
+**Config:** Requires `REF_API_KEY` from [ref.tools](https://ref.tools)
+
+```json
+{
+  "ref": {
+    "command": "npx",
+    "args": ["-y", "ref-tools-mcp@latest"],
+    "env": {
+      "REF_API_KEY": "${env:REF_API_KEY}"
+    }
+  }
+}
+```
+
+#### 📝 Assignment 8: Documentation Lookup
 
 **Prompt:**
 
 ```text
 Using Ref MCP:
 
-1. Find all usages of validateUser function
-2. Build dependency graph
-3. Determine impact of changes to this function:
-   - Direct dependencies
-   - Indirect dependencies
-   - Tests that need updating
-
-4. Suggest safe refactoring plan
+1. Search for "Next.js Server Actions validation"
+2. Read the most relevant URL from results
+3. Extract key concepts and code examples
+4. Compare with Context7 for same topic
 ```
 
 ---

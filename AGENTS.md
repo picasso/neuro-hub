@@ -157,8 +157,15 @@ Agent delegates based on description field
 
 | Server | Purpose |
 |--------|---------|
-| shadcn-ui | Component install, search |
-| Serena | Codebase analysis |
+| Ref | Documentation search |
+| context7 | Up-to-date library docs |
+| filesystem | File read/write, search |
+| firecrawl | Web scraping |
+| github | Issues, PRs, code search |
+| memory | Persistent knowledge graph |
+| postgres | Direct DB queries |
+| shadcn-ui | Component install |
+| serena | Codebase analysis |
 
 Config: [.cursor/mcp.json](.cursor/mcp.json)
 
