@@ -12,8 +12,15 @@ MCP connects external tools and data to AI assistants. One server can serve mult
 
 | Server | Purpose |
 |--------|---------|
-| **shadcn-ui** | Install components, search examples |
-| **Serena** | Codebase analysis, refactoring, documentation |
+| **Ref** | Documentation search (ref.tools) |
+| **context7** | Up-to-date library docs |
+| **filesystem** | File read/write, search |
+| **firecrawl** | Web scraping, content extraction |
+| **github** | Issues, PRs, code search |
+| **memory** | Persistent knowledge graph |
+| **postgres** | Direct DB queries |
+| **shadcn-ui** | Component install, search |
+| **serena** | Codebase analysis, refactoring |
 
 ---
 
