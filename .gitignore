@@ -71,6 +71,10 @@ Thumbs.db
 # Cursor project skills (keep local)
 .cursor/skills/railway-*
 
+.cursor/skills/ui-ux-pro-max
+.agents/skills/ui-ux-pro-max
+
+
 # Miscellaneous
 src/FIXES.md
 

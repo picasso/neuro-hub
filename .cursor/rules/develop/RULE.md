@@ -383,43 +383,32 @@ export type ProfileField = { ... }    // used
 
 ---
 
-## 5. MUI/React - API
+## 5. shadcn/ui + Tailwind - Patterns
 
-### 5.1 Deprecated API `inputProps`
+### 5.1 Component installation
 
-❌ **Bad** - deprecated API:
+Install shadcn components via CLI:
 
-```tsx
-<TextField
-  inputProps={{ maxLength: 500 }}
-/>
-
-<TextField
-  InputProps={{
-    endAdornment: <IconButton>...</IconButton>
-  }}
-/>
+```bash
+npx shadcn@latest add button input dialog
 ```
 
-✅ **Good** - new API via `slotProps`:
+Components are added to `src/components/ui/` and can be customized directly.
+
+### 5.2 Conditional classes
+
+Use `cn()` utility for conditional Tailwind classes:
 
 ```tsx
-<TextField
-  slotProps={{ 
-    htmlInput: { maxLength: 500 } 
-  }}
-/>
+import { cn } from '@/lib/utils'
 
-<TextField
-  slotProps={{ 
-    input: {
-      endAdornment: <IconButton>...</IconButton>
-    }
-  }}
-/>
+<button className={cn(
+  'rounded-md px-4 py-2 font-medium',
+  variant === 'primary' && 'bg-primary text-primary-foreground',
+  variant === 'outline' && 'border border-input bg-background',
+  disabled && 'pointer-events-none opacity-50'
+)}>
 ```
-
-**Rule:** Use `slotProps` instead of `inputProps` and `InputProps` in MUI v7.
 
 ---
 
@@ -474,10 +463,10 @@ Lodash is included in the bundle and provides significant advantages over native
 TypeScript guarantees types at compile time, but runtime data (API responses, user input) can be unexpected. Lodash utilities safely handle null/undefined without throwing exceptions, preventing application crashes in production.
 
 ```tsx
-// ❌ native - runtime error if name is undefined
-user.name.toUpperCase() // 💥 cannot read property 'toUpperCase' of undefined
+// native - runtime error if name is undefined
+user.name.toUpperCase() // cannot read property 'toUpperCase' of undefined
 
-// ✅ lodash - safe, returns undefined
+// lodash - safe, returns undefined
 get(user, 'name', 'Unknown').toUpperCase() // works even if name is missing
 ```
 
@@ -551,49 +540,41 @@ Only when:
 
 ## 8. UI Components - Centralized System
 
-Use centralized wrapper components instead of direct MUI imports. This provides consistent API, better type safety, and easier refactoring.
+Use centralized wrapper components from `@/components/ui/`. All UI components are based on shadcn/ui + Tailwind CSS.
 
-### 8.0 Layout: Stack vs Box
+### 8.0 Layout: Stack component
 
-**Rule:** Prefer `Stack` for simple flex layouts (row/column with spacing & alignment).
-
-❌ **Bad** - repeated `Box` + `display: 'flex'` everywhere:
+**Rule:** Use `Stack` for flex layouts (row/column with spacing & alignment).
 
 ```tsx
-import Box from '@mui/material/Box'
+import { Stack } from '@/components/ui'
 
-<Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-  <Link href="/a">A</Link>
-  <Link href="/b">B</Link>
-</Box>
-```
-
-✅ **Good** - `Stack` expresses intent and reduces noise:
-
-```tsx
-import Stack from '@mui/material/Stack'
-
-<Stack direction="row" spacing={2} alignItems="center">
+<Stack direction="row" spacing={2} align="center">
   <Link href="/a">A</Link>
   <Link href="/b">B</Link>
 </Stack>
 ```
 
-**When `Box` is still OK:**
-- you need a generic wrapper without “stack semantics”
-- you need custom CSS that is not simply “row/column + spacing”
+For simple one-off layouts, plain `div` with Tailwind classes is also acceptable:
+
+```tsx
+<div className="relative py-3 pl-4">
+  <Link href="/a">A</Link>
+  <Link href="/b">B</Link>
+</div>
+```
 
 ---
 
 ### 8.1 Icon component
 
-❌ **Bad** - direct MUI icon imports:
+❌ **Bad** - direct lucide imports scattered across files:
 
 ```tsx
-import WorkIcon from '@mui/icons-material/Work'
-import BusinessIcon from '@mui/icons-material/Business'
+import { Briefcase, Building2 } from 'lucide-react'
 
-<Button startIcon={<WorkIcon color="primary" />}>
+<Button>
+  <Briefcase className="mr-2 h-4 w-4" />
   Label
 </Button>
 ```
@@ -603,37 +584,24 @@ import BusinessIcon from '@mui/icons-material/Business'
 ```tsx
 import { Icon } from '@/components/ui/icon'
 
-<Button leftIcon="work" iconOptions={{ color: 'primary' }}>
-  Label
-</Button>
+<Button leftIcon="briefcase" label="Label" />
 ```
 
-**Rule:** Always use `Icon` component with kebab-case names. All MUI icons are registered in `assets.tsx`.
+**Rule:** Always use `Icon` component with kebab-case names. All icons are registered in `assets.tsx`.
 
 ---
 
 ### 8.2 Button component
 
-❌ **Bad** - direct MUI Button with Icon:
-
-```tsx
-import Button from '@mui/material/Button'
-import LoginIcon from '@mui/icons-material/Login'
-
-<Button startIcon={<LoginIcon />}>Login</Button>
-```
-
-✅ **Good** - centralized Button with icon props:
-
 ```tsx
 import { Button } from '@/components/ui/button'
 
-<Button leftIcon="login" label="Login" />
+<Button leftIcon="log-in" label="Login" />
 ```
 
 **Rules:**
-- Use `@/components/ui/button` instead of `@mui/material/Button`
-- Icons via `leftIcon`/`rightIcon` props, options via `iconOptions`
+- Use `@/components/ui/button` for all buttons
+- Icons via `leftIcon`/`rightIcon` props
 - **Always use `label` prop for button text, not `children`**
 
 #### When to use `label` vs `children`
@@ -646,22 +614,9 @@ import { Button } from '@/components/ui/button'
 **Use `children` (rare):**
 - Only when button contains complex JSX (not just text)
 
-**Default rule:** Always use `label` for simple text. Use `children` only for complex JSX content.
-
 ---
 
 ### 8.3 Text component (TS)
-
-❌ **Bad** - direct MUI Typography:
-
-```tsx
-import Typography from '@mui/material/Typography'
-
-<Typography variant="h6">Title</Typography>
-<Typography variant="body1">{user.name}</Typography>
-```
-
-✅ **Good** - centralized TS component:
 
 ```tsx
 import { TS } from '@/components/ui/text-styled'
@@ -670,29 +625,16 @@ import { TS } from '@/components/ui/text-styled'
 <TS variant="body1" content={user.name} />
 ```
 
-**Rule:** Use `TS` (Text Styled) from `@/components/ui/text-styled` for all text rendering instead of MUI Typography.
-
----
+**Rule:** Use `TS` (Text Styled) from `@/components/ui/text-styled` for text rendering with variants and markdown support.
 
 #### When to use `content` vs `children`
 
 **Use `content` prop (most cases):**
 - Variables/dynamic values: `content={heroContent.title}`
 - Short strings: `content="Создайте аккаунт"`
-- Template strings: `content={`Шаг ${currentStep} из ${steps.length}`}`
-- Numbers: `content={count}`
 
 **Use `children` (rare cases):**
-- Only for long string literals in code (2+ lines):
-
-```tsx
-<TS variant="body2">
-  Проверьте почту и перейдите по ссылке в письме для подтверждения вашего
-  аккаунта. Если письмо не пришло, проверьте папку "Спам".
-</TS>
-```
-
-**Default rule:** Use `content` prop by default. Use `children` only for long multi-line string literals.
+- Only for long string literals in code (2+ lines)
 
 ---
 
@@ -701,8 +643,7 @@ import { TS } from '@/components/ui/text-styled'
 1. **Consistent API** - all icons use same pattern (`leftIcon="name"`)
 2. **Type safety** - autocomplete for icon names, compile-time validation
 3. **Easy refactoring** - change implementation in one place
-4. **Bundle optimization** - tree-shaking, no duplicate icon imports
-5. **Custom enhancements** - animations, spacing, sizing without prop drilling
+4. **Bundle optimization** - tree-shaking via centralized icon registry
 
 ---
 
@@ -731,14 +672,15 @@ Use this checklist to review components before committing:
 - [ ] No `as` casting (except edge cases)
 - [ ] Unused types/imports removed
 
-### React/MUI:
-- [ ] `slotProps` instead of `inputProps`/`InputProps`
-- [ ] No deprecated APIs
+### Styling:
+- [ ] Tailwind classes via `cn()` utility for conditional styling
+- [ ] No inline `style` objects (use Tailwind classes)
+- [ ] Theme colors via CSS variables (`bg-primary`, `text-foreground`)
 
 ### Alerts / Error handling:
 - [ ] User-facing errors via `@/alerts` (createAlert / createAlertFx)
 - [ ] Critical errors use `disableAutoClose: true`
-- [ ] Effect success/error alerts wired in store via sample → createAlertFx
+- [ ] Effect success/error alerts wired in store via sample -> createAlertFx
 - [ ] Progress alerts use stable id and remove on completion
 
 ### Code Quality:
@@ -751,10 +693,10 @@ Use this checklist to review components before committing:
 - [ ] No default imports: avoid `import _` or `import lo`
 
 ### UI Components:
-- [ ] Use `Icon` from `@/components/ui/icon` (not `@mui/icons-material`)
-- [ ] Use `Button` from `@/components/ui/button` (not `@mui/material/Button`)
-- [ ] Use `TS` from `@/components/ui/text-styled` (not `@mui/material/Typography`)
-- [ ] Icons use kebab-case names: `leftIcon="work"`, not `<WorkIcon />`
-- [ ] Button icons via `leftIcon`/`rightIcon` props with optional `iconOptions`
+- [ ] Use `Icon` from `@/components/ui/icon` (not direct lucide imports)
+- [ ] Use `Button` from `@/components/ui/button`
+- [ ] Use `TS` from `@/components/ui/text-styled`
+- [ ] Icons use kebab-case names: `leftIcon="briefcase"`, not `<Briefcase />`
+- [ ] Button icons via `leftIcon`/`rightIcon` props
 - [ ] Button text via `label` prop (not `children`): `label="Text"` or `label={variable}`
 - [ ] TS text via `content` prop (not `children`) for variables/short strings

@@ -6,7 +6,7 @@ Platform for freelancing in generative AI. Specialized marketplace connecting AI
 
 ## Tech Stack
 
-- **Frontend**: Next.js 16+, TypeScript 5.9+ (strict), MUI 7.3+, Emotion 11+, Effector 23+
+- **Frontend**: Next.js 16+, TypeScript 5.9+ (strict), shadcn/ui + Tailwind CSS 4+, lucide-react, Effector 23+
 - **Backend**: Node.js 24 LTS, Next.js API Routes, PostgreSQL 16, Knex (migrations/seeds), Kysely (runtime queries), Better Auth 1+
 - **Package Manager**: Yarn Classic 1.x
 - **System**: Darwin (macOS)

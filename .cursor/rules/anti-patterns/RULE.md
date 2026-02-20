@@ -19,7 +19,8 @@ description: This rule explicitly lists anti-patterns.
 
 - `getServerSideProps` - use Server Components instead
 - `pages/` directory - we've fully migrated to App Router
-- `styled-components` - use `@emotion` instead
+- `styled-components` / `@emotion` / MUI `sx` prop - use Tailwind CSS instead
+- `@mui/material` - use shadcn/ui + Radix UI instead
 - `moment.js` - use `Day.js` or native Intl API
 
 ## Performance Anti-patterns

@@ -18,8 +18,9 @@ Ignore commented items!
 
 - Framework: Next.js 16+ (App Router)
 - Language: TypeScript 5.9+ (strict mode)
-- UI components: Material UI 7.3+
-- Styling: @emotion/react 11+
+- UI components: shadcn/ui (Radix UI primitives)
+- Styling: Tailwind CSS 4+
+- Icons: lucide-react
 - State: Effector 23+
 
 ## Backend
