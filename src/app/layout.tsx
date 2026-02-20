@@ -1,3 +1,4 @@
+import './globals.css'
 import { fontSans } from './fonts'
 import type { ReactNode } from 'react'
 import { AlertsPlugin } from '@/alerts'
