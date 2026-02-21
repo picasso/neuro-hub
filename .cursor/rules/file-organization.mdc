@@ -1,0 +1,21 @@
+---
+description: File and folder organization, flat structure, prefix-based grouping
+globs: ["src/**/*"]
+---
+
+# File & Folder Organization
+
+## Flat structure
+
+- Prefer flat folders over deep nesting
+- Route folders (`app/[route]/`): keep `page.tsx`, `layout.tsx` and co-located modules in the same folder
+
+## Prefix-based grouping
+
+- Use consistent prefixes for related files: `demo.tsx`, `demo-placeholder.tsx`, `demo-buttons.tsx`
+- File Nesting (configured globally in Cursor/VS Code) groups `demo-*.tsx` under `demo.tsx` in the explorer
+
+## When to use subfolders
+
+- Only when there are many related files (>5) or distinct domains (e.g. features, api routes)
+- Avoid creating `components/`, `data/`, `utils/` subfolders for a single route unless justified

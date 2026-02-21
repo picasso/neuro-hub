@@ -57,6 +57,11 @@ yarn db:check     # Inspect DB
 
 ---
 
+## File Organization
+
+- Flat structure preferred; prefix-based grouping (`demo.tsx`, `demo-*.tsx`)
+- Details: [.cursor/rules/file-organization.mdc](.cursor/rules/file-organization.mdc)
+
 ## File Structure
 
 ```zsh
@@ -64,6 +69,7 @@ yarn db:check     # Inspect DB
 ├── agents/            # Task-specific agents (see Available Agents)
 ├── mcp.json           # MCP servers (see table below)
 ├── rules/             # Project rules (.mdc)
+│   ├── file-organization.mdc
 │   ├── tech-stack.mdc
 │   ├── react-nextjs.mdc
 │   ├── api-design.mdc
