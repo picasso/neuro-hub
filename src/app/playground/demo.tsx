@@ -1,5 +1,5 @@
-import { type ComponentDemo } from '../data/components'
-import { PlaceholderDemo } from './placeholder'
+import { type ComponentDemo } from './components'
+import { PlaceholderDemo } from './demo-placeholder'
 
 type DemoRendererProps = {
 	component: ComponentDemo

@@ -1,5 +1,5 @@
 import { Circle } from 'lucide-react'
-import { type ComponentDemo } from '../data/components'
+import { type ComponentDemo } from './components'
 
 type PlaceholderDemoProps = {
 	component: ComponentDemo

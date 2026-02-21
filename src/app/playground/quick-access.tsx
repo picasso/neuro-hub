@@ -1,6 +1,4 @@
-'use client'
-
-import { type ComponentDemo } from '../data/components'
+import { type ComponentDemo } from './components'
 import { Button } from '@/components/shadcn/button'
 
 type QuickAccessProps = {

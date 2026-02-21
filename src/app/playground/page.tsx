@@ -1,11 +1,12 @@
 'use client'
 
+import { find } from 'lodash'
 import { RotateCcw } from 'lucide-react'
 import { useCallback, useState } from 'react'
-import { ComponentSelector } from './components/component-selector'
-import { QuickAccess } from './components/quick-access'
-import { type ComponentDemo, componentDemos } from './data/components'
-import { DemoRenderer } from './demos'
+import { type ComponentDemo, componentDemos } from './components'
+import { ComponentSelector } from './components-selector'
+import { DemoRenderer } from './demo'
+import { QuickAccess } from './quick-access'
 import { Button } from '@/components/shadcn/button'
 import { Separator } from '@/components/shadcn/separator'
 
@@ -18,15 +19,16 @@ export default function PlaygroundPage() {
 	const handleSelect = useCallback((component: ComponentDemo) => {
 		setSelected(component)
 		setRecent((prev) => {
+			if (find(prev, { id: component.id })) return prev
 			const filtered = prev.filter((c) => c.id !== component.id)
 			return [component, ...filtered].slice(0, MAX_RECENT)
 		})
 	}, [])
 
 	return (
-		<div className="mx-auto flex h-[calc(100vh-80px)] w-full max-w-[1400px] flex-col gap-4 p-4 md:p-8">
+		<div className="mx-auto my-8 flex h-[calc(100vh-300px)] w-full max-w-[1400px] flex-col gap-0 rounded-lg border">
 			{/* Header — title left, controls right */}
-			<div className="flex items-center justify-between">
+			<div className="flex items-center justify-between pl-4 md:pl-8 pr-2 md:pr-4 bg-surface rounded-t-lg border-b">
 				<h2 className="text-lg font-semibold tracking-tight text-foreground">Playground</h2>
 				<div className="flex items-center gap-2">
 					<QuickAccess recent={recent} current={selected} onSelect={handleSelect} />
@@ -43,12 +45,10 @@ export default function PlaygroundPage() {
 				</div>
 			</div>
 
-			<Separator />
-
 			{/* Content — bordered container like shadcn example */}
-			<div className="flex min-h-0 flex-1 overflow-hidden rounded-lg border border-border">
+			<div className="flex min-h-0 flex-1 overflow-hidden rounded-b-lg">
 				{/* Demo area */}
-				<div className="flex-1 overflow-auto bg-surface p-6">
+				<div className="flex-1 overflow-auto p-6">
 					{selected ? (
 						<DemoRenderer component={selected} />
 					) : (
@@ -59,8 +59,8 @@ export default function PlaygroundPage() {
 				</div>
 
 				{/* Side panel — component-specific settings */}
-				<div className="hidden w-[260px] shrink-0 border-l border-border bg-surface md:block">
-					<div className="flex flex-col gap-4 p-4">
+				<div className="hidden w-[260px] shrink-0 border-l bg-surface md:block">
+					<div className="flex flex-col gap-4 px-4 pb-4 pt-2">
 						<div>
 							<h3 className="text-sm font-medium text-foreground">Настройки</h3>
 							<p className="text-xs text-muted-foreground">

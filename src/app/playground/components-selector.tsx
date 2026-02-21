@@ -1,8 +1,6 @@
-'use client'
-
 import { Check, ChevronsUpDown, Circle, CircleCheck } from 'lucide-react'
 import { useState } from 'react'
-import { type ComponentDemo, componentDemos, groupLabels } from '../data/components'
+import { type ComponentDemo, componentDemos, groupLabels } from './components'
 import { Button } from '@/components/shadcn/button'
 import {
 	Command,
