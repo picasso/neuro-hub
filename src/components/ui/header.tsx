@@ -8,6 +8,7 @@ import Toolbar from '@mui/material/Toolbar'
 import { useRouter } from 'next/navigation'
 import { Button } from './button'
 import { TS } from './text-styled'
+import { FontSwitcher } from '@/components/providers'
 import { signOut, useSession } from '@/lib/auth/client'
 
 export function Header() {
@@ -36,6 +37,7 @@ export function Header() {
 					</Link>
 
 					<Stack direction="row" spacing={2} alignItems="center">
+						<FontSwitcher />
 						<Link
 							href="/projects"
 							underline="hover"
