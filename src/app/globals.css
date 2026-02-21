@@ -80,12 +80,14 @@
 	--primary-dark: #169e5f;
 	--primary-light: #35d48d;
 
-	/* CTA / Accent (violet) — CTA buttons, AI elements */
+	/* CTA (violet) — CTA buttons, AI elements */
 	--cta: #7c3aed;
 	--cta-dark: #6d28d9;
 	--cta-foreground: #ffffff;
-	--accent: #7c3aed;
-	--accent-foreground: #ffffff;
+
+	/* Accent — subtle hover for menus, lists (NOT violet!) */
+	--accent: #f0f0eb;
+	--accent-foreground: #26251e;
 
 	/* Background & Surface */
 	--background: #f7f7f4;
@@ -141,5 +143,21 @@
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+
+	/*
+	 * Targeted reset for shadcn components (preflight is off for MUI).
+	 * Scoped via data-slot attributes that shadcn adds to every primitive.
+	 */
+	[data-slot] button,
+	[data-slot='button'] {
+		all: unset;
+		box-sizing: border-box;
+		cursor: pointer;
+	}
+	[data-slot] input,
+	[data-slot] textarea {
+		all: unset;
+		box-sizing: border-box;
 	}
 }
