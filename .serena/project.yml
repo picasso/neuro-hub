@@ -114,3 +114,7 @@ initial_prompt: |
   neuro-hub is a Next.js 16 app with TypeScript, MUI (Material UI), and Effector for state management.
   Key structure: src/app/ (routes), src/components/ (ui, ui-theme, features), src/lib/ (utilities, db, auth).
   Use existing theme and feedback components from ui-theme; follow MUI patterns.
+
+# override of the corresponding setting in serena_config.yml, see the documentation there.
+# If null or missing, the value from the global config is used.
+symbol_info_budget:

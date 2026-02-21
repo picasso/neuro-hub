@@ -1,0 +1,64 @@
+---
+description: Security rules for authentication, validation, and protection against common vulnerabilities
+alwaysApply: true
+---
+
+# Security Rules
+
+## Authentication and Authorization
+
+- Check session on EVERY request to protected resources
+- Use proxy (src/proxy.ts) for route protection
+
+## Data Validation
+
+- ALL input data validated through Zod 4.0
+- Never trust client data
+- Validate on server even if client validation exists
+- Use schema for query params, body, params
+
+## SQL Injection Protection
+
+- NEVER use raw SQL queries without necessity
+- When using raw SQL (Kysely.sql) - always use parameterized queries
+- Escape all user data
+
+## XSS Protection
+
+- NEVER use dangerouslySetInnerHTML without sanitization
+- Use DOMPurify for HTML sanitization
+- Content Security Policy (CSP) headers REQUIRED
+- Use nonce for inline scripts
+
+## CSRF Protection
+
+- Next.js built-in CSRF protection for Server Actions
+- For API routes use CSRF tokens
+- Check Origin header for state-changing operations
+
+## Secrets and Keys
+
+- NEVER commit secrets to repository
+- Use .env.local for local secrets
+- All secrets through process.env
+- In production use secret vaults (Vault, AWS Secrets)
+
+## Logging
+
+- DO NOT log sensitive data (passwords, tokens, PII)
+- Log all authentication attempts
+- Log all security errors
+- Use structured logging
+
+## Rate Limiting
+
+- Apply rate limiting to all public APIs
+- Limit login attempts (5 attempts / 15 minutes)
+- Limit API requests (100 requests / minute)
+
+## File Uploads
+
+- Limit file sizes (max 10MB)
+- Check MIME types
+- Use virus scanning for user uploads
+- Don't save files with executable extensions

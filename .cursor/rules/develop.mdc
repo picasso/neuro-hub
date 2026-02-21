@@ -1,3 +1,9 @@
+---
+name: Development Best Practice
+description: This rule defines the practices complement core rules and help avoid common mistakes.
+globs: ["src/**/*"]
+---
+
 # Development Best Practices & Anti-patterns
 
 Development rules discovered during project work. These practices complement core rules and help avoid common mistakes.
@@ -200,7 +206,7 @@ sample({
 ✅ **Good** - helper function:
 
 ```tsx
-// * * * helpers ---------------------------------------------------------------------------------]
+// helpers ----------------------------------------------------------------------------------------]
 
 function validateProfileData(profileData: ProfileData) {
   const { kind, ...dataWithoutKind } = profileData

@@ -1,0 +1,71 @@
+---
+description: React and Next.js patterns — App Router, Server Components, proxy, index exports
+globs: ["src/app/**/*", "src/components/**/*"]
+---
+
+# React / Next.js Rules
+
+## Project Structure (src/)
+
+```zsh
+src/
+├── app/
+│   ├── (auth)/           # login, register
+│   ├── (app)/            # protected: dashboard, settings
+│   ├── api/              # route handlers
+│   └── layout.tsx
+├── components/
+│   ├── ui/               # base UI
+│   ├── forms/            # form components
+│   └── features/         # feature components
+└── lib/
+    ├── auth/
+    ├── db/
+    └── validations/
+```
+
+## App Router
+
+- Pages: `src/app/[route]/page.tsx`
+- Layouts: `src/app/layout.tsx`
+- API: `src/app/api/[route]/route.ts`
+
+## Server vs Client Components
+
+Default: Server Components. Add `'use client'` only when needed for:
+
+- Event handlers (onClick, onChange)
+- React hooks (useState, useEffect)
+- Browser APIs (localStorage, window)
+- Effector stores or other client state
+
+## Data & State
+
+| Type        | Use                          |
+|-------------|------------------------------|
+| Server data | Server Components, Suspense  |
+| Client data | TanStack Query               |
+| Global      | Effector                     |
+| URL         | searchParams                 |
+| Local UI    | useState / useReducer        |
+
+## Server Actions
+
+- For mutations (create, update, delete)
+- Validate input with Zod
+- Return unified Result type
+- Handle errors gracefully
+
+## proxy.ts (not middleware.ts)
+
+Next.js deprecated `middleware.ts`. Use `proxy.ts` instead:
+
+- File: `src/proxy.ts`
+- Export: `proxy(request)`, not `middleware`
+- Use for: auth redirects, rate limiting, security headers
+
+## Index Files
+
+- Every reusable folder has `index.ts` as public API
+- External imports: `import { X } from '@/components/ui'` (not `from './button'`)
+- Exception: `page.tsx`, `layout.tsx`, `route.ts` — no index needed
