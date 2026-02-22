@@ -19,7 +19,7 @@ export const componentDemos: ComponentDemo[] = [
 		name: 'Icons',
 		group: 'icons',
 		description: 'Lucide icons mapping from MUI icons',
-		ready: false,
+		ready: true,
 	},
 	{
 		id: 'typography',

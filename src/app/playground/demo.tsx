@@ -1,4 +1,5 @@
 import { type ComponentDemo } from './components'
+import { DemoIcons } from './demo-icons'
 import { PlaceholderDemo } from './demo-placeholder'
 
 type DemoRendererProps = {
@@ -6,8 +7,9 @@ type DemoRendererProps = {
 }
 
 export function DemoRenderer({ component }: DemoRendererProps) {
-	// Each migrated component will get its own case here
 	switch (component.id) {
+		case 'icons':
+			return <DemoIcons />
 		default:
 			return <PlaceholderDemo component={component} />
 	}

@@ -1,109 +1,85 @@
-//
-// MUI icons --------------------------------------------------------------------------------------]
-//
-import article from '@mui/icons-material/Article'
-import mediaPdf from '@mui/icons-material/ArticleTwoTone'
-import business from '@mui/icons-material/Business'
-import checkCircle from '@mui/icons-material/CheckCircle'
-import close from '@mui/icons-material/Close'
-import code from '@mui/icons-material/Code'
-import collectionsBookmark from '@mui/icons-material/CollectionsBookmarkTwoTone'
-import collections from '@mui/icons-material/CollectionsTwoTone'
-import deleteOutline from '@mui/icons-material/DeleteOutline'
-import doneOutline from '@mui/icons-material/DoneOutline'
-import doNotDisturb from '@mui/icons-material/DoNotDisturb'
-import email from '@mui/icons-material/Email'
-import error from '@mui/icons-material/ErrorOutline'
-import errorFilled from '@mui/icons-material/ErrorTwoTone'
-import expandMore from '@mui/icons-material/ExpandMore'
-import formatQuote from '@mui/icons-material/FormatQuote'
-import gavel from '@mui/icons-material/Gavel'
-import gitHub from '@mui/icons-material/GitHub'
-import groups from '@mui/icons-material/Groups'
-import image from '@mui/icons-material/Image'
-import info from '@mui/icons-material/InfoOutline'
-import infoFilled from '@mui/icons-material/InfoTwoTone'
-import linkedIn from '@mui/icons-material/LinkedIn'
-import login from '@mui/icons-material/Login'
-import mediaVideo from '@mui/icons-material/OndemandVideoTwoTone'
-import payment from '@mui/icons-material/Payment'
-import percent from '@mui/icons-material/Percent'
-import person from '@mui/icons-material/Person'
-import personAdd from '@mui/icons-material/PersonAdd'
-import mediaImage from '@mui/icons-material/PhotoSizeSelectActualTwoTone'
-import search from '@mui/icons-material/Search'
-import star from '@mui/icons-material/Star'
-import telegram from '@mui/icons-material/Telegram'
-import thumbUp from '@mui/icons-material/ThumbUp'
-import verified from '@mui/icons-material/Verified'
-import verifiedUser from '@mui/icons-material/VerifiedUser'
-import doneFilled from '@mui/icons-material/VerifiedUserTwoTone'
-import videoLibrary from '@mui/icons-material/VideoLibrary'
-import visibility from '@mui/icons-material/Visibility'
-import visibilityOff from '@mui/icons-material/VisibilityOff'
-import mediaAudio from '@mui/icons-material/VolumeUpTwoTone'
-import warning from '@mui/icons-material/WarningAmberOutlined'
-import warningFilled from '@mui/icons-material/WarningTwoTone'
-import work from '@mui/icons-material/Work'
-import x from '@mui/icons-material/X'
 import { kebabCase, reduce } from 'lodash'
-import { type ComponentType } from 'react'
+import {
+	AlertTriangle,
+	BadgeCheck,
+	Ban,
+	BookMarked,
+	Briefcase,
+	Building2,
+	Check,
+	ChevronDown,
+	CircleAlert,
+	CircleCheck,
+	Code,
+	CreditCard,
+	Eye,
+	EyeOff,
+	FileText,
+	Gavel,
+	Github,
+	Image,
+	LayoutGrid,
+	LogIn,
+	Mail,
+	Percent,
+	Quote,
+	Search,
+	ShieldCheck,
+	Star,
+	ThumbsUp,
+	Trash2,
+	User,
+	UserPlus,
+	Users,
+	Video,
+	Volume2,
+	X,
+} from 'lucide-react'
+import { type ComponentType, type SVGProps } from 'react'
 import { customIcons } from './icons'
-import type { SvgIconProps } from '@mui/material/SvgIcon'
 
-const muiIcons = {
-	article,
-	infoFilled,
-	warningFilled,
-	business,
-	checkCircle,
-	code,
-	collectionsBookmark,
-	collections,
-	close,
-	deleteOutline,
-	doNotDisturb,
-	doneOutline,
-	doneFilled,
-	email,
-	errorFilled,
-	error,
-	expandMore,
-	formatQuote,
-	gavel,
-	gitHub,
-	groups,
-	image,
-	info,
-	mediaImage,
-	mediaVideo,
-	mediaAudio,
-	mediaPdf,
-	linkedIn,
-	login,
-	payment,
-	percent,
-	person,
-	personAdd,
-	search,
-	star,
-	telegram,
-	thumbUp,
-	verified,
-	verifiedUser,
-	videoLibrary,
-	visibility,
-	visibilityOff,
-	warning,
-	work,
-	x,
+type SvgComponent = ComponentType<SVGProps<SVGSVGElement>>
+
+// lucide icons -----------------------------------------------------------------------------------]
+
+const lucideIcons = {
+	AlertTriangle,
+	BadgeCheck,
+	Ban,
+	bookMarked: BookMarked,
+	briefcase: Briefcase,
+	building2: Building2,
+	check: Check,
+	chevronDown: ChevronDown,
+	circleAlert: CircleAlert,
+	circleCheck: CircleCheck,
+	code: Code,
+	creditCard: CreditCard,
+	eye: Eye,
+	eyeOff: EyeOff,
+	fileText: FileText,
+	gavel: Gavel,
+	github: Github,
+	image: Image,
+	layoutGrid: LayoutGrid,
+	logIn: LogIn,
+	mail: Mail,
+	percent: Percent,
+	quote: Quote,
+	search: Search,
+	shieldCheck: ShieldCheck,
+	star: Star,
+	thumbsUp: ThumbsUp,
+	trash2: Trash2,
+	user: User,
+	userPlus: UserPlus,
+	users: Users,
+	video: Video,
+	volume2: Volume2,
+	x: X,
 }
 
-// Project specific icons -------------------------------------------------------------------------]
-
-type CustomIconName = keyof typeof customIcons
-
-// Add 'SvgIcon' wrapper --------------------------------------------------------------------------]
+// type generation --------------------------------------------------------------------------------]
 
 export type CutSuffix<T, Suffix extends string> = T extends `${infer R}${Suffix}` ? R : T
 export type CutPrefix<T, Prefix extends string> = T extends `${Prefix}${infer R}` ? R : T
@@ -114,35 +90,79 @@ type CamelToKebab<S extends string> = S extends `${infer T}${infer U}`
 
 type PascalToKebab<T extends string> = CamelToKebab<Uncapitalize<T>>
 
-export type MuiIconName = PascalToKebab<CutSuffix<keyof typeof muiIcons, 'Outline'>>
+type Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+type TrimEndDigits<T extends string> = T extends `${infer R}${Digit}` ? TrimEndDigits<R> : T
+
+export type LucideIconName = PascalToKebab<TrimEndDigits<keyof typeof lucideIcons>>
+
+// library ----------------------------------------------------------------------------------------]
+
+type CustomIconName = keyof typeof customIcons
 
 const library = reduce(
-	{ ...muiIcons, ...customIcons },
+	{ ...lucideIcons, ...customIcons },
 	(acc, value, key) => {
-		acc[kebabCase(key.replace(/Outline$/, '')) as MuiIconName] = value
+		acc[kebabCase(key.replace(/\d+$/, ''))] = value as SvgComponent
 		return acc
 	},
-	{} as Record<MuiIconName, ComponentType<SvgIconProps>>,
+	{} as Record<string, SvgComponent>,
 )
 
-// alias names that are added to the icon library for existing icons
+// aliases ----------------------------------------------------------------------------------------]
+
 const aliases = {
-	check: 'done',
+	// backward compat: old MUI names -> new lucide names
+	close: 'x',
+	done: 'check',
+	'done-filled': 'shield-check',
+	delete: 'trash',
+	'delete-outline': 'trash',
+	'do-not-disturb': 'ban',
+	'expand-more': 'chevron-down',
+	error: 'circle-alert',
+	'error-filled': 'circle-alert',
+	info: 'info',
+	'info-filled': 'info',
+	warning: 'alert-triangle',
+	'warning-filled': 'alert-triangle',
+	'verified-user': 'shield-check',
+
+	// media aliases
+	'media-image': 'image',
+	'media-video': 'video',
+	'media-audio': 'volume',
+	'media-pdf': 'file-text',
+
+	// semantic aliases
 	loading: 'spinner',
-	// delete: 'trash',
+	check: 'check',
+	article: 'file-text',
+	business: 'building',
+	collections: 'layout-grid',
+	'collections-bookmark': 'book-marked',
+	email: 'mail',
+	'format-quote': 'quote',
+	groups: 'users',
+	'linked-in': 'linked-in',
+	login: 'log-in',
+	payment: 'credit-card',
+	person: 'user',
+	'person-add': 'user-plus',
+	'thumb-up': 'thumbs-up',
+	verified: 'badge-check',
+	'video-library': 'video',
+	visibility: 'eye',
+	'visibility-off': 'eye-off',
+	work: 'briefcase',
+	'x-twitter': 'x-twitter',
+	'git-hub': 'github',
 } as const
 
-type AliasesName = keyof typeof aliases
-export type IconName = MuiIconName | AliasesName | CustomIconName
+type AliasName = keyof typeof aliases
+export type IconName = LucideIconName | AliasName | CustomIconName
 
-const defaultIcon: IconName = 'do-not-disturb'
+const defaultIcon = 'ban'
 
-export const getIcon = (name: IconName) => {
-	const icon =
-		library[name as MuiIconName] ??
-		customIcons[name as CustomIconName] ??
-		library[aliases[name as AliasesName] as MuiIconName] ??
-		customIcons[aliases[name as AliasesName] as CustomIconName] ??
-		library[defaultIcon as MuiIconName]
-	return icon
+export function getIcon(name: IconName): SvgComponent {
+	return library[name] ?? library[aliases[name as AliasName]] ?? library[defaultIcon]
 }
