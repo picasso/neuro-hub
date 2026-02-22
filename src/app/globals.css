@@ -1,13 +1,4 @@
-@layer theme, base, components, utilities;
-
-@import 'tailwindcss/theme.css' layer(theme);
-@import 'tailwindcss/utilities.css' layer(utilities);
-
-/*
- * Preflight intentionally omitted — MUI coexistence.
- * Re-enable after full MUI removal (Phase 10):
- *   replace the two imports above with @import "tailwindcss";
- */
+@import 'tailwindcss';
 
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
@@ -158,21 +149,5 @@ body[data-font='open-sans'] {
 	}
 	body {
 		@apply bg-background text-foreground;
-	}
-
-	/*
-	 * Targeted reset for shadcn components (preflight is off for MUI).
-	 * Scoped via data-slot attributes that shadcn adds to every primitive.
-	 */
-	[data-slot] button,
-	[data-slot='button'] {
-		all: unset;
-		box-sizing: border-box;
-		cursor: pointer;
-	}
-	[data-slot] input,
-	[data-slot] textarea {
-		all: unset;
-		box-sizing: border-box;
 	}
 }

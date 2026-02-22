@@ -26,7 +26,9 @@ function loadRecent(): ComponentDemo[] {
 function saveRecent(items: ComponentDemo[]) {
 	try {
 		localStorage.setItem(LS_KEY, JSON.stringify(items.map((c) => c.id)))
-	} catch { /* noop */ }
+	} catch {
+		/* noop */
+	}
 }
 
 export default function PlaygroundPage() {
@@ -45,7 +47,10 @@ export default function PlaygroundPage() {
 		setSelected(component)
 		setRecent((prev) => {
 			if (find(prev, { id: component.id })) return prev
-			const next = [component, ...prev.filter((c) => c.id !== component.id)].slice(0, MAX_RECENT)
+			const next = [component, ...prev.filter((c) => c.id !== component.id)].slice(
+				0,
+				MAX_RECENT,
+			)
 			saveRecent(next)
 			return next
 		})
@@ -54,7 +59,7 @@ export default function PlaygroundPage() {
 	return (
 		<div className="mx-auto my-8 flex h-[calc(100vh-300px)] w-full max-w-350 flex-col gap-0 rounded-lg border">
 			{/* Header — title left, controls right */}
-			<div className="flex items-center justify-between pl-4 md:pl-8 pr-2 md:pr-4 bg-surface rounded-t-lg border-b">
+			<div className="flex items-center justify-between py-2.5 pl-4 md:pl-8 pr-2 md:pr-4 bg-surface rounded-t-lg border-b">
 				<h2 className="text-lg font-semibold tracking-tight text-foreground">Playground</h2>
 				<div className="flex items-center gap-2">
 					<QuickAccess recent={recent} current={selected} onSelect={handleSelect} />
@@ -91,7 +96,7 @@ export default function PlaygroundPage() {
 					<div className="hidden w-65 shrink-0 border-l bg-surface md:block">
 						<div className="flex flex-col gap-4 overflow-y-auto px-4 pb-4 pt-2">
 							<div>
-								<h3 className="text-sm font-medium text-foreground">
+								<h3 className="text-md font-semibold text-foreground">
 									{selected?.name ?? 'Настройки'}
 								</h3>
 								<p className="text-xs text-muted-foreground">

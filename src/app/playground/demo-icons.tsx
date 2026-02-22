@@ -142,7 +142,7 @@ function DemoIconsSettings({ state, onChange }: DemoIconsSettingsProps) {
 			</div>
 			<Separator />
 			{/* color select */}
-			<div className="flex flex-col gap-1.5">
+			<div className="flex flex-col gap-2">
 				<Label className="text-xs">Цвет</Label>
 				<Select
 					value={state.color ?? 'none'}
@@ -163,7 +163,7 @@ function DemoIconsSettings({ state, onChange }: DemoIconsSettingsProps) {
 			</div>
 			<Separator />
 			{/* size presets */}
-			<div className="flex flex-col gap-1.5">
+			<div className="flex flex-col gap-2">
 				<Label className="text-xs">Размер</Label>
 				<ToggleGroup
 					type="single"
@@ -198,7 +198,7 @@ function DemoIconsSettings({ state, onChange }: DemoIconsSettingsProps) {
 				</ToggleGroup>
 			</div>
 			{/* custom size slider */}
-			<div className="flex flex-col gap-1.5">
+			<div className="flex flex-col gap-4">
 				<div className="flex items-center justify-between">
 					<Label className="text-xs">Свой размер</Label>
 					<span className="text-[10px] text-muted-foreground">{state.customSize}px</span>
