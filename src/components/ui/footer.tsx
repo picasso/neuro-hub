@@ -87,7 +87,7 @@ export function Footer() {
 					}}
 				>
 					<Stack direction="row" alignItems="center" spacing={1}>
-						<Icon name="email" sx={{ fontSize: 20, color: 'text.pale' }} />
+						<Icon name="email" size={20} className="text-white/50" />
 						<Link
 							href={`mailto:${contactContent.email}`}
 							color="contrast"
@@ -106,7 +106,7 @@ export function Footer() {
 							rel="noopener noreferrer"
 							size="small"
 						>
-							<Icon name="git-hub" sx={{ color: 'text.pale' }} />
+							<Icon name="git-hub" className="text-white/50" />
 						</IconButton>
 						<IconButton
 							component="a"
@@ -115,7 +115,7 @@ export function Footer() {
 							rel="noopener noreferrer"
 							size="small"
 						>
-							<Icon name="x" sx={{ color: 'text.pale' }} />
+							<Icon name="x" className="text-white/50" />
 						</IconButton>
 						<IconButton
 							component="a"
@@ -124,7 +124,7 @@ export function Footer() {
 							rel="noopener noreferrer"
 							size="small"
 						>
-							<Icon name="linked-in" sx={{ color: 'text.pale' }} />
+							<Icon name="linked-in" className="text-white/50" />
 						</IconButton>
 						<IconButton
 							component="a"
@@ -133,7 +133,7 @@ export function Footer() {
 							rel="noopener noreferrer"
 							size="small"
 						>
-							<Icon name="telegram" sx={{ color: 'text.pale' }} />
+							<Icon name="telegram" className="text-white/50" />
 						</IconButton>
 					</Stack>
 				</Box>

@@ -18,12 +18,12 @@ type FaqIconConfig = {
 }
 
 const faqIcons: Record<string, FaqIconConfig> = {
-	'1': { icon: <Icon name="info" sx={{ fontSize: 24 }} />, color: '#1e88e5' },
-	'2': { icon: <Icon name="percent" sx={{ fontSize: 24 }} />, color: '#43a047' },
-	'3': { icon: <Icon name="payment" sx={{ fontSize: 24 }} />, color: '#fb8c00' },
-	'4': { icon: <Icon name="person-add" sx={{ fontSize: 24 }} />, color: '#8e24aa' },
-	'5': { icon: <Icon name="search" sx={{ fontSize: 24 }} />, color: '#e53935' },
-	'6': { icon: <Icon name="gavel" sx={{ fontSize: 24 }} />, color: '#6d4c41' },
+	'1': { icon: <Icon name="info" size={24} />, color: '#1e88e5' },
+	'2': { icon: <Icon name="percent" size={24} />, color: '#43a047' },
+	'3': { icon: <Icon name="payment" size={24} />, color: '#fb8c00' },
+	'4': { icon: <Icon name="person-add" size={24} />, color: '#8e24aa' },
+	'5': { icon: <Icon name="search" size={24} />, color: '#e53935' },
+	'6': { icon: <Icon name="gavel" size={24} />, color: '#6d4c41' },
 }
 
 export function FaqSection() {

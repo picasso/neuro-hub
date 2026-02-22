@@ -129,7 +129,7 @@ export function FileUploader({
 					{titleIcon ? (
 						<Icon
 							name={titleIcon}
-							fontSize="medium"
+							size="md"
 							color={isDragActive ? 'contrast' : 'primary'}
 						/>
 					) : null}
@@ -186,7 +186,7 @@ export function FileUploader({
 														onUpdate(null)
 													}}
 												>
-													<Icon name="close" fontSize="small" />
+													<Icon name="close" size="sm" />
 												</IconButton>
 											</InputAdornment>
 										) : undefined,

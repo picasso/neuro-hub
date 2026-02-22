@@ -30,7 +30,7 @@ export function EmailVerificationStep() {
 						mb: 3,
 					}}
 				>
-					<Icon name="email" sx={{ fontSize: 40, color: 'white' }} />
+					<Icon name="email" size={40} color="contrast" />
 				</Box>
 
 				<TS variant="h5" gutterBottom content="Подтвердите email" />

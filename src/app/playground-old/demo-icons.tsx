@@ -10,24 +10,24 @@ export const IconsDemo = () => {
 		{ name: 'done', color: 'success' },
 		{ name: 'warning', color: 'warning' },
 		{ name: 'info', color: 'info' },
-		{ name: 'error', color: 'error' },
+		{ name: 'error', color: 'destructive' },
 		{ name: 'do-not-disturb' },
 		{ name: 'spinner', color: 'primary' },
 		{ name: 'check', color: 'success' },
-		{ name: 'loading', color: 'secondary' },
+		{ name: 'loading', color: 'muted' },
 	]
 
-	const sizes: Array<{ size: IconProps['fontSize']; name?: IconName }> = [
-		{ size: 'inherit', name: 'info' },
-		{ size: 'small', name: 'warning' },
-		{ size: 'medium', name: 'error' },
-		{ size: 'large', name: 'check' },
+	const sizes: Array<{ size: IconProps['size']; name?: IconName }> = [
+		{ size: 'xs', name: 'info' },
+		{ size: 'sm', name: 'warning' },
+		{ size: 'md', name: 'error' },
+		{ size: 'lg', name: 'check' },
 	]
 
 	const colors: Array<{ color: IconProps['color']; name?: IconName }> = [
 		{ color: 'primary', name: 'info' },
-		{ color: 'secondary', name: 'done' },
-		{ color: 'error', name: 'error' },
+		{ color: 'muted', name: 'done' },
+		{ color: 'destructive', name: 'error' },
 		{ color: 'info', name: 'info' },
 		{ color: 'success', name: 'check' },
 		{ color: 'warning', name: 'warning' },
@@ -42,7 +42,7 @@ export const IconsDemo = () => {
 				<Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
 					{map(availableIcons, ({ name, color }) => (
 						<Stack key={name} alignItems="center" spacing={0.5}>
-							<Icon name={name} fontSize="large" color={color} />
+							<Icon name={name} size="lg" color={color} />
 							<TS variant="caption" color="text.secondary">
 								{name}
 							</TS>
@@ -58,7 +58,7 @@ export const IconsDemo = () => {
 				<Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
 					{map(colors, ({ color, name = 'info' }) => (
 						<Stack key={color} alignItems="center" spacing={0.5}>
-							<Icon name={name} fontSize="large" color={color} />
+							<Icon name={name} size="lg" color={color} />
 							<TS variant="caption" color="text.secondary">
 								{color}
 							</TS>
@@ -73,13 +73,13 @@ export const IconsDemo = () => {
 				</TS>
 				<Stack direction="row" spacing={3} alignItems="center">
 					<Stack alignItems="center" spacing={0.5}>
-						<Icon name="loading" fontSize="large" animation="rotate" color="primary" />
+						<Icon name="loading" size="lg" spinning color="primary" />
 						<TS variant="caption" color="text.secondary">
 							loading
 						</TS>
 					</Stack>
 					<Stack alignItems="center" spacing={0.5}>
-						<Icon name="spinner" fontSize="large" animation="rotate" />
+						<Icon name="spinner" size="lg" spinning />
 						<TS variant="caption" color="text.secondary">
 							spinner
 						</TS>
@@ -89,12 +89,12 @@ export const IconsDemo = () => {
 
 			<Box>
 				<TS variant="h6" gutterBottom>
-					Sizes (fontSize)
+					Sizes (size)
 				</TS>
 				<Stack direction="row" spacing={3} alignItems="center">
 					{map(sizes, ({ size, name = 'info' }) => (
 						<Stack key={size} alignItems="center" spacing={0.5}>
-							<Icon name={name} fontSize={size} />
+							<Icon name={name} size={size} />
 							<TS variant="caption" color="text.secondary">
 								{size}
 							</TS>
@@ -105,31 +105,31 @@ export const IconsDemo = () => {
 
 			<Box>
 				<TS variant="h6" gutterBottom>
-					Custom Sizes (forceSize)
+					Custom Sizes (size)
 				</TS>
 				<Stack direction="row" spacing={3} alignItems="center">
 					<Stack alignItems="center" spacing={0.5}>
-						<Icon name="info" forceSize={32} />
+						<Icon name="info" size={32} />
 						<TS variant="caption" color="text.secondary">
 							32px
 						</TS>
 					</Stack>
 					<Stack alignItems="center" spacing={0.5}>
-						<Icon name="warning" forceSize={48} />
+						<Icon name="warning" size={48} />
 						<TS variant="caption" color="text.secondary">
 							48px
 						</TS>
 					</Stack>
 					<Stack alignItems="center" spacing={0.5}>
-						<Icon name="error" forceSize={64} />
+						<Icon name="error" size={64} />
 						<TS variant="caption" color="text.secondary">
 							64px
 						</TS>
 					</Stack>
 					<Stack alignItems="center" spacing={0.5}>
-						<Icon name="check" forceSize={[80, 40]} />
+						<Icon name="check" size={80} />
 						<TS variant="caption" color="text.secondary">
-							[80, 40]
+							80px
 						</TS>
 					</Stack>
 				</Stack>

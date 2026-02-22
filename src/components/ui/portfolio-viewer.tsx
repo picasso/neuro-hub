@@ -126,7 +126,7 @@ export function PortfolioViewer({
 						justifyContent="space-between"
 						spacing={2}
 					>
-						<Icon name={`media-${kind}` as IconName} forceSize={40} color="secondary" />
+						<Icon name={`media-${kind}` as IconName} size={40} color="muted" />
 						<TS
 							variant="h3"
 							content={title ?? ''}
@@ -140,17 +140,17 @@ export function PortfolioViewer({
 						<IconButton aria-label="Предыдущий" onClick={onPrev} disabled={!hasPrev}>
 							<Icon
 								name={isLoaderLeft ? 'spinner' : 'expand-more'}
-								color={isLoaderLeft ? 'primary' : hasPrev ? 'inherit' : 'disabled'}
-								animation={isLoaderLeft ? 'rotate' : undefined}
-								sx={{ transform: 'rotate(90deg)' }}
+								color={isLoaderLeft ? 'primary' : !hasPrev ? 'dimmed' : undefined}
+								spinning={isLoaderLeft}
+								className="rotate-90"
 							/>
 						</IconButton>
 						<IconButton aria-label="Следующий" onClick={onNext} disabled={!hasNext}>
 							<Icon
 								name={isLoaderRight ? 'spinner' : 'expand-more'}
-								color={isLoaderRight ? 'primary' : hasNext ? 'inherit' : 'disabled'}
-								animation={isLoaderRight ? 'rotate' : undefined}
-								sx={{ transform: 'rotate(-90deg)' }}
+								color={isLoaderRight ? 'primary' : !hasNext ? 'dimmed' : undefined}
+								spinning={isLoaderRight}
+								className="-rotate-90"
 							/>
 						</IconButton>
 						<IconButton aria-label="Закрыть" onClick={onCloseProxy}>
@@ -194,7 +194,7 @@ export function PortfolioViewer({
 						/>
 					) : kind === 'audio' ? (
 						<Stack spacing={6} alignItems="center" sx={{ py: 6, width: 1 }}>
-							<Icon name="media-audio" forceSize={180} color="contrast" />
+							<Icon name="media-audio" size={180} color="contrast" />
 							<Box
 								onTransitionEnd={onTransitionEnd}
 								sx={{
@@ -214,7 +214,7 @@ export function PortfolioViewer({
 							onTransitionEnd={onTransitionEnd}
 							sx={{ py: 6, opacity: fadeOpacity, transition: fadeTransition }}
 						>
-							<Icon name="media-pdf" forceSize={180} color="contrast" />
+							<Icon name="media-pdf" size={180} color="contrast" />
 							<TS
 								variant="body2"
 								color="contrast.dark"
@@ -237,7 +237,7 @@ export function PortfolioViewer({
 							onTransitionEnd={onTransitionEnd}
 							sx={{ py: 6, opacity: fadeOpacity, transition: fadeTransition }}
 						>
-							<Icon name="do-not-disturb" forceSize={180} color="contrast" />
+							<Icon name="do-not-disturb" size={180} color="contrast" />
 							<TS
 								variant="body2"
 								color="contrast.dark"

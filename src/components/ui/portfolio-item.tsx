@@ -112,7 +112,7 @@ export function MediaPlaceholder({
 		>
 			{children ?? (
 				<Tooltip title={title ?? alt}>
-					<Icon name={name} forceSize={forceSize} color="contrast" />
+					<Icon name={name} size={forceSize} color="contrast" />
 				</Tooltip>
 			)}
 		</Box>

@@ -1,4 +1,3 @@
-import { Check, ChevronsUpDown, Circle, CircleCheck } from 'lucide-react'
 import { useState } from 'react'
 import { type ComponentDemo, componentDemos, groupLabels } from './components'
 import { Button } from '@/components/shadcn/button'
@@ -11,6 +10,7 @@ import {
 	CommandList,
 } from '@/components/shadcn/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/shadcn/popover'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 
 type ComponentSelectorProps = {
@@ -33,7 +33,7 @@ export function ComponentSelector({ selected, onSelect }: ComponentSelectorProps
 					className="w-65 justify-between"
 				>
 					{selected ? selected.name : 'Выбрать компонент...'}
-					<ChevronsUpDown className="opacity-50" />
+					<Icon name="chevrons-up-down" size="sm" className="opacity-50" />
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className="w-65 p-0" align="start">
@@ -52,13 +52,15 @@ export function ComponentSelector({ selected, onSelect }: ComponentSelectorProps
 											setOpen(false)
 										}}
 									>
-										{component.ready ? (
-											<CircleCheck className="text-primary" />
-										) : (
-											<Circle className="text-dimmed" />
-										)}
+										<Icon
+											name={component.ready ? 'circle-check' : 'circle'}
+											size="sm"
+											color={component.ready ? 'primary' : 'dimmed'}
+										/>
 										{component.name}
-										<Check
+										<Icon
+											name="check"
+											size="sm"
 											className={cn(
 												'ml-auto',
 												selected?.id === component.id

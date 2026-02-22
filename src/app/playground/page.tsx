@@ -1,7 +1,6 @@
 'use client'
 
 import { find } from 'lodash'
-import { RotateCcw } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { type ComponentDemo, componentDemos } from './components'
 import { ComponentSelector } from './components-selector'
@@ -10,6 +9,7 @@ import { QuickAccess } from './quick-access'
 import { PlaygroundSettingsProvider, SettingsSlot } from './settings-context'
 import { Button } from '@/components/shadcn/button'
 import { Separator } from '@/components/shadcn/separator'
+import { Icon } from '@/components/ui/icon'
 
 const MAX_RECENT = 3
 const LS_KEY = 'playground-recent'
@@ -75,7 +75,7 @@ export default function PlaygroundPage() {
 						}}
 						title="Сбросить состояние демо"
 					>
-						<RotateCcw />
+						<Icon name="rotate-ccw" size="sm" />
 					</Button>
 				</div>
 			</div>

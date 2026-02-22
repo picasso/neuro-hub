@@ -24,13 +24,13 @@ const roleOptions: RoleOption[] = [
 		value: 'freelancer',
 		title: 'Фрилансер',
 		description: 'Я ищу интересные проекты и хочу применить свои навыки в AI',
-		icon: <Icon name="person" sx={{ fontSize: 40 }} />,
+		icon: <Icon name="person" size={40} />,
 	},
 	{
 		value: 'client',
 		title: 'Заказчик',
 		description: 'Мне нужны специалисты для реализации AI-проектов',
-		icon: <Icon name="business" sx={{ fontSize: 40 }} />,
+		icon: <Icon name="business" size={40} />,
 	},
 ]
 

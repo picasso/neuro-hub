@@ -227,7 +227,7 @@ const demoSections: DemoSection[] = [
 				alertOptions: {
 					severity: 'success',
 					icon: 'spinner',
-					iconOptions: { animation: 'rotate' },
+					iconOptions: { spinning: true },
 					title: 'Animated icon',
 					message: 'Icon with **rotate** animation',
 				},
@@ -238,7 +238,7 @@ const demoSections: DemoSection[] = [
 				alertOptions: {
 					severity: 'warning',
 					icon: 'media-audio',
-					iconOptions: { size: 'large', color: 'error' },
+					iconOptions: { size: 'xl', color: 'destructive' },
 					title: 'Sized & colored icon',
 					message: 'Large **error** icon with error color',
 				},
@@ -304,7 +304,7 @@ const demoSections: DemoSection[] = [
 					title: 'Without Markdown',
 					message:
 						'This shows **raw** text without *markdown* `parsing`' +
-						'--|--|--|--|--|--|--|--|--|--|--|' +
+						'--|--|--|--|--|--|' +
 						'And colored `!code` and `?code` and `*code` and `+code` and `#code`',
 					disableAutoClose: true,
 					md: false,

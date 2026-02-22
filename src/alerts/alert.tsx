@@ -13,10 +13,10 @@ import { Icon, TS } from '@/components/ui'
 import { markdownCss, simpleMarkdown, templatedMessage } from '@/utils'
 
 const iconMapping: MuiAlertProps['iconMapping'] = {
-	success: <Icon name="done-filled" color="success" />,
-	info: <Icon name="info-filled" color="info" />,
-	warning: <Icon name="warning-filled" color="warning" />,
-	error: <Icon name="error-filled" color="error" />,
+	success: <Icon name="done-filled" color="success" size="lg" />,
+	info: <Icon name="info-filled" color="info" size="lg" />,
+	warning: <Icon name="warning-filled" color="warning" size="lg" />,
+	error: <Icon name="error-filled" color="destructive" size="lg" />,
 }
 
 export function AlertComponent({ id }: { id: AlertId }) {
@@ -57,10 +57,13 @@ export function AlertComponent({ id }: { id: AlertId }) {
 		!icon && !isProgress ? null : (
 			<Icon
 				name={icon ?? 'spinner'}
-				color={iconOptions?.color ?? (isProgress ? 'secondary' : undefined)}
-				fontSize={iconOptions?.size}
-				animation={iconOptions?.animation ?? (isProgress ? 'rotate' : undefined)}
-				sx={{ mr: iconOptions?.spacing }}
+				color={
+					iconOptions?.color ??
+					(isProgress ? (variant === 'filled' ? 'contrast' : 'primary') : undefined)
+				}
+				size={iconOptions?.size ?? 'lg'}
+				spinning={iconOptions?.spinning ?? isProgress}
+				className={iconOptions?.tw}
 			/>
 		)
 

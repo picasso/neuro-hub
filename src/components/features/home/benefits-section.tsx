@@ -49,7 +49,7 @@ function BenefitCard({ icon, title, description }: BenefitCardProps) {
 					borderRadius: 2,
 				}}
 			>
-				<Icon name={icon} sx={{ fontSize: 32 }} color="contrast" />
+				<Icon name={icon} size={32} color="contrast" />
 			</Box>
 			<Stack>
 				<TS variant="h6" gutterBottom fontWeight={600} content={title} />

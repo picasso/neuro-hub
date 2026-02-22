@@ -23,19 +23,19 @@ type CategoryConfig = {
 
 const categoryConfig: Record<string, CategoryConfig> = {
 	'Генерация текста': {
-		icon: <Icon name="article" sx={{ fontSize: 20 }} />,
+		icon: <Icon name="article" size={20} />,
 		gradient: 'linear-gradient(90deg, #5a4fcf 0%, #a78bfa 100%)',
 		chipColor: '#667eea',
 		quoteBg: 'rgba(102, 126, 234, 0.1)',
 	},
 	'Генерация изображений': {
-		icon: <Icon name="image" sx={{ fontSize: 20 }} />,
+		icon: <Icon name="image" size={20} />,
 		gradient: 'linear-gradient(90deg, #db2777 0%, #f9a8d4 100%)',
 		chipColor: '#f093fb',
 		quoteBg: 'rgba(240, 147, 251, 0.1)',
 	},
 	'Генерация видео': {
-		icon: <Icon name="video-library" sx={{ fontSize: 20 }} />,
+		icon: <Icon name="video-library" size={20} />,
 		gradient: 'linear-gradient(90deg, #0891b2 0%, #67e8f9 100%)',
 		chipColor: '#4facfe',
 		quoteBg: 'rgba(79, 172, 254, 0.1)',
@@ -103,10 +103,9 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 				<TS variant="body2" color="text.secondary" sx={{ mb: 2 }} content={description} />
 
 				<Stack direction="row" spacing={1.5} sx={{ mb: 2 }} alignItems="flex-start">
-					<Icon
-						name="check-circle"
-						sx={{ fontSize: 20, color: '#10b981', mt: 0.5, flexShrink: 0 }}
-					/>
+					<span className="mt-0.5 shrink-0" style={{ color: '#10b981' }}>
+						<Icon name="check-circle" size={20} />
+					</span>
 					<Box>
 						<TS
 							variant="body2"
@@ -133,15 +132,9 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 						}}
 					>
 						<Stack direction="row" spacing={1} sx={{ mb: 1.5 }} alignItems="flex-start">
-							<Icon
-								name="format-quote"
-								sx={{
-									fontSize: 20,
-									color: config.chipColor,
-									mt: 0.5,
-									flexShrink: 0,
-								}}
-							/>
+							<span className="mt-0.5 shrink-0" style={{ color: config.chipColor }}>
+								<Icon name="format-quote" size={20} />
+							</span>
 							<TS
 								variant="body2"
 								fontStyle="italic"
