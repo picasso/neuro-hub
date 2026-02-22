@@ -30,13 +30,13 @@ export function ComponentSelector({ selected, onSelect }: ComponentSelectorProps
 					variant="outline"
 					role="combobox"
 					aria-expanded={open}
-					className="w-[260px] justify-between"
+					className="w-65 justify-between"
 				>
 					{selected ? selected.name : 'Выбрать компонент...'}
 					<ChevronsUpDown className="opacity-50" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="w-[260px] p-0" align="start">
+			<PopoverContent className="w-65 p-0" align="start">
 				<Command>
 					<CommandInput placeholder="Поиск..." />
 					<CommandList>

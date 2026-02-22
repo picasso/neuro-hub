@@ -28,6 +28,7 @@ type IconColor =
 	| 'success'
 	| 'warning'
 	| 'info'
+	| 'contrast'
 
 const colorPresets: Record<IconColor, string> = {
 	primary: 'text-primary',
@@ -38,6 +39,7 @@ const colorPresets: Record<IconColor, string> = {
 	success: 'text-primary',
 	warning: 'text-amber-500',
 	info: 'text-blue-500',
+	contrast: 'text-white',
 }
 
 // `Icon` component -------------------------------------------------------------------------------]
