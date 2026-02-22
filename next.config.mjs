@@ -7,7 +7,7 @@ const nextConfig = {
 	serverExternalPackages: ['knex', 'pg'],
 	turbopack: {},
 	experimental: {
-		optimizePackageImports: ['@mui/material', '@mui/icons-material'],
+		optimizePackageImports: ['@mui/material'],
 	},
 	compiler: {
 		emotion: true,
