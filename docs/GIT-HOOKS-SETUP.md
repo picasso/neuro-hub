@@ -106,25 +106,30 @@ yarn husky install
 
 ## Troubleshooting
 
-### Ошибка "env: node: No such file or directory"
+### Ошибка "Can't create the symlink for multishells" (fnm)
 
-Если при коммите появляется ошибка:
-
-```zsh
-env: node: No such file or directory
-husky - pre-commit script failed (code 1)
-```
-
-**Причина:** Git hooks запускаются в отдельном окружении, где fnm не инициализирован.
-
-**Решение:** ✅ Уже настроено - в `.husky/pre-commit` и `.husky/pre-push` добавлена инициализация fnm:
+Если при коммите появляется:
 
 ```bash
-export PATH="$HOME/.local/share/fnm:$PATH"
-eval "$(fnm env --use-on-cd)"
+error: Can't create the symlink for multishells at "~/.local/state/fnm_multishells/...".
+Maybe there are some issues with permissions for the directory? Operation not permitted (os error 1)
 ```
 
-**Примечание:** Ошибка `Can't create the symlink for multishells` от fnm не критична и не влияет на работу хуков (см. `.cursor/FNM-MULTISHELLS-FIX.md`).
+**Причина:** Husky хуки используют `eval "$(fnm env --use-on-cd)"`, который пытается создавать временные multishell симлинки. В sandbox Cursor и других ограниченных окружениях эта операция блокируется.
+
+**Решение:** Хуки настроены на стабильный PATH без multishell (см. `.cursor/FNM-MULTISHELLS-FIX.md`):
+
+```bash
+export PATH="$HOME/Library/Application Support/fnm/aliases/default/bin:$PATH"
+```
+
+Требование: `fnm alias default` должен быть настроен.
+
+### Ошибка "env: node: No such file or directory"
+
+Если хуки не находят node:
+
+**Причина:** PATH не содержит node. Убедитесь, что используется стабильный fnm path (см. выше) и alias default настроен: `fnm alias default <version>`.
 
 ## Файлы конфигурации
 
