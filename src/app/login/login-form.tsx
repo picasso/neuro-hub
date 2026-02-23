@@ -76,12 +76,11 @@ export function LoginForm() {
 
 					<Stack direction="row" spacing={2} justifyContent="space-between">
 						<Button
-							variant="outlined"
+							variant="outline"
 							onClick={() => router.push('/signup' as never)}
 							label="Создать аккаунт"
 						/>
 						<Button
-							variant="contained"
 							disabled={!canSubmit || isLoading}
 							onClick={async () => {
 								try {
@@ -96,7 +95,7 @@ export function LoginForm() {
 					</Stack>
 
 					<Box sx={{ mt: 3, textAlign: 'center' }}>
-						<Button variant="text" href="/" label="На главную" />
+						<Button variant="ghost" href="/" label="На главную" />
 					</Box>
 				</Box>
 			</Box>

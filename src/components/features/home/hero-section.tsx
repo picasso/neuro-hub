@@ -3,7 +3,6 @@
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
-import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { TS } from '@/components/ui/text-styled'
 import { heroContent } from '@/config/mocks'
@@ -62,61 +61,35 @@ export function HeroSection() {
 					sx={{ mb: 3 }}
 				>
 					<Button
-						component={Link}
 						href="/signup?role=freelancer"
-						variant="contained"
-						size="large"
+						size="lg"
 						leftIcon="work"
 						iconOptions={{ color: 'primary' }}
 						label={heroContent.ctaFreelancer}
-						sx={{
-							bgcolor: 'white',
-							color: 'primary.main',
-							px: 4,
-							py: 1.5,
-							fontSize: '1.1rem',
-							fontWeight: 600,
-							'&:hover': {
-								bgcolor: 'grey.100',
-							},
-						}}
+						// TODO: check after migration
+						className="bg-white text-primary px-8 py-3 text-[1.1rem] font-semibold hover:bg-gray-100"
 					/>
 
 					<Button
-						component={Link}
 						href="/signup?role=client"
-						variant="outlined"
-						color="contrast"
-						size="large"
+						variant="outline"
+						size="lg"
 						leftIcon="business"
 						iconOptions={{ color: 'contrast' }}
 						label={heroContent.ctaClient}
-						sx={{
-							px: 4,
-							py: 1.5,
-							fontSize: '1.1rem',
-							fontWeight: 600,
-							'&:hover': {
-								bgcolor: 'rgba(255, 255, 255, 0.1)',
-							},
-						}}
+						// TODO: check after migration
+						className="border-white text-white px-8 py-3 text-[1.1rem] font-semibold hover:bg-white/10"
 					/>
 				</Stack>
 
 				<Button
-					component={Link}
 					href="/login"
-					color="contrast"
+					variant="ghost"
 					leftIcon="login"
 					iconOptions={{ color: 'contrast' }}
 					label={heroContent.ctaLogin}
-					sx={{
-						textDecoration: 'underline',
-						'&:hover': {
-							textDecoration: 'underline',
-							bgcolor: 'transparent',
-						},
-					}}
+					// TODO: check after migration
+					className="text-white underline hover:bg-transparent hover:underline"
 				/>
 			</Container>
 		</Box>

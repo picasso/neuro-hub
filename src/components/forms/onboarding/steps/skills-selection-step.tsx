@@ -200,15 +200,9 @@ export function SkillsSelectionStep() {
 				</Box>
 
 				<Stack direction="row" justifyContent="space-between">
+					<Button variant="outline" size="lg" onClick={() => prevStep()} label="Назад" />
 					<Button
-						variant="outlined"
-						size="large"
-						onClick={() => prevStep()}
-						label="Назад"
-					/>
-					<Button
-						variant="contained"
-						size="large"
+						size="lg"
 						onClick={onContinue}
 						disabled={selectedSkills.length === 0}
 						label="Продолжить"

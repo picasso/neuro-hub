@@ -98,14 +98,8 @@ export function FreelancerProfileStep() {
 				/>
 
 				<Stack direction="row" justifyContent="space-between">
-					<Button variant="outlined" size="large" onClick={onPrevStep} label="Назад" />
-					<Button
-						variant="contained"
-						size="large"
-						onClick={onValidate}
-						disabled={!isValid}
-						label="Продолжить"
-					/>
+					<Button variant="outline" size="lg" onClick={onPrevStep} label="Назад" />
+					<Button size="lg" onClick={onValidate} disabled={!isValid} label="Продолжить" />
 				</Stack>
 			</Box>
 		</Box>

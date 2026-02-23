@@ -1,4 +1,6 @@
 import { type ReactNode } from 'react'
+import { DemoButtons } from './demo-buttons'
+import { DemoButtonsSettings } from './demo-buttons-settings'
 import { DemoIcons } from './demo-icons'
 import { DemoIconsSettings } from './demo-icons-settings'
 
@@ -18,7 +20,9 @@ export const componentDemos: ComponentDemo[] = [
 		name: 'Buttons',
 		group: 'base',
 		description: 'Button variants, sizes, states',
-		ready: false,
+		ready: true,
+		demo: <DemoButtons />,
+		settings: <DemoButtonsSettings />,
 	},
 	{
 		id: 'icons',

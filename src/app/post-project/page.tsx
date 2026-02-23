@@ -16,7 +16,7 @@ export default function PostProjectPage() {
 					sx={{ mb: 4 }}
 					content="Эта страница в разработке"
 				/>
-				<Button variant="contained" href="/" label="На главную" />
+				<Button href="/" label="На главную" />
 			</Box>
 		</Container>
 	)

@@ -84,10 +84,9 @@ export function CredentialsStep() {
 				/>
 
 				<Stack direction="row" justifyContent="space-between">
-					<Button variant="outlined" size="large" onClick={onPrevStep} label="Назад" />
+					<Button variant="outline" size="lg" onClick={onPrevStep} label="Назад" />
 					<Button
-						variant="contained"
-						size="large"
+						size="lg"
 						onClick={onSubmit}
 						disabled={!isValid}
 						label={isRegistering ? 'Регистрация...' : 'Продолжить'}

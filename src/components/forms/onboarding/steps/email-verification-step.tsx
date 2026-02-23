@@ -58,15 +58,14 @@ export function EmailVerificationStep() {
 
 				<Stack spacing={2}>
 					<Button
-						variant="contained"
-						size="large"
+						size="lg"
 						onClick={() => router.push('/dashboard' as never)}
 						fullWidth
 						label="Готово"
 					/>
 					<Button
-						variant="outlined"
-						size="large"
+						variant="outline"
+						size="lg"
 						onClick={() => setCurrentStep(2)}
 						fullWidth
 						label="Изменить email"

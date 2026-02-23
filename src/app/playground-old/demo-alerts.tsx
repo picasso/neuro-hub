@@ -3,12 +3,12 @@
 import Stack from '@mui/material/Stack'
 import { map } from 'lodash'
 import { type Alert, createAlert, createAlertFx, removeAlert, updateAlert } from '@/alerts'
-import { Button, type ButtonProps, type IconName, TS } from '@/components/ui'
+import { Button, type IconName, TS } from '@/components/ui'
 
 type DemoConfig = {
 	label: string
-	buttonColor?: ButtonProps['color']
-	buttonVariant?: ButtonProps['variant']
+	buttonColor?: string
+	buttonVariant?: 'default' | 'outline' | 'ghost'
 	leftIcon?: IconName
 	alertOptions: Alert
 }
@@ -79,7 +79,6 @@ const demoSections: DemoSection[] = [
 			{
 				label: 'Overlay',
 				buttonColor: 'primary',
-				buttonVariant: 'contained',
 				alertOptions: {
 					severity: 'progress',
 					title: 'Loading data...',
@@ -325,7 +324,7 @@ export const AlertsDemo = () => {
 							<Button
 								key={`${demo.label}-${index}`}
 								color={demo.buttonColor}
-								variant={demo.buttonVariant ?? 'outlined'}
+								variant={demo.buttonVariant ?? 'outline'}
 								leftIcon={demo.leftIcon}
 								onClick={() => {
 									if (demo.alertOptions.progress) {

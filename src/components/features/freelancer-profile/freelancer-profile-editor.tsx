@@ -67,8 +67,7 @@ export function FreelancerProfileEditor() {
 			</Stack>
 
 			<Button
-				variant="contained"
-				size="large"
+				size="lg"
 				label={isBusy ? 'Сохраняем...' : 'Сохранить профиль'}
 				onClick={() => onSave()}
 				disabled={isBusy}

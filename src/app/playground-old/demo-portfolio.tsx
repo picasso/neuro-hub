@@ -14,14 +14,13 @@ export function PortfolioDemo() {
 	return (
 		<Stack spacing={2} direction="column" flexShrink={1}>
 			<Button
-				variant="contained"
-				size="large"
-				color="primary"
+				size="lg"
 				label="Refresh"
 				leftIcon="collections"
 				iconOptions={{ color: 'contrast' }}
 				onClick={() => setInputKey((k) => k + 1)}
-				sx={{ width: 200, alignSelf: 'flex-end' }}
+				// TODO: check after migration
+				className="w-50 self-end"
 			/>
 			<Portfolio items={items} />
 		</Stack>

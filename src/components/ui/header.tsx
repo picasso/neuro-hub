@@ -104,9 +104,9 @@ export function Header() {
 									Профиль
 								</Link>
 								<Button
-									variant="outlined"
-									size="large"
-									thin
+									variant="outline"
+									size="lg"
+									bold
 									onClick={async () => {
 										await signOut({
 											fetchOptions: {
@@ -117,11 +117,8 @@ export function Header() {
 										})
 									}}
 									label="Выйти"
-									sx={{
-										alignSelf: 'center',
-										fontSize: 'inherit',
-										lineHeight: 'inherit',
-									}}
+									// TODO: check after migration
+									className="self-center text-inherit leading-[inherit]"
 								/>
 							</>
 						)}

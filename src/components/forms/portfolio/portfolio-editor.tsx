@@ -96,8 +96,8 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 				</Box>
 
 				<Button
-					variant="contained"
-					size="large"
+					variant="default"
+					size="lg"
 					label={isBusy ? 'Сохраняем...' : 'Добавить в портфолио'}
 					onClick={onSubmit}
 					disabled={!canSubmit}
