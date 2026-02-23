@@ -238,7 +238,7 @@ const demoSections: DemoSection[] = [
 				alertOptions: {
 					severity: 'warning',
 					icon: 'media-audio',
-					iconOptions: { size: 'xl', color: 'destructive' },
+					iconOptions: { size: 'xl', color: 'error' },
 					title: 'Sized & colored icon',
 					message: 'Large **error** icon with error color',
 				},

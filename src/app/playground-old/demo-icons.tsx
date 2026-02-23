@@ -10,7 +10,7 @@ export const IconsDemo = () => {
 		{ name: 'done', color: 'success' },
 		{ name: 'warning', color: 'warning' },
 		{ name: 'info', color: 'info' },
-		{ name: 'error', color: 'destructive' },
+		{ name: 'error', color: 'error' },
 		{ name: 'do-not-disturb' },
 		{ name: 'spinner', color: 'primary' },
 		{ name: 'check', color: 'success' },
@@ -27,7 +27,7 @@ export const IconsDemo = () => {
 	const colors: Array<{ color: IconProps['color']; name?: IconName }> = [
 		{ color: 'primary', name: 'info' },
 		{ color: 'muted', name: 'done' },
-		{ color: 'destructive', name: 'error' },
+		{ color: 'error', name: 'error' },
 		{ color: 'info', name: 'info' },
 		{ color: 'success', name: 'check' },
 		{ color: 'warning', name: 'warning' },

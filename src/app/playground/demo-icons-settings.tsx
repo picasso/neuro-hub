@@ -193,6 +193,12 @@ const libraryIcons: IconName[] = [
 	'video',
 	'volume',
 	'x',
+	'loader',
+	'loader-circle',
+	'loader-pinwheel',
+	'chevron-left',
+	'chevron-right',
+	'chevrons-up-down',
 ]
 
 const customIconNames: IconName[] = ['spinner', 'linked-in', 'telegram', 'x-twitter']
@@ -203,7 +209,7 @@ const colorOptions = [
 	'cta',
 	'muted',
 	'dimmed',
-	'destructive',
+	'error',
 	'success',
 	'warning',
 	'info',

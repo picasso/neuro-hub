@@ -38,6 +38,11 @@ import {
 	Video,
 	Volume2,
 	X,
+	Loader,
+	LoaderCircle,
+	LoaderPinwheel,
+	ChevronLeft,
+	ChevronRight,
 } from 'lucide-react'
 import { type ComponentType, type SVGProps } from 'react'
 import { customIcons } from './icons'
@@ -85,6 +90,11 @@ const lucideIcons = {
 	Video,
 	Volume2,
 	X,
+	Loader,
+	LoaderCircle,
+	LoaderPinwheel,
+	ChevronLeft,
+	ChevronRight,
 }
 
 // type generation --------------------------------------------------------------------------------]

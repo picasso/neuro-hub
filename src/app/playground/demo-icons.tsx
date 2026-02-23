@@ -52,6 +52,7 @@ function IconCell({
 
 export function DemoIcons() {
 	const settings = useSettings<IconDemoState>()
+	const { showName } = settings
 
 	return (
 		<div className="flex flex-col gap-4">
@@ -146,15 +147,31 @@ export function DemoIcons() {
 				<div className="flex items-center gap-6">
 					<div className="flex flex-col items-center gap-2">
 						<Icon name="spinner" size="lg" spinning />
-						<span className="text-[10px] text-muted-foreground">spinner</span>
+						{showName && (
+							<span className="text-[10px] text-muted-foreground">spinner</span>
+						)}
 					</div>
 					<div className="flex flex-col items-center gap-2">
-						<Icon name="spinner" size="lg" color="primary" spinning />
-						<span className="text-[10px] text-muted-foreground">+ primary</span>
+						<Icon name="loader-circle" size="lg" spinning />
+						{showName && (
+							<span className="text-[10px] text-muted-foreground">loader-circle</span>
+						)}
 					</div>
 					<div className="flex flex-col items-center gap-2">
-						<Icon name="spinner" size="xl" color="cta" spinning />
-						<span className="text-[10px] text-muted-foreground">xl + cta</span>
+						<Icon name="loader" size="lg" color="primary" spinning />
+						{showName && (
+							<span className="text-[10px] text-muted-foreground">
+								loader + primary
+							</span>
+						)}
+					</div>
+					<div className="flex flex-col items-center gap-2">
+						<Icon name="loader-pinwheel" size="xl" color="cta" spinning />
+						{showName && (
+							<span className="text-[10px] text-muted-foreground">
+								loader-pinwheel + xl + cta
+							</span>
+						)}
 					</div>
 				</div>
 			</section>

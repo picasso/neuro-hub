@@ -115,7 +115,7 @@ export function Footer() {
 							rel="noopener noreferrer"
 							size="small"
 						>
-							<Icon name="x" className="text-white/50" />
+							<Icon name="x-twitter" className="text-white/50" />
 						</IconButton>
 						<IconButton
 							component="a"

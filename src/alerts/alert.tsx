@@ -16,7 +16,7 @@ const iconMapping: MuiAlertProps['iconMapping'] = {
 	success: <Icon name="done-filled" color="success" size="lg" />,
 	info: <Icon name="info-filled" color="info" size="lg" />,
 	warning: <Icon name="warning-filled" color="warning" size="lg" />,
-	error: <Icon name="error-filled" color="destructive" size="lg" />,
+	error: <Icon name="error-filled" color="error" size="lg" />,
 }
 
 export function AlertComponent({ id }: { id: AlertId }) {
