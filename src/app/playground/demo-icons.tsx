@@ -1,228 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { useRegisterSettings } from './settings-context'
-import { Label } from '@/components/shadcn/label'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/shadcn/select'
+import { demoData, type IconDemoState, resolveSize } from './demo-icons-settings'
+import { useSettings } from './settings-store'
 import { Separator } from '@/components/shadcn/separator'
-import { Slider } from '@/components/shadcn/slider'
-import { Switch } from '@/components/shadcn/switch'
-import { ToggleGroup, ToggleGroupItem } from '@/components/shadcn/toggle-group'
 import { Icon, type IconName } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 
 // data -------------------------------------------------------------------------------------------]
 
-const libraryIcons: IconName[] = [
-	'alert-triangle',
-	'badge-check',
-	'ban',
-	'book-marked',
-	'briefcase',
-	'building',
-	'check',
-	'chevron-down',
-	'circle-alert',
-	'circle-check',
-	'code',
-	'credit-card',
-	'eye',
-	'eye-off',
-	'file-text',
-	'gavel',
-	'github',
-	'image',
-	'layout-grid',
-	'log-in',
-	'mail',
-	'percent',
-	'quote',
-	'search',
-	'shield-check',
-	'star',
-	'thumbs-up',
-	'trash',
-	'user',
-	'user-plus',
-	'users',
-	'video',
-	'volume',
-	'x',
-]
-
-const customIconNames: IconName[] = ['spinner', 'linked-in', 'telegram', 'x-twitter']
-
-const sizePresets = ['xs', 'sm', 'md', 'lg', 'xl'] as const
-const colorOptions = [
-	'primary',
-	'cta',
-	'muted',
-	'dimmed',
-	'destructive',
-	'success',
-	'warning',
-	'info',
-	'contrast',
-] as const
-
-type IconColor = (typeof colorOptions)[number]
-type IconSize = (typeof sizePresets)[number]
-
-// settings state ---------------------------------------------------------------------------------]
-
-type IconDemoState = {
-	showName: boolean
-	showBorder: boolean
-	showBg: boolean
-	color: IconColor | null
-	sizePreset: IconSize | 'custom'
-	customSize: number
-}
-
-const defaultState: IconDemoState = {
-	showName: false,
-	showBorder: false,
-	showBg: false,
-	color: null,
-	sizePreset: 'lg',
-	customSize: 24,
-}
-
-// settings panel component -----------------------------------------------------------------------]
-
-type DemoIconsSettingsProps = {
-	state: IconDemoState
-	onChange: (next: IconDemoState) => void
-}
-
-function DemoIconsSettings({ state, onChange }: DemoIconsSettingsProps) {
-	const set = <K extends keyof IconDemoState>(key: K, value: IconDemoState[K]) =>
-		onChange({ ...state, [key]: value })
-
-	return (
-		<div className="flex flex-col gap-4">
-			{/* show name toggle */}
-			<div className="flex items-center justify-between">
-				<Label htmlFor="show-name" className="text-xs">
-					Показывать имя
-				</Label>
-				<Switch
-					id="show-name"
-					checked={state.showName}
-					onCheckedChange={(v) => set('showName', v)}
-				/>
-			</div>
-			{/* show border toggle */}
-			<div className="flex items-center justify-between">
-				<Label htmlFor="show-border" className="text-xs">
-					Рамка вокруг иконки
-				</Label>
-				<Switch
-					id="show-border"
-					checked={state.showBorder}
-					onCheckedChange={(v) => set('showBorder', v)}
-				/>
-			</div>
-			{/* show background toggle */}
-			<div className="flex items-center justify-between">
-				<Label htmlFor="show-bg" className="text-xs">
-					Подложка под иконкой
-				</Label>
-				<Switch
-					id="show-bg"
-					checked={state.showBg}
-					onCheckedChange={(v) => set('showBg', v)}
-				/>
-			</div>
-			<Separator />
-			{/* color select */}
-			<div className="flex flex-col gap-2">
-				<Label className="text-xs">Цвет</Label>
-				<Select
-					value={state.color ?? 'none'}
-					onValueChange={(v) => set('color', v === 'none' ? null : (v as IconColor))}
-				>
-					<SelectTrigger className="h-8 text-xs">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="none">По умолчанию</SelectItem>
-						{colorOptions.map((c) => (
-							<SelectItem key={c} value={c}>
-								{c}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</div>
-			<Separator />
-			{/* size presets */}
-			<div className="flex flex-col gap-2">
-				<Label className="text-xs">Размер</Label>
-				<ToggleGroup
-					type="single"
-					value={state.sizePreset}
-					onValueChange={(v: IconSize | 'custom') => {
-						if (!v) return
-						onChange({
-							...state,
-							sizePreset: v,
-							...(v !== 'custom' && { customSize: sizeMap[v] }),
-						})
-					}}
-					className="justify-start border border-border"
-				>
-					{sizePresets.map((s) => (
-						<ToggleGroupItem
-							key={s}
-							value={s}
-							size="lg"
-							className="text-[14px] p-2.5 font-semibold"
-						>
-							{s}
-						</ToggleGroupItem>
-					))}
-					<ToggleGroupItem
-						value="custom"
-						size="lg"
-						className="text-[14px] p-2.5 font-semibold"
-					>
-						px
-					</ToggleGroupItem>
-				</ToggleGroup>
-			</div>
-			{/* custom size slider */}
-			<div className="flex flex-col gap-4">
-				<div className="flex items-center justify-between">
-					<Label className="text-xs">Свой размер</Label>
-					<span className="text-[10px] text-muted-foreground">{state.customSize}px</span>
-				</div>
-				<Slider
-					value={[state.customSize]}
-					onValueChange={([v]) => set('customSize', v)}
-					min={10}
-					max={80}
-					step={2}
-					disabled={state.sizePreset !== 'custom'}
-				/>
-			</div>
-		</div>
-	)
-}
-
-// helpers ----------------------------------------------------------------------------------------]
-
-const sizeMap: Record<IconSize, number> = { xs: 14, sm: 16, md: 20, lg: 24, xl: 32 }
-
-function resolveSize(sizePreset: IconSize | 'custom', customSize: number): number {
-	return sizePreset === 'custom' ? customSize : sizeMap[sizePreset]
-}
+const { libraryIcons, customIconNames, sizePresets, colorOptions } = demoData
 
 // icon cell --------------------------------------------------------------------------------------]
 
@@ -265,9 +51,7 @@ function IconCell({
 // main demo component ----------------------------------------------------------------------------]
 
 export function DemoIcons() {
-	const [state, setState] = useState<IconDemoState>(defaultState)
-
-	useRegisterSettings(<DemoIconsSettings state={state} onChange={setState} />)
+	const settings = useSettings<IconDemoState>()
 
 	return (
 		<div className="flex flex-col gap-4">
@@ -281,7 +65,7 @@ export function DemoIcons() {
 				</p>
 				<div className="flex flex-wrap gap-2">
 					{libraryIcons.map((name) => (
-						<IconCell key={name} name={name} state={state} />
+						<IconCell key={name} name={name} state={settings} />
 					))}
 				</div>
 			</section>
@@ -299,7 +83,7 @@ export function DemoIcons() {
 						<IconCell
 							key={name}
 							name={name}
-							state={state}
+							state={settings}
 							spinning={name === 'spinner'}
 						/>
 					))}

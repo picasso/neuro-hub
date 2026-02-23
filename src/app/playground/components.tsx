@@ -1,9 +1,15 @@
+import { type ReactNode } from 'react'
+import { DemoIcons } from './demo-icons'
+import { DemoIconsSettings } from './demo-icons-settings'
+
 export type ComponentDemo = {
 	id: string
 	name: string
 	group: 'base' | 'forms' | 'feedback' | 'layout' | 'icons'
 	description: string
 	ready: boolean
+	demo?: ReactNode
+	settings?: ReactNode
 }
 
 export const componentDemos: ComponentDemo[] = [
@@ -20,6 +26,8 @@ export const componentDemos: ComponentDemo[] = [
 		group: 'icons',
 		description: 'Lucide icons mapping from MUI icons',
 		ready: true,
+		demo: <DemoIcons />,
+		settings: <DemoIconsSettings />,
 	},
 	{
 		id: 'typography',

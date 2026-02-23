@@ -4,9 +4,8 @@ import { find } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { type ComponentDemo, componentDemos } from './components'
 import { ComponentSelector } from './components-selector'
-import { DemoRenderer } from './demo'
+import { DemoRenderer, SettingsRenderer } from './demo'
 import { QuickAccess } from './quick-access'
-import { PlaygroundSettingsProvider, SettingsSlot } from './settings-context'
 import { Button } from '@/components/shadcn/button'
 import { Separator } from '@/components/shadcn/separator'
 import { Icon } from '@/components/ui/icon'
@@ -80,35 +79,33 @@ export default function PlaygroundPage() {
 				</div>
 			</div>
 			{/* Content — bordered container like shadcn example */}
-			<PlaygroundSettingsProvider>
-				<div className="flex min-h-0 flex-1 overflow-hidden rounded-b-lg">
-					{/* Demo area */}
-					<div className="flex-1 overflow-auto p-6">
-						{selected ? (
-							<DemoRenderer component={selected} />
-						) : (
-							<div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-								Выберите компонент из списка
-							</div>
-						)}
-					</div>
-					{/* Side panel — component-specific settings */}
-					<div className="hidden w-65 shrink-0 border-l bg-surface md:block">
-						<div className="flex flex-col gap-4 overflow-y-auto px-4 pb-4 pt-2">
-							<div>
-								<h3 className="text-md font-semibold text-foreground">
-									{selected?.name ?? 'Настройки'}
-								</h3>
-								<p className="text-xs text-muted-foreground">
-									{selected?.description ?? 'Выберите компонент.'}
-								</p>
-							</div>
-							<Separator />
-							<SettingsSlot />
+			<div className="flex min-h-0 flex-1 overflow-hidden rounded-b-lg">
+				{/* Demo area */}
+				<div className="flex-1 overflow-auto p-6">
+					{selected ? (
+						<DemoRenderer component={selected} />
+					) : (
+						<div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+							Выберите компонент из списка
 						</div>
+					)}
+				</div>
+				{/* Side panel — component-specific settings */}
+				<div className="hidden w-65 shrink-0 border-l bg-surface md:block">
+					<div className="flex flex-col gap-4 overflow-y-auto px-4 pb-4 pt-2">
+						<div>
+							<h3 className="text-md font-semibold text-foreground">
+								{selected?.name ?? 'Настройки'}
+							</h3>
+							<p className="text-xs text-muted-foreground">
+								{selected?.description ?? 'Выберите компонент.'}
+							</p>
+						</div>
+						<Separator />
+						<SettingsRenderer component={selected} />
 					</div>
 				</div>
-			</PlaygroundSettingsProvider>
+			</div>
 		</div>
 	)
 }
