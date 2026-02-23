@@ -3,6 +3,7 @@
 import { demoData, type IconDemoState, resolveSize } from './demo-icons-settings'
 import { useSettings } from './settings-store'
 import { Separator } from '@/components/shadcn/separator'
+import { Stack } from '@/components/ui'
 import { Icon, type IconName } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 
@@ -24,9 +25,12 @@ function IconCell({
 	spinning,
 }: IconCellProps) {
 	return (
-		<div
+		<Stack
+			vertical
+			align="center"
+			gap={1.5}
 			className={cn(
-				'group flex flex-col items-center gap-1.5 transition-colors rounded-md hover:bg-primary/15',
+				'group transition-colors rounded-md hover:bg-primary/15',
 				showBorder && 'border p-2.5',
 				showBg && 'bg-primary rounded-full hover:bg-emerald-600',
 				showBg && showBorder && 'border-emerald-600',
@@ -44,7 +48,7 @@ function IconCell({
 					{name}
 				</span>
 			)}
-		</div>
+		</Stack>
 	)
 }
 
@@ -55,7 +59,7 @@ export function DemoIcons() {
 	const { showName } = settings
 
 	return (
-		<div className="flex flex-col gap-4">
+		<Stack vertical gap={4} align="stretch">
 			{/* lucide icons grid */}
 			<section>
 				<h3 className="my-1 text-sm font-medium text-foreground">
@@ -64,11 +68,11 @@ export function DemoIcons() {
 				<p className="mb-4 text-xs text-muted-foreground">
 					Основная библиотека. Имена в kebab-case.
 				</p>
-				<div className="flex flex-wrap gap-2">
+				<Stack wrap gap={2} align="stretch">
 					{libraryIcons.map((name) => (
 						<IconCell key={name} name={name} state={settings} />
 					))}
-				</div>
+				</Stack>
 			</section>
 			<Separator />
 			{/* custom SVG icons */}
@@ -79,7 +83,7 @@ export function DemoIcons() {
 				<p className="mb-4 text-xs text-muted-foreground">
 					Брендовые и специальные иконки. Кастомные SVG-компоненты.
 				</p>
-				<div className="flex flex-wrap gap-2">
+				<Stack wrap gap={2} align="stretch">
 					{customIconNames.map((name) => (
 						<IconCell
 							key={name}
@@ -88,7 +92,7 @@ export function DemoIcons() {
 							spinning={name === 'spinner'}
 						/>
 					))}
-				</div>
+				</Stack>
 			</section>
 			<Separator />
 			{/* color presets — always shows all colors, ignores settings */}
@@ -97,21 +101,21 @@ export function DemoIcons() {
 				<p className="mb-4 text-xs text-muted-foreground">
 					color prop → Tailwind text-* класс. className перебивает color.
 				</p>
-				<div className="flex items-center gap-4">
+				<Stack gap={4}>
 					{colorOptions.map((c) => (
-						<div key={c} className="flex flex-col items-center gap-2">
+						<Stack key={c} vertical align="center" gap={2}>
 							<Icon name="circle-check" size="xl" color={c} />
 							<span className="text-[10px] text-muted-foreground">{c}</span>
-						</div>
+						</Stack>
 					))}
-				</div>
-				<div className="mt-4 flex items-center gap-3 rounded-md border p-3">
+				</Stack>
+				<Stack gap={3} className="mt-4 rounded-md border p-3">
 					<Icon name="star" size="lg" color="primary" className="text-yellow-400" />
 					<span className="text-xs text-muted-foreground">
 						color=&quot;primary&quot; + className=&quot;text-yellow-400&quot; →
 						className wins
 					</span>
-				</div>
+				</Stack>
 			</section>
 			<Separator />
 			{/* size presets — always shows all sizes, ignores settings */}
@@ -120,22 +124,22 @@ export function DemoIcons() {
 				<p className="mb-4 text-xs text-muted-foreground">
 					xs=14, sm=16, md=20 (default), lg=24, xl=32. Также принимает число (px).
 				</p>
-				<div className="flex items-end gap-6">
+				<Stack gap={6} align="end">
 					{sizePresets.map((s) => (
-						<div key={s} className="flex flex-col items-center gap-2">
+						<Stack key={s} vertical align="center" gap={2}>
 							<Icon name="star" size={s} />
 							<span className="text-[10px] text-muted-foreground">{s}</span>
-						</div>
+						</Stack>
 					))}
-					<div className="flex flex-col items-center gap-2">
+					<Stack vertical align="center" gap={2}>
 						<Icon name="star" size={48} />
 						<span className="text-[10px] text-muted-foreground">48px</span>
-					</div>
-					<div className="flex flex-col items-center gap-2">
+					</Stack>
+					<Stack vertical align="center" gap={2}>
 						<Icon name="star" size={80} />
 						<span className="text-[10px] text-muted-foreground">80px</span>
-					</div>
-				</div>
+					</Stack>
+				</Stack>
 			</section>
 			<Separator />
 			{/* spinning — always shows, ignores settings */}
@@ -144,37 +148,37 @@ export function DemoIcons() {
 				<p className="mb-4 text-xs text-muted-foreground">
 					spinning prop добавляет animate-spin.
 				</p>
-				<div className="flex items-center gap-6">
-					<div className="flex flex-col items-center gap-2">
+				<Stack gap={6}>
+					<Stack vertical align="center" gap={2}>
 						<Icon name="spinner" size="lg" spinning />
 						{showName && (
 							<span className="text-[10px] text-muted-foreground">spinner</span>
 						)}
-					</div>
-					<div className="flex flex-col items-center gap-2">
+					</Stack>
+					<Stack vertical align="center" gap={2}>
 						<Icon name="loader-circle" size="lg" spinning />
 						{showName && (
 							<span className="text-[10px] text-muted-foreground">loader-circle</span>
 						)}
-					</div>
-					<div className="flex flex-col items-center gap-2">
+					</Stack>
+					<Stack vertical align="center" gap={2}>
 						<Icon name="loader" size="lg" color="primary" spinning />
 						{showName && (
 							<span className="text-[10px] text-muted-foreground">
 								loader + primary
 							</span>
 						)}
-					</div>
-					<div className="flex flex-col items-center gap-2">
+					</Stack>
+					<Stack vertical align="center" gap={2}>
 						<Icon name="loader-pinwheel" size="xl" color="cta" spinning />
 						{showName && (
 							<span className="text-[10px] text-muted-foreground">
 								loader-pinwheel + xl + cta
 							</span>
 						)}
-					</div>
-				</div>
+					</Stack>
+				</Stack>
 			</section>
-		</div>
+		</Stack>
 	)
 }

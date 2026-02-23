@@ -14,6 +14,7 @@ import { Separator } from '@/components/shadcn/separator'
 import { Slider } from '@/components/shadcn/slider'
 import { Switch } from '@/components/shadcn/switch'
 import { ToggleGroup, ToggleGroupItem } from '@/components/shadcn/toggle-group'
+import { Stack } from '@/components/ui'
 import { type IconName } from '@/components/ui/icon'
 
 type IconColor = (typeof colorOptions)[number]
@@ -51,9 +52,9 @@ export function DemoIconsSettings() {
 	useEffect(() => reset(), [])
 
 	return (
-		<div className="flex flex-col gap-4">
+		<Stack vertical gap={4} align="stretch">
 			{/* show name toggle */}
-			<div className="flex items-center justify-between">
+			<Stack gap={0} justify="space-between">
 				<Label htmlFor="show-name" className="text-xs">
 					Показывать имя
 				</Label>
@@ -62,9 +63,9 @@ export function DemoIconsSettings() {
 					checked={showName}
 					onCheckedChange={() => toggle('showName')}
 				/>
-			</div>
+			</Stack>
 			{/* show border toggle */}
-			<div className="flex items-center justify-between">
+			<Stack gap={0} justify="space-between">
 				<Label htmlFor="show-border" className="text-xs">
 					Рамка вокруг иконки
 				</Label>
@@ -73,17 +74,17 @@ export function DemoIconsSettings() {
 					checked={showBorder}
 					onCheckedChange={() => toggle('showBorder')}
 				/>
-			</div>
+			</Stack>
 			{/* show background toggle */}
-			<div className="flex items-center justify-between">
+			<Stack gap={0} justify="space-between">
 				<Label htmlFor="show-bg" className="text-xs">
 					Подложка под иконкой
 				</Label>
 				<Switch id="show-bg" checked={showBg} onCheckedChange={() => toggle('showBg')} />
-			</div>
+			</Stack>
 			<Separator />
 			{/* color select */}
-			<div className="flex flex-col gap-2">
+			<Stack vertical gap={2} align="stretch">
 				<Label className="text-xs">Цвет</Label>
 				<Select
 					value={color ?? 'none'}
@@ -103,10 +104,10 @@ export function DemoIconsSettings() {
 						))}
 					</SelectContent>
 				</Select>
-			</div>
+			</Stack>
 			<Separator />
 			{/* size presets */}
-			<div className="flex flex-col gap-2">
+			<Stack vertical gap={2} align="stretch">
 				<Label className="text-xs">Размер</Label>
 				<ToggleGroup
 					type="single"
@@ -136,13 +137,13 @@ export function DemoIconsSettings() {
 						px
 					</ToggleGroupItem>
 				</ToggleGroup>
-			</div>
+			</Stack>
 			{/* custom size slider */}
-			<div className="flex flex-col gap-4">
-				<div className="flex items-center justify-between">
+			<Stack vertical gap={4} align="stretch">
+				<Stack gap={0} justify="space-between">
 					<Label className="text-xs">Свой размер</Label>
 					<span className="text-[10px] text-muted-foreground">{customSize}px</span>
-				</div>
+				</Stack>
 				<Slider
 					value={[customSize]}
 					onValueChange={([v]) => update({ customSize: v })}
@@ -151,8 +152,8 @@ export function DemoIconsSettings() {
 					step={2}
 					disabled={sizePreset !== 'custom'}
 				/>
-			</div>
-		</div>
+			</Stack>
+		</Stack>
 	)
 }
 

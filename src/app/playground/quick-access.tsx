@@ -1,5 +1,6 @@
 import { type ComponentDemo } from './components'
 import { Button } from '@/components/shadcn/button'
+import { Stack } from '@/components/ui'
 
 type QuickAccessProps = {
 	recent: ComponentDemo[]
@@ -11,7 +12,7 @@ export function QuickAccess({ recent, current, onSelect }: QuickAccessProps) {
 	if (recent.length === 0) return null
 
 	return (
-		<div className="flex items-center gap-1.5">
+		<Stack gap={1.5}>
 			{recent.map((component) => (
 				<Button
 					key={component.id}
@@ -23,6 +24,6 @@ export function QuickAccess({ recent, current, onSelect }: QuickAccessProps) {
 					{component.name}
 				</Button>
 			))}
-		</div>
+		</Stack>
 	)
 }

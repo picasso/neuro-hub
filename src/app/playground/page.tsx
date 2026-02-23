@@ -8,6 +8,7 @@ import { DemoRenderer, SettingsRenderer } from './demo'
 import { QuickAccess } from './quick-access'
 import { Button } from '@/components/shadcn/button'
 import { Separator } from '@/components/shadcn/separator'
+import { Stack } from '@/components/ui'
 import { Icon } from '@/components/ui/icon'
 
 const MAX_RECENT = 3
@@ -56,11 +57,20 @@ export default function PlaygroundPage() {
 	}, [])
 
 	return (
-		<div className="mx-auto my-8 flex h-[calc(100vh-300px)] w-full max-w-350 flex-col gap-0 rounded-lg border">
+		<Stack
+			vertical
+			gap={0}
+			align="stretch"
+			className="mx-auto my-8 h-[calc(100vh-300px)] w-full max-w-350 rounded-lg border"
+		>
 			{/* Header — title left, controls right */}
-			<div className="flex items-center justify-between py-2.5 pl-4 md:pl-8 pr-2 md:pr-4 bg-surface rounded-t-lg border-b">
+			<Stack
+				gap={0}
+				justify="space-between"
+				className="py-2.5 pl-4 pr-2 md:pl-8 md:pr-4 bg-surface rounded-t-lg border-b"
+			>
 				<h2 className="text-lg font-semibold tracking-tight text-foreground">Playground</h2>
-				<div className="flex items-center gap-2">
+				<Stack gap={2}>
 					<QuickAccess recent={recent} current={selected} onSelect={handleSelect} />
 					{recent.length > 0 && <Separator orientation="vertical" className="mx-1 h-5" />}
 					<ComponentSelector selected={selected} onSelect={handleSelect} />
@@ -76,23 +86,32 @@ export default function PlaygroundPage() {
 					>
 						<Icon name="rotate-ccw" size="sm" />
 					</Button>
-				</div>
-			</div>
+				</Stack>
+			</Stack>
 			{/* Content — bordered container like shadcn example */}
-			<div className="flex min-h-0 flex-1 overflow-hidden rounded-b-lg">
+			<Stack gap={0} align="stretch" className="min-h-0 flex-1 overflow-hidden rounded-b-lg">
 				{/* Demo area */}
 				<div className="flex-1 overflow-auto p-6">
 					{selected ? (
 						<DemoRenderer component={selected} />
 					) : (
-						<div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+						<Stack
+							gap={0}
+							justify="center"
+							className="h-full text-sm text-muted-foreground"
+						>
 							Выберите компонент из списка
-						</div>
+						</Stack>
 					)}
 				</div>
 				{/* Side panel — component-specific settings */}
 				<div className="hidden w-65 shrink-0 border-l bg-surface md:block">
-					<div className="flex flex-col gap-4 overflow-y-auto px-4 pb-4 pt-2">
+					<Stack
+						vertical
+						gap={4}
+						align="stretch"
+						className="overflow-y-auto px-4 pb-4 pt-2"
+					>
 						<div>
 							<h3 className="text-md font-semibold text-foreground">
 								{selected?.name ?? 'Настройки'}
@@ -103,9 +122,9 @@ export default function PlaygroundPage() {
 						</div>
 						<Separator />
 						<SettingsRenderer component={selected} />
-					</div>
+					</Stack>
 				</div>
-			</div>
-		</div>
+			</Stack>
+		</Stack>
 	)
 }

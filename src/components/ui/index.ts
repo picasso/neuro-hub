@@ -11,6 +11,7 @@ export {
 } from './icon'
 export { TS, type TextStyledProps } from './text-styled'
 export { Button, type ButtonProps } from './button'
+export { Stack, type StackProps } from './stack'
 export { FileUploader, type FileUploaderProps } from './file-uploader'
 export { Portfolio, type PortfolioProps } from './portfolio'
 export { type MediaItem } from './portfolio-item'
