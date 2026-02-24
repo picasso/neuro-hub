@@ -43,7 +43,14 @@ export function DemoIconButtons() {
 								forceSize={resolvedForceSize}
 							/>
 							{showName && (
-								<span className="text-[10px] text-muted-foreground">{icon}</span>
+								<span
+									className={cn(
+										'text-[10px] text-muted-foreground',
+										variant === 'contrast' && 'text-white',
+									)}
+								>
+									{icon}
+								</span>
 							)}
 						</Stack>
 					))}
@@ -175,7 +182,16 @@ export function DemoIconButtons() {
 					<IconButton icon="search" variant="outline" rounded href="https://apple.com" />
 					<IconButton icon="book-marked" variant="secondary" rounded href="/projects" />
 					<IconButton icon="trash" variant="destructive" rounded href="/freelancers" />
-					<IconButton icon="eye" variant="default" rounded href="/" />
+					<IconButton icon="eye" variant="default" rounded href="/" className="mr-10" />
+
+					<IconButton icon="search" variant="outline" disabled href="https://apple.com" />
+					<IconButton
+						icon="book-marked"
+						variant="secondary"
+						rounded
+						disabled
+						href="/projects"
+					/>
 				</Stack>
 			</section>
 		</Stack>

@@ -1,12 +1,5 @@
 import Link from 'next/link'
-import {
-	forwardRef,
-	useMemo,
-	type ComponentProps,
-	type MouseEvent,
-	type ReactNode,
-	type ForwardedRef,
-} from 'react'
+import { forwardRef, useMemo, type ComponentProps, type ReactNode, type ForwardedRef } from 'react'
 import { Icon, type IconProps, type IconOptions } from './icon'
 import { Button as ShadcnButton } from '@/components/shadcn/button'
 import { cn } from '@/lib/utils'
@@ -143,19 +136,21 @@ export function HrefButton({
 	children,
 	disabled,
 }: HrefButtonProps) {
-	const handleDisabledClick = (e: MouseEvent<HTMLAnchorElement>) => {
-		if (!disabled) return
-		e.preventDefault()
-		e.stopPropagation()
-	}
 	return (
-		<ShadcnButton ref={ref} asChild variant={variant} size={size} className={className}>
+		<ShadcnButton
+			ref={ref}
+			asChild
+			variant={variant}
+			size={size}
+			className={className}
+			disabled={disabled}
+		>
 			<Link
 				href={href}
 				target={target}
 				aria-disabled={disabled || undefined}
 				tabIndex={disabled ? -1 : undefined}
-				onClick={handleDisabledClick}
+				className={cn(disabled && 'pointer-events-none opacity-50')}
 			>
 				{children}
 			</Link>
