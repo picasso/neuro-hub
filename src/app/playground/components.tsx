@@ -1,6 +1,8 @@
 import { type ReactNode } from 'react'
 import { DemoButtons } from './demo-buttons'
 import { DemoButtonsSettings } from './demo-buttons-settings'
+import { DemoIconButtons } from './demo-icon-buttons'
+import { DemoIconButtonsSettings } from './demo-icon-buttons-settings'
 import { DemoIcons } from './demo-icons'
 import { DemoIconsSettings } from './demo-icons-settings'
 
@@ -23,6 +25,15 @@ export const componentDemos: ComponentDemo[] = [
 		ready: true,
 		demo: <DemoButtons />,
 		settings: <DemoButtonsSettings />,
+	},
+	{
+		id: 'icon-buttons',
+		name: 'IconButtons',
+		group: 'base',
+		description: 'IconButton variants, sizes, icon sizing',
+		ready: true,
+		demo: <DemoIconButtons />,
+		settings: <DemoIconButtonsSettings />,
 	},
 	{
 		id: 'icons',

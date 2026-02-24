@@ -4,11 +4,12 @@ import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
-import IconButton from '@mui/material/IconButton'
+// import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import packageJson from '../../../package.json'
 import { Icon } from './icon'
+import { IconButton } from './icon-button'
 import { TS } from './text-styled'
 import { contactContent } from '@/config/mocks'
 
@@ -100,41 +101,45 @@ export function Footer() {
 
 					<Stack direction="row" spacing={1}>
 						<IconButton
-							component="a"
+							rounded
+							variant="contrast"
+							icon="git-hub"
 							href={contactContent.social.github}
 							target="_blank"
 							rel="noopener noreferrer"
-							size="small"
-						>
-							<Icon name="git-hub" className="text-white/50" />
-						</IconButton>
+							size="icon"
+							forceSize="md"
+						/>
 						<IconButton
-							component="a"
+							rounded
+							variant="contrast"
+							icon="x-twitter"
 							href={contactContent.social.twitter}
 							target="_blank"
 							rel="noopener noreferrer"
-							size="small"
-						>
-							<Icon name="x-twitter" className="text-white/50" />
-						</IconButton>
+							size="icon"
+							forceSize="md"
+						/>
 						<IconButton
-							component="a"
-							href={contactContent.social.linkedin}
+							rounded
+							variant="contrast"
+							icon="linked-in"
+							href={contactContent.social.twitter}
 							target="_blank"
 							rel="noopener noreferrer"
-							size="small"
-						>
-							<Icon name="linked-in" className="text-white/50" />
-						</IconButton>
+							size="icon"
+							forceSize="md"
+						/>
 						<IconButton
-							component="a"
+							rounded
+							variant="contrast"
+							icon="telegram"
 							href={contactContent.social.telegram}
 							target="_blank"
 							rel="noopener noreferrer"
-							size="small"
-						>
-							<Icon name="telegram" className="text-white/50" />
-						</IconButton>
+							size="icon"
+							forceSize="md"
+						/>
 					</Stack>
 				</Box>
 

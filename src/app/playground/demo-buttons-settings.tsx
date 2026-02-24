@@ -12,11 +12,11 @@ import {
 } from '@/components/shadcn/select'
 import { Separator } from '@/components/shadcn/separator'
 import { Switch } from '@/components/shadcn/switch'
-import { Stack } from '@/components/ui'
+import { Stack, type ButtonProps } from '@/components/ui'
 
 export type ButtonDemoState = {
-	variant: 'default' | 'outline' | 'ghost'
-	size: 'sm' | 'md' | 'lg' | 'xl'
+	variant: NonNullable<ButtonProps['variant']>
+	size: NonNullable<ButtonProps['size']>
 	disabled: boolean
 	fullWidth: boolean
 	bold: boolean
@@ -59,6 +59,8 @@ export function DemoButtonsSettings() {
 					<SelectContent>
 						<SelectItem value="default">default</SelectItem>
 						<SelectItem value="outline">outline</SelectItem>
+						<SelectItem value="secondary">secondary</SelectItem>
+						<SelectItem value="destructive">destructive</SelectItem>
 						<SelectItem value="ghost">ghost</SelectItem>
 					</SelectContent>
 				</Select>

@@ -2,9 +2,8 @@
 
 import { type ButtonDemoState } from './demo-buttons-settings'
 import { useSettings } from './settings-store'
-import { Button as ShadcnButton } from '@/components/shadcn/button'
 import { Separator } from '@/components/shadcn/separator'
-import { Button, Icon, Stack } from '@/components/ui'
+import { Button, Stack } from '@/components/ui'
 
 export function DemoButtons() {
 	const settings = useSettings<ButtonDemoState>()
@@ -29,43 +28,29 @@ export function DemoButtons() {
 					label={noWrap ? 'Long button label that should not wrap' : 'Button Action'}
 				/>
 			</section>
-
 			<Separator />
-
 			<section>
 				<h3 className="my-1 text-sm font-medium text-foreground">Variants</h3>
 				<Stack gap={2} wrap align="stretch">
-					<Button variant="default" label="Default" leftIcon="star" />
-					<Button variant="outline" label="Outline" leftIcon="star" />
-					<Button variant="ghost" label="Ghost" leftIcon="star" />
+					<Button variant="default" label="Save" />
+					<Button variant="outline" label="Reject" />
+					<Button variant="secondary" label="Help" />
+					<Button variant="destructive" label="Remove" />
+					<Button variant="ghost" label="Cancel" className="mr-10" />
+					<Button variant="default" label="Default" leftIcon="book-marked" />
+					<Button variant="outline" label="Outline" leftIcon="building" />
+					<Button variant="secondary" label="Secondary" leftIcon="email" />
+					<Button variant="destructive" label="Destructive" leftIcon="trash" />
+					<Button variant="ghost" label="Ghost" leftIcon="login" />
 				</Stack>
 			</section>
-
 			<section>
 				<h3 className="my-1 text-sm font-medium text-foreground">Sizes</h3>
 				<Stack gap={2} wrap align="stretch">
-					<Button size="sm" variant="default" label="sm" />
-					<Button size="md" variant="default" label="md" />
-					<Button size="lg" variant="default" label="lg" />
-					<Button size="xl" variant="default" label="xl" />
-				</Stack>
-			</section>
-
-			<section>
-				<h3 className="my-1 text-sm font-medium text-foreground">Icon buttons (shadcn)</h3>
-				<p className="mb-4 text-xs text-muted-foreground">
-					Для IconButton используем shadcn `Button` со size `icon-*`.
-				</p>
-				<Stack gap={2} wrap align="stretch">
-					<ShadcnButton variant="ghost" size="icon" aria-label="Like">
-						<Icon name="thumbs-up" size="sm" className="size-4" />
-					</ShadcnButton>
-					<ShadcnButton variant="ghost" size="icon-sm" aria-label="Search">
-						<Icon name="search" size="sm" className="size-4" />
-					</ShadcnButton>
-					<ShadcnButton variant="outline" size="icon" aria-label="Delete">
-						<Icon name="trash" size="sm" className="size-4" />
-					</ShadcnButton>
+					<Button size="sm" variant="default" label="Button SM" />
+					<Button size="md" variant="default" label="Button MD" />
+					<Button size="lg" variant="default" label="Button LG" />
+					<Button size="xl" variant="default" label="Button XL" />
 				</Stack>
 			</section>
 		</Stack>

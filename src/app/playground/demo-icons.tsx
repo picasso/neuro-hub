@@ -68,7 +68,7 @@ export function DemoIcons() {
 				<p className="mb-4 text-xs text-muted-foreground">
 					Основная библиотека. Имена в kebab-case.
 				</p>
-				<Stack wrap gap={2} align="stretch">
+				<Stack wrap align="stretch">
 					{libraryIcons.map((name) => (
 						<IconCell key={name} name={name} state={settings} />
 					))}
@@ -83,7 +83,7 @@ export function DemoIcons() {
 				<p className="mb-4 text-xs text-muted-foreground">
 					Брендовые и специальные иконки. Кастомные SVG-компоненты.
 				</p>
-				<Stack wrap gap={2} align="stretch">
+				<Stack wrap align="stretch">
 					{customIconNames.map((name) => (
 						<IconCell
 							key={name}
@@ -103,7 +103,7 @@ export function DemoIcons() {
 				</p>
 				<Stack gap={4}>
 					{colorOptions.map((c) => (
-						<Stack key={c} vertical align="center" gap={2}>
+						<Stack key={c} vertical>
 							<Icon name="circle-check" size="xl" color={c} />
 							<span className="text-[10px] text-muted-foreground">{c}</span>
 						</Stack>
@@ -126,16 +126,16 @@ export function DemoIcons() {
 				</p>
 				<Stack gap={6} align="end">
 					{sizePresets.map((s) => (
-						<Stack key={s} vertical align="center" gap={2}>
+						<Stack key={s} vertical>
 							<Icon name="star" size={s} />
 							<span className="text-[10px] text-muted-foreground">{s}</span>
 						</Stack>
 					))}
-					<Stack vertical align="center" gap={2}>
+					<Stack vertical>
 						<Icon name="star" size={48} />
 						<span className="text-[10px] text-muted-foreground">48px</span>
 					</Stack>
-					<Stack vertical align="center" gap={2}>
+					<Stack vertical>
 						<Icon name="star" size={80} />
 						<span className="text-[10px] text-muted-foreground">80px</span>
 					</Stack>
@@ -149,19 +149,19 @@ export function DemoIcons() {
 					spinning prop добавляет animate-spin.
 				</p>
 				<Stack gap={6}>
-					<Stack vertical align="center" gap={2}>
+					<Stack vertical>
 						<Icon name="spinner" size="lg" spinning />
 						{showName && (
 							<span className="text-[10px] text-muted-foreground">spinner</span>
 						)}
 					</Stack>
-					<Stack vertical align="center" gap={2}>
+					<Stack vertical>
 						<Icon name="loader-circle" size="lg" spinning />
 						{showName && (
 							<span className="text-[10px] text-muted-foreground">loader-circle</span>
 						)}
 					</Stack>
-					<Stack vertical align="center" gap={2}>
+					<Stack vertical>
 						<Icon name="loader" size="lg" color="primary" spinning />
 						{showName && (
 							<span className="text-[10px] text-muted-foreground">
@@ -169,7 +169,7 @@ export function DemoIcons() {
 							</span>
 						)}
 					</Stack>
-					<Stack vertical align="center" gap={2}>
+					<Stack vertical>
 						<Icon name="loader-pinwheel" size="xl" color="cta" spinning />
 						{showName && (
 							<span className="text-[10px] text-muted-foreground">
