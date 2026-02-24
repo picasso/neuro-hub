@@ -2,13 +2,12 @@
 
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
+// import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import { useGate, useUnit } from 'effector-react'
 import { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Icon } from '@/components/ui/icon'
+import { Button, IconButton } from '@/components/ui'
 import { TS } from '@/components/ui/text-styled'
 import {
 	$portfolio,
@@ -136,12 +135,13 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 								/>
 							</Box>
 							<IconButton
+								rounded
+								icon="trash"
+								variant="destructive"
 								aria-label="Удалить"
 								onClick={() => onDelete(item.id)}
 								disabled={isBusy}
-							>
-								<Icon name="delete" />
-							</IconButton>
+							/>
 						</Stack>
 					))}
 				</Stack>

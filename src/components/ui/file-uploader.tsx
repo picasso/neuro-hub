@@ -1,6 +1,5 @@
 'use client'
 
-import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
@@ -10,6 +9,7 @@ import { isFunction, join, keys, replace } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { useDropzone, type Accept, type FileError, type FileRejection } from 'react-dropzone'
 import { Icon, type IconName } from './icon'
+import { IconButton } from './icon-button'
 import { TS } from './text-styled'
 import { fileSize, sprintf } from '@/utils'
 
@@ -177,17 +177,21 @@ export function FileUploader({
 										!disabled && value ? (
 											<InputAdornment position="end">
 												<IconButton
+													rounded
+													icon="close"
+													variant="ghost"
 													title="Очистить файл"
 													aria-label="Очистить файл"
-													size="small"
+													size="sm"
+													forceSize="xs"
 													onClick={(e) => {
 														e.preventDefault()
 														e.stopPropagation()
 														onUpdate(null)
 													}}
-												>
-													<Icon name="close" size="sm" />
-												</IconButton>
+													className="hover:bg-primary/10 mr-[-8]"
+													iconClassName="text-primary-dark"
+												/>
 											</InputAdornment>
 										) : undefined,
 								},

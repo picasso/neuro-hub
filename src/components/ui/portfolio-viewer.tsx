@@ -3,7 +3,6 @@
 import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
-import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { sample } from 'effector'
@@ -12,6 +11,7 @@ import { random, uniqueId } from 'lodash'
 import Image from 'next/image'
 import { delay } from 'patronum'
 import { type TransitionEventHandler, useCallback, useEffect } from 'react'
+import { IconButton } from './icon-button'
 import { type MediaKind, type MediaItem, MediaPlaceholder } from './portfolio-item'
 import { Icon, type IconName } from '@/components/ui/icon'
 import { TS } from '@/components/ui/text-styled'
@@ -137,25 +137,33 @@ export function PortfolioViewer({
 						)}
 					</Stack>
 					<Stack direction="row" alignItems="center" spacing={1}>
-						<IconButton aria-label="Предыдущий" onClick={onPrev} disabled={!hasPrev}>
-							<Icon
-								name={isLoaderLeft ? 'spinner' : 'expand-more'}
-								color={isLoaderLeft ? 'primary' : !hasPrev ? 'dimmed' : undefined}
-								spinning={isLoaderLeft}
-								className="rotate-90"
-							/>
-						</IconButton>
-						<IconButton aria-label="Следующий" onClick={onNext} disabled={!hasNext}>
-							<Icon
-								name={isLoaderRight ? 'spinner' : 'expand-more'}
-								color={isLoaderRight ? 'primary' : !hasNext ? 'dimmed' : undefined}
-								spinning={isLoaderRight}
-								className="-rotate-90"
-							/>
-						</IconButton>
-						<IconButton aria-label="Закрыть" onClick={onCloseProxy}>
-							<Icon name="close" />
-						</IconButton>
+						<IconButton
+							rounded
+							size="md"
+							icon={isLoaderLeft ? 'spinner' : 'chevron-left'}
+							color={isLoaderLeft ? 'primary' : !hasPrev ? 'dimmed' : undefined}
+							spinning={isLoaderLeft}
+							aria-label="Предыдущий"
+							onClick={onPrev}
+							disabled={!hasPrev}
+						/>
+						<IconButton
+							rounded
+							size="md"
+							icon={isLoaderRight ? 'spinner' : 'chevron-right'}
+							color={isLoaderRight ? 'primary' : !hasNext ? 'dimmed' : undefined}
+							spinning={isLoaderRight}
+							aria-label="Следующий"
+							onClick={onNext}
+							disabled={!hasNext}
+						/>
+						<IconButton
+							rounded
+							size="md"
+							icon="close"
+							aria-label="Закрыть"
+							onClick={onCloseProxy}
+						/>
 					</Stack>
 				</Stack>
 

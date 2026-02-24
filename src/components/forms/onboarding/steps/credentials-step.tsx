@@ -1,14 +1,13 @@
 'use client'
 
 import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import { useUnit } from 'effector-react'
 import { useState } from 'react'
+import { IconButton } from '@/components/ui'
 import { Button } from '@/components/ui/button'
-import { Icon } from '@/components/ui/icon'
 import { TS } from '@/components/ui/text-styled'
 import {
 	$credentials,
@@ -69,13 +68,11 @@ export function CredentialsStep() {
 							endAdornment: (
 								<InputAdornment position="end">
 									<IconButton
+										variant="outline"
+										icon={showPassword ? 'visibility-off' : 'visibility'}
 										onClick={() => setShowPassword(!showPassword)}
-										edge="end"
-									>
-										<Icon
-											name={showPassword ? 'visibility-off' : 'visibility'}
-										/>
-									</IconButton>
+										className="rounded-r-md"
+									/>
 								</InputAdornment>
 							),
 						},
