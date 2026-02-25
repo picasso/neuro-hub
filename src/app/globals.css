@@ -186,12 +186,14 @@ body[data-font='open-sans'] {
 		letter-spacing: 0.5px;
 		border-width: 1px;
 		border-style: solid;
-		border-color: rgba(0, 0, 0, 0.4);
+		border-color: rgba(0, 0, 0, 0.2);
 		background-color: rgba(0, 0, 0, 0.04);
+		color: var(--muted-foreground);
 	}
 	.markdown-root.contrast span.__code {
 		border-color: rgba(255, 255, 255, 0.5);
 		background-color: rgba(0, 0, 0, 0.05);
+		color: inherit;
 	}
 	.markdown-root span.__code.__e {
 		background-color: color-mix(in srgb, #ff2020, white 78%);

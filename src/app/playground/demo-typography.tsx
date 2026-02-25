@@ -65,7 +65,7 @@ export function DemoTypography() {
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Обёртка `Typography` на базе shadcn and Tailwind CSS."
+				desc="Обёртка `Typography` на базе shadcn and **Tailwind CSS**"
 				separator
 			>
 				<div className={cn('min-h-14 rounded-md border p-4', needsDarkBg && 'bg-primary')}>
@@ -82,7 +82,7 @@ export function DemoTypography() {
 				</div>
 			</DemoSection>
 
-			<DemoSection title="Variants" desc="Все поддерживаемые variant-ы." separator>
+			<DemoSection title="Variants" desc="Все поддерживаемые `variant`-ы" separator>
 				<Stack vertical gap={4} align="stretch">
 					{VARIANTS.map((v) => (
 						<Stack key={v} gap={3} align="baseline">
@@ -93,7 +93,11 @@ export function DemoTypography() {
 				</Stack>
 			</DemoSection>
 
-			<DemoSection title="Modifiers" desc="strong, thin, gutterBottom, inline." separator>
+			<DemoSection
+				title="Modifiers"
+				desc="`*strong` `*thin` `*gutterBottom` `*inline`"
+				separator
+			>
 				<Stack vertical gap={3} align="stretch">
 					<Stack gap={3} align="baseline">
 						<DemoLabel content="default" size="md" />
@@ -101,16 +105,20 @@ export function DemoTypography() {
 					</Stack>
 					<Stack gap={3} align="baseline">
 						<DemoLabel content="strong" size="md" />
-						<TS strong content="Strong — font-bold (700)" />
+						<TS strong content="Strong — `font-bold (700)`" />
 					</Stack>
 					<Stack gap={3} align="baseline">
 						<DemoLabel content="thin" size="md" />
-						<TS variant="h3" thin content="Thin на h3 — font-medium вместо semibold" />
+						<TS
+							variant="h3"
+							thin
+							content="Thin на h3 — `font-medium` вместо `semibold`"
+						/>
 					</Stack>
 					<Stack gap={3} align="baseline">
-						<DemoLabel content="gutter" size="md" />
+						<DemoLabel content="gutterBottom" size="md" />
 						<div>
-							<TS gutterBottom content="gutterBottom — добавляет mb-4 снизу" />
+							<TS gutterBottom content="gutterBottom — добавляет `mb-4` снизу" />
 							<TS
 								color="secondary"
 								content="Этот текст идёт сразу после"
@@ -122,8 +130,8 @@ export function DemoTypography() {
 						<DemoLabel content="inline" size="md" />
 						<span>
 							<TS inline content="Inline: " />
-							<TS inline strong content="strong " />
-							<TS inline color="secondary" content="и muted — в одной строке" />
+							<TS inline strong content="`strong` " />
+							<TS inline color="secondary" content="и `muted` — в одной строке" />
 						</span>
 					</Stack>
 				</Stack>
@@ -131,28 +139,42 @@ export function DemoTypography() {
 
 			<DemoSection
 				title="Markdown"
-				desc="Встроенная поддержка простого Markdown через simpleMarkdown()."
+				desc="Встроенная поддержка простого Markdown через `simpleMarkdown()`"
 			>
 				<Stack vertical gap={3} align="stretch">
 					<Stack gap={3} align="start">
 						<DemoLabel content="bold / em" size="md" className="pt-1" />
-						<TS content="**Жирный** и *курсив* — через `**` и `*`" />
+						<TS variant="subtitle" content="**Жирный** и курсив — через `#**` и `#*`" />
 					</Stack>
 					<Stack gap={3} align="start">
 						<DemoLabel content="code" size="md" className="pt-1" />
-						<TS content="`код` и цвета: `!ошибка` `?вопрос` `*успех` `+инфо` `#предупреждение`" />
+						<TS
+							variant="subtitle"
+							content="`код` и цвета: `!ошибка` `?вопрос` `*успех` `+инфо` `#предупреждение`"
+						/>
 					</Stack>
 					<Stack gap={3} align="start">
 						<DemoLabel content="link" size="md" className="pt-1" />
-						<TS content="Ссылка: [NeuroGig](https://neurogig.com) откроется в новой вкладке" />
+						<TS
+							variant="subtitle"
+							content="Ссылка: [NeuroGig](https://neurogig.com) откроется в новой вкладке"
+						/>
 					</Stack>
 					<Stack gap={3} align="start">
 						<DemoLabel content="br" size="md" className="pt-1" />
-						<TS inline content={'Строка 1\nСтрока 2 через inline+br'} />
+						<TS
+							variant="subtitle"
+							inline
+							content={'Строка 1\nСтрока 2 через inline+br'}
+						/>
 					</Stack>
 					<Stack gap={3} align="start">
 						<DemoLabel content="md=false" size="md" className="pt-1" />
-						<TS md={false} content="**Текст без Markdown** — отображается как есть" />
+						<TS
+							variant="subtitle"
+							md={false}
+							content="**Текст без Markdown** — отображается как есть"
+						/>
 					</Stack>
 				</Stack>
 			</DemoSection>

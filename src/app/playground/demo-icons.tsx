@@ -29,11 +29,13 @@ function IconCell({
 			align="center"
 			gap={1.5}
 			className={cn(
-				'group transition-colors rounded-md hover:bg-primary/15',
+				'group transition-colors rounded-md',
 				showBorder && 'border p-2.5',
-				showBg && 'bg-primary rounded-full hover:bg-emerald-600',
+				showBg && 'bg-primary/30 rounded-full',
 				showBg && showBorder && 'border-emerald-600',
 				!showBorder && 'p-1.5',
+				color === 'contrast' && 'hover:bg-white/20 border-white',
+				color !== 'contrast' && 'hover:bg-primary/15',
 			)}
 		>
 			<Icon
@@ -46,7 +48,7 @@ function IconCell({
 				<DemoLabel
 					content={name}
 					size="xs"
-					className="max-w-18 truncate group-hover:text-foreground"
+					className="max-w-18 truncate group-hover:text-inherit text-inherit"
 				/>
 			)}
 		</Stack>
@@ -57,16 +59,23 @@ function IconCell({
 
 export function DemoIcons() {
 	const settings = useSettings<IconDemoState>()
-	const { showName } = settings
+	const { showName, color } = settings
 
 	return (
 		<DemoRoot>
 			<DemoSection
 				title={`Lucide Icons (${libraryIcons.length})`}
-				desc="Основная библиотека. Имена в kebab-case."
+				desc="Основная библиотека. Имена в `kebab-case`"
 				separator
 			>
-				<Stack wrap align="stretch">
+				<Stack
+					wrap
+					align="stretch"
+					className={cn(
+						'p-4 rounded-md border',
+						color === 'contrast' && 'text-white bg-primary',
+					)}
+				>
 					{libraryIcons.map((name) => (
 						<IconCell key={name} name={name} state={settings} />
 					))}
@@ -74,10 +83,17 @@ export function DemoIcons() {
 			</DemoSection>
 			<DemoSection
 				title={`Custom SVG (${customIconNames.length})`}
-				desc="Брендовые и специальные иконки. Кастомные SVG-компоненты."
+				desc="Брендовые и специальные иконки. Кастомные `SVG` компоненты"
 				separator
 			>
-				<Stack wrap align="stretch">
+				<Stack
+					wrap
+					align="stretch"
+					className={cn(
+						'p-4 rounded-md border',
+						color === 'contrast' && 'text-white bg-primary',
+					)}
+				>
 					{customIconNames.map((name) => (
 						<IconCell
 							key={name}
@@ -90,7 +106,7 @@ export function DemoIcons() {
 			</DemoSection>
 			<DemoSection
 				title="Color Presets"
-				desc="color prop → Tailwind text-* класс. className перебивает color."
+				desc="`color` prop → Tailwind `text-*` класс. `+className` перебивает `!color`"
 				separator
 			>
 				<Stack gap={4}>
@@ -104,7 +120,7 @@ export function DemoIcons() {
 				<Stack gap={3} className="mt-4 rounded-md border p-3">
 					<Icon name="star" size="lg" color="primary" className="text-yellow-400" />
 					<DemoLabel
-						content='color="primary" + className="text-yellow-400" → className wins'
+						content='color="**primary**" + className="**text-yellow-400**" → className wins'
 						size="xs"
 						className="text-xs"
 					/>
@@ -112,7 +128,7 @@ export function DemoIcons() {
 			</DemoSection>
 			<DemoSection
 				title="Size Presets"
-				desc="xs=14, sm=16, md=20 (default), lg=24, xl=32. Также принимает число (px)."
+				desc="`*xs=14`, `*sm=16`, `#md=20` **default**, `*lg=24`, `*xl=32`. Также принимает число `px`"
 				separator
 			>
 				<Stack gap={6} align="end">
@@ -132,7 +148,7 @@ export function DemoIcons() {
 					</Stack>
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Spinning" desc="spinning prop добавляет animate-spin.">
+			<DemoSection title="Spinning" desc="`*spinning` prop добавляет `animate-spin`">
 				<Stack gap={6}>
 					<Stack vertical>
 						<Icon name="spinner" size="lg" spinning />

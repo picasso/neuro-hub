@@ -18,7 +18,7 @@ export function DemoIconButtons() {
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Обёртка `IconButton` на базе shadcn `Button` + `Icon`."
+				desc="Обёртка `IconButton` на базе shadcn `Button` + `Icon`"
 				separator
 			>
 				<Stack
@@ -26,7 +26,7 @@ export function DemoIconButtons() {
 					wrap
 					align="stretch"
 					className={cn(
-						'p-4 rounded-md',
+						'p-4 rounded-md border',
 						variant === 'contrast' && 'text-white bg-primary',
 					)}
 				>

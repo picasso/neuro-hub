@@ -44,7 +44,12 @@ export function DemoButtonsSettings() {
 				value={variant}
 				options={['default', 'outline', 'secondary', 'destructive', 'ghost']}
 			/>
-			<SettingSelect id="size" label="Size" value={size} options={['sm', 'md', 'lg', 'xl']} />
+			<SettingSelect
+				id="size"
+				label="Size"
+				value={size}
+				options={['xs', 'sm', 'md', 'lg', 'xl']}
+			/>
 			<Separator />
 			<SettingToggle id="disabled" label="Disabled" checked={disabled} />
 			<SettingToggle id="fullWidth" label="Full width" checked={fullWidth} />

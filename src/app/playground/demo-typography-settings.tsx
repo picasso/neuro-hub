@@ -11,7 +11,7 @@ export type TextStyledColor = NonNullable<TextStyledProps['color']>
 
 export type TypographyDemoState = {
 	variant: TextStyledVariant
-	color: TextStyledColor | ''
+	color: TextStyledColor | 'null'
 	strong: boolean
 	thin: boolean
 	gutterBottom: boolean
@@ -21,7 +21,7 @@ export type TypographyDemoState = {
 
 const defaultState: TypographyDemoState = {
 	variant: 'body',
-	color: '',
+	color: 'null',
 	strong: false,
 	thin: false,
 	gutterBottom: false,
@@ -50,7 +50,7 @@ export function DemoTypographySettings() {
 				label="Color"
 				value={color}
 				options={[
-					{ label: '— (inherit)', value: '' },
+					{ label: '— (inherit)', value: 'null' },
 					{ label: 'primary', value: 'primary' },
 					{ label: 'secondary', value: 'secondary' },
 					{ label: 'dimmed', value: 'dimmed' },

@@ -11,7 +11,7 @@ export function DemoButtons() {
 
 	return (
 		<DemoRoot>
-			<DemoSection title="Interactive" desc="Обёртка `Button` на базе shadcn." separator>
+			<DemoSection title="Interactive" desc="Обёртка `Button` на базе shadcn" separator>
 				<Button
 					variant={variant}
 					size={size}
@@ -40,6 +40,7 @@ export function DemoButtons() {
 			</DemoSection>
 			<DemoSection title="Sizes">
 				<Stack gap={2} wrap align="stretch">
+					<Button size="xs" variant="default" label="Button XS" />
 					<Button size="sm" variant="default" label="Button SM" />
 					<Button size="md" variant="default" label="Button MD" />
 					<Button size="lg" variant="default" label="Button LG" />

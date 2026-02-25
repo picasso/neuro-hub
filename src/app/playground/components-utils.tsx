@@ -28,7 +28,11 @@ export function DemoSection({ title, desc, separator, children }: DemoSectionPro
 	return (
 		<>
 			<section>
-				<TS variant="h3" content={title} className="my-1 text-sm font-medium" />
+				<TS
+					variant="h3"
+					content={title}
+					className={cn('my-1 text-sm font-medium', !desc && 'mb-2')}
+				/>
 				{desc != null && (
 					<TS variant="caption" color="secondary" content={desc} gutterBottom />
 				)}
@@ -111,7 +115,10 @@ export function SettingSelect({ id, label, value, options }: SettingSelectProps)
 	return (
 		<Stack vertical gap={2} align="stretch">
 			<Label className="text-xs">{label}</Label>
-			<Select value={value} onValueChange={(v) => update({ [id]: v } as never)}>
+			<Select
+				value={value === null ? 'null' : value}
+				onValueChange={(v) => update({ [id]: v === 'null' ? null : v } as never)}
+			>
 				<SelectTrigger className="h-8 text-xs">
 					<SelectValue />
 				</SelectTrigger>

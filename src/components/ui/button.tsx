@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 
 type LinkProps = ComponentProps<typeof Link>
 type ButtonVariant = 'default' | 'outline' | 'secondary' | 'destructive' | 'ghost'
-type ButtonSize = 'sm' | 'md' | 'lg' | 'xl'
+type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
 export type ButtonProps = Omit<React.ComponentPropsWithoutRef<'button'>, 'children'> & {
 	label?: string
