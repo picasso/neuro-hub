@@ -1,20 +1,14 @@
 'use client'
 
+import { map } from 'lodash'
 import { useEffect } from 'react'
+import { DemoLabel, DemoRoot, SettingSelect, SettingToggle } from './components-utils'
 import { useReset, useSettings, useUpdateSettings } from './settings-store'
 import { Label } from '@/components/shadcn/label'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/shadcn/select'
 import { Separator } from '@/components/shadcn/separator'
 import { Slider } from '@/components/shadcn/slider'
-import { Switch } from '@/components/shadcn/switch'
 import { ToggleGroup, ToggleGroupItem } from '@/components/shadcn/toggle-group'
-import { Stack, TS, type IconName } from '@/components/ui'
+import { Stack, type IconName } from '@/components/ui'
 
 type IconColor = (typeof colorOptions)[number]
 type IconSize = (typeof sizePresets)[number]
@@ -42,7 +36,7 @@ const defaultState: IconDemoState = {
 // settings panel component -----------------------------------------------------------------------]
 
 export function DemoIconsSettings() {
-	const [update, toggle] = useUpdateSettings<IconDemoState>()
+	const [update] = useUpdateSettings<IconDemoState>()
 	const reset = useReset<IconDemoState>(defaultState)
 	const { showName, showBorder, showBg, color, sizePreset, customSize } =
 		useSettings<IconDemoState>()
@@ -51,59 +45,12 @@ export function DemoIconsSettings() {
 	useEffect(() => reset(), [])
 
 	return (
-		<Stack vertical gap={4} align="stretch">
-			{/* show name toggle */}
-			<Stack gap={0} justify="space-between">
-				<Label htmlFor="show-name" className="text-xs">
-					Показывать имя
-				</Label>
-				<Switch
-					id="show-name"
-					checked={showName}
-					onCheckedChange={() => toggle('showName')}
-				/>
-			</Stack>
-			{/* show border toggle */}
-			<Stack gap={0} justify="space-between">
-				<Label htmlFor="show-border" className="text-xs">
-					Рамка вокруг иконки
-				</Label>
-				<Switch
-					id="show-border"
-					checked={showBorder}
-					onCheckedChange={() => toggle('showBorder')}
-				/>
-			</Stack>
-			{/* show background toggle */}
-			<Stack gap={0} justify="space-between">
-				<Label htmlFor="show-bg" className="text-xs">
-					Подложка под иконкой
-				</Label>
-				<Switch id="show-bg" checked={showBg} onCheckedChange={() => toggle('showBg')} />
-			</Stack>
+		<DemoRoot>
+			<SettingToggle id="showName" label="Показывать имя" checked={showName} />
+			<SettingToggle id="showBorder" label="Рамка вокруг иконки" checked={showBorder} />
+			<SettingToggle id="showBg" label="Подложка под иконкой" checked={showBg} />
 			<Separator />
-			{/* color select */}
-			<Stack vertical gap={2} align="stretch">
-				<Label className="text-xs">Цвет</Label>
-				<Select
-					value={color ?? 'none'}
-					onValueChange={(v: IconColor | 'none') =>
-						update({ color: v === 'none' ? null : v })
-					}
-				>
-					<SelectTrigger className="h-8 text-xs">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="none">По умолчанию</SelectItem>
-						{colorOptions.map((c) => (
-							<SelectItem key={c} value={c}>
-								{c}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</Stack>
+			<SettingSelect id="color" label="Цвет" value={color ?? 'none'} options={selectOps} />
 			<Separator />
 			{/* size presets */}
 			<Stack vertical gap={2} align="stretch">
@@ -141,13 +88,7 @@ export function DemoIconsSettings() {
 			<Stack vertical gap={4} align="stretch">
 				<Stack gap={0} justify="space-between">
 					<Label className="text-xs">Свой размер</Label>
-					<TS
-						variant="caption"
-						color="secondary"
-						content={`${customSize}px`}
-						inline
-						className="text-[10px]"
-					/>
+					<DemoLabel content={`${customSize}px`} size="xs" />
 				</Stack>
 				<Slider
 					value={[customSize]}
@@ -158,7 +99,7 @@ export function DemoIconsSettings() {
 					disabled={sizePreset !== 'custom'}
 				/>
 			</Stack>
-		</Stack>
+		</DemoRoot>
 	)
 }
 
@@ -221,6 +162,11 @@ const colorOptions = [
 	'info',
 	'contrast',
 ] as const
+
+const selectOps = [
+	{ label: 'По умолчанию', value: 'none' },
+	...map(colorOptions, (c) => ({ label: c, value: c })),
+]
 
 export const demoData = {
 	libraryIcons,

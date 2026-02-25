@@ -1,12 +1,12 @@
 'use client'
 
+import { DemoLabel, DemoRoot, DemoSection } from './components-utils'
 import {
 	type TextStyledColor,
 	type TextStyledVariant,
 	type TypographyDemoState,
 } from './demo-typography-settings'
 import { useSettings } from './settings-store'
-import { Separator } from '@/components/shadcn/separator'
 import { Stack, TS } from '@/components/ui'
 import { cn } from '@/lib/utils'
 
@@ -39,17 +39,6 @@ const VARIANTS: Exclude<TextStyledVariant, 'block'>[] = [
 	'caption',
 ]
 
-// section header ---------------------------------------------------------------------------------]
-
-function SectionHeader({ title, desc }: { title: string; desc: string }) {
-	return (
-		<>
-			<TS variant="h3" content={title} className="my-1 text-sm font-medium" />
-			<TS variant="caption" color="secondary" content={desc} gutterBottom />
-		</>
-	)
-}
-
 // main demo --------------------------------------------------------------------------------------]
 
 const VALID_VARIANTS = new Set<string>(VARIANTS)
@@ -73,13 +62,12 @@ export function DemoTypography() {
 	const needsDarkBg = resolvedColor === 'contrast' || resolvedColor === 'soft'
 
 	return (
-		<Stack vertical gap={6} align="stretch">
-			{/* Interactive */}
-			<section>
-				<SectionHeader
-					title="Interactive"
-					desc="Обёртка `Typography` на базе shadcn and Tailwind CSS."
-				/>
+		<DemoRoot>
+			<DemoSection
+				title="Interactive"
+				desc="Обёртка `Typography` на базе shadcn and Tailwind CSS."
+				separator
+			>
 				<div className={cn('min-h-14 rounded-md border p-4', needsDarkBg && 'bg-primary')}>
 					<TS
 						variant={variant}
@@ -92,73 +80,35 @@ export function DemoTypography() {
 						content={INTERACTIVE_SAMPLE}
 					/>
 				</div>
-			</section>
+			</DemoSection>
 
-			<Separator />
-
-			{/* All variants */}
-			<section>
-				<SectionHeader title="Variants" desc="Все поддерживаемые variant-ы." />
+			<DemoSection title="Variants" desc="Все поддерживаемые variant-ы." separator>
 				<Stack vertical gap={4} align="stretch">
 					{VARIANTS.map((v) => (
 						<Stack key={v} gap={3} align="baseline">
-							<TS
-								variant="caption"
-								color="secondary"
-								content={v}
-								inline
-								className="w-16 shrink-0"
-							/>
+							<DemoLabel content={v} size="sm" />
 							<TS variant={v} content={SAMPLE_TEXTS[v]} />
 						</Stack>
 					))}
 				</Stack>
-			</section>
+			</DemoSection>
 
-			<Separator />
-
-			{/* Modifiers */}
-			<section>
-				<SectionHeader title="Modifiers" desc="strong, thin, gutterBottom, inline." />
+			<DemoSection title="Modifiers" desc="strong, thin, gutterBottom, inline." separator>
 				<Stack vertical gap={3} align="stretch">
 					<Stack gap={3} align="baseline">
-						<TS
-							variant="caption"
-							color="secondary"
-							content="default"
-							inline
-							className="w-24 shrink-0"
-						/>
+						<DemoLabel content="default" size="md" />
 						<TS content="Обычный текст (body, без модификаторов)" />
 					</Stack>
 					<Stack gap={3} align="baseline">
-						<TS
-							variant="caption"
-							color="secondary"
-							content="strong"
-							inline
-							className="w-24 shrink-0"
-						/>
+						<DemoLabel content="strong" size="md" />
 						<TS strong content="Strong — font-bold (700)" />
 					</Stack>
 					<Stack gap={3} align="baseline">
-						<TS
-							variant="caption"
-							color="secondary"
-							content="thin"
-							inline
-							className="w-24 shrink-0"
-						/>
+						<DemoLabel content="thin" size="md" />
 						<TS variant="h3" thin content="Thin на h3 — font-medium вместо semibold" />
 					</Stack>
 					<Stack gap={3} align="baseline">
-						<TS
-							variant="caption"
-							color="secondary"
-							content="gutter"
-							inline
-							className="w-24 shrink-0"
-						/>
+						<DemoLabel content="gutter" size="md" />
 						<div>
 							<TS gutterBottom content="gutterBottom — добавляет mb-4 снизу" />
 							<TS
@@ -169,13 +119,7 @@ export function DemoTypography() {
 						</div>
 					</Stack>
 					<Stack gap={3} align="baseline">
-						<TS
-							variant="caption"
-							color="secondary"
-							content="inline"
-							inline
-							className="w-24 shrink-0"
-						/>
+						<DemoLabel content="inline" size="md" />
 						<span>
 							<TS inline content="Inline: " />
 							<TS inline strong content="strong " />
@@ -183,69 +127,35 @@ export function DemoTypography() {
 						</span>
 					</Stack>
 				</Stack>
-			</section>
+			</DemoSection>
 
-			<Separator />
-
-			{/* Markdown */}
-			<section>
-				<SectionHeader
-					title="Markdown"
-					desc="Встроенная поддержка простого Markdown через simpleMarkdown()."
-				/>
+			<DemoSection
+				title="Markdown"
+				desc="Встроенная поддержка простого Markdown через simpleMarkdown()."
+			>
 				<Stack vertical gap={3} align="stretch">
 					<Stack gap={3} align="start">
-						<TS
-							variant="caption"
-							color="secondary"
-							content="bold / em"
-							inline
-							className="w-24 shrink-0 pt-1"
-						/>
+						<DemoLabel content="bold / em" size="md" className="pt-1" />
 						<TS content="**Жирный** и *курсив* — через `**` и `*`" />
 					</Stack>
 					<Stack gap={3} align="start">
-						<TS
-							variant="caption"
-							color="secondary"
-							content="code"
-							inline
-							className="w-24 shrink-0 pt-1"
-						/>
+						<DemoLabel content="code" size="md" className="pt-1" />
 						<TS content="`код` и цвета: `!ошибка` `?вопрос` `*успех` `+инфо` `#предупреждение`" />
 					</Stack>
 					<Stack gap={3} align="start">
-						<TS
-							variant="caption"
-							color="secondary"
-							content="link"
-							inline
-							className="w-24 shrink-0 pt-1"
-						/>
+						<DemoLabel content="link" size="md" className="pt-1" />
 						<TS content="Ссылка: [NeuroGig](https://neurogig.com) откроется в новой вкладке" />
 					</Stack>
 					<Stack gap={3} align="start">
-						<TS
-							variant="caption"
-							color="secondary"
-							content="br"
-							inline
-							className="w-24 shrink-0 pt-1"
-						/>
+						<DemoLabel content="br" size="md" className="pt-1" />
 						<TS inline content={'Строка 1\nСтрока 2 через inline+br'} />
 					</Stack>
 					<Stack gap={3} align="start">
-						<TS
-							variant="caption"
-							color="secondary"
-							content="md=false"
-							inline
-							className="w-24 shrink-0 pt-1"
-						/>
+						<DemoLabel content="md=false" size="md" className="pt-1" />
 						<TS md={false} content="**Текст без Markdown** — отображается как есть" />
 					</Stack>
 				</Stack>
-			</section>
-		</Stack>
+			</DemoSection>
+		</DemoRoot>
 	)
 }

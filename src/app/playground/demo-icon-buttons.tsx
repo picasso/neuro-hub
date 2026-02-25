@@ -1,9 +1,9 @@
 'use client'
 
+import { DemoLabel, DemoRoot, DemoSection } from './components-utils'
 import { type IconButtonDemoState } from './demo-icon-buttons-settings'
 import { useSettings } from './settings-store'
-import { Separator } from '@/components/shadcn/separator'
-import { IconButton, Stack, TS } from '@/components/ui'
+import { IconButton, Stack } from '@/components/ui'
 import { cn } from '@/lib/utils'
 
 const icons = ['thumbs-up', 'search', 'trash', 'book-marked', 'eye', 'collections'] as const
@@ -15,15 +15,12 @@ export function DemoIconButtons() {
 	const resolvedForceSize = forceSize === 'auto' ? undefined : forceSize
 
 	return (
-		<Stack vertical gap={6} align="stretch">
-			<section>
-				<TS variant="h3" content="Interactive" className="my-1 text-sm font-medium" />
-				<TS
-					variant="caption"
-					color="secondary"
-					content="Обёртка `IconButton` на базе shadcn `Button` + `Icon`."
-					gutterBottom
-				/>
+		<DemoRoot>
+			<DemoSection
+				title="Interactive"
+				desc="Обёртка `IconButton` на базе shadcn `Button` + `Icon`."
+				separator
+			>
 				<Stack
 					gap={2}
 					wrap
@@ -46,31 +43,18 @@ export function DemoIconButtons() {
 								forceSize={resolvedForceSize}
 							/>
 							{showName && (
-								<TS
-									variant="caption"
+								<DemoLabel
 									content={icon}
-									inline
-									className={cn(
-										'text-[10px]',
-										variant === 'contrast'
-											? 'text-white'
-											: 'text-muted-foreground',
-									)}
+									size="xs"
+									className={variant === 'contrast' ? 'text-white' : undefined}
 								/>
 							)}
 						</Stack>
 					))}
 				</Stack>
-			</section>
+			</DemoSection>
 
-			<Separator />
-
-			<section>
-				<TS
-					variant="h3"
-					content="Variants (+ rounded)"
-					className="my-1 text-sm font-medium"
-				/>
+			<DemoSection title="Variants (+ rounded)" separator>
 				<Stack gap={2} wrap align="stretch">
 					<IconButton icon="thumbs-up" variant="ghost" />
 					<IconButton icon="search" variant="outline" />
@@ -83,81 +67,37 @@ export function DemoIconButtons() {
 					<IconButton icon="trash" variant="destructive" rounded />
 					<IconButton icon="eye" variant="default" rounded />
 				</Stack>
-			</section>
+			</DemoSection>
 
-			<section>
-				<TS variant="h3" content="Sizes" className="my-1 text-sm font-medium" />
+			<DemoSection title="Sizes" separator>
 				<Stack gap={2} wrap align="stretch">
 					<Stack vertical>
 						<IconButton icon="search" size="icon" variant="outline" />
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="icon"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="icon" size="xs" />}
 					</Stack>
 					<Stack vertical>
 						<IconButton icon="search" size="sm" variant="outline" />
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="sm"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="sm" size="xs" />}
 					</Stack>
 					<Stack vertical>
 						<IconButton icon="search" size="md" variant="outline" />
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="md"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="md" size="xs" />}
 					</Stack>
 					<Stack vertical>
 						<IconButton icon="search" size="lg" variant="outline" />
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="lg"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="lg" size="xs" />}
 					</Stack>
 					<Stack vertical>
 						<IconButton icon="search" size="xl" variant="outline" />
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="xl"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="xl" size="xs" />}
 					</Stack>
 				</Stack>
-			</section>
-			<section>
-				<TS variant="h3" content="Sizes + forceSize" className="my-1 text-sm font-medium" />
-				<TS
-					variant="caption"
-					color="secondary"
-					content="`forceSize` prop влияет на размер иконки и а `size` prop определяет размер кнопки."
-					gutterBottom
-				/>
+			</DemoSection>
+			<DemoSection
+				title="Sizes + forceSize"
+				desc="`forceSize` prop влияет на размер иконки и а `size` prop определяет размер кнопки."
+				separator
+			>
 				<Stack gap={2} wrap align="stretch">
 					<Stack vertical>
 						<IconButton
@@ -166,105 +106,40 @@ export function DemoIconButtons() {
 							variant="outline"
 							forceSize="xs"
 						/>
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="icon + xs"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="icon + xs" size="xs" />}
 					</Stack>
 					<Stack vertical>
 						<IconButton icon="book-marked" size="sm" variant="outline" forceSize="sm" />
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="sm + sm"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="sm + sm" size="xs" />}
 					</Stack>
 					<Stack vertical>
 						<IconButton icon="book-marked" size="md" variant="outline" forceSize="md" />
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="md + md"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="md + md" size="xs" />}
 					</Stack>
 					<Stack vertical>
 						<IconButton icon="book-marked" size="lg" variant="outline" forceSize="lg" />
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="lg + lg"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="lg + lg" size="xs" />}
 					</Stack>
 					<Stack vertical>
 						<IconButton icon="book-marked" size="xl" variant="outline" forceSize="xl" />
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="xl + xl"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="xl + xl" size="xs" />}
 					</Stack>
 
 					<Stack vertical>
 						<IconButton icon="book-marked" size="xl" variant="outline" forceSize="md" />
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="xl + md"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="xl + md" size="xs" />}
 					</Stack>
 					<Stack vertical>
 						<IconButton icon="book-marked" size="sm" variant="outline" forceSize="xl" />
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="sm + xl"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="sm + xl" size="xs" />}
 					</Stack>
 					<Stack vertical>
 						<IconButton icon="book-marked" size="lg" variant="outline" forceSize="xs" />
-						{showName && (
-							<TS
-								variant="caption"
-								color="secondary"
-								content="lg + xs"
-								inline
-								className="text-[10px]"
-							/>
-						)}
+						{showName && <DemoLabel content="lg + xs" size="xs" />}
 					</Stack>
 				</Stack>
-			</section>
-			<section>
-				<TS variant="h3" content="Hrefs + rounded" className="my-1 text-sm font-medium" />
+			</DemoSection>
+			<DemoSection title="Hrefs + rounded">
 				<Stack gap={2} wrap align="stretch">
 					<IconButton icon="thumbs-up" variant="ghost" href="https://github.com/" />
 					<IconButton icon="search" variant="outline" href="https://apple.com" />
@@ -291,7 +166,7 @@ export function DemoIconButtons() {
 						href="/projects"
 					/>
 				</Stack>
-			</section>
-		</Stack>
+			</DemoSection>
+		</DemoRoot>
 	)
 }

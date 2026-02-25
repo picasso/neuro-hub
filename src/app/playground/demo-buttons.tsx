@@ -1,25 +1,17 @@
 'use client'
 
+import { DemoRoot, DemoSection } from './components-utils'
 import { type ButtonDemoState } from './demo-buttons-settings'
 import { useSettings } from './settings-store'
-import { Separator } from '@/components/shadcn/separator'
 import { Button, Stack } from '@/components/ui'
-import { TS } from '@/components/ui/text-styled'
 
 export function DemoButtons() {
 	const settings = useSettings<ButtonDemoState>()
 	const { variant, size, disabled, fullWidth, bold: thin, noWrap, leftIcon, rightIcon } = settings
 
 	return (
-		<Stack vertical gap={6} align="stretch">
-			<section>
-				<TS variant="h3" content="Interactive" className="my-1 text-sm font-medium" />
-				<TS
-					variant="caption"
-					color="secondary"
-					content="Обёртка `Button` на базе shadcn."
-					gutterBottom
-				/>
+		<DemoRoot>
+			<DemoSection title="Interactive" desc="Обёртка `Button` на базе shadcn." separator>
 				<Button
 					variant={variant}
 					size={size}
@@ -31,10 +23,8 @@ export function DemoButtons() {
 					rightIcon={rightIcon ? 'chevron-right' : undefined}
 					label={noWrap ? 'Long button label that should not wrap' : 'Button Action'}
 				/>
-			</section>
-			<Separator />
-			<section>
-				<TS variant="h3" content="Variants" className="my-1 text-sm font-medium" />
+			</DemoSection>
+			<DemoSection title="Variants" separator>
 				<Stack gap={2} wrap align="stretch">
 					<Button variant="default" label="Save" />
 					<Button variant="outline" label="Reject" />
@@ -47,16 +37,15 @@ export function DemoButtons() {
 					<Button variant="destructive" label="Destructive" leftIcon="trash" />
 					<Button variant="ghost" label="Ghost" leftIcon="login" />
 				</Stack>
-			</section>
-			<section>
-				<TS variant="h3" content="Sizes" className="my-1 text-sm font-medium" />
+			</DemoSection>
+			<DemoSection title="Sizes">
 				<Stack gap={2} wrap align="stretch">
 					<Button size="sm" variant="default" label="Button SM" />
 					<Button size="md" variant="default" label="Button MD" />
 					<Button size="lg" variant="default" label="Button LG" />
 					<Button size="xl" variant="default" label="Button XL" />
 				</Stack>
-			</section>
-		</Stack>
+			</DemoSection>
+		</DemoRoot>
 	)
 }
