@@ -3,7 +3,6 @@
 import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
-import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { sample } from 'effector'
 import { useUnit } from 'effector-react'
@@ -12,6 +11,7 @@ import Image from 'next/image'
 import { delay } from 'patronum'
 import { type TransitionEventHandler, useCallback, useEffect } from 'react'
 import { IconButton } from './icon-button'
+import { Link } from './link'
 import { type MediaKind, type MediaItem, MediaPlaceholder } from './portfolio-item'
 import { Icon, type IconName } from '@/components/ui/icon'
 import { TS } from '@/components/ui/text-styled'
@@ -229,8 +229,8 @@ export function PortfolioViewer({
 								href={mediaUrl}
 								target="_blank"
 								rel="noreferrer"
-								underline="hover"
-								color="contrast"
+								hover="vivid"
+								color="soft"
 							>
 								Открыть PDF в новой вкладке
 							</Link>
@@ -253,8 +253,8 @@ export function PortfolioViewer({
 								href={mediaUrl}
 								target="_blank"
 								rel="noreferrer"
-								underline="hover"
-								color="contrast"
+								hover="vivid"
+								color="soft"
 							>
 								Открыть файл в новой вкладке
 							</Link>

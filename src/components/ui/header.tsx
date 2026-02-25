@@ -2,11 +2,11 @@
 
 import AppBar from '@mui/material/AppBar'
 import Container from '@mui/material/Container'
-import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Toolbar from '@mui/material/Toolbar'
 import { useRouter } from 'next/navigation'
 import { Button } from './button'
+import { Link } from './link'
 import { TS } from './text-styled'
 import { FontSwitcher } from '@/components/providers'
 import { signOut, useSession } from '@/lib/auth/client'
@@ -26,77 +26,28 @@ export function Header() {
 		>
 			<Container maxWidth="lg">
 				<Toolbar disableGutters>
-					<Link href="/" underline="none" color="inherit" sx={{ flexGrow: 1 }}>
+					<Link href="/" className="grow">
 						<TS variant="h5" strong content="NeuroGig" />
 					</Link>
 
 					<Stack direction="row" spacing={2} alignItems="center">
 						<FontSwitcher />
-						<Link
-							href="/projects"
-							underline="hover"
-							color="inherit"
-							sx={{ display: 'inline-flex', alignItems: 'center' }}
-						>
-							Проекты
-						</Link>
-						<Link
-							href="/freelancers"
-							underline="hover"
-							color="inherit"
-							sx={{ display: 'inline-flex', alignItems: 'center' }}
-						>
-							Фрилансеры
-						</Link>
-						<Link
-							href="/api/docs"
-							underline="hover"
-							color="inherit"
-							sx={{ display: 'inline-flex', alignItems: 'center' }}
-						>
-							API
-						</Link>
+						<Link href="/projects">Проекты</Link>
+						<Link href="/freelancers">Фрилансеры</Link>
+						<Link href="/api/docs">API</Link>
 						{process.env.NODE_ENV === 'development' && (
-							<Link
-								href="/playground"
-								underline="hover"
-								color="inherit"
-								sx={{ display: 'inline-flex', alignItems: 'center' }}
-							>
-								Playground
-							</Link>
+							<Link href="/playground">Playground</Link>
 						)}
 						{!isPending && !isAuthed && (
 							<>
-								<Link
-									href="/login"
-									underline="hover"
-									color="inherit"
-									sx={{ display: 'inline-flex', alignItems: 'center' }}
-								>
-									Войти
-								</Link>
-								<Link
-									href="/signup"
-									underline="hover"
-									color="inherit"
-									sx={{ display: 'inline-flex', alignItems: 'center' }}
-								>
-									Регистрация
-								</Link>
+								<Link href="/login">Войти</Link>
+								<Link href="/signup">Регистрация</Link>
 							</>
 						)}
 
 						{!isPending && isAuthed && (
 							<>
-								<Link
-									href="/dashboard"
-									underline="hover"
-									color="inherit"
-									sx={{ display: 'inline-flex', alignItems: 'center' }}
-								>
-									Профиль
-								</Link>
+								<Link href="/dashboard">Профиль</Link>
 								<Button
 									variant="outline"
 									size="lg"

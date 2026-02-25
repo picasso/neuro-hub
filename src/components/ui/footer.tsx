@@ -4,12 +4,11 @@ import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
-// import IconButton from '@mui/material/IconButton'
-import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import packageJson from '../../../package.json'
 import { Icon } from './icon'
 import { IconButton } from './icon-button'
+import { Link } from './link'
 import { TS } from './text-styled'
 import { contactContent } from '@/config/mocks'
 
@@ -40,7 +39,7 @@ export function Footer() {
 								}}
 							/>
 						</Stack>
-						<TS variant="body" color="dimmed" className="text-sm">
+						<TS variant="subtitle" color="soft">
 							Платформа для фриланса в сфере генеративного ИИ
 						</TS>
 					</Grid>
@@ -50,10 +49,10 @@ export function Footer() {
 							Для фрилансеров
 						</TS>
 						<Stack spacing={1}>
-							<Link href="/projects" color="contrast" underline="hover">
+							<Link href="/projects" color="soft" hover="vivid">
 								Найти проекты
 							</Link>
-							<Link href="/how-it-works" color="contrast" underline="hover">
+							<Link href="/how-it-works" color="soft" hover="vivid">
 								Как это работает
 							</Link>
 						</Stack>
@@ -64,10 +63,10 @@ export function Footer() {
 							Для заказчиков
 						</TS>
 						<Stack spacing={1}>
-							<Link href="/freelancers" color="contrast" underline="hover">
+							<Link href="/freelancers" color="soft" hover="vivid">
 								Найти фрилансера
 							</Link>
-							<Link href="/post-project" color="contrast" underline="hover">
+							<Link href="/post-project" color="soft" hover="vivid">
 								Разместить проект
 							</Link>
 						</Stack>
@@ -88,12 +87,12 @@ export function Footer() {
 					}}
 				>
 					<Stack direction="row" alignItems="center" spacing={1}>
-						<Icon name="email" size={20} className="text-white/50" />
+						<Icon name="email" size={20} className="text-white/80" />
 						<Link
 							href={`mailto:${contactContent.email}`}
 							color="contrast"
-							underline="hover"
-							sx={{ typography: 'body2' }}
+							hover="underline"
+							size="sm"
 						>
 							{contactContent.email}
 						</Link>
@@ -144,7 +143,7 @@ export function Footer() {
 				</Box>
 
 				<Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'text.pale' }}>
-					<TS variant="body" color="dimmed" className="text-sm text-center">
+					<TS variant="caption" color="contrast" className="text-center">
 						© {new Date().getFullYear()} NeuroGig. Все права защищены.
 					</TS>
 				</Box>

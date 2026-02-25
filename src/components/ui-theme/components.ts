@@ -1,11 +1,11 @@
 import { alpha, type ThemeOptions } from '@mui/material/styles'
+import NextLink from 'next/link'
 import { feedback } from './feedback'
-import { LinkBehaviour } from '@/components/ui/link-behaviour'
 
 export const components: ThemeOptions['components'] = {
 	MuiLink: {
 		defaultProps: {
-			component: LinkBehaviour,
+			component: NextLink,
 		},
 		styleOverrides: {
 			root: ({ theme }) => ({
@@ -35,7 +35,7 @@ export const components: ThemeOptions['components'] = {
 	},
 	MuiButtonBase: {
 		defaultProps: {
-			LinkComponent: LinkBehaviour,
+			LinkComponent: NextLink,
 		},
 	},
 	MuiButton: {

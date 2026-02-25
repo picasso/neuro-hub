@@ -5,10 +5,10 @@ import Chip from '@mui/material/Chip'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { useMemo, useState } from 'react'
 import type { PublicFreelancerProfile } from '@/lib/db/queries/freelancers'
+import { Link } from '@/components/ui'
 import { TS } from '@/components/ui/text-styled'
 
 function levelLabel(level: string | null) {
@@ -214,7 +214,8 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 									href={openItem.mediaUrl}
 									target="_blank"
 									rel="noreferrer"
-									underline="hover"
+									color="dimmed"
+									hover="underline"
 								>
 									Открыть PDF
 								</Link>
@@ -223,7 +224,8 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 									href={openItem.mediaUrl}
 									target="_blank"
 									rel="noreferrer"
-									underline="hover"
+									color="dimmed"
+									hover="underline"
 								>
 									Открыть медиа
 								</Link>

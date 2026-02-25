@@ -92,6 +92,7 @@ export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 }
 
 function string2dom(str: string) {
+	if (typeof document === 'undefined') return null
 	const el = document.createElement('html')
 	el.innerHTML = str
 	return find(el.childNodes, { nodeName: 'BODY' })

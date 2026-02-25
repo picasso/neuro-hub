@@ -1,9 +1,9 @@
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
-import Link from '@mui/material/Link'
 import { redirect } from 'next/navigation'
 import { FreelancerProfileEditor } from '@/components/features/freelancer-profile'
 import { PortfolioEditor } from '@/components/forms/portfolio'
+import { Link } from '@/components/ui'
 import { TS } from '@/components/ui/text-styled'
 import { getSession } from '@/lib/auth/server'
 import { getOrCreateFreelancerProfileByUserId } from '@/lib/db/queries/freelancers'
@@ -40,7 +40,11 @@ export default async function DashboardPage() {
 							className="text-sm mb-2"
 							content="Публичная страница профиля:"
 						/>
-						<Link href={`/freelancers/${freelancerProfile.id}`} underline="hover">
+						<Link
+							color="primary"
+							hover="underline"
+							href={`/freelancers/${freelancerProfile.id}`}
+						>
 							{`/freelancers/${freelancerProfile.id}`}
 						</Link>
 
