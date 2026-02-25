@@ -8,7 +8,7 @@ import { useStoreMap } from 'effector-react'
 import { isNumber } from 'lodash'
 import { useCallback } from 'react'
 import { toast } from 'sonner'
-import { $alerts, type AlertId } from './model'
+import { $alerts, type AlertProps } from './model'
 import { Icon, TS } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { simpleMarkdown, templatedMessage } from '@/utils'
@@ -20,7 +20,7 @@ const iconMapping: MuiAlertProps['iconMapping'] = {
 	error: <Icon name="error-filled" color="error" size="lg" />,
 }
 
-export function AlertComponent({ id }: { id: AlertId }) {
+export function AlertComponent({ id }: AlertProps) {
 	const alert = useStoreMap({
 		store: $alerts,
 		keys: [String(id)],

@@ -1,6 +1,6 @@
 import { alpha, type ThemeOptions } from '@mui/material/styles'
 import { feedback } from './feedback'
-import { LinkBehaviour } from '@/components/ui'
+import { LinkBehaviour } from '@/components/ui/link-behaviour'
 
 export const components: ThemeOptions['components'] = {
 	MuiLink: {

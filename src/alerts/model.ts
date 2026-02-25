@@ -1,13 +1,12 @@
 'use client'
 
 import { type AlertProps as MuiAlertProps } from '@mui/material/Alert'
-import { type EventCallable, sample } from 'effector'
+import { attach, type EventCallable, sample } from 'effector'
 import { createGate } from 'effector-react'
 import { produce, castDraft } from 'immer'
 import { forEach, isString, merge, set, uniqueId } from 'lodash'
-import { type ReactElement } from 'react'
+import { createElement, type FC, type ReactElement } from 'react'
 import { toast, type ExternalToast as ToastProps, type ToasterProps } from 'sonner'
-import { AlertComponent } from './alert'
 import { type IconName, type IconOptions } from '@/components/ui'
 import { createDomainWatched } from '@/lib/logger'
 import { type MarkdownParams, type TemplatedMessage } from '@/utils'
@@ -70,6 +69,7 @@ type TKeys = keyof AllowedToastProps
 // - `containerAriaLabel` - Custom ARIA label for the toast container.
 
 export type Alert = AllowedToastProps & AlertComponentProps
+export type AlertProps = { id: AlertId }
 
 export type AlertOptions = {
 	position?: ToasterProps['position']
@@ -82,13 +82,15 @@ export type AlertOptions = {
 	toastOptions?: ToasterProps['toastOptions']
 }
 
+type AlertComponentType = FC<AlertProps>
 type AlertWithId = Omit<Alert, 'id'> & { id: AlertId }
 type AlertPatch = { id: AlertId } & Partial<Omit<Alert, 'id' | 'overlay' | TKeys>>
 type Alerts = Record<AlertId, Alert>
 
 // * * * gate -------------------------------------------------------------------------------------]
 
-export const AlertGate = createGate({ domain, name: 'AlertGate' })
+// NOTE: use Gate with props to resolve circular dependency between `alert.tsx` and model.tsx
+export const AlertGate = createGate<FC<AlertProps>>({ domain, name: 'AlertGate' })
 
 // * * * events -----------------------------------------------------------------------------------]
 
@@ -103,6 +105,7 @@ const decrementOverlay = domain.createEvent('decrementOverlay')
 
 // * * * $alerts ----------------------------------------------------------------------------------]
 
+const $component = domain.createStore<AlertComponentType | null>(null, { name: '$component' })
 export const $alerts = domain.createStore<Alerts>({}, { name: '$alerts' })
 
 $alerts.on(upsertAlert, (alerts, { id, ...alert }) =>
@@ -131,8 +134,10 @@ $alerts.on(deleteAlert, (alerts, id) =>
 
 // * * * effects ----------------------------------------------------------------------------------]
 
-export const addAlertFx = domain.createEffect<Alert, AlertId>({
-	handler: (options: Alert) => {
+export const addAlertFx = attach({
+	source: $component,
+	effect: (alertComponent, options: Alert) => {
+		if (!alertComponent) return
 		const alertId = (options.id ?? createAlertId()) as AlertId
 
 		// store as a single source of truth
@@ -143,12 +148,13 @@ export const addAlertFx = domain.createEffect<Alert, AlertId>({
 		if (stored.overlay) incrementOverlay()
 
 		toast.custom(
-			(id): ReactElement => <AlertComponent id={String(id) as AlertId} />,
+			(id): ReactElement => createElement(alertComponent, { id: String(id) as AlertId }),
 			buildToastProps(stored),
 		)
 
 		return alertId
 	},
+	domain,
 	name: 'addAlertFx',
 })
 
@@ -176,6 +182,12 @@ export const $options = domain
 	.reset(resetOptions)
 
 // * * * connections ------------------------------------------------------------------------------]
+
+// set alert `$component` store when gate is open
+sample({
+	clock: AlertGate.open,
+	target: $component,
+})
 
 // create alert when `addAlert` event triggered and gate is open
 sample({
