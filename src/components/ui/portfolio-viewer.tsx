@@ -127,14 +127,8 @@ export function PortfolioViewer({
 						spacing={2}
 					>
 						<Icon name={`media-${kind}` as IconName} size={40} color="muted" />
-						<TS
-							variant="h3"
-							content={title ?? ''}
-							sx={{ mb: 0.25, textTransform: 'capitalize' }}
-						/>
-						{!!caption && (
-							<TS variant="caption" color="text.secondary" content={caption} />
-						)}
+						<TS variant="h3" content={title ?? ''} className="mb-0.5 capitalize" />
+						{!!caption && <TS variant="caption" color="secondary" content={caption} />}
 					</Stack>
 					<Stack direction="row" alignItems="center" spacing={1}>
 						<IconButton
@@ -224,8 +218,9 @@ export function PortfolioViewer({
 						>
 							<Icon name="media-pdf" size={180} color="contrast" />
 							<TS
-								variant="body2"
-								color="contrast.dark"
+								variant="body"
+								color="contrast"
+								className="text-sm"
 								content="Предпросмотр PDF пока недоступен."
 							/>
 							<Link
@@ -247,8 +242,9 @@ export function PortfolioViewer({
 						>
 							<Icon name="do-not-disturb" size={180} color="contrast" />
 							<TS
-								variant="body2"
-								color="contrast.dark"
+								variant="body"
+								color="contrast"
+								className="text-sm"
 								content="Предпросмотр для этого типа файла пока недоступен."
 							/>
 							<Link

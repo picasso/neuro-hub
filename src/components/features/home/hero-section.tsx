@@ -19,39 +19,24 @@ export function HeroSection() {
 			<Container maxWidth="md">
 				<TS
 					variant="h2"
-					component="h1"
-					gutterBottom
 					color="contrast"
+					className="font-extrabold text-[2.5rem] md:text-[3.5rem]"
 					content={heroContent.title}
-					sx={{
-						fontWeight: 800,
-						fontSize: { xs: '2.5rem', md: '3.5rem' },
-					}}
 				/>
 
 				<TS
 					variant="h5"
 					color="contrast"
+					thin
+					className="text-xl sm:text-2xl mb-4 opacity-95"
 					content={heroContent.subtitle}
-					sx={{
-						fontSize: { xs: '1.25rem', sm: '1.5rem' },
-						mb: 2,
-						fontWeight: 500,
-						opacity: 0.95,
-					}}
 				/>
 
 				<TS
-					variant="body1"
+					variant="body"
 					color="contrast"
+					className="mb-8 text-base sm:text-[1.1rem] opacity-90 max-w-150 mx-auto"
 					content={heroContent.description}
-					sx={{
-						mb: 4,
-						fontSize: { xs: '1rem', sm: '1.1rem' },
-						opacity: 0.9,
-						maxWidth: 600,
-						mx: 'auto',
-					}}
 				/>
 
 				<Stack

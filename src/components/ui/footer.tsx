@@ -29,7 +29,7 @@ export function Footer() {
 				<Grid container spacing={4}>
 					<Grid size={{ xs: 12, sm: 4 }}>
 						<Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
-							<TS variant="h6">NeuroGig</TS>
+							<TS variant="h5">NeuroGig</TS>
 							<Chip
 								label={`${packageJson.version}`}
 								size="small"
@@ -40,13 +40,13 @@ export function Footer() {
 								}}
 							/>
 						</Stack>
-						<TS variant="body2" color="text.pale">
+						<TS variant="body" color="dimmed" className="text-sm">
 							Платформа для фриланса в сфере генеративного ИИ
 						</TS>
 					</Grid>
 
 					<Grid size={{ xs: 12, sm: 4 }}>
-						<TS variant="h6" gutterBottom>
+						<TS variant="h5" gutterBottom>
 							Для фрилансеров
 						</TS>
 						<Stack spacing={1}>
@@ -60,7 +60,7 @@ export function Footer() {
 					</Grid>
 
 					<Grid size={{ xs: 12, sm: 4 }}>
-						<TS variant="h6" gutterBottom>
+						<TS variant="h5" gutterBottom>
 							Для заказчиков
 						</TS>
 						<Stack spacing={1}>
@@ -144,7 +144,7 @@ export function Footer() {
 				</Box>
 
 				<Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'text.pale' }}>
-					<TS variant="body2" color="text.pale" align="center">
+					<TS variant="body" color="dimmed" className="text-sm text-center">
 						© {new Date().getFullYear()} NeuroGig. Все права защищены.
 					</TS>
 				</Box>

@@ -52,8 +52,8 @@ function BenefitCard({ icon, title, description }: BenefitCardProps) {
 				<Icon name={icon} size={32} color="contrast" />
 			</Box>
 			<Stack>
-				<TS variant="h6" gutterBottom fontWeight={600} content={title} />
-				<TS variant="body2" color="text.secondary" content={description} />
+				<TS variant="h5" gutterBottom className="font-semibold" content={title} />
+				<TS variant="body" color="secondary" className="text-sm" content={description} />
 			</Stack>
 		</Paper>
 	)
@@ -68,12 +68,9 @@ export function BenefitsSection() {
 			<Container maxWidth="lg">
 				<TS
 					variant="h3"
-					component="h2"
-					align="center"
-					gutterBottom
-					fontWeight={700}
+					strong
+					className="text-center text-[2rem] sm:text-[2.5rem] md:text-[3rem] mb-12"
 					content="Почему выбирают NeuroGig"
-					sx={{ fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, mb: 6 }}
 				/>
 
 				<Grid container spacing={6}>
@@ -81,9 +78,8 @@ export function BenefitsSection() {
 						<TS
 							variant="h5"
 							gutterBottom
-							fontWeight={600}
+							className="font-semibold mb-6 text-primary"
 							content={benefitsContent.freelancers.title}
-							sx={{ mb: 3, color: 'primary.main' }}
 						/>
 						<Grid container spacing={3} sx={{ width: 1 }}>
 							{map(benefitsContent.freelancers.items, (item, index) => {
@@ -104,9 +100,8 @@ export function BenefitsSection() {
 						<TS
 							variant="h5"
 							gutterBottom
-							fontWeight={600}
+							className="font-semibold mb-6 text-secondary-foreground"
 							content={benefitsContent.clients.title}
-							sx={{ mb: 3, color: 'secondary.main' }}
 						/>
 						<Grid container spacing={3} sx={{ width: 1 }}>
 							{map(benefitsContent.clients.items, (item, index) => {

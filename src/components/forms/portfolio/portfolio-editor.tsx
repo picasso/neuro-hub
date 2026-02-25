@@ -43,10 +43,10 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 		<Box>
 			<TS variant="h5" gutterBottom content="Портфолио" />
 			<TS
-				variant="body2"
-				color="text.secondary"
+				variant="body"
+				color="secondary"
+				className="text-sm mb-6"
 				content="Загрузите медиа напрямую в Vercel Blob и сохраните элемент портфолио."
-				sx={{ mb: 3 }}
 			/>
 
 			<Stack spacing={2} sx={{ mb: 3 }}>
@@ -88,9 +88,9 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 					/>
 					<TS
 						variant="caption"
-						color="text.secondary"
+						color="secondary"
+						className="block mt-1"
 						content="Поддерживаемые типы: image/video/audio/pdf. Лимит: 50MB."
-						sx={{ display: 'block', mt: 0.5 }}
 					/>
 				</Box>
 
@@ -105,10 +105,10 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 
 			<Divider sx={{ mb: 2 }} />
 
-			<TS variant="h6" gutterBottom content="Ваши работы" />
+			<TS variant="h5" gutterBottom content="Ваши работы" />
 
 			{portfolio.length === 0 ? (
-				<TS variant="body2" color="text.secondary" content="Пока пусто." />
+				<TS variant="body" color="secondary" className="text-sm" content="Пока пусто." />
 			) : (
 				<Stack spacing={1}>
 					{portfolio.map((item) => (
@@ -126,12 +126,12 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 							}}
 						>
 							<Box sx={{ minWidth: 0 }}>
-								<TS variant="subtitle1" content={item.title} sx={{ mb: 0.25 }} />
+								<TS variant="subtitle" content={item.title} className="mb-0.5" />
 								<TS
 									variant="caption"
-									color="text.secondary"
+									color="secondary"
+									className="block break-all"
 									content={item.mediaUrl}
-									sx={{ display: 'block', wordBreak: 'break-all' }}
 								/>
 							</Box>
 							<IconButton

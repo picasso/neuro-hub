@@ -113,9 +113,9 @@ export function AlertComponent({ id }: { id: AlertId }) {
 					{!disableProgressCaption && (
 						<TS
 							variant="caption"
-							sx={{ display: 'block', mt: 0.5 }}
+							className="block mt-1"
 							content={`${Math.round(progressValue)}%`}
-							color={isProgress && variant === 'filled' ? 'contrast' : 'primary.dark'}
+							color={isProgress && variant === 'filled' ? 'contrast' : 'primary'}
 						/>
 					)}
 				</Box>

@@ -70,8 +70,9 @@ export function SkillsSelectionStep() {
 			<Box sx={{ mb: 4, textAlign: 'center' }}>
 				<TS variant="h5" gutterBottom content="Выберите ваши навыки" />
 				<TS
-					variant="body2"
-					color="text.secondary"
+					variant="body"
+					color="secondary"
+					className="text-sm"
 					content="Отметьте навыки, которыми вы владеете"
 				/>
 			</Box>
@@ -80,9 +81,9 @@ export function SkillsSelectionStep() {
 				{selectedSkills.length > 0 && (
 					<Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
 						<TS
-							variant="body2"
-							color="text.secondary"
-							sx={{ mb: 1 }}
+							variant="body"
+							color="secondary"
+							className="text-sm mb-2"
 							content={`Выбрано навыков: ${selectedSkills.length}`}
 						/>
 						<Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
@@ -148,16 +149,18 @@ export function SkillsSelectionStep() {
 					{isLoading ? (
 						<Box sx={{ p: 3, textAlign: 'center' }}>
 							<TS
-								variant="body2"
-								color="text.secondary"
+								variant="body"
+								color="secondary"
+								className="text-sm"
 								content="Загрузка навыков..."
 							/>
 						</Box>
 					) : filteredSkills.length === 0 ? (
 						<Box sx={{ p: 3, textAlign: 'center' }}>
 							<TS
-								variant="body2"
-								color="text.secondary"
+								variant="body"
+								color="secondary"
+								className="text-sm"
 								content="Навыки не найдены"
 							/>
 						</Box>
@@ -183,7 +186,7 @@ export function SkillsSelectionStep() {
 											}
 											label={
 												<Box>
-													<TS variant="subtitle2" content={skill.name} />
+													<TS variant="subtitle" content={skill.name} />
 													<Chip
 														size="small"
 														label={skill.category.replace('_', ' ')}

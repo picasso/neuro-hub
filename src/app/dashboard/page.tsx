@@ -26,19 +26,19 @@ export default async function DashboardPage() {
 			<Box sx={{ mt: 8, mb: 8 }}>
 				<TS variant="h3" gutterBottom content="Личный кабинет" />
 				<TS
-					variant="body1"
-					color="text.secondary"
+					variant="body"
+					color="secondary"
+					className="mb-4"
 					content={`Вы вошли как ${session.user.email}`}
-					sx={{ mb: 2 }}
 				/>
 
 				{session.user.role === 'freelancer' && freelancerProfile ? (
 					<Box sx={{ mt: 4 }}>
 						<TS
-							variant="body2"
-							color="text.secondary"
+							variant="body"
+							color="secondary"
+							className="text-sm mb-2"
 							content="Публичная страница профиля:"
-							sx={{ mb: 1 }}
 						/>
 						<Link href={`/freelancers/${freelancerProfile.id}`} underline="hover">
 							{`/freelancers/${freelancerProfile.id}`}
@@ -57,8 +57,9 @@ export default async function DashboardPage() {
 					</Box>
 				) : (
 					<TS
-						variant="body2"
-						color="text.secondary"
+						variant="body"
+						color="secondary"
+						className="text-sm"
 						content="Редактирование профиля клиента будет добавлено позже."
 					/>
 				)}

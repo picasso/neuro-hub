@@ -43,8 +43,9 @@ export function FreelancerProfileStep() {
 			<Box sx={{ mb: 4, textAlign: 'center' }}>
 				<TS variant="h5" gutterBottom content="Расскажите о себе" />
 				<TS
-					variant="body2"
-					color="text.secondary"
+					variant="body"
+					color="secondary"
+					className="text-sm"
 					content="Эта информация поможет заказчикам найти вас"
 				/>
 			</Box>

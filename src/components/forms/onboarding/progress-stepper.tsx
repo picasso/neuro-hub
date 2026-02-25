@@ -31,7 +31,7 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
 							{isMobile ? (
 								<TS variant="caption" content={label} />
 							) : (
-								<TS variant="body2" content={label} />
+								<TS variant="body" className="text-sm" content={label} />
 							)}
 						</StepLabel>
 					</Step>
@@ -40,8 +40,9 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
 			{isMobile && (
 				<Box sx={{ mt: 2, textAlign: 'center' }}>
 					<TS
-						variant="body2"
-						color="text.secondary"
+						variant="body"
+						color="secondary"
+						className="text-sm"
 						content={`Шаг ${currentStep} из ${steps.length}`}
 					/>
 				</Box>

@@ -41,12 +41,9 @@ export function FaqSection() {
 			<Container maxWidth="lg">
 				<TS
 					variant="h3"
-					component="h2"
-					align="center"
-					gutterBottom
-					fontWeight={700}
+					strong
+					className="text-center text-[2rem] sm:text-[2.5rem] md:text-[3rem] mb-12"
 					content={faqContent.title}
-					sx={{ fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, mb: 6 }}
 				/>
 
 				<Grid container spacing={3}>
@@ -90,10 +87,10 @@ export function FaqSection() {
 										>
 											{iconConfig.icon}
 										</Box>
-										<TS fontWeight={600} content={item.question} />
+										<TS className="font-semibold" content={item.question} />
 									</AccordionSummary>
 									<AccordionDetails sx={{ pt: 0, pl: 6 }}>
-										<TS color="text.secondary" content={item.answer} />
+										<TS color="secondary" content={item.answer} />
 									</AccordionDetails>
 								</Accordion>
 							)
@@ -140,10 +137,10 @@ export function FaqSection() {
 										>
 											{iconConfig.icon}
 										</Box>
-										<TS fontWeight={600} content={item.question} />
+										<TS className="font-semibold" content={item.question} />
 									</AccordionSummary>
 									<AccordionDetails sx={{ pt: 0, pl: 6 }}>
-										<TS color="text.secondary" content={item.answer} />
+										<TS color="secondary" content={item.answer} />
 									</AccordionDetails>
 								</Accordion>
 							)

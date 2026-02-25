@@ -27,13 +27,7 @@ export function Header() {
 			<Container maxWidth="lg">
 				<Toolbar disableGutters>
 					<Link href="/" underline="none" color="inherit" sx={{ flexGrow: 1 }}>
-						<TS
-							variant="h6"
-							content="NeuroGig"
-							sx={{
-								fontWeight: 700,
-							}}
-						/>
+						<TS variant="h5" strong content="NeuroGig" />
 					</Link>
 
 					<Stack direction="row" spacing={2} alignItems="center">

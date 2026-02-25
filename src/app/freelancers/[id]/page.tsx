@@ -36,8 +36,9 @@ export default async function FreelancerPublicProfilePage(props: PageProps) {
 							content={profile.userProfile?.name || 'Freelancer'}
 						/>
 						<TS
-							variant="body2"
-							color="text.secondary"
+							variant="body"
+							color="secondary"
+							className="text-sm"
 							content={
 								profile.freelancer.specialization || 'Специализация не указана'
 							}

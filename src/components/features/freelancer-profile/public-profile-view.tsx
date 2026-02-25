@@ -57,18 +57,24 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 	return (
 		<Box>
 			<Box sx={{ mb: 4 }}>
-				<TS variant="h6" gutterBottom content="О себе" />
+				<TS variant="h5" gutterBottom content="О себе" />
 				<TS
-					variant="body2"
-					color="text.secondary"
+					variant="body"
+					color="secondary"
+					className="text-sm"
 					content={profile.userProfile?.bio || 'Пользователь пока не добавил описание.'}
 				/>
 			</Box>
 
 			<Box sx={{ mb: 4 }}>
-				<TS variant="h6" gutterBottom content="Навыки" />
+				<TS variant="h5" gutterBottom content="Навыки" />
 				{profile.skills.length === 0 ? (
-					<TS variant="body2" color="text.secondary" content="Навыки не указаны." />
+					<TS
+						variant="body"
+						color="secondary"
+						className="text-sm"
+						content="Навыки не указаны."
+					/>
 				) : (
 					<Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
 						{profile.skills.map((s) => (
@@ -83,9 +89,14 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 			</Box>
 
 			<Box sx={{ mb: 4 }}>
-				<TS variant="h6" gutterBottom content="Портфолио" />
+				<TS variant="h5" gutterBottom content="Портфолио" />
 				{profile.portfolio.length === 0 ? (
-					<TS variant="body2" color="text.secondary" content="Портфолио пока пустое." />
+					<TS
+						variant="body"
+						color="secondary"
+						className="text-sm"
+						content="Портфолио пока пустое."
+					/>
 				) : (
 					<Box
 						sx={{
@@ -109,12 +120,12 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 									'&:hover': { borderColor: 'text.primary' },
 								}}
 							>
-								<TS variant="subtitle1" gutterBottom content={p.title} />
+								<TS variant="subtitle" gutterBottom content={p.title} />
 								<TS
-									variant="body2"
-									color="text.secondary"
+									variant="body"
+									color="secondary"
+									className="text-sm mb-2"
 									content={p.description || 'Без описания'}
-									sx={{ mb: 1 }}
 								/>
 								{isImage(p.mediaType, p.mediaUrl) ? (
 									<Box
@@ -132,7 +143,7 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 								) : (
 									<TS
 										variant="caption"
-										color="text.secondary"
+										color="secondary"
 										content={`Медиа: ${p.mediaType || 'unknown'}`}
 									/>
 								)}
@@ -143,19 +154,21 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 			</Box>
 
 			<Box sx={{ mb: 4 }}>
-				<TS variant="h6" gutterBottom content="Отзывы" />
+				<TS variant="h5" gutterBottom content="Отзывы" />
 				<TS
-					variant="body2"
-					color="text.secondary"
+					variant="body"
+					color="secondary"
+					className="text-sm"
 					content="Раздел отзывов будет добавлен позже (этапы 4–5)."
 				/>
 			</Box>
 
 			<Box sx={{ mb: 2 }}>
-				<TS variant="h6" gutterBottom content="Статистика" />
+				<TS variant="h5" gutterBottom content="Статистика" />
 				<TS
-					variant="body2"
-					color="text.secondary"
+					variant="body"
+					color="secondary"
+					className="text-sm"
 					content="Статистика будет рассчитана позже (нужны проекты/заказы)."
 				/>
 			</Box>
@@ -167,10 +180,10 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 						<DialogContent>
 							{openItem.description ? (
 								<TS
-									variant="body2"
-									color="text.secondary"
+									variant="body"
+									color="secondary"
+									className="text-sm mb-4"
 									content={openItem.description}
-									sx={{ mb: 2 }}
 								/>
 							) : null}
 

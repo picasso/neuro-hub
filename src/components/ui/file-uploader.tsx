@@ -136,7 +136,7 @@ export function FileUploader({
 					{title ? (
 						<TS
 							strong
-							variant="body1"
+							variant="body"
 							content={title}
 							color={isDragActive ? 'contrast' : 'primary'}
 						/>
@@ -144,13 +144,13 @@ export function FileUploader({
 				</Stack>
 				<Stack gap={0.5}>
 					<TS
-						variant="subtitle2"
+						variant="subtitle"
+						className="pb-2"
 						content={
 							isDragActive
 								? 'Отпустите файл, чтобы выбрать его'
 								: 'Перетащите файл сюда или воспользуйтесь полем ввода ниже'
 						}
-						sx={{ pb: 1 }}
 					/>
 					{dropOnly ? null : (
 						<TextField
@@ -254,40 +254,35 @@ export function FileUploader({
 							<TS
 								variant="caption"
 								content="Выбран файл: "
-								color={isDragActive ? 'contrast' : 'text.secondary'}
-								sx={{ opacity: 0.6 }}
+								color={isDragActive ? 'contrast' : 'secondary'}
+								className="opacity-60"
 							/>
 							<TS
 								variant="caption"
 								content={value.name}
-								color={isDragActive ? 'contrast' : 'text.secondary'}
+								color={isDragActive ? 'contrast' : 'secondary'}
 							/>
 							<TS
 								variant="caption"
 								content={`(${fileSize(value.size)})`}
-								color={isDragActive ? 'contrast' : 'primary.dark'}
-								sx={{ opacity: 0.8 }}
+								color={isDragActive ? 'contrast' : 'primary'}
+								className="opacity-80"
 							/>
 						</Stack>
 					) : null}
 					{errorMessage ? (
 						<TS
 							variant="caption"
-							color="error"
+							className="block text-destructive"
 							content={errorMessage}
-							sx={{ display: 'block' }}
 						/>
 					) : null}
 					{helperText ? (
 						<TS
 							variant="caption"
 							content={helperText}
-							color={isDragActive ? 'contrast' : 'primary.dark'}
-							sx={{
-								display: 'block',
-								pt: 2,
-								opacity: 0.7,
-							}}
+							color={isDragActive ? 'contrast' : 'primary'}
+							className="block pt-4 opacity-70"
 						/>
 					) : null}
 				</Stack>

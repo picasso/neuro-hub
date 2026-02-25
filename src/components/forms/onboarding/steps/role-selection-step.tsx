@@ -42,8 +42,9 @@ export function RoleSelectionStep() {
 			<Box sx={{ mb: 4, textAlign: 'center' }}>
 				<TS variant="h5" gutterBottom content="Выберите вашу роль" />
 				<TS
-					variant="body2"
-					color="text.secondary"
+					variant="body"
+					color="secondary"
+					className="text-sm"
 					content="Это поможет нам персонализировать ваш опыт"
 				/>
 			</Box>
@@ -89,10 +90,11 @@ export function RoleSelectionStep() {
 									>
 										{option.icon}
 									</Box>
-									<TS variant="h6" gutterBottom content={option.title} />
+									<TS variant="h5" gutterBottom content={option.title} />
 									<TS
-										variant="body2"
-										color="text.secondary"
+										variant="body"
+										color="secondary"
+										className="text-sm"
 										content={option.description}
 									/>
 								</CardContent>

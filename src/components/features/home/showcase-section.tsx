@@ -98,9 +98,14 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 			</Box>
 
 			<CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 3 }}>
-				<TS variant="h5" gutterBottom fontWeight={700} sx={{ mb: 2 }} content={title} />
+				<TS variant="h5" strong className="mb-4" content={title} />
 
-				<TS variant="body2" color="text.secondary" sx={{ mb: 2 }} content={description} />
+				<TS
+					variant="body"
+					color="secondary"
+					className="text-sm mb-4"
+					content={description}
+				/>
 
 				<Stack direction="row" spacing={1.5} sx={{ mb: 2 }} alignItems="flex-start">
 					<span className="mt-0.5 shrink-0" style={{ color: '#10b981' }}>
@@ -108,13 +113,12 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 					</span>
 					<Box>
 						<TS
-							variant="body2"
-							fontWeight={600}
-							color="#10b981"
+							variant="body"
+							className="text-sm font-semibold text-emerald-500"
 							gutterBottom
 							content="Результат:"
 						/>
-						<TS variant="body2" color="text.secondary" content={result} />
+						<TS variant="body" color="secondary" className="text-sm" content={result} />
 					</Box>
 				</Stack>
 
@@ -136,9 +140,9 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 								<Icon name="format-quote" size={20} />
 							</span>
 							<TS
-								variant="body2"
-								fontStyle="italic"
-								color="text.secondary"
+								variant="body"
+								color="secondary"
+								className="text-sm italic"
 								content={feedback}
 							/>
 						</Stack>
@@ -156,8 +160,8 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 							</Avatar>
 							<TS
 								variant="caption"
-								color="text.secondary"
-								fontWeight={600}
+								color="secondary"
+								className="font-semibold"
 								content={client}
 							/>
 						</Stack>
@@ -174,19 +178,15 @@ export function ShowcaseSection() {
 			<Container maxWidth="lg">
 				<TS
 					variant="h3"
-					component="h2"
-					align="center"
-					gutterBottom
-					fontWeight={700}
+					strong
+					className="text-[2rem] sm:text-[2.5rem] md:text-[3rem] text-center mb-4"
 					content={showcaseContent.title}
-					sx={{ fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, mb: 2 }}
 				/>
 				<TS
-					variant="h6"
-					align="center"
-					color="text.secondary"
+					variant="h5"
+					color="secondary"
+					className="text-center mb-12 font-normal"
 					content={showcaseContent.subtitle}
-					sx={{ mb: 6, fontWeight: 400 }}
 				/>
 
 				<Grid container spacing={4}>

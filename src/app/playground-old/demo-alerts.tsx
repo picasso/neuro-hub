@@ -318,7 +318,7 @@ export const AlertsDemo = () => {
 		<Stack spacing={4}>
 			{map(demoSections, (section, index) => (
 				<Stack key={`${section.title}-${index}`} spacing={1}>
-					<TS variant="h6">{section.title}</TS>
+					<TS variant="h5">{section.title}</TS>
 					<Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
 						{map(section.demos, (demo, index) => (
 							<Button

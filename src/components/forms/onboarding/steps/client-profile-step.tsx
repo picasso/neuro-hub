@@ -36,8 +36,9 @@ export function ClientProfileStep() {
 			<Box sx={{ mb: 4, textAlign: 'center' }}>
 				<TS variant="h5" gutterBottom content="Информация о компании" />
 				<TS
-					variant="body2"
-					color="text.secondary"
+					variant="body"
+					color="secondary"
+					className="text-sm"
 					content="Расскажите о вашей компании и вашей роли"
 				/>
 			</Box>

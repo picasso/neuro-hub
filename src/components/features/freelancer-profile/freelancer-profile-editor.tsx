@@ -28,10 +28,10 @@ export function FreelancerProfileEditor() {
 		<Box>
 			<TS variant="h5" gutterBottom content="Профиль фрилансера" />
 			<TS
-				variant="body2"
-				color="text.secondary"
+				variant="body"
+				color="secondary"
+				className="text-sm mb-6"
 				content="Эти данные видны на публичной странице профиля."
-				sx={{ mb: 3 }}
 			/>
 
 			<Stack spacing={2} sx={{ mb: 2 }}>

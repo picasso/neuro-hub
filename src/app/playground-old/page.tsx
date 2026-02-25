@@ -41,7 +41,7 @@ export default function PlaygroundPage() {
 				<TS variant="h3" gutterBottom>
 					Playground
 				</TS>
-				<TS variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+				<TS variant="body" color="secondary" className="mb-8">
 					Эта страница доступна только в режиме разработки для тестирования компонентов и
 					решений.
 				</TS>
@@ -61,7 +61,7 @@ export default function PlaygroundPage() {
 				</TabPanel>
 
 				<TabPanel value={activeTab} tabId="button">
-					<TS variant="body1" color="text.secondary">
+					<TS variant="body" color="secondary">
 						Button components testing - coming soon
 					</TS>
 				</TabPanel>

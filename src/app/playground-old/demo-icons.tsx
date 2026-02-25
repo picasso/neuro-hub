@@ -36,14 +36,14 @@ export const IconsDemo = () => {
 	return (
 		<Stack spacing={4}>
 			<Box>
-				<TS variant="h6" gutterBottom>
+				<TS variant="h5" gutterBottom>
 					Available Icons
 				</TS>
 				<Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
 					{map(availableIcons, ({ name, color }) => (
 						<Stack key={name} alignItems="center" spacing={0.5}>
 							<Icon name={name} size="lg" color={color} />
-							<TS variant="caption" color="text.secondary">
+							<TS variant="caption" color="secondary">
 								{name}
 							</TS>
 						</Stack>
@@ -52,14 +52,14 @@ export const IconsDemo = () => {
 			</Box>
 
 			<Box>
-				<TS variant="h6" gutterBottom>
+				<TS variant="h5" gutterBottom>
 					Colors
 				</TS>
 				<Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
 					{map(colors, ({ color, name = 'info' }) => (
 						<Stack key={color} alignItems="center" spacing={0.5}>
 							<Icon name={name} size="lg" color={color} />
-							<TS variant="caption" color="text.secondary">
+							<TS variant="caption" color="secondary">
 								{color}
 							</TS>
 						</Stack>
@@ -68,19 +68,19 @@ export const IconsDemo = () => {
 			</Box>
 
 			<Box>
-				<TS variant="h6" gutterBottom>
+				<TS variant="h5" gutterBottom>
 					Animation (rotate)
 				</TS>
 				<Stack direction="row" spacing={3} alignItems="center">
 					<Stack alignItems="center" spacing={0.5}>
 						<Icon name="loading" size="lg" spinning color="primary" />
-						<TS variant="caption" color="text.secondary">
+						<TS variant="caption" color="secondary">
 							loading
 						</TS>
 					</Stack>
 					<Stack alignItems="center" spacing={0.5}>
 						<Icon name="spinner" size="lg" spinning />
-						<TS variant="caption" color="text.secondary">
+						<TS variant="caption" color="secondary">
 							spinner
 						</TS>
 					</Stack>
@@ -88,14 +88,14 @@ export const IconsDemo = () => {
 			</Box>
 
 			<Box>
-				<TS variant="h6" gutterBottom>
+				<TS variant="h5" gutterBottom>
 					Sizes (size)
 				</TS>
 				<Stack direction="row" spacing={3} alignItems="center">
 					{map(sizes, ({ size, name = 'info' }) => (
 						<Stack key={size} alignItems="center" spacing={0.5}>
 							<Icon name={name} size={size} />
-							<TS variant="caption" color="text.secondary">
+							<TS variant="caption" color="secondary">
 								{size}
 							</TS>
 						</Stack>
@@ -104,31 +104,31 @@ export const IconsDemo = () => {
 			</Box>
 
 			<Box>
-				<TS variant="h6" gutterBottom>
+				<TS variant="h5" gutterBottom>
 					Custom Sizes (size)
 				</TS>
 				<Stack direction="row" spacing={3} alignItems="center">
 					<Stack alignItems="center" spacing={0.5}>
 						<Icon name="info" size={32} />
-						<TS variant="caption" color="text.secondary">
+						<TS variant="caption" color="secondary">
 							32px
 						</TS>
 					</Stack>
 					<Stack alignItems="center" spacing={0.5}>
 						<Icon name="warning" size={48} />
-						<TS variant="caption" color="text.secondary">
+						<TS variant="caption" color="secondary">
 							48px
 						</TS>
 					</Stack>
 					<Stack alignItems="center" spacing={0.5}>
 						<Icon name="error" size={64} />
-						<TS variant="caption" color="text.secondary">
+						<TS variant="caption" color="secondary">
 							64px
 						</TS>
 					</Stack>
 					<Stack alignItems="center" spacing={0.5}>
 						<Icon name="check" size={80} />
-						<TS variant="caption" color="text.secondary">
+						<TS variant="caption" color="secondary">
 							80px
 						</TS>
 					</Stack>

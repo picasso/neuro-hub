@@ -11,9 +11,9 @@ export default function FreelancersPage() {
 			<Box sx={{ mt: 8, mb: 8, textAlign: 'center' }}>
 				<TS variant="h3" gutterBottom content="Фрилансеры" />
 				<TS
-					variant="body1"
-					color="text.secondary"
-					sx={{ mb: 4 }}
+					variant="body"
+					color="secondary"
+					className="mb-8"
 					content="Эта страница в разработке"
 				/>
 				<Button href="/" label="На главную" />

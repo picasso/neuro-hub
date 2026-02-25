@@ -35,22 +35,21 @@ export function EmailVerificationStep() {
 
 				<TS variant="h5" gutterBottom content="Подтвердите email" />
 				<TS
-					variant="body2"
-					color="text.secondary"
-					sx={{ mb: 2 }}
+					variant="body"
+					color="secondary"
+					className="text-sm mb-4"
 					content="Мы отправили письмо на адрес:"
 				/>
 				<TS
-					variant="body1"
-					fontWeight={600}
-					sx={{ mb: 3 }}
+					variant="body"
+					className="font-semibold mb-6"
 					content={credentials?.email || 'ваш email'}
 				/>
 			</Box>
 
 			<Box sx={{ maxWidth: 500, mx: 'auto' }}>
 				<Alert severity="info" sx={{ mb: 4 }}>
-					<TS variant="body2">
+					<TS variant="body" className="text-sm">
 						Проверьте почту и перейдите по ссылке в письме для подтверждения вашего
 						аккаунта. Если письмо не пришло, проверьте папку "Спам".
 					</TS>
