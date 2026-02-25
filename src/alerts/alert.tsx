@@ -10,7 +10,8 @@ import { useCallback } from 'react'
 import { toast } from 'sonner'
 import { $alerts, type AlertId } from './model'
 import { Icon, TS } from '@/components/ui'
-import { markdownCss, simpleMarkdown, templatedMessage } from '@/utils'
+import { cn } from '@/lib/utils'
+import { simpleMarkdown, templatedMessage } from '@/utils'
 
 const iconMapping: MuiAlertProps['iconMapping'] = {
 	success: <Icon name="done-filled" color="success" size="lg" />,
@@ -72,6 +73,7 @@ export function AlertComponent({ id }: { id: AlertId }) {
 
 	return (
 		<MuiAlert
+			className={cn('markdown-root', variant === 'filled' && 'contrast')}
 			onClose={disableClose ? undefined : onClose}
 			severity={severity}
 			variant={variant}
@@ -79,7 +81,6 @@ export function AlertComponent({ id }: { id: AlertId }) {
 			iconMapping={iconMapping}
 			elevation={elevation ?? 3}
 			sx={[
-				md !== false && markdownCss,
 				{ minWidth: { md: 'none', lg: 400, xl: 600 } },
 				{ '.MuiAlert-message': { width: '100%' } },
 				!title && { '.MuiAlert-action': { py: 0.75, pl: 2 } },

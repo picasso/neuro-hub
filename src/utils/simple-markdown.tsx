@@ -1,4 +1,3 @@
-import { darken, lighten } from '@mui/material/styles'
 import { castArray, defaults, find, includes, isString, map, reduce } from 'lodash'
 
 export type MarkdownParams = {
@@ -142,53 +141,4 @@ function node2comp(node: HTMLElement | HTMLAnchorElement, index: number) {
 				{map(node.childNodes, node2comp)}
 			</a>
 		)
-}
-
-export const markdownCss = {
-	'& br': {
-		marginBottom: '3px',
-	},
-	'& a': {
-		color: 'var(--mui-palette-primary-dark)',
-		letterSpacing: '0.25px',
-		fontWeight: 700,
-		textDecoration: 'none',
-		'&:hover': {
-			textDecoration: 'underline',
-		},
-	},
-	'span.__code': {
-		position: 'relative',
-		padding: '1px 6px 2px',
-		borderRadius: '6px',
-		letterSpacing: '0.5px',
-		'&.__e': {
-			backgroundColor: lighten('#FF2020', 0.78),
-			color: darken('#ff2020', 0.3),
-			borderColor: darken('#ff2020', 0.8),
-		},
-		'&.__q': {
-			backgroundColor: lighten('#cc0096', 0.78),
-			color: darken('#cc0096', 0.1),
-			borderColor: darken('#cc0096', 0.8),
-		},
-		'&.__s': {
-			backgroundColor: lighten('#2fb344', 0.6),
-			color: darken('#1f993f', 0.4),
-			borderColor: darken('#1f993f', 0.8),
-		},
-		'&.__i': {
-			backgroundColor: lighten('#1e88e5', 0.7),
-			color: darken('#0070c9', 0.2),
-			borderColor: darken('#0070c9', 0.7),
-		},
-		'&.__w': {
-			backgroundColor: lighten('#fb8c00', 0.7),
-			color: darken('#fb8c00', 0.4),
-			borderColor: darken('#fb8c00', 0.8),
-			// backgroundColor: 'var(--mui-palette-LinearProgress-warningBg)',
-			// color: 'var(--mui-palette-warning-dark)',
-			// borderColor: 'var(--mui-palette-warning-main)',
-		},
-	},
 }

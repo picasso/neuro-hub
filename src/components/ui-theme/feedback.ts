@@ -1,4 +1,4 @@
-import { alpha, lighten, type Theme, type ThemeOptions } from '@mui/material/styles'
+import { lighten, type Theme, type ThemeOptions } from '@mui/material/styles'
 
 export const feedback: ThemeOptions['components'] = {
 	MuiAlertTitle: {
@@ -19,24 +19,24 @@ export const feedback: ThemeOptions['components'] = {
 				'&.MuiAlert-outlined': {
 					borderWidth: 1,
 				},
-				'span.__code': {
-					position: 'relative',
-					padding: '2px 6px',
-					borderRadius: 6,
-					backgroundColor: alpha(theme.palette.text.primary, 0.05),
-					letterSpacing: 0.5,
-				},
-				'span.__code:after': {
-					content: '""',
-					position: 'absolute',
-					top: 0,
-					left: 0,
-					bottom: 0,
-					right: 0,
-					borderRadius: 6,
-					border: '1px solid',
-					opacity: 0.25,
-				},
+				// 'span.__code': {
+				// 	position: 'relative',
+				// 	padding: '2px 6px',
+				// 	borderRadius: 6,
+				// 	backgroundColor: alpha(theme.palette.text.primary, 0.05),
+				// 	letterSpacing: 0.5,
+				// },
+				// 'span.__code:after': {
+				// 	content: '""',
+				// 	position: 'absolute',
+				// 	top: 0,
+				// 	left: 0,
+				// 	bottom: 0,
+				// 	right: 0,
+				// 	borderRadius: 6,
+				// 	border: '1px solid',
+				// 	opacity: 0.25,
+				// },
 				br: {
 					marginBottom: 2,
 				},

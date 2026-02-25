@@ -33,4 +33,4 @@ export {
 	ValidationError,
 } from './errors'
 
-export { type MarkdownParams, markdownCss, simpleMarkdown } from './simple-markdown'
+export { type MarkdownParams, simpleMarkdown } from './simple-markdown'

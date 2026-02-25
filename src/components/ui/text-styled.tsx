@@ -2,7 +2,7 @@ import MuiTypography, { type TypographyProps as MuiTypographyProps } from '@mui/
 import { castArray, includes } from 'lodash'
 import { forwardRef } from 'react'
 import { STANDARD_MUI_TYPOGRAPHY_COLORS } from '@/components/ui-theme'
-import { markdownCss, type MarkdownParams, mergeClasses, simpleMarkdown } from '@/utils'
+import { type MarkdownParams, mergeClasses, simpleMarkdown } from '@/utils'
 
 export type TextStyledProps = MuiTypographyProps & {
 	content?: string | number
@@ -44,12 +44,11 @@ export const TextStyled = forwardRef<HTMLSpanElement, TextStyledProps>(
 		return (
 			<MuiTypography
 				ref={ref}
-				className={mergeClasses('TextStyled-root', className)}
+				className={mergeClasses('TextStyled-root', 'markdown-root', className)}
 				variant={variant}
 				component={inline || inlineBlock ? 'span' : undefined}
 				color={isCustom ? undefined : color}
 				sx={[
-					md !== false && markdownCss,
 					// apply custom color first (lower priority)
 					!!isCustom && { color: customColor },
 					!isCustom && !!color && { color },
