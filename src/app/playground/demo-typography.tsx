@@ -7,8 +7,7 @@ import {
 } from './demo-typography-settings'
 import { useSettings } from './settings-store'
 import { Separator } from '@/components/shadcn/separator'
-import { Stack } from '@/components/ui'
-import { TS } from '@/components/ui/text-styled'
+import { Stack, TS } from '@/components/ui'
 import { cn } from '@/lib/utils'
 
 // data -------------------------------------------------------------------------------------------]
@@ -45,8 +44,8 @@ const VARIANTS: Exclude<TextStyledVariant, 'block'>[] = [
 function SectionHeader({ title, desc }: { title: string; desc: string }) {
 	return (
 		<>
-			<h3 className="my-1 text-sm font-medium text-foreground">{title}</h3>
-			<p className="mb-4 text-xs text-muted-foreground">{desc}</p>
+			<TS variant="h3" content={title} className="my-1 text-sm font-medium" />
+			<TS variant="caption" color="secondary" content={desc} gutterBottom />
 		</>
 	)
 }
@@ -102,10 +101,16 @@ export function DemoTypography() {
 				<SectionHeader title="Variants" desc="Все поддерживаемые variant-ы." />
 				<Stack vertical gap={4} align="stretch">
 					{VARIANTS.map((v) => (
-						<div key={v} className="flex items-baseline gap-3">
-							<span className="w-16 shrink-0 text-xs text-muted-foreground">{v}</span>
+						<Stack key={v} gap={3} align="baseline">
+							<TS
+								variant="caption"
+								color="secondary"
+								content={v}
+								inline
+								className="w-16 shrink-0"
+							/>
 							<TS variant={v} content={SAMPLE_TEXTS[v]} />
-						</div>
+						</Stack>
 					))}
 				</Stack>
 			</section>
@@ -116,33 +121,67 @@ export function DemoTypography() {
 			<section>
 				<SectionHeader title="Modifiers" desc="strong, thin, gutterBottom, inline." />
 				<Stack vertical gap={3} align="stretch">
-					<div className="flex items-baseline gap-3">
-						<span className="w-24 shrink-0 text-xs text-muted-foreground">default</span>
+					<Stack gap={3} align="baseline">
+						<TS
+							variant="caption"
+							color="secondary"
+							content="default"
+							inline
+							className="w-24 shrink-0"
+						/>
 						<TS content="Обычный текст (body, без модификаторов)" />
-					</div>
-					<div className="flex items-baseline gap-3">
-						<span className="w-24 shrink-0 text-xs text-muted-foreground">strong</span>
+					</Stack>
+					<Stack gap={3} align="baseline">
+						<TS
+							variant="caption"
+							color="secondary"
+							content="strong"
+							inline
+							className="w-24 shrink-0"
+						/>
 						<TS strong content="Strong — font-bold (700)" />
-					</div>
-					<div className="flex items-baseline gap-3">
-						<span className="w-24 shrink-0 text-xs text-muted-foreground">thin</span>
+					</Stack>
+					<Stack gap={3} align="baseline">
+						<TS
+							variant="caption"
+							color="secondary"
+							content="thin"
+							inline
+							className="w-24 shrink-0"
+						/>
 						<TS variant="h3" thin content="Thin на h3 — font-medium вместо semibold" />
-					</div>
-					<div className="flex items-baseline gap-3">
-						<span className="w-24 shrink-0 text-xs text-muted-foreground">gutter</span>
+					</Stack>
+					<Stack gap={3} align="baseline">
+						<TS
+							variant="caption"
+							color="secondary"
+							content="gutter"
+							inline
+							className="w-24 shrink-0"
+						/>
 						<div>
-							<TS gutterBottom content="gutterBottom — добавляет mb-2 снизу" />
-							<TS color="secondary" content="Этот текст идёт сразу после" />
+							<TS gutterBottom content="gutterBottom — добавляет mb-4 снизу" />
+							<TS
+								color="secondary"
+								content="Этот текст идёт сразу после"
+								className="border-t"
+							/>
 						</div>
-					</div>
-					<div className="flex items-baseline gap-3">
-						<span className="w-24 shrink-0 text-xs text-muted-foreground">inline</span>
+					</Stack>
+					<Stack gap={3} align="baseline">
+						<TS
+							variant="caption"
+							color="secondary"
+							content="inline"
+							inline
+							className="w-24 shrink-0"
+						/>
 						<span>
 							<TS inline content="Inline: " />
 							<TS inline strong content="strong " />
 							<TS inline color="secondary" content="и muted — в одной строке" />
 						</span>
-					</div>
+					</Stack>
 				</Stack>
 			</section>
 
@@ -155,34 +194,56 @@ export function DemoTypography() {
 					desc="Встроенная поддержка простого Markdown через simpleMarkdown()."
 				/>
 				<Stack vertical gap={3} align="stretch">
-					<div className="flex items-start gap-3">
-						<span className="w-24 shrink-0 pt-1 text-xs text-muted-foreground">
-							bold / em
-						</span>
+					<Stack gap={3} align="start">
+						<TS
+							variant="caption"
+							color="secondary"
+							content="bold / em"
+							inline
+							className="w-24 shrink-0 pt-1"
+						/>
 						<TS content="**Жирный** и *курсив* — через `**` и `*`" />
-					</div>
-					<div className="flex items-start gap-3">
-						<span className="w-24 shrink-0 pt-1 text-xs text-muted-foreground">
-							code
-						</span>
+					</Stack>
+					<Stack gap={3} align="start">
+						<TS
+							variant="caption"
+							color="secondary"
+							content="code"
+							inline
+							className="w-24 shrink-0 pt-1"
+						/>
 						<TS content="`код` и цвета: `!ошибка` `?вопрос` `*успех` `+инфо` `#предупреждение`" />
-					</div>
-					<div className="flex items-start gap-3">
-						<span className="w-24 shrink-0 pt-1 text-xs text-muted-foreground">
-							link
-						</span>
+					</Stack>
+					<Stack gap={3} align="start">
+						<TS
+							variant="caption"
+							color="secondary"
+							content="link"
+							inline
+							className="w-24 shrink-0 pt-1"
+						/>
 						<TS content="Ссылка: [NeuroGig](https://neurogig.com) откроется в новой вкладке" />
-					</div>
-					<div className="flex items-start gap-3">
-						<span className="w-24 shrink-0 pt-1 text-xs text-muted-foreground">br</span>
+					</Stack>
+					<Stack gap={3} align="start">
+						<TS
+							variant="caption"
+							color="secondary"
+							content="br"
+							inline
+							className="w-24 shrink-0 pt-1"
+						/>
 						<TS inline content={'Строка 1\nСтрока 2 через inline+br'} />
-					</div>
-					<div className="flex items-start gap-3">
-						<span className="w-24 shrink-0 pt-1 text-xs text-muted-foreground">
-							md=false
-						</span>
+					</Stack>
+					<Stack gap={3} align="start">
+						<TS
+							variant="caption"
+							color="secondary"
+							content="md=false"
+							inline
+							className="w-24 shrink-0 pt-1"
+						/>
 						<TS md={false} content="**Текст без Markdown** — отображается как есть" />
-					</div>
+					</Stack>
 				</Stack>
 			</section>
 		</Stack>

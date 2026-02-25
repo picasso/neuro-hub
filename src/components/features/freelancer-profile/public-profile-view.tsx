@@ -145,6 +145,7 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 										variant="caption"
 										color="secondary"
 										content={`Медиа: ${p.mediaType || 'unknown'}`}
+										inline
 									/>
 								)}
 							</Box>

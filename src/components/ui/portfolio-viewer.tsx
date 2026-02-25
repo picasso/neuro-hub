@@ -128,7 +128,9 @@ export function PortfolioViewer({
 					>
 						<Icon name={`media-${kind}` as IconName} size={40} color="muted" />
 						<TS variant="h3" content={title ?? ''} className="mb-0.5 capitalize" />
-						{!!caption && <TS variant="caption" color="secondary" content={caption} />}
+						{!!caption && (
+							<TS variant="caption" color="secondary" content={caption} inline />
+						)}
 					</Stack>
 					<Stack direction="row" alignItems="center" spacing={1}>
 						<IconButton

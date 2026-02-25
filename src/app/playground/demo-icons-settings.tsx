@@ -14,8 +14,7 @@ import { Separator } from '@/components/shadcn/separator'
 import { Slider } from '@/components/shadcn/slider'
 import { Switch } from '@/components/shadcn/switch'
 import { ToggleGroup, ToggleGroupItem } from '@/components/shadcn/toggle-group'
-import { Stack } from '@/components/ui'
-import { type IconName } from '@/components/ui/icon'
+import { Stack, TS, type IconName } from '@/components/ui'
 
 type IconColor = (typeof colorOptions)[number]
 type IconSize = (typeof sizePresets)[number]
@@ -142,7 +141,13 @@ export function DemoIconsSettings() {
 			<Stack vertical gap={4} align="stretch">
 				<Stack gap={0} justify="space-between">
 					<Label className="text-xs">Свой размер</Label>
-					<span className="text-[10px] text-muted-foreground">{customSize}px</span>
+					<TS
+						variant="caption"
+						color="secondary"
+						content={`${customSize}px`}
+						inline
+						className="text-[10px]"
+					/>
 				</Stack>
 				<Slider
 					value={[customSize]}

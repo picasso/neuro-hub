@@ -40,7 +40,7 @@ const variantTag: Record<TextStyledVariant, Tag> = {
 	h5: 'h5',
 	subtitle: 'p',
 	body: 'p',
-	caption: 'span',
+	caption: 'p',
 	quote: 'blockquote',
 	block: 'div',
 }
@@ -95,7 +95,7 @@ export const TextStyled = forwardRef<HTMLElement, TextStyledProps>(
 			strong && 'font-bold',
 			thin && 'font-medium',
 			inlineBlock && 'inline-block',
-			gutterBottom && 'mb-2',
+			gutterBottom && 'mb-4',
 			className,
 		)
 		return createElement(

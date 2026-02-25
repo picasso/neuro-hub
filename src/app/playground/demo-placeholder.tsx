@@ -1,6 +1,5 @@
 import { type ComponentDemo } from './components'
-import { Stack } from '@/components/ui'
-import { Icon } from '@/components/ui/icon'
+import { Stack, Icon, TS } from '@/components/ui'
 
 type PlaceholderDemoProps = {
 	component: Partial<ComponentDemo>
@@ -16,13 +15,24 @@ export function PlaceholderDemo({ component }: PlaceholderDemoProps) {
 			className="h-full text-muted-foreground"
 		>
 			<Icon name="circle" size={40} className="text-border" />
-			<div className="text-center">
-				<p className="text-sm font-medium text-foreground">
-					{component.name ?? 'Unknown component'}
-				</p>
-				<p className="text-xs">{component.description ?? 'Unknown description'}</p>
-				<p className="mt-2 text-xs text-dimmed">Демо будет добавлено при миграции</p>
-			</div>
+			<Stack vertical gap={0} align="center" className="text-center">
+				<TS
+					variant="body"
+					content={component.name ?? 'Unknown component'}
+					className="text-sm font-medium"
+				/>
+				<TS
+					variant="caption"
+					content={component.description ?? 'Unknown description'}
+					className="text-xs"
+				/>
+				<TS
+					variant="caption"
+					color="dimmed"
+					content="Демо будет добавлено при миграции"
+					className="mt-2 text-xs"
+				/>
+			</Stack>
 		</Stack>
 	)
 }

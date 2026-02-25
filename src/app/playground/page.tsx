@@ -8,8 +8,7 @@ import { DemoRenderer, SettingsRenderer } from './demo'
 import { QuickAccess } from './quick-access'
 import { Button } from '@/components/shadcn/button'
 import { Separator } from '@/components/shadcn/separator'
-import { Stack } from '@/components/ui'
-import { Icon } from '@/components/ui/icon'
+import { Stack, Icon, TS } from '@/components/ui'
 
 const MAX_RECENT = 3
 const LS_KEY = 'playground-recent'
@@ -69,7 +68,11 @@ export default function PlaygroundPage() {
 				justify="space-between"
 				className="py-2.5 pl-4 pr-2 md:pl-8 md:pr-4 bg-surface rounded-t-lg border-b"
 			>
-				<h2 className="text-lg font-semibold tracking-tight text-foreground">Playground</h2>
+				<TS
+					variant="h2"
+					content="Playground"
+					className="text-lg font-semibold tracking-tight"
+				/>
 				<Stack gap={2}>
 					<QuickAccess recent={recent} current={selected} onSelect={handleSelect} />
 					{recent.length > 0 && <Separator orientation="vertical" className="mx-1 h-5" />}
@@ -112,14 +115,18 @@ export default function PlaygroundPage() {
 						align="stretch"
 						className="overflow-y-auto px-4 pb-4 pt-2"
 					>
-						<div>
-							<h3 className="text-md font-semibold text-foreground">
-								{selected?.name ?? 'Настройки'}
-							</h3>
-							<p className="text-xs text-muted-foreground">
-								{selected?.description ?? 'Выберите компонент.'}
-							</p>
-						</div>
+						<Stack vertical gap={0} align="stretch">
+							<TS
+								variant="h3"
+								content={selected?.name ?? 'Настройки'}
+								className="font-semibold text-base"
+							/>
+							<TS
+								variant="caption"
+								color="secondary"
+								content={selected?.description ?? 'Выберите компонент.'}
+							/>
+						</Stack>
 						<Separator />
 						<SettingsRenderer component={selected} />
 					</Stack>

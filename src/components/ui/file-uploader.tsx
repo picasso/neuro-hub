@@ -255,17 +255,20 @@ export function FileUploader({
 								variant="caption"
 								content="Выбран файл: "
 								color={isDragActive ? 'contrast' : 'secondary'}
+								inline
 								className="opacity-60"
 							/>
 							<TS
 								variant="caption"
 								content={value.name}
 								color={isDragActive ? 'contrast' : 'secondary'}
+								inline
 							/>
 							<TS
 								variant="caption"
 								content={`(${fileSize(value.size)})`}
 								color={isDragActive ? 'contrast' : 'primary'}
+								inline
 								className="opacity-80"
 							/>
 						</Stack>

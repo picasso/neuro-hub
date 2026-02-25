@@ -98,12 +98,13 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 			</Box>
 
 			<CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 3 }}>
-				<TS variant="h5" strong className="mb-4" content={title} />
+				<TS variant="h5" strong gutterBottom content={title} />
 
 				<TS
 					variant="body"
 					color="secondary"
-					className="text-sm mb-4"
+					gutterBottom
+					className="text-sm"
 					content={description}
 				/>
 
@@ -161,6 +162,7 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 							<TS
 								variant="caption"
 								color="secondary"
+								inline
 								className="font-semibold"
 								content={client}
 							/>
@@ -179,7 +181,8 @@ export function ShowcaseSection() {
 				<TS
 					variant="h3"
 					strong
-					className="text-[2rem] sm:text-[2.5rem] md:text-[3rem] text-center mb-4"
+					gutterBottom
+					className="text-[2rem] sm:text-[2.5rem] md:text-[3rem] text-center"
 					content={showcaseContent.title}
 				/>
 				<TS

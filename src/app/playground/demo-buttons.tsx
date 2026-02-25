@@ -4,6 +4,7 @@ import { type ButtonDemoState } from './demo-buttons-settings'
 import { useSettings } from './settings-store'
 import { Separator } from '@/components/shadcn/separator'
 import { Button, Stack } from '@/components/ui'
+import { TS } from '@/components/ui/text-styled'
 
 export function DemoButtons() {
 	const settings = useSettings<ButtonDemoState>()
@@ -12,10 +13,13 @@ export function DemoButtons() {
 	return (
 		<Stack vertical gap={6} align="stretch">
 			<section>
-				<h3 className="my-1 text-sm font-medium text-foreground">Interactive</h3>
-				<p className="mb-4 text-xs text-muted-foreground">
-					Обёртка `Button` на базе shadcn.
-				</p>
+				<TS variant="h3" content="Interactive" className="my-1 text-sm font-medium" />
+				<TS
+					variant="caption"
+					color="secondary"
+					content="Обёртка `Button` на базе shadcn."
+					gutterBottom
+				/>
 				<Button
 					variant={variant}
 					size={size}
@@ -30,7 +34,7 @@ export function DemoButtons() {
 			</section>
 			<Separator />
 			<section>
-				<h3 className="my-1 text-sm font-medium text-foreground">Variants</h3>
+				<TS variant="h3" content="Variants" className="my-1 text-sm font-medium" />
 				<Stack gap={2} wrap align="stretch">
 					<Button variant="default" label="Save" />
 					<Button variant="outline" label="Reject" />
@@ -45,7 +49,7 @@ export function DemoButtons() {
 				</Stack>
 			</section>
 			<section>
-				<h3 className="my-1 text-sm font-medium text-foreground">Sizes</h3>
+				<TS variant="h3" content="Sizes" className="my-1 text-sm font-medium" />
 				<Stack gap={2} wrap align="stretch">
 					<Button size="sm" variant="default" label="Button SM" />
 					<Button size="md" variant="default" label="Button MD" />

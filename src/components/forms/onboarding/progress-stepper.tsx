@@ -29,7 +29,7 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
 					<Step key={label}>
 						<StepLabel>
 							{isMobile ? (
-								<TS variant="caption" content={label} />
+								<TS variant="caption" content={label} inline />
 							) : (
 								<TS variant="body" className="text-sm" content={label} />
 							)}
