@@ -5,6 +5,8 @@ import { DemoIconButtons } from './demo-icon-buttons'
 import { DemoIconButtonsSettings } from './demo-icon-buttons-settings'
 import { DemoIcons } from './demo-icons'
 import { DemoIconsSettings } from './demo-icons-settings'
+import { DemoTypography } from './demo-typography'
+import { DemoTypographySettings } from './demo-typography-settings'
 
 export type ComponentDemo = {
 	id: string
@@ -48,8 +50,10 @@ export const componentDemos: ComponentDemo[] = [
 		id: 'typography',
 		name: 'Typography',
 		group: 'base',
-		description: 'TextStyled / TS component',
-		ready: false,
+		description: 'TS (styled text) — variants, colors, modifiers, markdown',
+		ready: true,
+		demo: <DemoTypography />,
+		settings: <DemoTypographySettings />,
 	},
 	{
 		id: 'cards',

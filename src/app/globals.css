@@ -165,6 +165,14 @@ body[data-font='open-sans'] {
 		text-decoration: underline;
 		text-underline-offset: 2px;
 	}
+	.markdown-root.contrast a,
+	.markdown-root.contrast .components-external-link {
+		@apply text-background/90;
+	}
+	.markdown-root.contrast a:hover,
+	.markdown-root.contrast .components-external-link:hover {
+		@apply text-background;
+	}
 	.markdown-root br {
 		margin-bottom: 2px;
 	}
