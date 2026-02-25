@@ -8,7 +8,7 @@ import { DemoRenderer, SettingsRenderer } from './demo'
 import { QuickAccess } from './quick-access'
 import { Button } from '@/components/shadcn/button'
 import { Separator } from '@/components/shadcn/separator'
-import { Stack, Icon, TS } from '@/components/ui'
+import { Stack, Icon, TS, IconButton } from '@/components/ui'
 
 const MAX_RECENT = 3
 const LS_KEY = 'playground-recent'
@@ -68,11 +68,14 @@ export default function PlaygroundPage() {
 				justify="space-between"
 				className="py-2.5 pl-4 pr-2 md:pl-8 md:pr-4 bg-surface rounded-t-lg border-b"
 			>
-				<TS
-					variant="h2"
-					content="Playground"
-					className="text-lg font-semibold tracking-tight"
-				/>
+				<Stack>
+					<TS
+						variant="h2"
+						content="Playground"
+						// className="text-lg font-semibold tracking-tight"
+					/>
+					<IconButton rounded icon="business" href="/playground-old" />
+				</Stack>
 				<Stack gap={2}>
 					<QuickAccess recent={recent} current={selected} onSelect={handleSelect} />
 					{recent.length > 0 && <Separator orientation="vertical" className="mx-1 h-5" />}
