@@ -1,21 +1,121 @@
 ---
-description: File and folder organization, flat structure, prefix-based grouping
-globs: ["src/**/*"]
+description: File & folder organization rules for the neuro-hub project
+globs:
+alwaysApply: true
 ---
 
 # File & Folder Organization
 
-## Flat structure
+## Top-level source layout (`src/`)
+
+```zsh
+src/
+├── app/        ← Next.js routes only — thin files (import + re-export, no logic)
+├── features/   ← All business-logic components; imported via '@/features' barrel
+├── ui/         ← UI primitives and design system; imported via '@/ui' barrel
+├── ui-theme/   ← MUI theme (TEMPORARY — will be deleted in Phase 4 migration)
+├── alerts/     ← Effector-based alert system
+├── config/     ← Metadata, mocks, constants
+├── lib/        ← auth, db, email, swagger, validations, utils
+├── stores/     ← Effector stores
+├── utils/      ← Pure utility functions
+└── types/      ← Shared TypeScript types
+```
+
+## `app/` — Thin routes
+
+Every `page.tsx` must be a thin file: **import + re-export only**.
+
+```tsx
+// ✅ correct
+import { SomePage } from '@/features'
+export { someMetadata as metadata } from '@/config'
+export default SomePage
+
+// ❌ wrong — no JSX, no logic, no data fetching in page.tsx
+```
+
+- `layout.tsx` and `route.ts` (API routes) may contain setup code
+- Co-location of route-specific modules in the route folder is allowed only for API routes
+
+## `features/` — Business logic components
+
+All components with site-specific logic (auth state, DB calls, domain behavior):
+
+```zsh
+features/
+├── home/            home sections + HomePage
+├── dashboard/       DashboardPage (async Server Component)
+├── auth/            LoginForm, LoginPage
+├── onboarding/      OnboardingWizard, SignupPage
+├── portfolio/       Portfolio, PortfolioEditor, portfolio-item, portfolio-viewer
+├── freelancer-profile/  editor, public view, FreelancerProfilePage
+├── playground/      PlaygroundPage + all demo components
+├── header.tsx
+├── footer.tsx
+├── db-health-alert.tsx
+└── index.ts         ← barrel — always import from '@/features'
+```
+
+Always import via barrel: `import { X } from '@/features'`
+
+## `ui/` — Primitives & design system
+
+All reusable UI components with no business logic:
+
+```zsh
+ui/
+├── shadcn/          ← raw Radix/shadcn components (INTERNAL — never import directly)
+├── providers/       ← ThemeRegistry, FontProvider
+├── icons/           ← custom SVG icons
+├── button.tsx
+├── icon.tsx
+├── icon-button.tsx
+├── link.tsx
+├── stack.tsx
+├── text-styled.tsx
+├── file-uploader.tsx
+├── assets.tsx
+└── index.ts         ← barrel — always import from '@/ui'
+```
+
+### Import rules
+
+```tsx
+// ✅ Always use the barrel
+import { Button, Icon, TS, Label, Separator } from '@/ui'
+
+// ❌ Never import from shadcn directly
+import { Button } from '@/ui/shadcn/button'   // FORBIDDEN
+
+// ❌ Never import from ui sub-paths for items in the barrel
+import { Button } from '@/ui/button'           // prefer barrel unless justified
+```
+
+All shadcn components that don't have a custom wrapper are re-exported from `ui/index.ts`.
+New shadcn installs: add the component to `ui/shadcn/`, then re-export it from `ui/index.ts`.
+
+## Flat structure preference
 
 - Prefer flat folders over deep nesting
-- Route folders (`app/[route]/`): keep `page.tsx`, `layout.tsx` and co-located modules in the same folder
+- Use prefix-based grouping for related files: `demo.tsx`, `demo-buttons.tsx`, `demo-icons.tsx`
+- Create subfolders only when there are 5+ related files forming a distinct domain
 
-## Prefix-based grouping
+## Barrel hygiene
 
-- Use consistent prefixes for related files: `demo.tsx`, `demo-placeholder.tsx`, `demo-buttons.tsx`
-- File Nesting (configured globally in Cursor/VS Code) groups `demo-*.tsx` under `demo.tsx` in the explorer
+Barrel files (`index.ts`) export only the public API of a module:
 
-## When to use subfolders
+- Self-contained page/section components
+- Pure UI primitives
+- Types and constants
 
-- Only when there are many related files (>5) or distinct domains (e.g. features, api routes)
-- Avoid creating `components/`, `data/`, `utils/` subfolders for a single route unless justified
+Internal sub-components (those receiving callback props from a parent, or only meaningful as children of a specific component) stay as relative imports and are NOT exported from the barrel.
+
+See `.cursor/rules/use-client.mdc` for how barrel exports interact with `'use client'` directives.
+
+## When to add a subfolder
+
+Only when all of these are true:
+1. More than 5 files in the group
+2. The group has a distinct domain (e.g. `freelancer-profile`, `onboarding`)
+3. The group has its own `index.ts` barrel

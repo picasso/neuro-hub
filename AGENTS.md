@@ -59,12 +59,41 @@ yarn db:check     # Inspect DB
 
 ## File Organization
 
-- Flat structure preferred; prefix-based grouping (`demo.tsx`, `demo-*.tsx`)
+- Flat structure; `app/` contains thin route files only (import + re-export)
+- `features/` — all business-logic components, imported via `@/features` barrel
+- `ui/` — all UI primitives, imported via `@/ui` barrel (never `@/ui/shadcn` directly)
 - Details: [.cursor/rules/file-organization.mdc](.cursor/rules/file-organization.mdc)
 
 ## File Structure
 
 ```zsh
+src/
+├── app/               # Thin routes: page.tsx = import + re-export only
+│   └── api/           # API route handlers (logic allowed here)
+├── features/          # Business-logic components
+│   ├── home/
+│   ├── dashboard/
+│   ├── auth/
+│   ├── onboarding/
+│   ├── portfolio/
+│   ├── freelancer-profile/
+│   ├── playground/
+│   ├── header.tsx
+│   ├── footer.tsx
+│   └── index.ts       # barrel — import from '@/features'
+├── ui/                # UI primitives & design system
+│   ├── shadcn/        # raw Radix/shadcn (INTERNAL — use '@/ui' barrel)
+│   ├── providers/
+│   ├── icons/
+│   └── index.ts       # barrel — import from '@/ui'
+├── ui-theme/          # MUI theme (TEMPORARY — Phase 4 will delete this)
+├── alerts/            # Effector alert system
+├── config/            # metadata, mocks
+├── lib/               # auth, db, email, swagger, validations
+├── stores/            # Effector stores
+├── utils/             # pure utilities
+└── types/             # shared TypeScript types
+
 .cursor/
 ├── agents/            # Task-specific agents (see Available Agents)
 ├── mcp.json           # MCP servers (see table below)
@@ -84,7 +113,7 @@ yarn db:check     # Inspect DB
 ## Code Style
 
 - **TypeScript:** strict mode, no `any`, prefer `type`
-- **React:** Server Components by default, `'use client'` only when needed
+- **React:** Server Components by default; see `.cursor/rules/use-client.mdc` for `'use client'` placement rules
 - **Server Actions** for mutations, Zod for validation
 - **Effector** for global state
 
