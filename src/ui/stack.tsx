@@ -28,7 +28,38 @@ export type StackProps = {
 	children: ReactNode
 }
 
-const GAP_CLASS = new Map<number, string>([
+export function Stack({
+	direction,
+	vertical,
+	horizontal = true,
+	gap = 2,
+	align = 'center',
+	justify = 'flex-start',
+	wrap,
+	className,
+	children,
+}: StackProps) {
+	const resolvedDirection = resolveDirection({ direction, vertical, horizontal })
+	const resolvedGapClass = isValidGap(gap) ? gapMap.get(gap) : undefined
+
+	return (
+		<div
+			className={cn(
+				'flex',
+				directionClassMap[resolvedDirection],
+				resolvedGapClass,
+				alignClassMap[align],
+				justifyClassMap[justify],
+				resolveWrap(wrap),
+				className,
+			)}
+		>
+			{children}
+		</div>
+	)
+}
+
+const gapMap = new Map<number, string>([
 	[0, 'gap-0'],
 	[0.5, 'gap-0.5'],
 	[1, 'gap-1'],
@@ -56,14 +87,14 @@ const GAP_CLASS = new Map<number, string>([
 	[12, 'gap-12'],
 ])
 
-const DIRECTION_CLASS: Record<StackDirection, string> = {
+const directionClassMap: Record<StackDirection, string> = {
 	row: 'flex-row',
 	column: 'flex-col',
 	'row-reverse': 'flex-row-reverse',
 	'column-reverse': 'flex-col-reverse',
 }
 
-const ALIGN_CLASS: Record<Align, string> = {
+const alignClassMap: Record<Align, string> = {
 	'flex-start': 'items-start',
 	start: 'items-start',
 	center: 'items-center',
@@ -73,7 +104,7 @@ const ALIGN_CLASS: Record<Align, string> = {
 	baseline: 'items-baseline',
 }
 
-const JUSTIFY_CLASS: Record<Justify, string> = {
+const justifyClassMap: Record<Justify, string> = {
 	'flex-start': 'justify-start',
 	start: 'justify-start',
 	center: 'justify-center',
@@ -105,35 +136,4 @@ function resolveWrap(wrap: StackWrap | undefined): string | undefined {
 	if (wrap === 'reverse') return 'flex-wrap-reverse'
 	if (wrap === true) return 'flex-wrap'
 	return undefined
-}
-
-export function Stack({
-	direction,
-	vertical,
-	horizontal = true,
-	gap = 2,
-	align = 'center',
-	justify = 'flex-start',
-	wrap,
-	className,
-	children,
-}: StackProps) {
-	const resolvedDirection = resolveDirection({ direction, vertical, horizontal })
-	const resolvedGapClass = isValidGap(gap) ? GAP_CLASS.get(gap) : undefined
-
-	return (
-		<div
-			className={cn(
-				'flex',
-				DIRECTION_CLASS[resolvedDirection],
-				resolvedGapClass,
-				ALIGN_CLASS[align],
-				JUSTIFY_CLASS[justify],
-				resolveWrap(wrap),
-				className,
-			)}
-		>
-			{children}
-		</div>
-	)
 }

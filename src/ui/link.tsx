@@ -17,6 +17,35 @@ export type LinkProps = Omit<NextLinkProps, 'href'> & {
 	disabled?: boolean
 }
 
+export function Link({
+	href,
+	size = 'md',
+	color = 'inherit',
+	hover = 'none',
+	disabled,
+	className,
+	children,
+	...rest
+}: LinkProps) {
+	return (
+		<NextLink
+			href={href as NextLinkProps['href']}
+			className={cn(
+				baseClasses,
+				sizeClasses[size],
+				colorClasses[color],
+				hover !== 'vivid' && hoverClasses[hover],
+				includes(['vivid', 'none'], hover) && getColoredHover(color),
+				disabled && 'pointer-events-none opacity-50',
+				className,
+			)}
+			{...rest}
+		>
+			{children}
+		</NextLink>
+	)
+}
+
 const sizeClasses: Record<LinkSize, string> = {
 	xs: 'text-xs',
 	sm: 'text-sm',
@@ -47,32 +76,3 @@ function getColoredHover(color: LinkColor): string {
 }
 
 const baseClasses = 'inline-flex items-center underline-offset-2'
-
-export function Link({
-	href,
-	size = 'md',
-	color = 'inherit',
-	hover = 'none',
-	disabled,
-	className,
-	children,
-	...rest
-}: LinkProps) {
-	return (
-		<NextLink
-			href={href as NextLinkProps['href']}
-			className={cn(
-				baseClasses,
-				sizeClasses[size],
-				colorClasses[color],
-				hover !== 'vivid' && hoverClasses[hover],
-				includes(['vivid', 'none'], hover) && getColoredHover(color),
-				disabled && 'pointer-events-none opacity-50',
-				className,
-			)}
-			{...rest}
-		>
-			{children}
-		</NextLink>
-	)
-}

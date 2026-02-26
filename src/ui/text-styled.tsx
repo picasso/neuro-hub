@@ -14,7 +14,7 @@ type TextStyledVariant =
 	| 'quote'
 	| 'block'
 
-type TextStyledColor = 'primary' | 'secondary' | 'dimmed' | 'contrast' | 'soft'
+export type TextStyledColor = 'primary' | 'secondary' | 'dimmed' | 'contrast' | 'soft'
 
 export type TextStyledProps = {
 	variant?: TextStyledVariant
@@ -106,5 +106,4 @@ export const TextStyled = forwardRef<HTMLElement, TextStyledProps>(
 	},
 )
 
-TextStyled.displayName = 'TextStyled'
 export const TS = TextStyled
