@@ -7,8 +7,8 @@ import { produce, castDraft } from 'immer'
 import { forEach, isString, merge, set, uniqueId } from 'lodash'
 import { createElement, type FC, type ReactElement } from 'react'
 import { toast, type ExternalToast as ToastProps, type ToasterProps } from 'sonner'
-import { type IconName, type IconOptions } from '@/components/ui'
 import { createDomainWatched } from '@/lib/logger'
+import { type IconName, type IconOptions } from '@/ui'
 import { type MarkdownParams, type TemplatedMessage } from '@/utils'
 
 const domain = createDomainWatched('alerts')

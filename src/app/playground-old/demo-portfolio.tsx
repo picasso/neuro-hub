@@ -4,7 +4,8 @@ import Stack from '@mui/material/Stack'
 import { random, reduce, shuffle, uniqueId } from 'lodash'
 import { useMemo, useState } from 'react'
 import { pictures } from './pictures'
-import { Button, Portfolio, type MediaItem } from '@/components/ui'
+import { Portfolio, type MediaItem } from '@/features'
+import { Button } from '@/ui'
 
 export function PortfolioDemo() {
 	const [inputKey, setInputKey] = useState(0)

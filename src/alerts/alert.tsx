@@ -9,8 +9,8 @@ import { isNumber } from 'lodash'
 import { useCallback } from 'react'
 import { toast } from 'sonner'
 import { $alerts, type AlertProps } from './model'
-import { Icon, TS } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { Icon, TS } from '@/ui'
 import { simpleMarkdown, templatedMessage } from '@/utils'
 
 const iconMapping: MuiAlertProps['iconMapping'] = {

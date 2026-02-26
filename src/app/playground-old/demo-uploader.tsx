@@ -2,7 +2,7 @@
 
 import Stack from '@mui/material/Stack'
 import { useState } from 'react'
-import { FileUploader, TS } from '@/components/ui'
+import { FileUploader, TS } from '@/ui'
 
 export function UploaderDemo() {
 	const [file, setFile] = useState<File | null>(null)

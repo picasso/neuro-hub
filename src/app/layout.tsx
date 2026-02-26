@@ -2,13 +2,13 @@ import './globals.css'
 import { fonts } from './fonts'
 import type { ReactNode } from 'react'
 import { AlertsPlugin } from '@/alerts'
-import { DbHealthAlert } from '@/components/db-health-alert'
-import { FontProvider, ThemeRegistry } from '@/components/providers'
-import { Footer, Header } from '@/components/ui'
+import { DbHealthAlert } from '@/features/db-health-alert'
+import { Footer } from '@/features/footer'
+import { Header } from '@/features/header'
 import { cn } from '@/lib/utils'
+import { FontProvider, ThemeRegistry } from '@/ui/providers'
 
-export { homeMetadata as metadata } from '@/config/metadata'
-export { viewport } from '@/config/metadata/utils'
+export { homeMetadata as metadata, viewport } from '@/config'
 
 type RootLayoutProps = {
 	children: ReactNode

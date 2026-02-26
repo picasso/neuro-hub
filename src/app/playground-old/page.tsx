@@ -10,7 +10,7 @@ import { AlertsDemo } from './demo-alerts'
 import { IconsDemo } from './demo-icons'
 import { PortfolioDemo } from './demo-portfolio'
 import { UploaderDemo } from './demo-uploader'
-import { TS } from '@/components/ui'
+import { TS } from '@/ui'
 
 type TabId = 'icon' | 'button' | 'alerts' | 'uploader' | 'portfolio'
 

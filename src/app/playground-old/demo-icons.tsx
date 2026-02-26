@@ -3,7 +3,7 @@
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { map } from 'lodash'
-import { Icon, type IconName, type IconProps, TS } from '@/components/ui'
+import { Icon, type IconName, type IconProps, TS } from '@/ui'
 
 export const IconsDemo = () => {
 	const availableIcons: Array<{ name: IconName; color?: IconProps['color'] }> = [

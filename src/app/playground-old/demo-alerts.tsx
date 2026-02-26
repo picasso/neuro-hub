@@ -3,7 +3,7 @@
 import Stack from '@mui/material/Stack'
 import { map } from 'lodash'
 import { type Alert, createAlert, createAlertFx, removeAlert, updateAlert } from '@/alerts'
-import { Button, type IconName, TS } from '@/components/ui'
+import { Button, type IconName, TS } from '@/ui'
 
 type DemoConfig = {
 	label: string

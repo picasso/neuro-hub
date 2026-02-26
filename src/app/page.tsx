@@ -1,17 +1,4 @@
-import {
-	BenefitsSection,
-	FaqSection,
-	HeroSection,
-	ShowcaseSection,
-} from '@/components/features/home'
+import { HomePage } from '@/features'
 
-export default function HomePage() {
-	return (
-		<main>
-			<HeroSection />
-			<BenefitsSection />
-			<ShowcaseSection />
-			<FaqSection />
-		</main>
-	)
-}
+export { homeMetadata as metadata } from '@/config'
+export default HomePage
