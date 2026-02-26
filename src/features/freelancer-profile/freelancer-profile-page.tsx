@@ -1,4 +1,3 @@
-import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
@@ -6,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { PublicFreelancerProfileView } from './public-profile-view'
 import { getPublicFreelancerProfileByProfileId } from '@/lib/db/queries/freelancers'
 import { freelancerProfileIdParamSchema } from '@/lib/validations'
+import { Avatar } from '@/ui'
 import { TS } from '@/ui/text-styled'
 
 type PageProps = {
@@ -26,8 +26,9 @@ export async function FreelancerProfilePage(props: PageProps) {
 			<Box sx={{ mt: 6, mb: 8 }}>
 				<Stack direction="row" spacing={2} sx={{ mb: 4, alignItems: 'center' }}>
 					<Avatar
+						name={profile.userProfile?.name || 'Freelancer'}
+						size="lg"
 						src={profile.userProfile?.avatarUrl ?? undefined}
-						sx={{ width: 64, height: 64 }}
 					/>
 					<Box sx={{ minWidth: 0 }}>
 						<TS

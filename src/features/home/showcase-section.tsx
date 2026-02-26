@@ -1,6 +1,5 @@
 'use client'
 
-import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -8,9 +7,10 @@ import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import { map, toUpper } from 'lodash'
+import { map } from 'lodash'
 import type { ReactElement } from 'react'
 import { showcaseContent } from '@/config'
+import { Avatar } from '@/ui'
 import { Icon } from '@/ui/icon'
 import { TS } from '@/ui/text-styled'
 
@@ -53,7 +53,6 @@ type CaseCardProps = {
 
 function CaseCard({ category, title, description, result, feedback, client }: CaseCardProps) {
 	const config = categoryConfig[category] || categoryConfig['Генерация текста']
-	const clientInitial = toUpper(client.charAt(0))
 
 	return (
 		<Card
@@ -148,17 +147,7 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 							/>
 						</Stack>
 						<Stack direction="row" spacing={1} alignItems="center">
-							<Avatar
-								sx={{
-									width: 32,
-									height: 32,
-									bgcolor: config.chipColor,
-									fontSize: 14,
-									fontWeight: 700,
-								}}
-							>
-								{clientInitial}
-							</Avatar>
+							<Avatar name={client} />
 							<TS
 								variant="caption"
 								color="secondary"

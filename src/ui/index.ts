@@ -17,9 +17,11 @@ export { Button, HrefButton, buttonSize, outlineStyle, type ButtonProps } from '
 export { IconButton, contrastStyle, type IconButtonProps } from './icon-button'
 export { Stack, type StackProps } from './stack'
 export { FileUploader, type FileUploaderProps } from './file-uploader'
+export { Avatar, type AvatarProps } from './avatar'
 
 // shadcn/ui primitives (use @/ui, never @/ui/shadcn directly in app code)
 export { buttonVariants } from './shadcn/button'
+export { AvatarGroup, AvatarGroupCount } from './shadcn/avatar'
 export {
 	Command,
 	CommandDialog,
