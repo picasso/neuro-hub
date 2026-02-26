@@ -26,7 +26,8 @@ alwaysApply: true
 - Use index as React key for dynamic lists
 - Use synchronous file operations in API routes
 - Import directly from `@/ui/shadcn/*` — always use `@/ui` barrel instead
-- Import directly from `@/features/*` sub-paths — always use `@/features` barrel
+- Import directly from `@/features/*` sub-paths — use `@/features` or `@/features/server` barrel
+- Export server-only components (using `next/headers`, `@/lib/db`, etc.) from `features/index.ts` — use `features/server.ts` instead
 - Put business logic in `app/page.tsx` files — use `features/` instead
 - Add `'use client'` to barrel files (`index.ts`) — see `.cursor/rules/use-client.mdc`
 - Export internal sub-components (that receive callback props from a parent) from barrel files

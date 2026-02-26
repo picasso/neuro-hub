@@ -70,6 +70,22 @@ Barrel files NEVER export:
 - Internal sub-components that receive callback props from a parent
 - Components that only make sense as children of a specific parent component
 
+## Server-only Components in `features/`
+
+Components that import server-only modules (`next/headers`, `@/lib/auth/server`, `@/lib/db`, `pg`, `fs`) must NOT be in `features/index.ts`. They go in `features/server.ts` — a separate barrel for server-only exports.
+
+```tsx
+// app/dashboard/page.tsx — Server Component imports from server barrel
+import { DashboardPage } from '@/features/server'
+export default DashboardPage
+
+// app/page.tsx — can safely import from features/index.ts (client-safe)
+import { HomePage } from '@/features'
+export default HomePage
+```
+
+Why: `features/index.ts` is imported by client components. Next.js traces all barrel exports. If the barrel contains a server-only module, client components will fail with "next/headers only works in a Server Component".
+
 ## Avoiding Unnecessary `useMemo` / `useCallback`
 
 If a file is a UI primitive exported through the barrel, avoid `useMemo`/`useCallback` for trivial computations. This forces `'use client'` on a file that could otherwise work as a Server Component. Inline the computation instead.
