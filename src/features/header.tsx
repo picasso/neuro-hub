@@ -6,9 +6,9 @@ import Stack from '@mui/material/Stack'
 import Toolbar from '@mui/material/Toolbar'
 import { useRouter } from 'next/navigation'
 import { signOut, useSession } from '@/lib/auth/client'
+import { FontSwitcher } from '@/ui'
 import { Button } from '@/ui/button'
 import { Link } from '@/ui/link'
-import { FontSwitcher } from '@/ui/providers'
 import { TS } from '@/ui/text-styled'
 
 export function Header() {

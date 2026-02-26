@@ -1,3 +1,7 @@
+// Providers
+export { FontProvider, FontSwitcher } from './providers/font-provider'
+export { ThemeRegistry } from './providers/theme-registry'
+
 // Custom UI primitives
 export { Link, type LinkProps } from './link'
 export {

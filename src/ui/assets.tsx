@@ -45,7 +45,7 @@ import {
 	ChevronRight,
 } from 'lucide-react'
 import { type ComponentType, type SVGProps } from 'react'
-import { customIcons } from './icons'
+import { customIcons } from './icons/icons'
 
 type SvgComponent = ComponentType<SVGProps<SVGSVGElement>>
 

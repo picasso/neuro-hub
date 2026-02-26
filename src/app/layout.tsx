@@ -6,7 +6,7 @@ import { DbHealthAlert } from '@/features/db-health-alert'
 import { Footer } from '@/features/footer'
 import { Header } from '@/features/header'
 import { cn } from '@/lib/utils'
-import { FontProvider, ThemeRegistry } from '@/ui/providers'
+import { FontProvider, ThemeRegistry } from '@/ui'
 
 export { homeMetadata as metadata, viewport } from '@/config'
 

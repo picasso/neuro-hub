@@ -1,24 +1,25 @@
-// pages
-export { HomePage } from './home'
-export { DashboardPage } from './dashboard'
-export { LoginPage } from './auth'
-export { SignupPage } from './onboarding'
+// pages (client-safe only; server-only pages live in ./server.ts)
+export { HomePage } from './home/home-page'
+export { LoginPage } from './auth/login-page'
+export { SignupPage } from './onboarding/signup-page'
 export { HowItWorksPage } from './how-it-works'
 export { FreelancersPage } from './freelancers-page'
 export { ProjectsPage } from './projects-page'
 export { PostProjectPage } from './post-project-page'
-export { PlaygroundPage } from './playground'
+export { PlaygroundPage } from './playground/playground-page'
 
 // sections & components
-export { BenefitsSection, FaqSection, HeroSection, ShowcaseSection } from './home'
-export {
-	FreelancerProfileEditor,
-	PublicFreelancerProfileView,
-	FreelancerProfilePage,
-} from './freelancer-profile'
-export { OnboardingWizard } from './onboarding'
-export { Portfolio, PortfolioEditor, type PortfolioProps, type MediaItem } from './portfolio'
+export { BenefitsSection } from './home/benefits-section'
+export { FaqSection } from './home/faq-section'
+export { HeroSection } from './home/hero-section'
+export { ShowcaseSection } from './home/showcase-section'
+export { FreelancerProfileEditor } from './freelancer-profile/freelancer-profile-editor'
+export { PublicFreelancerProfileView } from './freelancer-profile/public-profile-view'
+export { OnboardingWizard } from './onboarding/onboarding-wizard'
+export { Portfolio, type PortfolioProps } from './portfolio/portfolio'
+export { PortfolioEditor } from './portfolio/portfolio-editor'
+export { type MediaItem } from './portfolio/portfolio-item'
 export { Header } from './header'
 export { Footer } from './footer'
 export { DbHealthAlert } from './db-health-alert'
-export { LoginForm } from './auth'
+export { LoginForm } from './auth/login-form'
