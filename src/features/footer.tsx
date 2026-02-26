@@ -1,11 +1,11 @@
 'use client'
 
 import Box from '@mui/material/Box'
-import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { config, contactContent } from '@/config'
+import { Badge } from '@/ui'
 import { Icon } from '@/ui/icon'
 import { IconButton } from '@/ui/icon-button'
 import { Link } from '@/ui/link'
@@ -28,14 +28,12 @@ export function Footer() {
 					<Grid size={{ xs: 12, sm: 4 }}>
 						<Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
 							<TS variant="h5">NeuroGig</TS>
-							<Chip
-								label={`${config.version}`}
-								size="small"
-								sx={{
-									color: 'contrast.main',
-									opacity: 0.9,
-									borderColor: 'contrast.main',
-								}}
+							<Badge
+								icon="done"
+								variant="outline"
+								color="soft"
+								label={config.version}
+								size="xs"
 							/>
 						</Stack>
 						<TS variant="subtitle" color="soft">

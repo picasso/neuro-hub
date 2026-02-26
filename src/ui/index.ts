@@ -18,6 +18,7 @@ export { IconButton, contrastStyle, type IconButtonProps } from './icon-button'
 export { Stack, type StackProps } from './stack'
 export { FileUploader, type FileUploaderProps } from './file-uploader'
 export { Avatar, type AvatarProps } from './avatar'
+export { Badge, type BadgeProps } from './badge'
 
 // shadcn/ui primitives (use @/ui, never @/ui/shadcn directly in app code)
 export { buttonVariants } from './shadcn/button'
