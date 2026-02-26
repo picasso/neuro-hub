@@ -15,11 +15,12 @@ export type AvatarProps = {
 	src?: string
 	alt?: string
 	badge?: AvatarBadge
+	bordered?: boolean
 	className?: string
 }
 
 export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
-	{ name, size = 'md', color = 'auto', src, alt, badge, className },
+	{ name, size = 'md', color = 'auto', src, alt, badge, bordered = false, className },
 	ref,
 ) {
 	const initials = getInitials(name)
@@ -27,15 +28,27 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
 	const shadcnSize = size === 'md' ? 'default' : size
 
 	return (
-		<AvatarRoot ref={ref} size={shadcnSize} className={cn('shrink-0', className)}>
-			{src !== undefined ? <AvatarImage src={src} alt={alt ?? name} /> : null}
+		<AvatarRoot
+			ref={ref}
+			size={shadcnSize}
+			className={cn(
+				bordered && 'outline outline-foreground/20',
+				badge && 'overflow-visible',
+				// to increase visual padding around `initials` for `sm` size
+				size === 'sm' && 'outline',
+				className,
+			)}
+			// to increase visual padding around `initials` for `sm` size
+			style={{ outlineColor: size === 'sm' ? bgColor : undefined }}
+		>
+			{src && <AvatarImage src={src} alt={alt ?? name} />}
 			<AvatarFallback
 				className="text-white font-semibold"
 				style={{ backgroundColor: bgColor }}
 			>
 				{initials}
 			</AvatarFallback>
-			{badge ? <AvatarBadge className={badgeClass[badge]} aria-hidden /> : null}
+			{badge && <AvatarBadge className={badgeClass[badge]} aria-hidden />}
 		</AvatarRoot>
 	)
 })
