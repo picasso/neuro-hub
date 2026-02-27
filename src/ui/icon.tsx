@@ -44,12 +44,11 @@ const colorPresets: Record<IconColor, string> = {
 
 // `Icon` component -------------------------------------------------------------------------------]
 
-export type IconProps = {
+export type IconProps = React.ComponentProps<ReturnType<typeof getIcon>> & {
 	name: IconName
 	size?: IconSize | number
 	color?: IconColor
 	spinning?: boolean
-	className?: string
 }
 
 export type IconOptions = {
@@ -71,7 +70,12 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
 			ref={ref}
 			width={sizeValue}
 			height={sizeValue}
-			className={cn(color && colorPresets[color], spinning && 'animate-spin', className)}
+			className={cn(
+				'shrink-0',
+				color && colorPresets[color],
+				spinning && 'animate-spin',
+				className,
+			)}
 			{...props}
 		/>
 	)
