@@ -1,6 +1,5 @@
 'use client'
 
-import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
@@ -23,7 +22,7 @@ import {
 	setCurrentStep,
 	setRole,
 } from '@/stores/onboarding'
-import { Icon } from '@/ui/icon'
+import { Badge } from '@/ui'
 
 const wizardSteps = {
 	freelancer: ['Роль', 'Профиль', 'Навыки', 'Аккаунт', 'Проверка'],
@@ -87,20 +86,13 @@ export function OnboardingWizard() {
 						spacing={2}
 						sx={{ mb: 3 }}
 					>
-						<Chip
-							label={`Регистрация: ${role === 'freelancer' ? 'Фрилансер' : 'Заказчик'}`}
-							icon={<Icon name={role === 'freelancer' ? 'person' : 'business'} />}
-							onDelete={() => resetOnboarding()}
-							color="primary"
-							variant="outlined"
-							sx={{
-								fontSize: '1rem',
-								py: 2.5,
-								px: 1,
-								'& .MuiChip-label': {
-									px: 3,
-								},
-							}}
+						<Badge
+							variant="primary"
+							size="md"
+							label={role === 'freelancer' ? 'Фрилансер' : 'Заказчик'}
+							icon={role === 'freelancer' ? 'person' : 'business'}
+							onClose={() => resetOnboarding()}
+							ariaOnClose="Сбросить и начать заново"
 						/>
 					</Stack>
 				)}

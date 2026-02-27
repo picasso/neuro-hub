@@ -20,6 +20,7 @@ export type BadgeProps = Omit<React.ComponentPropsWithoutRef<'span'>, 'children'
 	children?: ReactNode
 	iconClassName?: string
 	closeClassName?: string
+	ariaOnClose?: string
 }
 
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
@@ -36,6 +37,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 			children,
 			iconClassName,
 			closeClassName,
+			ariaOnClose,
 			...props
 		},
 		ref,
@@ -96,7 +98,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 							'hover:bg-transparent hover:opacity-100 transition-opacity',
 							closeClassName,
 						)}
-						aria-label="Remove"
+						aria-label={ariaOnClose ?? 'Remove'}
 					/>
 				) : null}
 			</>

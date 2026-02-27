@@ -1,14 +1,13 @@
 'use client'
 
 import Box from '@mui/material/Box'
-import Chip from '@mui/material/Chip'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import Stack from '@mui/material/Stack'
 import { useMemo, useState } from 'react'
 import type { PublicFreelancerProfile } from '@/lib/db/queries/freelancers'
-import { Link } from '@/ui'
+import { Badge, Link } from '@/ui'
 import { TS } from '@/ui/text-styled'
 
 function levelLabel(level: string | null) {
@@ -78,11 +77,18 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 				) : (
 					<Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
 						{profile.skills.map((s) => (
-							<Chip
+							<Badge
 								key={s.skillId}
-								label={`${s.skill.name} · ${levelLabel(s.proficiencyLevel)}`}
-								variant="outlined"
-							/>
+								variant="outline"
+								size="xs"
+								color="secondary"
+								icon="badge-check"
+							>
+								<span className="font-semibold text-foreground-muted">
+									{s.skill.name}
+								</span>
+								✶ {levelLabel(s.proficiencyLevel)}
+							</Badge>
 						))}
 					</Stack>
 				)}

@@ -3,19 +3,15 @@
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { map } from 'lodash'
-import type { ReactElement } from 'react'
 import { showcaseContent } from '@/config'
-import { Avatar } from '@/ui'
-import { Icon } from '@/ui/icon'
-import { TS } from '@/ui/text-styled'
+import { Avatar, Badge, TS, type IconName, Icon } from '@/ui'
 
 type CategoryConfig = {
-	icon: ReactElement
+	icon: IconName
 	gradient: string
 	chipColor: string
 	quoteBg: string
@@ -23,19 +19,19 @@ type CategoryConfig = {
 
 const categoryConfig: Record<string, CategoryConfig> = {
 	'Генерация текста': {
-		icon: <Icon name="article" size={20} />,
+		icon: 'article',
 		gradient: 'linear-gradient(90deg, #5a4fcf 0%, #a78bfa 100%)',
 		chipColor: '#667eea',
 		quoteBg: 'rgba(102, 126, 234, 0.1)',
 	},
 	'Генерация изображений': {
-		icon: <Icon name="image" size={20} />,
+		icon: 'image',
 		gradient: 'linear-gradient(90deg, #db2777 0%, #f9a8d4 100%)',
 		chipColor: '#f093fb',
 		quoteBg: 'rgba(240, 147, 251, 0.1)',
 	},
 	'Генерация видео': {
-		icon: <Icon name="video-library" size={20} />,
+		icon: 'video-library',
 		gradient: 'linear-gradient(90deg, #0891b2 0%, #67e8f9 100%)',
 		chipColor: '#4facfe',
 		quoteBg: 'rgba(79, 172, 254, 0.1)',
@@ -80,19 +76,12 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 					gap: 1,
 				}}
 			>
-				<Chip
-					icon={config.icon}
+				<Badge
+					variant="ghost"
+					size="md"
+					color="contrast"
 					label={category}
-					size="small"
-					sx={{
-						bgcolor: 'transparent',
-						border: 'none',
-						color: 'white',
-						fontWeight: 600,
-						'& .MuiChip-icon': {
-							color: 'white',
-						},
-					}}
+					icon={config.icon}
 				/>
 			</Box>
 

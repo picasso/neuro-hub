@@ -2,7 +2,6 @@
 
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
-import Chip from '@mui/material/Chip'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import List from '@mui/material/List'
@@ -26,8 +25,7 @@ import {
 	updateSkillLevel,
 	type Skill,
 } from '@/stores/onboarding'
-import { Button } from '@/ui/button'
-import { TS } from '@/ui/text-styled'
+import { Badge, Button, TS } from '@/ui'
 
 type ProficiencyLevel = UserSkillInput['proficiencyLevel']
 
@@ -96,10 +94,13 @@ export function SkillsSelectionStep() {
 										alignItems="center"
 										gap={1}
 									>
-										<Chip
+										<Badge
+											variant="outline"
+											size="sm"
 											color="primary"
 											label={skillData?.name || skill.skillId}
-											onDelete={() => removeSkill(skill.skillId)}
+											onClose={() => removeSkill(skill.skillId)}
+											ariaOnClose="Удалить навык"
 										/>
 										<FormControl size="small" sx={{ minWidth: 140 }}>
 											<Select
@@ -187,8 +188,10 @@ export function SkillsSelectionStep() {
 											label={
 												<Box>
 													<TS variant="subtitle" content={skill.name} />
-													<Chip
-														size="small"
+													<Badge
+														variant="secondary"
+														size="xs"
+														color="secondary"
 														label={skill.category.replace('_', ' ')}
 													/>
 												</Box>
