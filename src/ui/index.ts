@@ -21,8 +21,16 @@ export { Avatar, type AvatarProps } from './avatar'
 export { Badge, type BadgeProps } from './badge'
 
 // shadcn/ui primitives (use @/ui, never @/ui/shadcn directly in app code)
-export { buttonVariants } from './shadcn/button'
 export { AvatarGroup, AvatarGroupCount } from './shadcn/avatar'
+export {
+	Card,
+	CardHeader,
+	CardFooter,
+	CardTitle,
+	CardAction,
+	CardDescription,
+	CardContent,
+} from './shadcn/card'
 export {
 	Command,
 	CommandDialog,

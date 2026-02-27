@@ -1,14 +1,21 @@
 'use client'
 
-import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
-import Stack from '@mui/material/Stack'
 import { map } from 'lodash'
 import { showcaseContent } from '@/config'
-import { Avatar, Badge, TS, type IconName, Icon } from '@/ui'
+import {
+	Card,
+	CardContent,
+	Avatar,
+	Stack,
+	TS,
+	type IconName,
+	Icon,
+	CardHeader,
+	CardTitle,
+	CardFooter,
+} from '@/ui'
 
 type CategoryConfig = {
 	icon: IconName
@@ -51,110 +58,54 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 	const config = categoryConfig[category] || categoryConfig['Генерация текста']
 
 	return (
-		<Card
-			elevation={0}
-			sx={{
-				height: 1,
-				display: 'flex',
-				flexDirection: 'column',
-				border: 1,
-				borderColor: 'divider',
-				transition: 'all 0.3s',
-				overflow: 'hidden',
-				'&:hover': {
-					boxShadow: 6,
-					transform: 'translateY(-4px)',
-				},
-			}}
-		>
-			<Box
-				sx={{
-					background: config.gradient,
-					p: 2,
-					display: 'flex',
-					alignItems: 'center',
-					gap: 1,
-				}}
-			>
-				<Badge
-					variant="ghost"
-					size="md"
-					color="contrast"
-					label={category}
-					icon={config.icon}
-				/>
-			</Box>
-
-			<CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 3 }}>
+		<Card size="sm" className="h-full">
+			<CardHeader className="py-4" style={{ background: config.gradient }}>
+				<CardTitle className="text-background">
+					<Stack>
+						<Icon name={config.icon} size={20} color="contrast" />
+						{category}
+					</Stack>
+				</CardTitle>
+			</CardHeader>
+			<CardContent>
 				<TS variant="h5" strong gutterBottom content={title} />
-
-				<TS
-					variant="body"
-					color="secondary"
-					gutterBottom
-					className="text-sm"
-					content={description}
-				/>
-
-				<Stack direction="row" spacing={1.5} sx={{ mb: 2 }} alignItems="flex-start">
-					<span className="mt-0.5 shrink-0" style={{ color: '#10b981' }}>
-						<Icon name="check-circle" size={20} />
-					</span>
-					<Box>
-						<TS
-							variant="body"
-							className="text-sm font-semibold text-emerald-500"
-							gutterBottom
-							content="Результат:"
-						/>
-						<TS variant="body" color="secondary" className="text-sm" content={result} />
-					</Box>
+				<TS variant="subtitle" color="secondary" gutterBottom content={description} />
+				<Stack align="flex-start">
+					<Icon name="badge-check" size="lg" color="primary" />
+					<TS strong variant="subtitle" color="secondary" content="Результат:" />
+					<TS variant="caption" color="dimmed" content={result} gutterBottom />
 				</Stack>
-
-				<Box
-					sx={{
-						mt: 'auto',
-						pt: 0,
-					}}
-				>
-					<Box
-						sx={{
-							bgcolor: config.quoteBg,
-							p: 2,
-							borderRadius: 2,
-						}}
-					>
-						<Stack direction="row" spacing={1} sx={{ mb: 1.5 }} alignItems="flex-start">
-							<span className="mt-0.5 shrink-0" style={{ color: config.chipColor }}>
-								<Icon name="format-quote" size={20} />
-							</span>
-							<TS
-								variant="body"
-								color="secondary"
-								className="text-sm italic"
-								content={feedback}
-							/>
-						</Stack>
-						<Stack direction="row" spacing={1} alignItems="center">
-							<Avatar name={client} />
-							<TS
-								variant="caption"
-								color="secondary"
-								inline
-								className="font-semibold"
-								content={client}
-							/>
-						</Stack>
-					</Box>
-				</Box>
 			</CardContent>
+			<CardFooter className="p-4" style={{ background: config.quoteBg }}>
+				<Stack vertical align="flex-start" gap={4}>
+					<Stack align="flex-start">
+						<Icon
+							name="format-quote"
+							size={20}
+							color="cta"
+							style={{ color: config.chipColor }}
+							className="mt-1"
+						/>
+						<TS
+							variant="subtitle"
+							color="dimmed"
+							className="italic"
+							content={feedback}
+						/>
+					</Stack>
+					<Stack>
+						<Avatar name={client} />
+						<TS strong variant="caption" color="secondary" content={client} />
+					</Stack>
+				</Stack>
+			</CardFooter>
 		</Card>
 	)
 }
 
 export function ShowcaseSection() {
 	return (
-		<Box sx={{ py: 8, bgcolor: 'background.paper' }}>
+		<div className="py-12 bg-surface">
 			<Container maxWidth="lg">
 				<TS
 					variant="h3"
@@ -185,6 +136,6 @@ export function ShowcaseSection() {
 					))}
 				</Grid>
 			</Container>
-		</Box>
+		</div>
 	)
 }
