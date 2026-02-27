@@ -34,8 +34,8 @@ $settings.on(toggleSettings, (store, key) =>
 export function useReset<T extends Settings>(defaults: T | null = null) {
 	const [reset, update] = useUnit([resetSettings, updateSettings])
 	return useCallback(() => {
+		reset()
 		if (defaults) update(defaults)
-		else reset()
 	}, [reset, update, defaults])
 }
 
