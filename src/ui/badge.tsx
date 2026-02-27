@@ -1,3 +1,4 @@
+import { includes } from 'lodash'
 import { forwardRef, type ReactNode } from 'react'
 import { Icon, type IconColor, type IconName } from './icon'
 import { IconButton } from './icon-button'
@@ -27,7 +28,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 			variant = 'primary',
 			asChild = false,
 			label,
-			color = 'primary',
+			color,
 			icon,
 			size = 'md',
 			onClose,
@@ -39,13 +40,15 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 		},
 		ref,
 	) => {
-		const shadcnVariant = variantToShadcn[variant]
-		const content = label ?? children
+		const shadcnVariant = variant === 'primary' ? 'default' : variant
+		const needsContrast =
+			includes(['primary', 'destructive'], variant) || includes(['contrast', 'soft'], color)
+		const defaultColor = needsContrast ? 'contrast' : variant === 'link' ? 'primary' : 'dimmed'
 		const mergedClassName = cn(
-			'inline-flex items-center gap-1',
-			sizeToTextClass[size],
-			sizeToIconClass[size],
+			sizeTextClasses[size],
+			sizeIconClasses[size],
 			color && textColorClasses[color],
+			color && variant === 'outline' && outlineColorClasses[color],
 			className,
 		)
 
@@ -63,32 +66,34 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 			)
 		}
 
-		const iconColor = iconColorMap[color]
+		const iconColor = color && iconColorMap[color]
 		const inner = (
 			<>
 				{icon ? (
 					<Icon
 						name={icon}
 						size={iconSizeMap[size]}
-						color={iconColor}
+						color={iconColor ?? defaultColor}
 						className={cn(
-							'shrink-0',
-							!iconColor && textColorClasses[color],
+							size === 'lg' && 'ml-1',
+							color === 'soft' && 'text-background/60',
 							iconClassName,
 						)}
+						data-icon="inline-start"
 					/>
 				) : null}
-				{content}
+				{label ?? children}
 				{onClose ? (
 					<IconButton
 						icon="x"
-						variant="ghost"
-						color={iconColor}
-						size={'xs'}
+						variant={needsContrast ? 'default' : 'ghost'}
+						size={size === 'lg' ? 'sm' : 'xs'}
 						onClick={onClose}
 						className={cn(
-							'-my-0.5 -mr-2 ml-0 shrink-0',
-							'opacity-50 hover:bg-transparent hover:opacity-100 transition-opacity',
+							'-mb-0.5 -mr-1 shrink-0',
+							size === 'lg' ? '-ml-1' : '-ml-1',
+							'opacity-70 bg-transparent',
+							'hover:bg-transparent hover:opacity-100 transition-opacity',
 							closeClassName,
 						)}
 						aria-label="Remove"
@@ -105,26 +110,14 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 	},
 )
 
-const variantToShadcn: Record<
-	BadgeVariant,
-	'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link'
-> = {
-	primary: 'default',
-	secondary: 'secondary',
-	destructive: 'destructive',
-	outline: 'outline',
-	ghost: 'ghost',
-	link: 'link',
-}
-
-const sizeToTextClass: Record<BadgeSize, string> = {
+const sizeTextClasses: Record<BadgeSize, string> = {
 	xs: 'text-xs',
 	sm: 'text-sm',
 	md: 'text-base',
 	lg: 'text-lg',
 }
 
-const sizeToIconClass: Record<BadgeSize, string> = {
+const sizeIconClasses: Record<BadgeSize, string> = {
 	xs: '[&>svg]:size-3',
 	sm: '[&>svg]:size-3.5',
 	md: '[&>svg]:size-4',
@@ -143,12 +136,21 @@ const iconColorMap: Record<TextStyledColor, IconColor | undefined> = {
 	secondary: 'muted',
 	dimmed: 'dimmed',
 	contrast: 'contrast',
-	soft: undefined,
+	soft: 'contrast',
 }
+
 const textColorClasses: Record<TextStyledColor, string> = {
-	primary: 'text-foreground',
+	primary: 'text-primary',
 	secondary: 'text-muted-foreground',
 	dimmed: 'text-dimmed',
 	contrast: 'text-background',
 	soft: 'text-background/60',
+}
+
+const outlineColorClasses: Record<TextStyledColor, string> = {
+	primary: 'border-primary/40',
+	secondary: 'border-dimmed/30',
+	dimmed: 'border-border',
+	contrast: 'border-background/70',
+	soft: 'border-background/40',
 }

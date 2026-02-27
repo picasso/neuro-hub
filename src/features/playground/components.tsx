@@ -1,4 +1,8 @@
 import { type ReactNode } from 'react'
+import { DemoAvatar } from './demo-avatar'
+import { DemoAvatarSettings } from './demo-avatar-settings'
+import { DemoBadge } from './demo-badge'
+import { DemoBadgeSettings } from './demo-badge-settings'
 import { DemoButtons } from './demo-buttons'
 import { DemoButtonsSettings } from './demo-buttons-settings'
 import { DemoIconButtons } from './demo-icon-buttons'
@@ -38,6 +42,24 @@ export const componentDemos: ComponentDemo[] = [
 		settings: <DemoIconButtonsSettings />,
 	},
 	{
+		id: 'avatar',
+		name: 'Avatar',
+		group: 'base',
+		description: 'Avatar sizes, initials, image, badge, color',
+		ready: true,
+		demo: <DemoAvatar />,
+		settings: <DemoAvatarSettings />,
+	},
+	{
+		id: 'badges',
+		name: 'Badges',
+		group: 'base',
+		description: 'Badge variants, sizes, icon, closable',
+		ready: true,
+		demo: <DemoBadge />,
+		settings: <DemoBadgeSettings />,
+	},
+	{
 		id: 'icons',
 		name: 'Icons',
 		group: 'icons',
@@ -60,13 +82,6 @@ export const componentDemos: ComponentDemo[] = [
 		name: 'Cards',
 		group: 'base',
 		description: 'Card, CardHeader, CardContent, CardFooter',
-		ready: false,
-	},
-	{
-		id: 'badges',
-		name: 'Badges',
-		group: 'base',
-		description: 'Badge variants and colors',
 		ready: false,
 	},
 	{
