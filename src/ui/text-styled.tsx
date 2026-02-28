@@ -1,4 +1,6 @@
 import { createElement, forwardRef, type ReactNode } from 'react'
+import { type SemanticColor, semanticColorClasses } from './types'
+import { needsContrast } from './utils'
 import { cn } from '@/lib/utils'
 import { type MarkdownParams, simpleMarkdown } from '@/utils'
 
@@ -14,11 +16,9 @@ type TextStyledVariant =
 	| 'quote'
 	| 'block'
 
-export type TextStyledColor = 'primary' | 'secondary' | 'dimmed' | 'contrast' | 'soft'
-
 export type TextStyledProps = {
 	variant?: TextStyledVariant
-	color?: TextStyledColor
+	color?: SemanticColor
 	content?: string | number
 	strong?: boolean
 	thin?: boolean
@@ -58,14 +58,6 @@ const variantClasses: Record<TextStyledVariant, string> = {
 	block: 'text-base',
 }
 
-const colorClasses: Record<TextStyledColor, string> = {
-	primary: 'text-foreground',
-	secondary: 'text-muted-foreground',
-	dimmed: 'text-dimmed',
-	contrast: 'text-background',
-	soft: 'text-background/60',
-}
-
 export const TextStyled = forwardRef<HTMLElement, TextStyledProps>(
 	(
 		{
@@ -86,12 +78,12 @@ export const TextStyled = forwardRef<HTMLElement, TextStyledProps>(
 		const value = content ?? children
 		const variant = variantTag[variantProp] ? variantProp : 'body'
 		const tag = inline || inlineBlock ? 'span' : variantTag[variant]
-		const needsContrast = color === 'contrast' || color === 'soft'
+		const contrast = needsContrast(null, color)
 		const classes = cn(
 			'text-styled-root markdown-root',
-			needsContrast && 'contrast',
+			contrast && 'contrast',
 			variantClasses[variant],
-			color && colorClasses[color],
+			color && semanticColorClasses[color],
 			strong && 'font-bold',
 			thin && 'font-medium',
 			inlineBlock && 'inline-block',

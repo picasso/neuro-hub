@@ -1,11 +1,10 @@
 'use client'
 
-import { includes } from 'lodash'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type BadgeDemoState } from './demo-badge-settings'
 import { useSettings } from './settings-store'
 import { cn } from '@/lib/utils'
-import { Badge, Stack } from '@/ui'
+import { Badge, needsContrast, Stack } from '@/ui'
 
 const variants = ['primary', 'secondary', 'destructive', 'outline', 'ghost', 'link'] as const
 const sizes = ['xs', 'sm', 'md', 'lg'] as const
@@ -27,7 +26,7 @@ export function DemoBadge() {
 					align="center"
 					className={cn(
 						'p-4 rounded-md border',
-						includes(['contrast', 'soft'], color) && 'text-white bg-primary',
+						needsContrast(null, color) && 'text-white bg-primary',
 					)}
 				>
 					<Badge

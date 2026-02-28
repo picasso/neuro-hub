@@ -1,9 +1,9 @@
-import { includes } from 'lodash'
 import { forwardRef, type ReactNode } from 'react'
-import { Icon, type IconColor, type IconName } from './icon'
+import { Icon, type IconName } from './icon'
 import { IconButton } from './icon-button'
 import { Badge as ShadcnBadge } from './shadcn/badge'
-import { type TextStyledColor } from './text-styled'
+import { type SemanticColor, semanticColorClasses, textSizeClasses } from './types'
+import { needsContrast } from './utils'
 import { cn } from '@/lib/utils'
 
 export type BadgeVariant = 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link'
@@ -13,7 +13,7 @@ export type BadgeProps = Omit<React.ComponentPropsWithoutRef<'span'>, 'children'
 	variant?: BadgeVariant
 	asChild?: boolean
 	label?: string
-	color?: TextStyledColor
+	color?: SemanticColor
 	icon?: IconName
 	size?: BadgeSize
 	onClose?: () => void
@@ -43,11 +43,10 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 		ref,
 	) => {
 		const shadcnVariant = variant === 'primary' ? 'default' : variant
-		const needsContrast =
-			includes(['primary', 'destructive'], variant) || includes(['contrast', 'soft'], color)
-		const defaultColor = needsContrast ? 'contrast' : variant === 'link' ? 'primary' : 'dimmed'
+		const contrast = needsContrast(variant, color)
+		const defaultColor = contrast ? 'contrast' : variant === 'link' ? 'primary' : 'dimmed'
 		const mergedClassName = cn(
-			sizeTextClasses[size],
+			textSizeClasses[size],
 			sizeIconClasses[size],
 			color && textColorClasses[color],
 			color && variant === 'outline' && outlineColorClasses[color],
@@ -68,7 +67,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 			)
 		}
 
-		const iconColor = color && iconColorMap[color]
+		const iconColor = color ? iconColorMap[color] : undefined
 		const inner = (
 			<>
 				{icon ? (
@@ -88,12 +87,11 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 				{onClose ? (
 					<IconButton
 						icon="x"
-						variant={needsContrast ? 'default' : 'ghost'}
+						variant={contrast ? 'default' : 'ghost'}
 						size={size === 'lg' ? 'sm' : 'xs'}
 						onClick={onClose}
 						className={cn(
-							'-mb-0.5 -mr-1 shrink-0',
-							size === 'lg' ? '-ml-1' : '-ml-1',
+							'-mb-0.5 -ml-1 -mr-1 shrink-0',
 							'opacity-70 bg-transparent',
 							'hover:bg-transparent hover:opacity-100 transition-opacity',
 							closeClassName,
@@ -112,13 +110,6 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 	},
 )
 
-const sizeTextClasses: Record<BadgeSize, string> = {
-	xs: 'text-xs',
-	sm: 'text-sm',
-	md: 'text-base',
-	lg: 'text-lg',
-}
-
 const sizeIconClasses: Record<BadgeSize, string> = {
 	xs: '[&>svg]:size-3',
 	sm: '[&>svg]:size-3.5',
@@ -133,23 +124,23 @@ const iconSizeMap: Record<BadgeSize, 'xs' | 'sm' | 'md' | 'lg'> = {
 	lg: 'lg',
 }
 
-const iconColorMap: Record<TextStyledColor, IconColor | undefined> = {
+const iconColorMap: Record<SemanticColor, SemanticColor | 'contrast'> = {
 	primary: 'primary',
-	secondary: 'muted',
+	secondary: 'secondary',
 	dimmed: 'dimmed',
 	contrast: 'contrast',
 	soft: 'contrast',
 }
 
-const textColorClasses: Record<TextStyledColor, string> = {
+const textColorClasses: Record<SemanticColor, string> = {
 	primary: 'text-primary',
-	secondary: 'text-muted-foreground',
-	dimmed: 'text-dimmed',
-	contrast: 'text-background',
-	soft: 'text-background/60',
+	secondary: semanticColorClasses.secondary,
+	dimmed: semanticColorClasses.dimmed,
+	contrast: semanticColorClasses.contrast,
+	soft: semanticColorClasses.soft,
 }
 
-const outlineColorClasses: Record<TextStyledColor, string> = {
+const outlineColorClasses: Record<SemanticColor, string> = {
 	primary: 'border-primary/40',
 	secondary: 'border-dimmed/30',
 	dimmed: 'border-border',

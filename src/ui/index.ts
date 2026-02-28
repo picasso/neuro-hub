@@ -3,22 +3,17 @@ export { FontProvider, FontSwitcher } from './providers/font-provider'
 export { ThemeRegistry } from './providers/theme-registry'
 
 // Custom UI primitives
-export { Link, type LinkProps } from './link'
-export {
-	Icon,
-	type IconProps,
-	type IconName,
-	type IconOptions,
-	type IconColor,
-	type IconSize,
-} from './icon'
+export { Link, type LinkProps, type LinkColor } from './link'
+export { Icon, type IconProps, type IconName, type IconOptions, type IconSize } from './icon'
 export { TS, TextStyled, type TextStyledProps } from './text-styled'
 export { Button, HrefButton, buttonSize, outlineStyle, type ButtonProps } from './button'
 export { IconButton, contrastStyle, type IconButtonProps } from './icon-button'
 export { Stack, type StackProps } from './stack'
 export { FileUploader, type FileUploaderProps } from './file-uploader'
-export { Avatar, type AvatarProps } from './avatar'
+export { Avatar, type AvatarProps, type AvatarBadgeStatus } from './avatar'
 export { Badge, type BadgeProps } from './badge'
+export { type SemanticColor, type IconColor } from './types'
+export { needsContrast } from './utils'
 
 // shadcn/ui primitives (use @/ui, never @/ui/shadcn directly in app code)
 export { AvatarGroup, AvatarGroupCount } from './shadcn/avatar'

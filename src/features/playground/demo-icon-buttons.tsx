@@ -4,7 +4,7 @@ import { DemoLabel, DemoRoot, DemoSection } from './components-utils'
 import { type IconButtonDemoState } from './demo-icon-buttons-settings'
 import { useSettings } from './settings-store'
 import { cn } from '@/lib/utils'
-import { IconButton, Stack } from '@/ui'
+import { IconButton, needsContrast, Stack } from '@/ui'
 
 const icons = ['thumbs-up', 'search', 'trash', 'book-marked', 'eye', 'collections'] as const
 
@@ -27,7 +27,7 @@ export function DemoIconButtons() {
 					align="stretch"
 					className={cn(
 						'p-4 rounded-md border',
-						variant === 'contrast' && 'text-white bg-primary',
+						needsContrast(null, variant) && 'text-white bg-primary',
 					)}
 				>
 					{icons.map((icon) => (
@@ -46,7 +46,9 @@ export function DemoIconButtons() {
 								<DemoLabel
 									content={icon}
 									size="xs"
-									className={variant === 'contrast' ? 'text-white' : undefined}
+									className={
+										needsContrast(null, variant) ? 'text-white' : undefined
+									}
 								/>
 							)}
 						</Stack>

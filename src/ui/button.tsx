@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { forwardRef, type ComponentProps, type ReactNode, type ForwardedRef } from 'react'
 import { Icon, type IconProps, type IconOptions } from './icon'
 import { Button as ShadcnButton } from './shadcn/button'
+import { disabledLinkClasses, needsContrast } from './utils'
 import { cn } from '@/lib/utils'
 
 type LinkProps = ComponentProps<typeof Link>
@@ -46,7 +47,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	) => {
 		const content = label ?? children
 		const shadcnSize = buttonSize(size)
-		const needsContrast = variant === 'default' || variant === 'destructive'
+		const contrast = needsContrast(variant)
 		const mergedClassName = cn(
 			!!fullWidth && 'w-full',
 			!!noWrap && 'whitespace-nowrap',
@@ -55,7 +56,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			className,
 		)
 		const iconProps: Omit<IconProps, 'name'> = {
-			color: needsContrast ? 'contrast' : 'muted',
+			color: contrast ? 'contrast' : 'secondary',
 			size: iconOptions?.size,
 			spinning: iconOptions?.spinning,
 			className: iconOptions?.tw,
@@ -146,7 +147,7 @@ export function HrefButton({
 				target={target}
 				aria-disabled={disabled || undefined}
 				tabIndex={disabled ? -1 : undefined}
-				className={cn(disabled && 'pointer-events-none opacity-50')}
+				className={cn(disabled && disabledLinkClasses)}
 			>
 				{children}
 			</Link>

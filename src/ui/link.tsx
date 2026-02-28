@@ -1,17 +1,18 @@
 import { includes } from 'lodash'
 import NextLink from 'next/link'
+import { type SemanticColor, type TextSize, linkColorClasses, textSizeClasses } from './types'
+import { disabledLinkClasses } from './utils'
 import type { ComponentProps } from 'react'
 import { cn } from '@/lib/utils'
 
 type NextLinkProps = ComponentProps<typeof NextLink>
 
-type LinkColor = 'primary' | 'dimmed' | 'contrast' | 'soft' | 'inherit'
+export type LinkColor = SemanticColor | 'inherit'
 type LinkHover = 'none' | 'underline' | 'vivid'
-type LinkSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
 export type LinkProps = Omit<NextLinkProps, 'href'> & {
 	href: NextLinkProps['href'] | string
-	size?: LinkSize
+	size?: TextSize
 	color?: LinkColor
 	hover?: LinkHover
 	disabled?: boolean
@@ -32,11 +33,11 @@ export function Link({
 			href={href as NextLinkProps['href']}
 			className={cn(
 				baseClasses,
-				sizeClasses[size],
-				colorClasses[color],
+				textSizeClasses[size],
+				linkColorClasses[color],
 				hover !== 'vivid' && hoverClasses[hover],
 				includes(['vivid', 'none'], hover) && getColoredHover(color),
-				disabled && 'pointer-events-none opacity-50',
+				disabled && disabledLinkClasses,
 				className,
 			)}
 			{...rest}
@@ -44,22 +45,6 @@ export function Link({
 			{children}
 		</NextLink>
 	)
-}
-
-const sizeClasses: Record<LinkSize, string> = {
-	xs: 'text-xs',
-	sm: 'text-sm',
-	md: 'text-base',
-	lg: 'text-lg',
-	xl: 'text-xl',
-}
-
-const colorClasses: Record<LinkColor, string> = {
-	inherit: 'text-inherit',
-	primary: 'text-primary',
-	dimmed: 'text-dimmed',
-	contrast: 'text-background',
-	soft: 'text-background/60',
 }
 
 const hoverClasses: Record<LinkHover, string> = {
@@ -70,7 +55,7 @@ const hoverClasses: Record<LinkHover, string> = {
 
 function getColoredHover(color: LinkColor): string {
 	if (color === 'soft') return 'hover:text-background'
-	if (color === 'dimmed') return 'hover:text-foreground'
+	if (color === 'dimmed' || color === 'secondary') return 'hover:text-foreground'
 	if (color === 'inherit') return 'hover:text-primary'
 	return ''
 }

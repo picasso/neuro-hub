@@ -14,7 +14,7 @@ export const IconsDemo = () => {
 		{ name: 'do-not-disturb' },
 		{ name: 'spinner', color: 'primary' },
 		{ name: 'check', color: 'success' },
-		{ name: 'loading', color: 'muted' },
+		{ name: 'loading', color: 'secondary' },
 	]
 
 	const sizes: Array<{ size: IconProps['size']; name?: IconName }> = [
@@ -26,7 +26,7 @@ export const IconsDemo = () => {
 
 	const colors: Array<{ color: IconProps['color']; name?: IconName }> = [
 		{ color: 'primary', name: 'info' },
-		{ color: 'muted', name: 'done' },
+		{ color: 'secondary', name: 'done' },
 		{ color: 'error', name: 'error' },
 		{ color: 'info', name: 'info' },
 		{ color: 'success', name: 'check' },

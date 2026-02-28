@@ -4,7 +4,7 @@ import { DemoLabel, DemoRoot, DemoSection } from './components-utils'
 import { demoData, type IconDemoState, resolveSize } from './demo-icons-settings'
 import { useSettings } from './settings-store'
 import { cn } from '@/lib/utils'
-import { Stack, type IconName, Icon } from '@/ui'
+import { Stack, type IconName, Icon, needsContrast, type SemanticColor } from '@/ui'
 
 // data -------------------------------------------------------------------------------------------]
 
@@ -23,6 +23,7 @@ function IconCell({
 	state: { showName, showBorder, showBg, color, sizePreset, customSize },
 	spinning,
 }: IconCellProps) {
+	const darkBg = needsContrast(null, color as SemanticColor)
 	return (
 		<Stack
 			vertical
@@ -34,8 +35,8 @@ function IconCell({
 				showBg && 'bg-primary/30 rounded-full',
 				showBg && showBorder && 'border-emerald-600',
 				!showBorder && 'p-1.5',
-				color === 'contrast' && 'hover:bg-white/20 border-white',
-				color !== 'contrast' && 'hover:bg-primary/15',
+				darkBg && 'hover:bg-white/20 border-white',
+				!darkBg && 'hover:bg-primary/15',
 			)}
 		>
 			<Icon
@@ -60,7 +61,7 @@ function IconCell({
 export function DemoIcons() {
 	const settings = useSettings<IconDemoState>()
 	const { showName, color } = settings
-
+	const darkBg = needsContrast(null, color as SemanticColor)
 	return (
 		<DemoRoot>
 			<DemoSection
@@ -71,10 +72,7 @@ export function DemoIcons() {
 				<Stack
 					wrap
 					align="stretch"
-					className={cn(
-						'p-4 rounded-md border',
-						color === 'contrast' && 'text-white bg-primary',
-					)}
+					className={cn('p-4 rounded-md border', darkBg && 'text-white bg-primary')}
 				>
 					{libraryIcons.map((name) => (
 						<IconCell key={name} name={name} state={settings} />
@@ -89,10 +87,7 @@ export function DemoIcons() {
 				<Stack
 					wrap
 					align="stretch"
-					className={cn(
-						'p-4 rounded-md border',
-						color === 'contrast' && 'text-white bg-primary',
-					)}
+					className={cn('p-4 rounded-md border', darkBg && 'text-white bg-primary')}
 				>
 					{customIconNames.map((name) => (
 						<IconCell
@@ -111,7 +106,13 @@ export function DemoIcons() {
 			>
 				<Stack gap={4}>
 					{colorOptions.map((c) => (
-						<Stack key={c} vertical>
+						<Stack
+							key={c}
+							vertical
+							className={cn(
+								needsContrast(null, c as SemanticColor) && 'bg-primary rounded-md',
+							)}
+						>
 							<Icon name="circle-check" size="xl" color={c} />
 							<DemoLabel content={c} size="xs" />
 						</Stack>

@@ -126,7 +126,7 @@ export function PortfolioViewer({
 						justifyContent="space-between"
 						spacing={2}
 					>
-						<Icon name={`media-${kind}` as IconName} size={40} color="muted" />
+						<Icon name={`media-${kind}` as IconName} size={40} color="secondary" />
 						<TS variant="h3" content={title ?? ''} className="mb-0.5 capitalize" />
 						{!!caption && (
 							<TS variant="caption" color="secondary" content={caption} inline />

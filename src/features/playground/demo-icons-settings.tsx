@@ -149,14 +149,15 @@ const customIconNames: IconName[] = ['spinner', 'linked-in', 'telegram', 'x-twit
 const sizePresets = ['xs', 'sm', 'md', 'lg', 'xl'] as const
 const colorOptions = [
 	'primary',
+	'secondary',
 	'cta',
-	'muted',
 	'dimmed',
 	'error',
 	'success',
 	'warning',
 	'info',
 	'contrast',
+	'soft',
 ] as const
 
 const selectOps = [

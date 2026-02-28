@@ -12,7 +12,7 @@ import { Stack, TS } from '@/ui'
 
 // data -------------------------------------------------------------------------------------------]
 
-const SAMPLE_TEXTS: Record<Exclude<TextStyledVariant, 'block'>, string> = {
+const sampleTexts: Record<Exclude<TextStyledVariant, 'block'>, string> = {
 	h1: 'Marketplace для ИИ-специалистов',
 	h2: 'Генеративный ИИ — ваша профессия',
 	h3: 'Находите лучших фрилансеров',
@@ -24,10 +24,10 @@ const SAMPLE_TEXTS: Record<Exclude<TextStyledVariant, 'block'>, string> = {
 	quote: '“Находим лучших специалистов для вашего проекта”',
 }
 
-const INTERACTIVE_SAMPLE =
+const interactiveSample =
 	'Платформа для **фрилансеров** с `опытом` в *генеративном ИИ* — [NeuroGig](https://neurogig.com).'
 
-const VARIANTS: Exclude<TextStyledVariant, 'block'>[] = [
+const variants: Exclude<TextStyledVariant, 'block'>[] = [
 	'h1',
 	'h2',
 	'h3',
@@ -41,8 +41,8 @@ const VARIANTS: Exclude<TextStyledVariant, 'block'>[] = [
 
 // main demo --------------------------------------------------------------------------------------]
 
-const VALID_VARIANTS = new Set<string>(VARIANTS)
-const VALID_COLORS = new Set<string>(['primary', 'secondary', 'dimmed', 'contrast', 'soft'])
+const validVariants = new Set<string>(variants)
+const validColors = new Set<string>(['primary', 'secondary', 'dimmed', 'contrast', 'soft'])
 
 export function DemoTypography() {
 	const settings = useSettings<TypographyDemoState>()
@@ -55,10 +55,10 @@ export function DemoTypography() {
 		md,
 		inline,
 	} = settings
-	const variant: TextStyledVariant = VALID_VARIANTS.has(rawVariant)
+	const variant: TextStyledVariant = validVariants.has(rawVariant)
 		? (rawVariant as TextStyledVariant)
 		: 'body'
-	const resolvedColor = VALID_COLORS.has(rawColor) ? (rawColor as TextStyledColor) : undefined
+	const resolvedColor = validColors.has(rawColor) ? (rawColor as TextStyledColor) : undefined
 	const needsDarkBg = resolvedColor === 'contrast' || resolvedColor === 'soft'
 
 	return (
@@ -77,17 +77,17 @@ export function DemoTypography() {
 						gutterBottom={gutterBottom}
 						inline={inline}
 						md={md ? undefined : false}
-						content={INTERACTIVE_SAMPLE}
+						content={interactiveSample}
 					/>
 				</div>
 			</DemoSection>
 
 			<DemoSection title="Variants" desc="Все поддерживаемые `variant`-ы" separator>
 				<Stack vertical gap={4} align="stretch">
-					{VARIANTS.map((v) => (
+					{variants.map((v) => (
 						<Stack key={v} gap={3} align="baseline">
 							<DemoLabel content={v} size="sm" />
-							<TS variant={v} content={SAMPLE_TEXTS[v]} />
+							<TS variant={v} content={sampleTexts[v]} />
 						</Stack>
 					))}
 				</Stack>

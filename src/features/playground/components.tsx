@@ -78,13 +78,6 @@ export const componentDemos: ComponentDemo[] = [
 		settings: <DemoTypographySettings />,
 	},
 	{
-		id: 'cards',
-		name: 'Cards',
-		group: 'base',
-		description: 'Card, CardHeader, CardContent, CardFooter',
-		ready: false,
-	},
-	{
 		id: 'inputs',
 		name: 'Inputs',
 		group: 'forms',

@@ -3,6 +3,7 @@ import { forwardRef } from 'react'
 import { type ButtonProps, buttonSize, HrefButton, outlineStyle } from './button'
 import { Icon, type IconProps } from './icon'
 import { Button as ShadcnButton } from './shadcn/button'
+import { needsContrast } from './utils'
 import { cn } from '@/lib/utils'
 
 type ButtonVariant = NonNullable<ButtonProps['variant']>
@@ -11,8 +12,7 @@ export type IconButtonProps = Omit<React.ComponentPropsWithoutRef<'button'>, 'ch
 	icon: IconProps['name']
 	variant?: ButtonVariant | 'contrast'
 	size?: ButtonProps['size'] | 'icon'
-	// use `url` and `href` to avoid type errors when Nexts.js do not want to accept `href` prop
-	// because it expects `route` or a `URLObject` (not a string)
+	// url/href: workaround when next.js expects route or URLObject instead of string
 	url?: ButtonProps['href']
 	href?: string
 	target?: ButtonProps['target']
@@ -42,7 +42,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
 		ref,
 	) => {
 		const shadcnVariant = variant === 'contrast' ? 'ghost' : (variant as ButtonVariant)
-		const needsContrast = variant === 'default' || variant === 'destructive'
+		const contrast = needsContrast(variant)
 		const mergedClassName = cn(
 			!!rounded && 'rounded-full',
 			outlineStyle(variant),
@@ -54,7 +54,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
 			<Icon
 				name={icon}
 				size={forceSize ?? (size === 'icon' ? 'sm' : size)}
-				color={needsContrast ? 'contrast' : 'muted'}
+				color={contrast ? 'contrast' : 'secondary'}
 				spinning={spinning}
 				className={cn(!!forceSize && 'w-auto! h-auto!', iconClassName)}
 			/>

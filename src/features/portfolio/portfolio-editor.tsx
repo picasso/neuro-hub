@@ -2,7 +2,6 @@
 
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
-// import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import { useGate, useUnit } from 'effector-react'

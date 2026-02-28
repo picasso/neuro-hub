@@ -6,7 +6,7 @@ import { Avatar as AvatarRoot, AvatarBadge, AvatarFallback, AvatarImage } from '
 import { cn } from '@/lib/utils'
 
 export type AvatarSize = 'sm' | 'md' | 'lg'
-export type AvatarBadge = 'error' | 'success' | 'warning' | 'info'
+export type AvatarBadgeStatus = 'error' | 'success' | 'warning' | 'info'
 
 export type AvatarProps = {
 	name: string
@@ -14,7 +14,7 @@ export type AvatarProps = {
 	color?: string | 'auto'
 	src?: string
 	alt?: string
-	badge?: AvatarBadge
+	badge?: AvatarBadgeStatus
 	bordered?: boolean
 	className?: string
 }
@@ -34,11 +34,11 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
 			className={cn(
 				bordered && 'outline outline-foreground/20',
 				badge && 'overflow-visible',
-				// to increase visual padding around `initials` for `sm` size
+				// extra visual padding for sm size initials
 				size === 'sm' && 'outline',
 				className,
 			)}
-			// to increase visual padding around `initials` for `sm` size
+			// extra visual padding for sm size initials
 			style={{ outlineColor: size === 'sm' ? bgColor : undefined }}
 		>
 			{src && <AvatarImage src={src} alt={alt ?? name} />}

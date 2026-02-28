@@ -1,9 +1,11 @@
 import { isNumber } from 'lodash'
 import { forwardRef } from 'react'
 import { getIcon, type IconName } from './assets'
+import { type IconColor, iconColorClasses } from './types'
 import { cn } from '@/lib/utils'
 
 export type { IconName }
+export type { IconColor } from './types'
 
 // size presets (pixels) --------------------------------------------------------------------------]
 
@@ -17,32 +19,7 @@ const sizePresets: Record<IconSize, number> = {
 	xl: 32,
 }
 
-// color presets (tailwind classes) ---------------------------------------------------------------]
-
-export type IconColor =
-	| 'primary'
-	| 'cta'
-	| 'muted'
-	| 'dimmed'
-	| 'error'
-	| 'success'
-	| 'warning'
-	| 'info'
-	| 'contrast'
-
-const colorPresets: Record<IconColor, string> = {
-	primary: 'text-primary',
-	cta: 'text-cta',
-	muted: 'text-muted-foreground',
-	dimmed: 'text-dimmed',
-	error: 'text-destructive',
-	success: 'text-green-500',
-	warning: 'text-amber-500',
-	info: 'text-blue-500',
-	contrast: 'text-white',
-}
-
-// `Icon` component -------------------------------------------------------------------------------]
+// icon component
 
 export type IconProps = React.ComponentProps<ReturnType<typeof getIcon>> & {
 	name: IconName
@@ -59,7 +36,7 @@ export type IconOptions = {
 }
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
-	{ name, size = 'md', color = 'muted', spinning, className, ...props },
+	{ name, size = 'md', color = 'secondary', spinning, className, ...props },
 	ref,
 ) {
 	const IconComponent = getIcon(name)
@@ -72,7 +49,7 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
 			height={sizeValue}
 			className={cn(
 				'shrink-0',
-				color && colorPresets[color],
+				color && iconColorClasses[color],
 				spinning && 'animate-spin',
 				className,
 			)}
