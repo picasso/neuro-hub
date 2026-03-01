@@ -12,6 +12,7 @@ export { Stack, type StackProps } from './stack'
 export { FileUploader, type FileUploaderProps } from './file-uploader'
 export { Avatar, type AvatarProps, type AvatarBadgeStatus } from './avatar'
 export { Badge, type BadgeProps } from './badge'
+export { Alert, AlertTitle, AlertDescription, type AlertProps } from './alert'
 export { type SemanticColor, type IconColor } from './types'
 export { needsContrast } from './utils'
 

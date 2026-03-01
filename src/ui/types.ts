@@ -2,7 +2,14 @@
 
 export type SemanticColor = 'primary' | 'secondary' | 'dimmed' | 'contrast' | 'soft'
 
-export type IconColor = SemanticColor | 'cta' | 'error' | 'success' | 'warning' | 'info'
+export type IconColor =
+	| SemanticColor
+	| 'cta'
+	| 'error'
+	| 'success'
+	| 'warning'
+	| 'info'
+	| 'progress'
 
 export const semanticColorClasses: Record<SemanticColor, string> = {
 	primary: 'text-foreground',
@@ -28,6 +35,7 @@ export const iconColorClasses: Record<IconColor, string> = {
 	success: 'text-green-500',
 	warning: 'text-amber-500',
 	info: 'text-blue-500',
+	progress: 'text-purple-500',
 	contrast: 'text-white',
 }
 

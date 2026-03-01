@@ -1,4 +1,6 @@
 import { type ReactNode } from 'react'
+import { DemoAlert } from './demo-alert'
+import { DemoAlertSettings } from './demo-alert-settings'
 import { DemoAvatar } from './demo-avatar'
 import { DemoAvatarSettings } from './demo-avatar-settings'
 import { DemoBadge } from './demo-badge'
@@ -109,8 +111,10 @@ export const componentDemos: ComponentDemo[] = [
 		id: 'alerts',
 		name: 'Alerts',
 		group: 'feedback',
-		description: 'Alert, Toast (Sonner)',
-		ready: false,
+		description: 'Alert (shadcn/Sonner) — variants, title, description',
+		ready: true,
+		demo: <DemoAlert />,
+		settings: <DemoAlertSettings />,
 	},
 	{
 		id: 'tooltips',
