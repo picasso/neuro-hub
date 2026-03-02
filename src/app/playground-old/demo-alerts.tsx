@@ -163,51 +163,6 @@ const demoSections: DemoSection[] = [
 		],
 	},
 	{
-		title: 'Elevation',
-		demos: [
-			{
-				label: 'Elevation 0',
-				buttonColor: 'error',
-				alertOptions: {
-					severity: 'info',
-					elevation: 0,
-					title: 'Elevation 0',
-					message: 'No shadow - flat appearance',
-				},
-			},
-			{
-				label: 'Elevation 3',
-				buttonColor: 'error',
-				alertOptions: {
-					severity: 'warning',
-					elevation: 3,
-					title: 'Elevation 3',
-					message: 'Small shadow - default elevation',
-				},
-			},
-			{
-				label: 'Elevation 6',
-				buttonColor: 'error',
-				alertOptions: {
-					severity: 'success',
-					elevation: 6,
-					title: 'Elevation 6',
-					message: 'Medium shadow - default elevation',
-				},
-			},
-			{
-				label: 'Elevation 12',
-				buttonColor: 'error',
-				alertOptions: {
-					severity: 'error',
-					elevation: 12,
-					title: 'Elevation 12',
-					message: 'High shadow - prominent appearance',
-				},
-			},
-		],
-	},
-	{
 		title: 'Custom Icons',
 		demos: [
 			{

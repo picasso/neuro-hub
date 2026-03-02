@@ -2,7 +2,7 @@
 
 import { map, noop } from 'lodash'
 import { DemoRoot, DemoSection } from './components-utils'
-import { type AlertDemoState } from './demo-alert-settings'
+import { type AlertOptionsDemoState } from './demo-alert-settings'
 import { useSettings } from './settings-store'
 import {
 	createAlert,
@@ -11,11 +11,16 @@ import {
 	updateAlert,
 	type Alert as AlertOptions,
 } from '@/alerts'
+import { cn } from '@/lib/utils'
 import { Alert, Stack, type ButtonProps, Button, TS } from '@/ui'
+import { simpleMarkdown } from '@/utils'
+
+type Severity = 'info' | 'success' | 'warning' | 'error' | 'progress'
+type AlertVariant = 'standard' | 'filled' | 'outlined'
 
 export function DemoAlert() {
-	const settings = useSettings<AlertDemoState>()
-	const { variant, withIcon, withDescription } = settings
+	const settings = useSettings<AlertOptionsDemoState>()
+	const { descAsMarkdown } = settings
 
 	return (
 		<DemoRoot>
@@ -24,31 +29,21 @@ export function DemoAlert() {
 				desc="Обёртка `Alert` на базе **shadcn** — вариант, иконка, заголовок и описание"
 				separator
 			>
-				{/* <Alert variant={variant}>
-					{withIcon && (
-						<Icon
-							name={variant === 'destructive' ? 'alert-triangle' : 'info'}
-							size="sm"
-							className="shrink-0"
-						/>
-					)}
-					<AlertTitle>Alert title</AlertTitle>
-					{withDescription && (
-						<AlertDescription>
-							Optional description. You can put any content here.
-						</AlertDescription>
-					)}
-				</Alert> */}
 				<Stack vertical gap={4} align="stretch">
 					{map(demoSections, (section, index) => (
 						<Stack vertical key={`${section.title}-${index}`} align="stretch">
-							<TS strong variant="subtitle" content={section.title} />
+							<TS
+								strong
+								variant="caption"
+								color="secondary"
+								content={section.title}
+							/>
 							<Stack wrap>
 								{map(section.demos, (demo, index) => (
 									<Button
 										key={`${demo.label}-${index}`}
 										color={demo.buttonColor}
-										variant={demo.buttonVariant ?? 'outline'}
+										variant={demo.buttonVariant ?? 'secondary'}
 										leftIcon={demo.leftIcon}
 										onClick={() => {
 											if (demo.alertOptions.progress) {
@@ -85,140 +80,31 @@ export function DemoAlert() {
 					))}
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Variants & Severities" separator>
+			<DemoSection title="Variants & Severities">
 				<Stack vertical gap={3} align="stretch">
-					<Stack align="flex-start">
-						<Alert
-							variant="standard"
-							severity="info"
-							title="Standard"
-							desc="Standard message."
-							onClose={noop}
-						/>
-						<Alert
-							variant="standard"
-							severity="success"
-							title="Success"
-							desc="Success message."
-							onClose={noop}
-						/>
-						<Alert
-							variant="standard"
-							severity="warning"
-							title="Warning"
-							desc="Warning message."
-							onClose={noop}
-						/>
-						<Alert
-							variant="standard"
-							severity="error"
-							title="Error"
-							desc="Error message."
-							onClose={noop}
-						/>
-						<Alert
-							variant="standard"
-							severity="progress"
-							title="Progress"
-							desc="Progress message."
-							onClose={noop}
-						/>
-					</Stack>
-					<Stack align="flex-start">
-						<Alert
-							variant="filled"
-							severity="info"
-							title="Filled"
-							desc="Filled message."
-							onClose={noop}
-						/>
-						<Alert
-							variant="filled"
-							severity="success"
-							title="Success"
-							desc="Success message."
-							onClose={noop}
-						/>
-						<Alert
-							variant="filled"
-							severity="warning"
-							title="Warning"
-							desc="Warning message."
-							onClose={noop}
-						/>
-						<Alert
-							variant="filled"
-							severity="error"
-							title="Error"
-							desc="Error message."
-							onClose={noop}
-						/>
-						<Alert
-							variant="filled"
-							severity="progress"
-							title="Progress"
-							desc="Progress message."
-							onClose={noop}
-						/>
-					</Stack>
-					<Stack>
-						<Alert
-							variant="outlined"
-							severity="info"
-							title="Outlined"
-							desc="Outlined message."
-							onClose={noop}
-						/>
-						<Alert
-							variant="outlined"
-							severity="success"
-							title="Success"
-							desc="Success message."
-							onClose={noop}
-						/>
-						<Alert
-							variant="outlined"
-							severity="warning"
-							title="Warning"
-							desc="Warning message."
-							onClose={noop}
-						/>
-						<Alert
-							variant="outlined"
-							severity="error"
-							title="Error"
-							desc="Error message."
-							onClose={noop}
-						/>
-						<Alert
-							variant="outlined"
-							severity="progress"
-							title="Progress"
-							desc="Progress message."
-							onClose={noop}
-						/>
-					</Stack>
+					{map(variants, (variant) => (
+						<Stack key={variant} align="flex-start">
+							{map(severityItems, ({ severity, title, desc }) => (
+								<Alert
+									key={severity}
+									variant={variant}
+									severity={severity}
+									title={title}
+									desc={descAsMarkdown ? undefined : desc}
+									onClose={noop}
+									className={cn(
+										'markdown-root',
+										variant === 'filled' && 'contrast',
+									)}
+								>
+									{descAsMarkdown
+										? simpleMarkdown(testMarkdown, { br: true })
+										: undefined}
+								</Alert>
+							))}
+						</Stack>
+					))}
 				</Stack>
-			</DemoSection>
-			<DemoSection title="With icon" separator>
-				<Stack vertical gap={3} align="stretch">
-					{variant}:{withIcon}:{withDescription}
-					{/* <Alert variant="default">
-						<Icon name="info" size="sm" className="shrink-0" />
-						<AlertTitle>Info</AlertTitle>
-						<AlertDescription>Default variant with leading icon.</AlertDescription>
-					</Alert>
-					<Alert variant="destructive">
-						<Icon name="alert-triangle" size="sm" className="shrink-0" />
-						<AlertTitle>Error</AlertTitle>
-						<AlertDescription>Destructive variant with icon.</AlertDescription>
-					</Alert> */}
-				</Stack>
-			</DemoSection>
-			<DemoSection title="Title only">
-				{/* <Alert variant="default">
-					<AlertTitle>Short message without description</AlertTitle>
-				</Alert> */}
 			</DemoSection>
 		</DemoRoot>
 	)
@@ -361,7 +247,7 @@ const demoSections: DemoSection[] = [
 				label: 'Filled & Overlay',
 				buttonColor: 'secondary',
 				alertOptions: {
-					severity: 'progress',
+					severity: 'error',
 					variant: 'filled',
 					title: 'Filled variant',
 					message: 'This variant has a **filled** background',
@@ -372,56 +258,11 @@ const demoSections: DemoSection[] = [
 				label: 'Outlined & Overlay',
 				buttonColor: 'secondary',
 				alertOptions: {
-					severity: 'progress',
+					severity: 'warning',
 					variant: 'outlined',
 					title: 'Outlined variant',
 					message: 'This variant has an **outlined** border',
 					overlay: true,
-				},
-			},
-		],
-	},
-	{
-		title: 'Elevation',
-		demos: [
-			{
-				label: 'Elevation 0',
-				buttonColor: 'error',
-				alertOptions: {
-					severity: 'info',
-					elevation: 0,
-					title: 'Elevation 0',
-					message: 'No shadow - flat appearance',
-				},
-			},
-			{
-				label: 'Elevation 3',
-				buttonColor: 'error',
-				alertOptions: {
-					severity: 'warning',
-					elevation: 3,
-					title: 'Elevation 3',
-					message: 'Small shadow - default elevation',
-				},
-			},
-			{
-				label: 'Elevation 6',
-				buttonColor: 'error',
-				alertOptions: {
-					severity: 'success',
-					elevation: 6,
-					title: 'Elevation 6',
-					message: 'Medium shadow - default elevation',
-				},
-			},
-			{
-				label: 'Elevation 12',
-				buttonColor: 'error',
-				alertOptions: {
-					severity: 'error',
-					elevation: 12,
-					title: 'Elevation 12',
-					message: 'High shadow - prominent appearance',
 				},
 			},
 		],
@@ -444,7 +285,7 @@ const demoSections: DemoSection[] = [
 				buttonColor: 'success',
 				alertOptions: {
 					severity: 'success',
-					icon: 'spinner',
+					icon: 'loader-pinwheel',
 					iconOptions: { spinning: true },
 					title: 'Animated icon',
 					message: 'Icon with **rotate** animation',
@@ -531,3 +372,16 @@ const demoSections: DemoSection[] = [
 		],
 	},
 ]
+
+const severityItems: { severity: Severity; title: string; desc: string }[] = [
+	{ severity: 'info', title: 'Standard', desc: 'Standard message.' },
+	{ severity: 'success', title: 'Success', desc: 'Success message.' },
+	{ severity: 'warning', title: 'Warning', desc: 'Warning message.' },
+	{ severity: 'error', title: 'Error', desc: 'Error message.' },
+	{ severity: 'progress', title: 'Progress', desc: 'Progress message.' },
+]
+
+const variants: AlertVariant[] = ['standard', 'filled', 'outlined']
+const testMarkdown =
+	'Supports **bold**, *italic*, `code` and [links](https://example.com) formatting\n' +
+	'And colored `!code` and `?code` and `*code` and `+code` and `#code`'

@@ -1,11 +1,10 @@
 'use client'
 
-import { type AlertProps as MuiAlertProps } from '@mui/material/Alert'
 import { attach, type EventCallable, sample } from 'effector'
 import { createGate } from 'effector-react'
 import { produce, castDraft } from 'immer'
 import { forEach, isString, merge, set, uniqueId } from 'lodash'
-import { createElement, type FC, type ReactElement } from 'react'
+import { createElement, type FC, type ReactElement, type ReactNode } from 'react'
 import { toast, type ExternalToast as ToastProps, type ToasterProps } from 'sonner'
 import { createDomainWatched } from '@/lib/logger'
 import { type IconName, type IconOptions } from '@/ui'
@@ -17,21 +16,22 @@ const domain = createDomainWatched('alerts')
 
 export type AlertId = Exclude<NonNullable<ToastProps['id']>, number>
 
+export type AlertSeverity = 'info' | 'success' | 'warning' | 'error' | 'progress'
+export type AlertVariant = 'standard' | 'filled' | 'outlined'
+
 export type AlertComponentProps = {
 	id?: AlertId
-	severity: NonNullable<MuiAlertProps['severity']> | 'progress'
+	severity: AlertSeverity
 	title?: TemplatedMessage
-	message?: MuiAlertProps['children'] | TemplatedMessage
+	message?: ReactNode | TemplatedMessage
 	// 0..100 for determinate progress UI
 	progress?: number
 	disableProgressCaption?: boolean
-	variant?: MuiAlertProps['variant']
-	elevation?: MuiAlertProps['elevation']
+	variant?: AlertVariant
 	overlay?: boolean
 	icon?: IconName
 	iconOptions?: IconOptions
 	md?: Partial<MarkdownParams> | false
-	sx?: MuiAlertProps['sx']
 	disableClose?: boolean
 	// if true, the toast will not be closed automatically after the `duration` prop
 	// this is a more explicit alternative to `duration: Infinity`

@@ -72,7 +72,9 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
 					)}
 				/>
 			)}
-			{content && <ShadcnAlertDescription>{content}</ShadcnAlertDescription>}
+			{content && (
+				<ShadcnAlertDescription className="block w-full">{content}</ShadcnAlertDescription>
+			)}
 		</ShadcnAlert>
 	)
 })

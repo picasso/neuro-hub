@@ -153,6 +153,9 @@ body[data-font='open-sans'] {
 }
 
 @layer components {
+	.markdown-root [data-slot='alert-description'] {
+		@apply leading-relaxed;
+	}
 	.markdown-root a,
 	.components-external-link {
 		color: var(--primary-dark);

@@ -73,6 +73,7 @@ export {
 	SelectValue,
 } from './shadcn/select'
 export { Separator } from './shadcn/separator'
+export { Progress } from './shadcn/progress'
 export { Slider } from './shadcn/slider'
 export { Switch } from './shadcn/switch'
 export { Toggle, toggleVariants } from './shadcn/toggle'

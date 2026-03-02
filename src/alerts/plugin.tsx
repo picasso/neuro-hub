@@ -1,6 +1,5 @@
 'use client'
 
-import Box from '@mui/material/Box'
 import { useGate, useUnit } from 'effector-react'
 import { Toaster } from 'sonner'
 import { AlertComponent } from './alert'
@@ -13,19 +12,7 @@ export const AlertsPlugin = () => {
 	return (
 		<>
 			<Toaster {...options} />
-			{overlayCount > 0 && (
-				<Box
-					sx={{
-						backgroundColor: 'rgba(0, 0, 0, 0.5)',
-						position: 'fixed',
-						left: 0,
-						top: 0,
-						right: 0,
-						bottom: 0,
-						zIndex: (theme) => theme.zIndex.modal,
-					}}
-				/>
-			)}
+			{overlayCount > 0 && <div className="fixed inset-0 bg-black/50 z-1300" aria-hidden />}
 		</>
 	)
 }
