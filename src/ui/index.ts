@@ -76,6 +76,36 @@ export { Separator } from './shadcn/separator'
 export { Progress } from './shadcn/progress'
 export { Slider } from './shadcn/slider'
 export { Switch } from './shadcn/switch'
-export { Toggle, toggleVariants } from './shadcn/toggle'
+export { Toggle } from './shadcn/toggle'
 export { ToggleGroup, ToggleGroupItem } from './shadcn/toggle-group'
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './shadcn/tooltip'
+export { Input } from './shadcn/input'
+export { Textarea } from './shadcn/textarea'
+export { Checkbox } from './shadcn/checkbox'
+export {
+	Field,
+	FieldLabel,
+	FieldDescription,
+	FieldError,
+	FieldGroup,
+	FieldContent,
+	FieldSet,
+	FieldLegend,
+} from './shadcn/field'
+export {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupButton,
+	InputGroupInput,
+	InputGroupText,
+	InputGroupTextarea,
+} from './shadcn/input-group'
+export { ButtonGroup } from './shadcn/button-group'
+export {
+	Combobox as ComboboxRoot,
+	ComboboxContent,
+	ComboboxEmpty,
+	ComboboxInput,
+	ComboboxItem,
+	ComboboxList,
+} from './shadcn/combobox'
