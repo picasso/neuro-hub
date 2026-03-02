@@ -10,6 +10,9 @@ export { Button, HrefButton, buttonSize, outlineStyle, type ButtonProps } from '
 export { IconButton, contrastStyle, type IconButtonProps } from './icon-button'
 export { Stack, type StackProps } from './stack'
 export { FileUploader, type FileUploaderProps } from './file-uploader'
+export { TextField, type TextFieldProps } from './text-field'
+export { Checkbox, type CheckboxProps } from './checkbox'
+export { Combobox, type ComboboxProps } from './combobox'
 export { Avatar, type AvatarProps, type AvatarBadgeStatus } from './avatar'
 export { Badge, type BadgeProps } from './badge'
 export { Alert, AlertTitle, AlertDescription, type AlertProps } from './alert'
@@ -81,7 +84,6 @@ export { ToggleGroup, ToggleGroupItem } from './shadcn/toggle-group'
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './shadcn/tooltip'
 export { Input } from './shadcn/input'
 export { Textarea } from './shadcn/textarea'
-export { Checkbox } from './shadcn/checkbox'
 export {
 	Field,
 	FieldLabel,
@@ -100,7 +102,7 @@ export {
 	InputGroupText,
 	InputGroupTextarea,
 } from './shadcn/input-group'
-export { ButtonGroup } from './shadcn/button-group'
+export { ButtonGroup, ButtonGroupSeparator } from './shadcn/button-group'
 export {
 	Combobox as ComboboxRoot,
 	ComboboxContent,

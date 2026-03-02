@@ -153,8 +153,12 @@ body[data-font='open-sans'] {
 }
 
 @layer components {
-	.markdown-root [data-slot='alert-description'] {
+	.markdown-root [data-slot='alert-description'],
+	.markdown-root [data-slot='field-description'] {
 		@apply leading-relaxed;
+	}
+	.markdown-root [data-slot='field-description'] span.__code {
+		@apply text-xs;
 	}
 	.markdown-root a,
 	.components-external-link {

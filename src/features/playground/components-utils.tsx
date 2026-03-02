@@ -21,9 +21,10 @@ type DemoSectionProps = PropsWithChildren<{
 	title: string
 	desc?: string
 	separator?: boolean
+	className?: string
 }>
 
-export function DemoSection({ title, desc, separator, children }: DemoSectionProps) {
+export function DemoSection({ title, desc, separator, className, children }: DemoSectionProps) {
 	return (
 		<>
 			<section>
@@ -35,7 +36,7 @@ export function DemoSection({ title, desc, separator, children }: DemoSectionPro
 				{desc != null && (
 					<TS variant="caption" color="secondary" content={desc} gutterBottom />
 				)}
-				{children}
+				<div className={className}>{children}</div>
 			</section>
 			{separator && <Separator />}
 		</>

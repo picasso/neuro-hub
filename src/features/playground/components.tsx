@@ -7,10 +7,16 @@ import { DemoBadge } from './demo-badge'
 import { DemoBadgeSettings } from './demo-badge-settings'
 import { DemoButtons } from './demo-buttons'
 import { DemoButtonsSettings } from './demo-buttons-settings'
+import { DemoCheckboxes } from './demo-checkboxes'
+import { DemoCheckboxesSettings } from './demo-checkboxes-settings'
 import { DemoIconButtons } from './demo-icon-buttons'
 import { DemoIconButtonsSettings } from './demo-icon-buttons-settings'
 import { DemoIcons } from './demo-icons'
 import { DemoIconsSettings } from './demo-icons-settings'
+import { DemoInputs } from './demo-inputs'
+import { DemoInputsSettings } from './demo-inputs-settings'
+import { DemoSelects } from './demo-selects'
+import { DemoSelectsSettings } from './demo-selects-settings'
 import { DemoTypography } from './demo-typography'
 import { DemoTypographySettings } from './demo-typography-settings'
 
@@ -83,22 +89,28 @@ export const componentDemos: ComponentDemo[] = [
 		id: 'inputs',
 		name: 'Inputs',
 		group: 'forms',
-		description: 'Input, Label, Textarea',
-		ready: false,
+		description: 'TextField — Input, Textarea, icons, onEndClick',
+		ready: true,
+		demo: <DemoInputs />,
+		settings: <DemoInputsSettings />,
 	},
 	{
 		id: 'selects',
 		name: 'Selects',
 		group: 'forms',
-		description: 'Select, Combobox, Autocomplete',
-		ready: false,
+		description: 'Combobox (с поиском и freeSolo), Select',
+		ready: true,
+		demo: <DemoSelects />,
+		settings: <DemoSelectsSettings />,
 	},
 	{
 		id: 'checkboxes',
 		name: 'Checkboxes',
 		group: 'forms',
-		description: 'Checkbox, Switch, Radio',
-		ready: false,
+		description: 'Checkbox, Switch, группа чекбоксов',
+		ready: true,
+		demo: <DemoCheckboxes />,
+		settings: <DemoCheckboxesSettings />,
 	},
 	{
 		id: 'dialogs',
