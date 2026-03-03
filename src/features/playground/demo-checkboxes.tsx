@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type CheckboxDemoState } from './demo-checkboxes-settings'
 import { useSettings } from './settings-store'
-import { Checkbox, Field, FieldLabel, Stack, Switch } from '@/ui'
+import { Checkbox, Stack, Switch } from '@/ui'
 
 const skills = [
 	{ value: 'react', label: 'React' },
@@ -34,7 +34,7 @@ export function DemoCheckboxes() {
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Обёртка `Checkbox` — `Field` + shadcn `Checkbox` + `FieldLabel`"
+				desc="Обёртка `?Checkbox` & `?Switch` —> `FieldWrapper` + **shadcn** `Checkbox` and `Switch`"
 				separator
 				className="pt-6"
 			>
@@ -43,18 +43,18 @@ export function DemoCheckboxes() {
 					checked={checked}
 					onCheckedChange={setChecked}
 					error={error ? 'Необходимо принять условия' : undefined}
-					helperText={
-						helperText
+					helper={{
+						helper: helperText
 							? 'Ознакомьтесь с **важным** `документом` перед принятием'
-							: undefined
-					}
+							: undefined,
+						md: markdown ? { br: true } : false,
+					}}
 					disabled={disabled}
 					required={required}
-					md={markdown ? { br: true } : false}
 				/>
 			</DemoSection>
 
-			<DemoSection title="Variants" separator>
+			<DemoSection title="Variants" asBadge="check" separator>
 				<Stack vertical gap={3} align="stretch">
 					<Checkbox checked={checked2} onCheckedChange={setChecked2} />
 					<Checkbox
@@ -63,10 +63,10 @@ export function DemoCheckboxes() {
 						onCheckedChange={setChecked2}
 					/>
 					<Checkbox
-						label="Checkbox with label & helperText"
+						label="Checkbox with label & helper text"
 						checked={checked2}
 						onCheckedChange={setChecked2}
-						helperText="Дополнительная информация"
+						helper="Дополнительная информация"
 					/>
 					<Checkbox
 						label="Checkbox with label & error"
@@ -77,18 +77,25 @@ export function DemoCheckboxes() {
 				</Stack>
 			</DemoSection>
 
-			<DemoSection title="Switch (для сравнения)" separator>
-				<Stack gap={3} align="center">
-					<Field orientation="horizontal" className="gap-2 w-fit">
-						<Switch id="switch" checked={switchOn} onCheckedChange={setSwitchOn} />
-						<FieldLabel htmlFor="switch">
-							{switchOn ? 'Включено' : 'Выключено'}
-						</FieldLabel>
-					</Field>
-				</Stack>
+			<DemoSection title="Switch (для сравнения)" asBadge="check" separator>
+				<Switch
+					label={switchOn ? 'Включено' : 'Выключено'}
+					id="switch"
+					required={required}
+					disabled={disabled}
+					error={error ? 'Это поле обязательно' : undefined}
+					helper={
+						helperText
+							? 'Использован `horizontalClassName` `*gap-4 flex-row-reverse justify-end`'
+							: undefined
+					}
+					horizontalClassName={'gap-4 flex-row-reverse justify-end'}
+					checked={switchOn}
+					onCheckedChange={setSwitchOn}
+				/>
 			</DemoSection>
 
-			<DemoSection title="Group" separator>
+			<DemoSection title="Group" asBadge="check" separator>
 				<Stack vertical gap={2} align="stretch">
 					{skills.map((skill) => (
 						<Checkbox
@@ -103,7 +110,7 @@ export function DemoCheckboxes() {
 				</Stack>
 			</DemoSection>
 
-			<DemoSection title="States">
+			<DemoSection title="States" asBadge="check">
 				<Stack vertical gap={3} align="stretch">
 					<Checkbox label="Disabled unchecked" checked={false} disabled />
 					<Checkbox label="Disabled checked" checked disabled />

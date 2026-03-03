@@ -10,9 +10,17 @@ export { Button, HrefButton, buttonSize, outlineStyle, type ButtonProps } from '
 export { IconButton, contrastStyle, type IconButtonProps } from './icon-button'
 export { Stack, type StackProps } from './stack'
 export { FileUploader, type FileUploaderProps } from './file-uploader'
+export { FieldWrapper, type FieldWrapperProps } from './field'
 export { TextField, type TextFieldProps } from './text-field'
-export { Checkbox, type CheckboxProps } from './checkbox'
-export { Combobox, type ComboboxProps } from './combobox'
+export { Checkbox, Switch, type CheckboxProps, type SwitchProps } from './checkbox-switch'
+export {
+	Combobox,
+	ComboboxSimple,
+	ComboboxGroupped,
+	type ComboboxProps,
+	type ComboOption,
+	type ComboGroup,
+} from './combobox'
 export { Avatar, type AvatarProps, type AvatarBadgeStatus } from './avatar'
 export { Badge, type BadgeProps } from './badge'
 export { Alert, AlertTitle, AlertDescription, type AlertProps } from './alert'
@@ -78,7 +86,7 @@ export {
 export { Separator } from './shadcn/separator'
 export { Progress } from './shadcn/progress'
 export { Slider } from './shadcn/slider'
-export { Switch } from './shadcn/switch'
+// export { Switch } from './shadcn/switch'
 export { Toggle } from './shadcn/toggle'
 export { ToggleGroup, ToggleGroupItem } from './shadcn/toggle-group'
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './shadcn/tooltip'
@@ -110,4 +118,14 @@ export {
 	ComboboxInput,
 	ComboboxItem,
 	ComboboxList,
+	ComboboxGroup,
+	ComboboxLabel,
+	ComboboxCollection,
+	ComboboxSeparator,
+	ComboboxChips,
+	ComboboxChip,
+	ComboboxChipsInput,
+	ComboboxTrigger,
+	ComboboxValue,
+	useComboboxAnchor,
 } from './shadcn/combobox'

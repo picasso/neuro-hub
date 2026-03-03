@@ -13,6 +13,8 @@ import {
 	Switch,
 	Stack,
 	TS,
+	Badge,
+	type IconName,
 } from '@/ui'
 
 // DemoSection ------------------------------------------------------------------------------------]
@@ -20,19 +22,38 @@ import {
 type DemoSectionProps = PropsWithChildren<{
 	title: string
 	desc?: string
+	asBadge?: true | IconName
 	separator?: boolean
 	className?: string
 }>
 
-export function DemoSection({ title, desc, separator, className, children }: DemoSectionProps) {
+export function DemoSection({
+	title,
+	desc,
+	asBadge,
+	separator,
+	className,
+	children,
+}: DemoSectionProps) {
 	return (
 		<>
 			<section>
-				<TS
-					variant="h3"
-					content={title}
-					className={cn('my-1 text-sm font-medium', !desc && 'mb-2')}
-				/>
+				{asBadge ? (
+					<Badge
+						variant="secondary"
+						size="xs"
+						color="secondary"
+						label={title}
+						icon={asBadge === true ? 'code' : asBadge}
+						className="mb-2"
+					/>
+				) : (
+					<TS
+						variant="h3"
+						content={title}
+						className={cn('my-1 text-sm font-medium', !desc && 'mb-2')}
+					/>
+				)}
 				{desc != null && (
 					<TS variant="caption" color="secondary" content={desc} gutterBottom />
 				)}
@@ -90,12 +111,14 @@ type SettingToggleProps = {
 export function SettingToggle({ id, label, checked }: SettingToggleProps) {
 	const [_, toggle] = useUpdateSettings<never>()
 	return (
-		<Stack gap={0} justify="space-between">
-			<Label htmlFor={id} className="text-xs">
-				{label}
-			</Label>
-			<Switch id={id} checked={checked} onCheckedChange={() => toggle(id as never)} />
-		</Stack>
+		<Switch
+			id={id}
+			label={label}
+			checked={checked}
+			onCheckedChange={() => toggle(id as never)}
+			horizontalClassName="flex-row-reverse justify-between"
+			labelClassName="text-xs"
+		/>
 	)
 }
 
