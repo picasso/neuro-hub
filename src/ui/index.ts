@@ -129,3 +129,15 @@ export {
 	ComboboxValue,
 	useComboboxAnchor,
 } from './shadcn/combobox'
+export {
+	Item,
+	ItemMedia,
+	ItemContent,
+	ItemActions,
+	ItemGroup,
+	ItemSeparator,
+	ItemTitle,
+	ItemDescription,
+	ItemHeader,
+	ItemFooter,
+} from './shadcn/item'
