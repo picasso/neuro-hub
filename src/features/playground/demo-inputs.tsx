@@ -19,6 +19,13 @@ export function DemoInputs() {
 		multiline,
 		markdown,
 	} = settings
+
+	const helperContent = helperText
+		? multiline
+			? longText
+			: 'Мы не передаём почту третьим лицам'
+		: undefined
+
 	const [showPassword, setShowPassword] = useState(false)
 
 	const resolvedStartIcon = startIcon !== 'none' ? startIcon : undefined
@@ -33,7 +40,6 @@ export function DemoInputs() {
 			>
 				<TextField
 					multiline={multiline}
-					md={markdown ? { br: true } : false}
 					label={multiline ? 'Описание' : 'Email'}
 					placeholder={multiline ? 'Введите описание...' : 'user@example.com'}
 					error={
@@ -43,11 +49,9 @@ export function DemoInputs() {
 								: 'Введите корректный email'
 							: undefined
 					}
-					helperText={
-						helperText
-							? multiline
-								? longText
-								: 'Мы не передаём почту третьим лицам'
+					helper={
+						helperContent
+							? { helper: helperContent, md: markdown ? { br: true } : false }
 							: undefined
 					}
 					disabled={disabled}
@@ -64,9 +68,9 @@ export function DemoInputs() {
 					<TextField label="Input with label" placeholder="Введите текст" />
 					<TextField label="Input with placeholder" placeholder="placeholder текст" />
 					<TextField
-						label="Input with helperText"
+						label="Input with helper"
 						placeholder="Введите текст"
-						helperText={longText}
+						helper={longText}
 					/>
 					<TextField
 						label="Input with error"

@@ -1,10 +1,10 @@
 'use client'
 
-import { type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from 'react'
+import { type InputHTMLAttributes, type TextareaHTMLAttributes } from 'react'
+import { FieldWrapper, type FieldWrapperProps } from './field'
 import { Icon, type IconProps } from './icon'
 import { IconButton } from './icon-button'
 import { ButtonGroup } from './shadcn/button-group'
-import { Field, FieldDescription, FieldError, FieldLabel } from './shadcn/field'
 import { Input } from './shadcn/input'
 import {
 	InputGroup,
@@ -13,21 +13,16 @@ import {
 	InputGroupTextarea,
 } from './shadcn/input-group'
 import { Textarea } from './shadcn/textarea'
-import { cn } from '@/lib/utils'
-import { simpleMarkdown, type MarkdownParams } from '@/utils'
 
 // types ------------------------------------------------------------------------------------------]
 
-type BaseProps = {
-	label?: ReactNode
-	helperText?: ReactNode
-	error?: string
-	required?: boolean
+type BaseProps = Pick<
+	FieldWrapperProps,
+	'label' | 'helper' | 'error' | 'required' | 'className'
+> & {
 	startIcon?: IconProps['name']
 	endIcon?: IconProps['name']
 	onEndClick?: () => void
-	className?: string
-	md?: Partial<MarkdownParams> | false
 }
 
 type HTMLInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'required'>
@@ -37,63 +32,17 @@ type TextareaVariantProps = BaseProps & HTMLTextareaProps & { multiline: true }
 
 export type TextFieldProps = InputVariantProps | TextareaVariantProps
 
-// field wrapper ----------------------------------------------------------------------------------]
-
-type FieldWrapperProps = Omit<BaseProps, 'startIcon' | 'endIcon' | 'onEndClick'> & {
-	disabled?: boolean
-	children: ReactNode
-}
-
-function FieldWrapper({
-	label,
-	error,
-	helperText,
-	disabled,
-	required,
-	className,
-	children,
-	md,
-}: FieldWrapperProps) {
-	return (
-		<Field
-			data-disabled={disabled}
-			data-invalid={!!error}
-			className={cn('gap-1.5', md !== false && 'markdown-root', className)}
-		>
-			{label && (
-				<FieldLabel>
-					{label}
-					{required && <span className="text-destructive -ml-1">*</span>}
-				</FieldLabel>
-			)}
-			{children}
-			{error ? (
-				<FieldError>{error}</FieldError>
-			) : (
-				helperText && (
-					<FieldDescription>
-						{md === false
-							? helperText
-							: simpleMarkdown(helperText, { br: true, ...md })}
-					</FieldDescription>
-				)
-			)}
-		</Field>
-	)
-}
-
 // input variant ----------------------------------------------------------------------------------]
 
 function InputVariant({
 	label,
-	helperText,
+	helper,
 	error,
 	required,
 	startIcon,
 	endIcon,
 	onEndClick,
 	className,
-	md,
 	multiline: _,
 	...mainInputProps
 }: InputVariantProps) {
@@ -105,7 +54,6 @@ function InputVariant({
 			<IconButton
 				icon={endIcon}
 				variant="outline"
-				size="sm"
 				onClick={onEndClick}
 				type="button"
 				className="shadow-none"
@@ -143,8 +91,7 @@ function InputVariant({
 		<FieldWrapper
 			label={label}
 			error={error}
-			helperText={helperText}
-			md={md}
+			helper={helper}
 			disabled={disabled}
 			required={required}
 			className={className}
@@ -158,13 +105,12 @@ function InputVariant({
 
 function TextareaVariant({
 	label,
-	helperText,
+	helper,
 	error,
 	required,
 	startIcon,
 	endIcon,
 	className,
-	md,
 	multiline: _,
 	onEndClick: __,
 	...textareaProps
@@ -194,8 +140,7 @@ function TextareaVariant({
 		<FieldWrapper
 			label={label}
 			error={error}
-			helperText={helperText}
-			md={md}
+			helper={helper}
 			disabled={disabled}
 			required={required}
 			className={className}
