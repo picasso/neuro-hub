@@ -65,7 +65,7 @@ export function DemoTypography() {
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Обёртка `Typography` на базе shadcn and **Tailwind CSS**"
+				desc="Обёртка `?Typography` на базе shadcn and **Tailwind CSS**"
 				separator
 			>
 				<div className={cn('min-h-14 rounded-md border p-4', needsDarkBg && 'bg-primary')}>
@@ -82,7 +82,12 @@ export function DemoTypography() {
 				</div>
 			</DemoSection>
 
-			<DemoSection title="Variants" desc="Все поддерживаемые `variant`-ы" separator>
+			<DemoSection
+				title="Variants"
+				desc="Все поддерживаемые `variant`-ы"
+				asBadge="quote"
+				separator
+			>
 				<Stack vertical gap={4} align="stretch">
 					{variants.map((v) => (
 						<Stack key={v} gap={3} align="baseline">
@@ -96,6 +101,7 @@ export function DemoTypography() {
 			<DemoSection
 				title="Modifiers"
 				desc="`*strong` `*thin` `*gutterBottom` `*inline`"
+				asBadge="quote"
 				separator
 			>
 				<Stack vertical gap={3} align="stretch">
@@ -140,6 +146,7 @@ export function DemoTypography() {
 			<DemoSection
 				title="Markdown"
 				desc="Встроенная поддержка простого Markdown через `simpleMarkdown()`"
+				asBadge="quote"
 			>
 				<Stack vertical gap={3} align="stretch">
 					<Stack gap={3} align="start">

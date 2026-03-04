@@ -26,7 +26,7 @@ export function DemoAvatar() {
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Обёртка `Avatar` на базе **shadcn** (initials, image, badge)"
+				desc="Обёртка `?Avatar` на базе **shadcn** —> initials, image, badge"
 				separator
 			>
 				<Stack gap={2} wrap align="center">
@@ -42,21 +42,21 @@ export function DemoAvatar() {
 					/>
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Sizes" separator>
+			<DemoSection title="Sizes" asBadge="user" separator>
 				<Stack gap={2} wrap align="center">
 					{(['sm', 'md', 'lg'] as const).map((size) => (
 						<Avatar key={size} name={names[0]!} size={size} bordered={bordered} />
 					))}
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Initials (different names)" separator>
+			<DemoSection title="Initials (different names)" asBadge="user" separator>
 				<Stack gap={2} wrap align="center">
 					{names.map((name) => (
 						<Avatar key={name} name={name} size="md" bordered={bordered} />
 					))}
 				</Stack>
 			</DemoSection>
-			<DemoSection title="With image" separator>
+			<DemoSection title="With image" asBadge="user" separator>
 				<Stack gap={2} wrap align="center">
 					<Avatar
 						name="GitHub"
@@ -74,14 +74,14 @@ export function DemoAvatar() {
 					/>
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Badges" separator>
+			<DemoSection title="Badges" asBadge="user" separator>
 				<Stack gap={2} wrap align="center">
 					{(['error', 'success', 'warning', 'info'] as const).map((badge) => (
 						<Avatar key={badge} name="DR" size="md" badge={badge} />
 					))}
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Custom color">
+			<DemoSection title="Custom color" asBadge="user">
 				<Stack gap={2} wrap align="center">
 					<Avatar name="DR" size="md" color="#5a4fcf" />
 					<Avatar name="DR" size="md" color="#db2777" />

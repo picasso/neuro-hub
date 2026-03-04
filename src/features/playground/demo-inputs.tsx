@@ -28,7 +28,7 @@ export function DemoInputs() {
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Обёртка `TextField` — `Field` + `Input` : `Textarea` + опциональные иконки через `InputGroup` `ButtonGroup`"
+				desc="Обёртка `?TextField` —> `Field` + `Input` : `Textarea` + опциональные иконки через `InputGroup` `ButtonGroup`"
 				separator
 			>
 				<TextField
@@ -58,7 +58,7 @@ export function DemoInputs() {
 				/>
 			</DemoSection>
 
-			<DemoSection title="Variants" separator>
+			<DemoSection title="Variants" asBadge="log-in" separator>
 				<Stack vertical gap={3} align="stretch">
 					<TextField placeholder="Базовый (без label)" />
 					<TextField label="Input with label" placeholder="Введите текст" />
@@ -77,7 +77,7 @@ export function DemoInputs() {
 				</Stack>
 			</DemoSection>
 
-			<DemoSection title="Icons" separator>
+			<DemoSection title="Icons" asBadge="log-in" separator>
 				<Stack vertical gap={3} align="stretch">
 					<TextField label="startIcon" placeholder="Поиск..." startIcon="search" />
 					<TextField label="endIcon" placeholder="Введите текст" endIcon="x" />
@@ -99,7 +99,7 @@ export function DemoInputs() {
 				</Stack>
 			</DemoSection>
 
-			<DemoSection title="States">
+			<DemoSection title="States" asBadge="log-in">
 				<Stack vertical gap={3} align="stretch">
 					<TextField label="Disabled" placeholder="Недоступно" disabled />
 					<TextField label="ReadOnly" defaultValue="Нельзя редактировать" readOnly />

@@ -11,7 +11,7 @@ export function DemoButtons() {
 
 	return (
 		<DemoRoot>
-			<DemoSection title="Interactive" desc="Обёртка `Button` на базе shadcn" separator>
+			<DemoSection title="Interactive" desc="Обёртка `?Button` на базе shadcn" separator>
 				<Button
 					variant={variant}
 					size={size}
@@ -24,7 +24,7 @@ export function DemoButtons() {
 					label={noWrap ? 'Long button label that should not wrap' : 'Button Action'}
 				/>
 			</DemoSection>
-			<DemoSection title="Variants" separator>
+			<DemoSection title="Variants" asBadge="credit-card" separator>
 				<Stack gap={2} wrap align="stretch">
 					<Button variant="default" label="Save" />
 					<Button variant="outline" label="Reject" />
@@ -38,7 +38,7 @@ export function DemoButtons() {
 					<Button variant="ghost" label="Ghost" leftIcon="login" />
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Sizes">
+			<DemoSection title="Sizes" asBadge="credit-card">
 				<Stack gap={2} wrap align="stretch">
 					<Button size="xs" variant="default" label="Button XS" />
 					<Button size="sm" variant="default" label="Button SM" />

@@ -26,7 +26,7 @@ export function DemoAlert() {
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Обёртка `Alert` на базе **shadcn** — вариант, иконка, заголовок и описание"
+				desc="Обёртка `?Alert` на базе **shadcn** + **Sonner** —> вариант, иконка, заголовок и описание"
 				separator
 			>
 				<Stack vertical gap={4} align="stretch">
@@ -80,7 +80,7 @@ export function DemoAlert() {
 					))}
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Variants & Severities">
+			<DemoSection title="Variants & Severities" asBadge="circle-check">
 				<Stack vertical gap={3} align="stretch">
 					{map(variants, (variant) => (
 						<Stack key={variant} align="flex-start">

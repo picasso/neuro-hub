@@ -17,7 +17,7 @@ export function DemoBadge() {
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Обёртка `Badge` на базе **shadcn** — варианты, размеры, иконка, onClose"
+				desc="Обёртка `?Badge` на базе **shadcn** —> варианты, размеры, иконка, onClose"
 				separator
 			>
 				<Stack
@@ -39,7 +39,7 @@ export function DemoBadge() {
 					/>
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Variants" separator>
+			<DemoSection title="Variants" asBadge="shield-check" separator>
 				<Stack wrap className="mb-4">
 					{variants.map((variant) => (
 						<Badge key={variant} variant={variant} size="md" label={variant} />
@@ -68,7 +68,7 @@ export function DemoBadge() {
 					))}
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Sizes" separator>
+			<DemoSection title="Sizes" asBadge="shield-check" separator>
 				<Stack className="mb-4">
 					{sizes.map((size) => (
 						<Badge key={size} variant="primary" size={size} label={`Size="${size}"`} />
@@ -80,7 +80,7 @@ export function DemoBadge() {
 					))}
 				</Stack>
 			</DemoSection>
-			<DemoSection title="With icon" separator>
+			<DemoSection title="With icon" asBadge="shield-check" separator>
 				<Stack gap={2} wrap align="center">
 					<Badge variant="primary" label="Save" icon="book-marked" />
 					<Badge variant="outline" label="Search" icon="search" />
@@ -88,7 +88,7 @@ export function DemoBadge() {
 					<Badge variant="secondary" label="Email" icon="email" />
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Closable (onClose)">
+			<DemoSection title="Closable (onClose)" asBadge="shield-check">
 				<Stack gap={2} wrap align="center">
 					<Badge variant="primary" label="Tag" onClose={() => {}} />
 					<Badge variant="outline" label="Filter" icon="search" onClose={() => {}} />

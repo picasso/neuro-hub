@@ -129,20 +129,6 @@ export const componentDemos: ComponentDemo[] = [
 		settings: <DemoAlertSettings />,
 	},
 	{
-		id: 'tooltips',
-		name: 'Tooltips',
-		group: 'feedback',
-		description: 'Tooltip, HoverCard',
-		ready: false,
-	},
-	{
-		id: 'progress',
-		name: 'Progress',
-		group: 'feedback',
-		description: 'Progress, Skeleton',
-		ready: false,
-	},
-	{
 		id: 'tabs',
 		name: 'Tabs',
 		group: 'layout',

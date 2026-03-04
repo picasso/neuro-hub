@@ -18,7 +18,7 @@ export function DemoIconButtons() {
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Обёртка `IconButton` на базе shadcn `Button` + `Icon`"
+				desc="Обёртка `?IconButton` на базе shadcn `Button` + `Icon`"
 				separator
 			>
 				<Stack
@@ -56,7 +56,7 @@ export function DemoIconButtons() {
 				</Stack>
 			</DemoSection>
 
-			<DemoSection title="Variants (+ rounded)" separator>
+			<DemoSection title="Variants (+ rounded)" asBadge="badge-check" separator>
 				<Stack gap={2} wrap align="stretch">
 					<IconButton icon="thumbs-up" variant="ghost" />
 					<IconButton icon="search" variant="outline" />
@@ -71,7 +71,7 @@ export function DemoIconButtons() {
 				</Stack>
 			</DemoSection>
 
-			<DemoSection title="Sizes" separator>
+			<DemoSection title="Sizes" asBadge="badge-check" separator>
 				<Stack gap={2} wrap align="stretch">
 					<Stack vertical>
 						<IconButton icon="search" size="icon" variant="outline" />
@@ -98,6 +98,7 @@ export function DemoIconButtons() {
 			<DemoSection
 				title="Sizes + forceSize"
 				desc="`forceSize` prop влияет на размер иконки и а `size` prop определяет размер кнопки."
+				asBadge="badge-check"
 				separator
 			>
 				<Stack gap={2} wrap align="stretch">
@@ -141,7 +142,7 @@ export function DemoIconButtons() {
 					</Stack>
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Hrefs + rounded">
+			<DemoSection title="Hrefs + rounded" asBadge="badge-check">
 				<Stack gap={2} wrap align="stretch">
 					<IconButton icon="thumbs-up" variant="ghost" href="https://github.com/" />
 					<IconButton icon="search" variant="outline" href="https://apple.com" />

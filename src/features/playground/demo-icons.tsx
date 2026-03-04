@@ -66,7 +66,7 @@ export function DemoIcons() {
 		<DemoRoot>
 			<DemoSection
 				title={`Lucide Icons (${libraryIcons.length})`}
-				desc="Основная библиотека. Имена в `kebab-case`"
+				desc="Основная библиотека для `?Icon` -> имена в `kebab-case`"
 				separator
 			>
 				<Stack
@@ -82,6 +82,7 @@ export function DemoIcons() {
 			<DemoSection
 				title={`Custom SVG (${customIconNames.length})`}
 				desc="Брендовые и специальные иконки. Кастомные `SVG` компоненты"
+				asBadge="image"
 				separator
 			>
 				<Stack
@@ -102,6 +103,7 @@ export function DemoIcons() {
 			<DemoSection
 				title="Color Presets"
 				desc="`color` prop → Tailwind `text-*` класс. `+className` перебивает `!color`"
+				asBadge="image"
 				separator
 			>
 				<Stack gap={4}>
@@ -130,6 +132,7 @@ export function DemoIcons() {
 			<DemoSection
 				title="Size Presets"
 				desc="`*xs=14`, `*sm=16`, `#md=20` **default**, `*lg=24`, `*xl=32`. Также принимает число `px`"
+				asBadge="image"
 				separator
 			>
 				<Stack gap={6} align="end">
@@ -149,7 +152,11 @@ export function DemoIcons() {
 					</Stack>
 				</Stack>
 			</DemoSection>
-			<DemoSection title="Spinning" desc="`*spinning` prop добавляет `animate-spin`">
+			<DemoSection
+				title="Spinning"
+				desc="`*spinning` prop добавляет `animate-spin`"
+				asBadge="image"
+			>
 				<Stack gap={6}>
 					<Stack vertical>
 						<Icon name="spinner" size="lg" spinning />
