@@ -96,7 +96,7 @@ export const componentDemos: ComponentDemo[] = [
 	},
 	{
 		id: 'selects',
-		name: 'Selects',
+		name: 'Selects + Combobox',
 		group: 'forms',
 		description: 'Combobox (с поиском и freeSolo), Select',
 		ready: true,

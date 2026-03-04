@@ -1,21 +1,7 @@
-import { isPlainObject, map } from 'lodash'
 import { useUpdateSettings } from './settings-store'
 import type { PropsWithChildren } from 'react'
 import { cn } from '@/lib/utils'
-import {
-	Label,
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-	Separator,
-	Switch,
-	Stack,
-	TS,
-	Badge,
-	type IconName,
-} from '@/ui'
+import { Select, Separator, Switch, Stack, TS, Badge, type IconName } from '@/ui'
 
 // DemoSection ------------------------------------------------------------------------------------]
 
@@ -136,29 +122,13 @@ export function SettingSelect({ id, label, value, options }: SettingSelectProps)
 	const [update] = useUpdateSettings<never>()
 
 	return (
-		<Stack vertical gap={2} align="stretch">
-			<Label className="text-xs">{label}</Label>
-			<Select
-				value={value === null ? 'null' : value}
-				onValueChange={(v) => update({ [id]: v === 'null' ? null : v } as never)}
-			>
-				<SelectTrigger className="h-8 text-xs">
-					<SelectValue />
-				</SelectTrigger>
-				<SelectContent>
-					{isPlainObject(options[0])
-						? map(options as SelectOption[], ({ label, value }) => (
-								<SelectItem key={value} value={value}>
-									{label}
-								</SelectItem>
-							))
-						: map(options as string[], (option) => (
-								<SelectItem key={option} value={option}>
-									{option}
-								</SelectItem>
-							))}
-				</SelectContent>
-			</Select>
-		</Stack>
+		<Select
+			compact
+			label={label}
+			value={value}
+			onValueChange={(v) => update({ [id]: v } as never)}
+			items={options}
+			alignWithTrigger
+		/>
 	)
 }

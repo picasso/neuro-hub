@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { DemoRoot, SettingSelect, SettingToggle } from './components-utils'
 import { useReset, useSettings } from './settings-store'
-import { Separator, TS, type ComboboxCustomProps } from '@/ui'
+import { type SelectProps, Separator, TS, type ComboboxCustomProps } from '@/ui'
 
 export type SelectDemoState = {
 	error: boolean
@@ -15,6 +15,7 @@ export type SelectDemoState = {
 	autoHighlight: boolean
 	customVariant: NonNullable<ComboboxCustomProps['variant']>
 	customSize: NonNullable<ComboboxCustomProps['size']>
+	alignWithTrigger: NonNullable<SelectProps['alignWithTrigger']>
 }
 
 const defaultState: SelectDemoState = {
@@ -27,6 +28,7 @@ const defaultState: SelectDemoState = {
 	autoHighlight: false,
 	customVariant: 'default',
 	customSize: 'sm',
+	alignWithTrigger: false,
 }
 
 export function DemoSelectsSettings() {
@@ -41,6 +43,7 @@ export function DemoSelectsSettings() {
 		autoHighlight,
 		customVariant,
 		customSize,
+		alignWithTrigger,
 	} = useSettings<SelectDemoState>()
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -55,6 +58,13 @@ export function DemoSelectsSettings() {
 			<SettingToggle id="markdown" label="Markdown" checked={markdown} />
 			<SettingToggle id="showClear" label="Show clear" checked={showClear} />
 			<SettingToggle id="autoHighlight" label="Auto highlight" checked={autoHighlight} />
+			<Separator />
+			<TS variant="caption" color="secondary" content="Действует только для `Select`" />
+			<SettingToggle
+				id="alignWithTrigger"
+				label="Align with trigger"
+				checked={alignWithTrigger}
+			/>
 			<Separator />
 			<TS
 				variant="caption"

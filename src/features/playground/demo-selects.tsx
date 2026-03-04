@@ -8,11 +8,15 @@ import {
 	Combobox,
 	ComboboxSimple,
 	ComboboxGroupped,
+	Select,
+	SelectGroupped,
 	Stack,
 	useComboboxAnchor,
 	type ComboOption,
 	type ComboGroup,
 	type ComboCustomItem,
+	type SelectOption,
+	type SelectOptionGroup,
 	ComboboxCustom,
 } from '@/ui'
 
@@ -28,14 +32,16 @@ export function DemoSelects() {
 		autoHighlight,
 		customVariant,
 		customSize,
+		alignWithTrigger,
 	} = settings
+	const [selectValue, setSelectValue] = useState('')
+	const [selectGroupValue, setSelectGroupValue] = useState('')
 	const [value, setValue] = useState<string | null>(null)
 	const [values, setValues] = useState<string[] | null>(null)
 	const [comboValue, setComboValue] = useState<ComboOption | null>(null)
 	const [comboGroupValue, setComboGroupValue] = useState<ComboGroup | null>(null)
 	const [customValue, setCustomValue] = useState<ComboCustomItem | null>(null)
 	const chipsAnchor = useComboboxAnchor()
-	// const [selectValue, setSelectValue] = useState('')
 
 	return (
 		<DemoRoot>
@@ -65,22 +71,35 @@ export function DemoSelects() {
 			</DemoSection>
 
 			<DemoSection title="Select" asBadge="chevrons-up-down" separator>
-				<Stack vertical gap={3} align="stretch">
-					<div className="flex flex-col gap-1.5">
-						{/* <span className="text-sm font-medium">Роль</span>
-						<Select value={selectValue} onValueChange={setSelectValue}>
-							<SelectTrigger>
-								<SelectValue placeholder="Выберите роль" />
-							</SelectTrigger>
-							<SelectContent>
-								{rolesOptions.map((opt) => (
-									<SelectItem key={opt.value} value={opt.value}>
-										{opt.label}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select> */}
-					</div>
+				<Stack vertical gap={4} align="stretch">
+					<Select
+						label="Роль"
+						placeholder="Выберите роль..."
+						items={selectOptions}
+						value={selectValue}
+						onValueChange={setSelectValue}
+						error={error ? 'Поле обязательно' : undefined}
+						helper={{
+							helper: helperText
+								? 'Выберите **вашу** основную `developer` роль'
+								: undefined,
+							md: markdown ? { br: true } : false,
+						}}
+						disabled={disabled}
+						required={required}
+						alignWithTrigger={alignWithTrigger}
+					/>
+					<SelectGroupped
+						label="Специализация"
+						placeholder="Выберите специализацию..."
+						groups={selectGroups}
+						value={selectGroupValue}
+						onValueChange={setSelectGroupValue}
+						helper="Сгруппировано по **направлению** development"
+						disabled={disabled}
+						required={required}
+						alignWithTrigger={alignWithTrigger}
+					/>
 				</Stack>
 			</DemoSection>
 
@@ -137,6 +156,42 @@ export function DemoSelects() {
 	)
 }
 
+const selectOptions: SelectOption[] = [
+	{ value: 'frontend', label: 'Frontend Developer' },
+	{ value: 'backend', label: 'Backend Developer' },
+	{ value: 'fullstack', label: 'Fullstack Developer' },
+	{ value: 'ml', label: 'ML Engineer' },
+	{ value: 'designer', label: 'UI/UX Designer' },
+]
+
+const selectGroups: SelectOptionGroup[] = [
+	{
+		label: 'Frontend',
+		options: [
+			{ value: 'react', label: 'React Developer' },
+			{ value: 'vue', label: 'Vue Developer' },
+			{ value: 'angular', label: 'Angular Developer' },
+		],
+		separator: true,
+	},
+	{
+		label: 'Backend',
+		options: [
+			{ value: 'node', label: 'Node.js Developer' },
+			{ value: 'python', label: 'Python Developer' },
+			{ value: 'java', label: 'Java Developer' },
+		],
+		separator: true,
+	},
+	{
+		label: 'AI / ML',
+		options: [
+			{ value: 'ml-eng', label: 'ML Engineer' },
+			{ value: 'llm', label: 'LLM Specialist' },
+		],
+	},
+]
+
 const skills: string[] = ['React', 'Vue', 'Angular', 'Svelte', 'Next.js', 'Nuxt']
 
 const skillsOptions: ComboOption[] = [
@@ -147,14 +202,6 @@ const skillsOptions: ComboOption[] = [
 	{ value: 'nextjs', label: 'Next.js' },
 	{ value: 'nuxt', label: 'Nuxt' },
 ]
-
-// const rolesOptions: ComboOption[] = [
-// 	{ value: 'frontend', label: 'Frontend Developer' },
-// 	{ value: 'backend', label: 'Backend Developer' },
-// 	{ value: 'fullstack', label: 'Fullstack Developer' },
-// 	{ value: 'ml', label: 'ML Engineer' },
-// 	{ value: 'designer', label: 'UI/UX Designer' },
-// ]
 
 const rolesOptions: ComboGroup[] = [
 	{ value: 'frontend', items: ['React', 'Vue', 'Angular', 'Svelte', 'Next.js', 'Nuxt'] },

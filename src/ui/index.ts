@@ -24,6 +24,13 @@ export {
 	type ComboCustomItem,
 	type ComboboxCustomProps,
 } from './combobox'
+export {
+	Select,
+	SelectGroupped,
+	type SelectProps,
+	type SelectOption,
+	type SelectOptionGroup,
+} from './select'
 export { Avatar, type AvatarProps, type AvatarBadgeStatus } from './avatar'
 export { Badge, type BadgeProps } from './badge'
 export { Alert, AlertTitle, AlertDescription, type AlertProps } from './alert'
@@ -75,7 +82,7 @@ export {
 	PopoverDescription,
 } from './shadcn/popover'
 export {
-	Select,
+	Select as SelectRoot,
 	SelectContent,
 	SelectGroup,
 	SelectItem,
