@@ -33,11 +33,11 @@ const itemVariants = cva(
 			variant: {
 				default: 'bg-transparent',
 				outline: 'border-border',
-				muted: 'bg-muted/50',
+				muted: 'bg-muted',
 			},
 			size: {
-				default: 'gap-4 p-4',
-				sm: 'gap-2.5 px-4 py-3',
+				default: 'gap-3 px-3 py-2.5 [&_[data-slot=item-footer]]:text-sm',
+				sm: 'gap-2.5 px-3 py-1.5 [&_[data-slot=item-description]]:text-xs [&_[data-slot=item-footer]]:text-xs [&_[data-slot=item-content]]:gap-0.5',
 			},
 		},
 		defaultVariants: {
@@ -72,7 +72,7 @@ const itemMediaVariants = cva(
 		variants: {
 			variant: {
 				default: 'bg-transparent',
-				icon: "size-8 rounded-sm border bg-muted [&_svg:not([class*='size-'])]:size-4",
+				icon: "rounded-sm [&_svg:not([class*='size-'])]:size-4",
 				image: 'size-10 overflow-hidden rounded-sm [&_img]:size-full [&_img]:object-cover',
 			},
 		},
@@ -128,7 +128,7 @@ function ItemDescription({ className, ...props }: React.ComponentProps<'p'>) {
 		<p
 			data-slot="item-description"
 			className={cn(
-				'line-clamp-2 text-sm leading-normal font-normal text-balance text-muted-foreground',
+				'line-clamp-2 leading-normal font-normal text-balance text-muted-foreground',
 				'[&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary',
 				className,
 			)}
@@ -141,7 +141,10 @@ function ItemActions({ className, ...props }: React.ComponentProps<'div'>) {
 	return (
 		<div
 			data-slot="item-actions"
-			className={cn('flex items-center gap-2', className)}
+			className={cn(
+				'flex items-center gap-2 *:data-[slot=button]:data-[variant=outline]:bg-transparent',
+				className,
+			)}
 			{...props}
 		/>
 	)
@@ -161,7 +164,10 @@ function ItemFooter({ className, ...props }: React.ComponentProps<'div'>) {
 	return (
 		<div
 			data-slot="item-footer"
-			className={cn('flex basis-full items-center justify-between gap-2', className)}
+			className={cn(
+				'flex basis-full items-center justify-between gap-2 text-sm text-dimmed pt-1 border-t border-border/60',
+				className,
+			)}
 			{...props}
 		/>
 	)

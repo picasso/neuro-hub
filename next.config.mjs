@@ -14,7 +14,13 @@ const nextConfig = {
 	},
 	images: {
 		formats: ['image/avif', 'image/webp'],
-		remotePatterns: [],
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'raw.githubusercontent.com',
+				pathname: '/**',
+			},
+		],
 		localPatterns: [
 			// playground dev-only route: /playground/pictures/<file>?slowMs=900&v=...
 			// we omit `search` to allow any query string.

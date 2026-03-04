@@ -17,9 +17,12 @@ export {
 	Combobox,
 	ComboboxSimple,
 	ComboboxGroupped,
+	ComboboxCustom,
 	type ComboboxProps,
 	type ComboOption,
 	type ComboGroup,
+	type ComboCustomItem,
+	type ComboboxCustomProps,
 } from './combobox'
 export { Avatar, type AvatarProps, type AvatarBadgeStatus } from './avatar'
 export { Badge, type BadgeProps } from './badge'
@@ -86,7 +89,6 @@ export {
 export { Separator } from './shadcn/separator'
 export { Progress } from './shadcn/progress'
 export { Slider } from './shadcn/slider'
-// export { Switch } from './shadcn/switch'
 export { Toggle } from './shadcn/toggle'
 export { ToggleGroup, ToggleGroupItem } from './shadcn/toggle-group'
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './shadcn/tooltip'

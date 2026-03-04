@@ -54,7 +54,15 @@ function ComboboxInput({
 	showClear?: boolean
 }) {
 	return (
-		<InputGroup className={cn('w-auto', className)}>
+		<InputGroup
+			className={cn(
+				'w-auto' +
+					' has-[[data-slot][aria-invalid=true]]:border-destructive' +
+					' has-[[data-slot][aria-invalid=true]]:ring-3' +
+					' has-[[data-slot][aria-invalid=true]]:ring-destructive/20',
+				className,
+			)}
+		>
 			<ComboboxPrimitive.Input render={<InputGroupInput disabled={disabled} />} {...props} />
 			<InputGroupAddon align="inline-end">
 				{showTrigger && (
@@ -223,7 +231,7 @@ function ComboboxChip({
 		<ComboboxPrimitive.Chip
 			data-slot="combobox-chip"
 			className={cn(
-				'flex h-[calc(--spacing(5.5))] w-fit items-center justify-center gap-1 rounded-sm bg-muted px-1.5 text-xs font-medium whitespace-nowrap text-foreground has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 has-data-[slot=combobox-chip-remove]:pr-0',
+				'flex h-[calc(--spacing(5.5))] w-fit items-center justify-center gap-1 rounded bg-secondary px-1.5 text-xs font-medium whitespace-nowrap text-foreground has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 has-data-[slot=combobox-chip-remove]:pr-0',
 				className,
 			)}
 			{...props}
@@ -258,6 +266,7 @@ function useComboboxAnchor() {
 
 export {
 	Combobox,
+	ComboboxPrimitive,
 	ComboboxInput,
 	ComboboxContent,
 	ComboboxList,

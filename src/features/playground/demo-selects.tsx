@@ -6,51 +6,68 @@ import { type SelectDemoState } from './demo-selects-settings'
 import { useSettings } from './settings-store'
 import {
 	Combobox,
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
+	ComboboxSimple,
+	ComboboxGroupped,
 	Stack,
+	useComboboxAnchor,
+	type ComboOption,
+	type ComboGroup,
+	type ComboCustomItem,
+	ComboboxCustom,
 } from '@/ui'
 
 export function DemoSelects() {
 	const settings = useSettings<SelectDemoState>()
-	const { error, disabled, required, helperText, freeSolo, markdown } = settings
-	const [comboboxValue, setComboboxValue] = useState('')
-	const [freeSoloValue, setFreeSoloValue] = useState('')
-	const [selectValue, setSelectValue] = useState('')
+	const {
+		error,
+		disabled,
+		required,
+		helperText,
+		markdown,
+		showClear,
+		autoHighlight,
+		customVariant,
+		customSize,
+	} = settings
+	const [value, setValue] = useState<string | null>(null)
+	const [values, setValues] = useState<string[] | null>(null)
+	const [comboValue, setComboValue] = useState<ComboOption | null>(null)
+	const [comboGroupValue, setComboGroupValue] = useState<ComboGroup | null>(null)
+	const [customValue, setCustomValue] = useState<ComboCustomItem | null>(null)
+	const chipsAnchor = useComboboxAnchor()
+	// const [selectValue, setSelectValue] = useState('')
 
 	return (
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Обёртка `Combobox` — `Field` + shadcn `Combobox` с поиском и `freeSolo`"
+				desc="Обёртка `?Combobox` & `?Select` —> `FieldWrapper` + **shadcn** `Combobox` and `Select` с поиском и множественным выбором"
 				separator
 			>
 				<Combobox
 					label="Навык"
-					options={skillsOptions}
-					value={comboboxValue}
-					onValueChange={setComboboxValue}
+					items={skillsOptions}
+					value={comboValue}
+					onValueChange={setComboValue}
 					placeholder="Выберите или введите..."
 					error={error ? 'Навык обязателен' : undefined}
-					helperText={
-						helperText
+					helper={{
+						helper: helperText
 							? 'Это **важный** навык для `javascript` разработчика'
-							: undefined
-					}
+							: undefined,
+						md: markdown ? { br: true } : false,
+					}}
 					disabled={disabled}
 					required={required}
-					freeSolo={freeSolo}
-					md={markdown ? { br: true } : false}
+					showClear={showClear}
+					autoHighlight={autoHighlight}
 				/>
 			</DemoSection>
 
-			<DemoSection title="Select" separator>
+			<DemoSection title="Select" asBadge="chevrons-up-down" separator>
 				<Stack vertical gap={3} align="stretch">
 					<div className="flex flex-col gap-1.5">
-						<span className="text-sm font-medium">Роль</span>
+						{/* <span className="text-sm font-medium">Роль</span>
 						<Select value={selectValue} onValueChange={setSelectValue}>
 							<SelectTrigger>
 								<SelectValue placeholder="Выберите роль" />
@@ -62,55 +79,67 @@ export function DemoSelects() {
 									</SelectItem>
 								))}
 							</SelectContent>
-						</Select>
+						</Select> */}
 					</div>
 				</Stack>
 			</DemoSection>
 
-			<DemoSection title="Combobox" separator>
-				<Combobox
+			<DemoSection title="Combobox" asBadge="chevrons-up-down" separator>
+				<ComboboxSimple
 					label="Технология"
-					options={skillsOptions}
-					value={comboboxValue}
-					onValueChange={setComboboxValue}
+					items={skills}
+					value={value}
+					onValueChange={setValue}
 					placeholder="Поиск..."
-					helperText="Начните вводить для фильтрации"
+					helper="Начните вводить для фильтрации"
 				/>
 			</DemoSection>
 
-			<DemoSection title="Combobox freeSolo" separator>
-				<Combobox
+			<DemoSection title="Combobox Groupped" asBadge="chevrons-up-down" separator>
+				<ComboboxGroupped
 					label="Специализация"
-					options={rolesOptions}
-					value={freeSoloValue}
-					onValueChange={setFreeSoloValue}
-					placeholder="Выберите или введите своё..."
-					helperText="Можно ввести произвольное значение"
-					freeSolo
+					items={rolesOptions}
+					value={comboGroupValue}
+					onValueChange={setComboGroupValue}
+					placeholder="Выберите или начните вводить свою специализацию..."
+					helper="Выберите или введите свою специализацию"
 				/>
 			</DemoSection>
 
-			<DemoSection title="States">
-				<Stack vertical gap={3} align="stretch">
-					<Combobox
-						label="Disabled"
-						options={skillsOptions}
-						placeholder="Недоступно"
-						disabled
-					/>
-					<Combobox
-						label="С ошибкой"
-						options={skillsOptions}
-						placeholder="Выберите навык"
-						error="Это поле обязательно"
-					/>
-				</Stack>
+			<DemoSection title="Combobox Multiple" asBadge="chevrons-up-down" separator>
+				<Combobox<string, true>
+					multiple
+					chipsAnchor={chipsAnchor}
+					label="Навыки"
+					items={skills}
+					value={values}
+					onValueChange={setValues}
+					placeholder="Выберите или введите..."
+					helper="Выберите один или несколько навыков"
+				/>
+			</DemoSection>
+
+			<DemoSection title="Custom Items" asBadge="chevrons-up-down">
+				<ComboboxCustom
+					label="Источники технологий"
+					items={customItems}
+					value={customValue}
+					onValueChange={setCustomValue}
+					variant={customVariant}
+					itemClassName={'w-full'}
+					size={customSize}
+					placeholder="Выберите или введите..."
+					helper="Начните вводить для фильтрации"
+					showClear
+				/>
 			</DemoSection>
 		</DemoRoot>
 	)
 }
 
-const skillsOptions = [
+const skills: string[] = ['React', 'Vue', 'Angular', 'Svelte', 'Next.js', 'Nuxt']
+
+const skillsOptions: ComboOption[] = [
 	{ value: 'react', label: 'React' },
 	{ value: 'vue', label: 'Vue' },
 	{ value: 'angular', label: 'Angular' },
@@ -119,10 +148,83 @@ const skillsOptions = [
 	{ value: 'nuxt', label: 'Nuxt' },
 ]
 
-const rolesOptions = [
-	{ value: 'frontend', label: 'Frontend Developer' },
-	{ value: 'backend', label: 'Backend Developer' },
-	{ value: 'fullstack', label: 'Fullstack Developer' },
-	{ value: 'ml', label: 'ML Engineer' },
-	{ value: 'designer', label: 'UI/UX Designer' },
+// const rolesOptions: ComboOption[] = [
+// 	{ value: 'frontend', label: 'Frontend Developer' },
+// 	{ value: 'backend', label: 'Backend Developer' },
+// 	{ value: 'fullstack', label: 'Fullstack Developer' },
+// 	{ value: 'ml', label: 'ML Engineer' },
+// 	{ value: 'designer', label: 'UI/UX Designer' },
+// ]
+
+const rolesOptions: ComboGroup[] = [
+	{ value: 'frontend', items: ['React', 'Vue', 'Angular', 'Svelte', 'Next.js', 'Nuxt'] },
+	{ value: 'backend', items: ['Node.js', 'Python', 'Java', 'C#', 'PHP'] },
+	{
+		value: 'fullstack',
+		items: [
+			'React',
+			'Vue',
+			'Angular',
+			'Svelte',
+			'Next.js',
+			'Nuxt',
+			'Node.js',
+			'Python',
+			'Java',
+			'C#',
+			'PHP',
+		],
+	},
+	{ value: 'ml', items: ['Python', 'Java', 'C#', 'PHP'] },
+	{ value: 'designer', items: ['UI/UX Designer', 'Graphic Designer', 'Web Designer'] },
+]
+
+const customItems: ComboCustomItem[] = [
+	{
+		value: 'react',
+		title: 'React from Facebook',
+		desc: 'React is a **JavaScript library** for building `!user` interfaces.',
+		button: 'Follow',
+		buttonRightIcon: 'email',
+	},
+	{
+		value: 'vue',
+		title: 'Vue from Evan You',
+		desc: 'Vue is a JavaScript framework for building user interfaces.',
+		icon: 'book-marked',
+		button: 'Remove',
+		buttonVariant: 'destructive',
+		buttonSize: 'sm',
+		buttonLeftIcon: 'trash',
+	},
+	{
+		value: 'angular',
+		title: 'Angular from Google',
+		desc: 'Angular is a JavaScript framework for building user interfaces.',
+		icon: 'credit-card',
+		iconSize: 'sm',
+		iconColor: 'error',
+	},
+	{
+		value: 'svelte',
+		title: 'Svelte from Svelte Society',
+		desc: 'Svelte is a JavaScript compiler for building user interfaces.',
+		image: 'https://raw.githubusercontent.com/wiki/picasso/zukit/assets/banner-1544x500.png',
+	},
+	{
+		value: 'nextjs',
+		title: 'Next.js from Vercel',
+		desc: 'Next.js is a JavaScript framework for building user interfaces.',
+		avatar: 'John Doe',
+		avatarSize: 'lg',
+		avatarBordered: true,
+		avatarSrc: 'https://avatars.githubusercontent.com/u/399395',
+	},
+	{
+		value: 'nuxt',
+		title: 'Nuxt from NuxtLabs',
+		avatar: 'Jane Doe',
+		avatarSize: 'sm',
+		footer: 'Это просто какой-то футер и ещё какой-то текст...',
+	},
 ]
