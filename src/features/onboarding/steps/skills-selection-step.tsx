@@ -1,15 +1,5 @@
 'use client'
 
-import Box from '@mui/material/Box'
-import Checkbox from '@mui/material/Checkbox'
-import FormControl from '@mui/material/FormControl'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
-import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import { useUnit } from 'effector-react'
 import { filter, find, includes, map, some, toLower } from 'lodash'
 import { useState } from 'react'
@@ -25,9 +15,15 @@ import {
 	updateSkillLevel,
 	type Skill,
 } from '@/stores/onboarding'
-import { Badge, Button, TS } from '@/ui'
+import { Badge, Button, Checkbox, Select, Stack, TextField, TS } from '@/ui'
 
 type ProficiencyLevel = UserSkillInput['proficiencyLevel']
+
+const proficiencyItems = [
+	{ value: 'beginner', label: 'Beginner' },
+	{ value: 'intermediate', label: 'Intermediate' },
+	{ value: 'advanced', label: 'Advanced' },
+]
 
 export function SkillsSelectionStep() {
 	const [selectedSkills, allSkills, isLoading] = useUnit([
@@ -64,8 +60,8 @@ export function SkillsSelectionStep() {
 	}
 
 	return (
-		<Box>
-			<Box sx={{ mb: 4, textAlign: 'center' }}>
+		<div>
+			<div className="mb-8 text-center">
 				<TS variant="h5" gutterBottom content="Выберите ваши навыки" />
 				<TS
 					variant="body"
@@ -73,26 +69,26 @@ export function SkillsSelectionStep() {
 					className="text-sm"
 					content="Отметьте навыки, которыми вы владеете"
 				/>
-			</Box>
+			</div>
 
-			<Box sx={{ maxWidth: 800, mx: 'auto' }}>
+			<div className="max-w-200 mx-auto">
 				{selectedSkills.length > 0 && (
-					<Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+					<div className="mb-6 p-4 bg-muted/30 rounded">
 						<TS
 							variant="body"
 							color="secondary"
 							className="text-sm mb-2"
 							content={`Выбрано навыков: ${selectedSkills.length}`}
 						/>
-						<Stack direction="row" flexWrap="wrap" alignItems="center" gap={1}>
+						<Stack wrap align="center" gap={2}>
 							{map(selectedSkills, (skill) => {
 								const skillData = find(allSkills, { id: skill.skillId })
 								return (
 									<Stack
 										key={skill.skillId}
 										direction="row"
-										alignItems="center"
-										gap={1}
+										align="center"
+										gap={2}
 									>
 										<Badge
 											variant="outline"
@@ -102,91 +98,63 @@ export function SkillsSelectionStep() {
 											onClose={() => removeSkill(skill.skillId)}
 											ariaOnClose="Удалить навык"
 										/>
-										<FormControl size="small" sx={{ minWidth: 140 }}>
-											<Select
-												size="small"
-												value={skill.proficiencyLevel}
-												onChange={(e) =>
-													updateSkillLevel({
-														skillId: skill.skillId,
-														level: e.target.value as ProficiencyLevel,
-													})
-												}
-												sx={{ height: 32 }}
-											>
-												<MenuItem value="beginner">Beginner</MenuItem>
-												<MenuItem value="intermediate">
-													Intermediate
-												</MenuItem>
-												<MenuItem value="advanced">Advanced</MenuItem>
-											</Select>
-										</FormControl>
+										<Select
+											value={skill.proficiencyLevel}
+											onValueChange={(level) =>
+												updateSkillLevel({
+													skillId: skill.skillId,
+													level: level as ProficiencyLevel,
+												})
+											}
+											items={proficiencyItems}
+											compact
+											triggerClassName="min-w-[140px]"
+										/>
 									</Stack>
 								)
 							})}
 						</Stack>
-					</Box>
+					</div>
 				)}
 
 				<TextField
 					label="Поиск навыков"
-					fullWidth
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
 					placeholder="Начните вводить название..."
-					sx={{ mb: 2 }}
+					className="mb-4"
 				/>
 
-				<Box
-					sx={{
-						maxHeight: 400,
-						overflow: 'auto',
-						border: 1,
-						borderColor: 'grey.300',
-						borderRadius: 1,
-						mb: 3,
-					}}
-				>
+				<div className="max-h-100 overflow-auto border border-border rounded mb-6">
 					{isLoading ? (
-						<Box sx={{ p: 3, textAlign: 'center' }}>
+						<div className="p-6 text-center">
 							<TS
 								variant="body"
 								color="secondary"
 								className="text-sm"
 								content="Загрузка навыков..."
 							/>
-						</Box>
+						</div>
 					) : filteredSkills.length === 0 ? (
-						<Box sx={{ p: 3, textAlign: 'center' }}>
+						<div className="p-6 text-center">
 							<TS
 								variant="body"
 								color="secondary"
 								className="text-sm"
 								content="Навыки не найдены"
 							/>
-						</Box>
+						</div>
 					) : (
-						<List>
+						<div className="divide-y divide-border">
 							{map(filteredSkills, (skill) => {
 								const selected = isSkillSelected(skill.id)
 								return (
-									<ListItem
-										key={skill.id}
-										sx={{
-											borderBottom: 1,
-											borderColor: 'grey.200',
-											'&:last-child': { borderBottom: 0 },
-										}}
-									>
-										<FormControlLabel
-											control={
-												<Checkbox
-													checked={selected}
-													onChange={() => onSkillToggle(skill)}
-												/>
-											}
+									<div key={skill.id} className="px-4 py-2">
+										<Checkbox
+											checked={selected}
+											onCheckedChange={() => onSkillToggle(skill)}
 											label={
-												<Box>
+												<div>
 													<TS variant="subtitle" content={skill.name} />
 													<Badge
 														variant="secondary"
@@ -194,18 +162,18 @@ export function SkillsSelectionStep() {
 														color="secondary"
 														label={skill.category.replace('_', ' ')}
 													/>
-												</Box>
+												</div>
 											}
-											sx={{ width: 1 }}
+											horizontalClassName="w-full"
 										/>
-									</ListItem>
+									</div>
 								)
 							})}
-						</List>
+						</div>
 					)}
-				</Box>
+				</div>
 
-				<Stack direction="row" justifyContent="space-between">
+				<Stack justify="space-between">
 					<Button variant="outline" size="lg" onClick={() => prevStep()} label="Назад" />
 					<Button
 						size="lg"
@@ -214,7 +182,7 @@ export function SkillsSelectionStep() {
 						label="Продолжить"
 					/>
 				</Stack>
-			</Box>
-		</Box>
+			</div>
+		</div>
 	)
 }

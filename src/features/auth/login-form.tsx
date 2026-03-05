@@ -1,11 +1,5 @@
 'use client'
 
-import Box from '@mui/material/Box'
-import Checkbox from '@mui/material/Checkbox'
-import Container from '@mui/material/Container'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import { useGate, useUnit } from 'effector-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
@@ -18,7 +12,7 @@ import {
 	updatedEmail,
 	updatedPassword,
 } from '@/stores/auth-login'
-import { Button, TS } from '@/ui'
+import { Button, Checkbox, Stack, TextField, TS } from '@/ui'
 
 export function LoginForm() {
 	const router = useRouter()
@@ -36,8 +30,8 @@ export function LoginForm() {
 	])
 
 	return (
-		<Container maxWidth="md">
-			<Box sx={{ mt: 8, mb: 8, textAlign: 'center' }}>
+		<div className="container max-w-3xl mx-auto px-4">
+			<div className="mt-16 mb-16 text-center">
 				<TS variant="h3" gutterBottom content="Вход" />
 				<TS
 					variant="body"
@@ -46,35 +40,30 @@ export function LoginForm() {
 					content="Войдите, чтобы управлять профилем и портфолио"
 				/>
 
-				<Box sx={{ maxWidth: 520, mx: 'auto', textAlign: 'left' }}>
-					<TextField
-						label="Email"
-						fullWidth
-						value={credentials.email}
-						onChange={(e) => onUpdatedEmail(e.target.value)}
-						sx={{ mb: 2 }}
-					/>
-					<TextField
-						label="Пароль"
-						type="password"
-						fullWidth
-						value={credentials.password}
-						onChange={(e) => onUpdatedPassword(e.target.value)}
-						sx={{ mb: 2 }}
-					/>
+				<div className="max-w-130 mx-auto text-left">
+					<Stack vertical gap={4} className="mb-6">
+						<TextField
+							label="Email"
+							value={credentials.email}
+							onChange={(e) => onUpdatedEmail(e.target.value)}
+						/>
+						<TextField
+							label="Пароль"
+							type="password"
+							value={credentials.password}
+							onChange={(e) => onUpdatedPassword(e.target.value)}
+						/>
+					</Stack>
 
-					<FormControlLabel
-						control={
-							<Checkbox
-								checked={credentials.rememberMe}
-								onChange={() => onToggleRemember()}
-							/>
-						}
-						label="Запомнить меня"
-						sx={{ mb: 3 }}
-					/>
+					<div className="mb-6">
+						<Checkbox
+							checked={credentials.rememberMe}
+							onCheckedChange={() => onToggleRemember()}
+							label="Запомнить меня"
+						/>
+					</div>
 
-					<Stack direction="row" spacing={2} justifyContent="space-between">
+					<Stack gap={4} justify="space-between">
 						<Button
 							variant="outline"
 							onClick={() => router.push('/signup' as never)}
@@ -94,11 +83,11 @@ export function LoginForm() {
 						/>
 					</Stack>
 
-					<Box sx={{ mt: 3, textAlign: 'center' }}>
+					<div className="mt-6 text-center">
 						<Button variant="ghost" href="/" label="На главную" />
-					</Box>
-				</Box>
-			</Box>
-		</Container>
+					</div>
+				</div>
+			</div>
+		</div>
 	)
 }

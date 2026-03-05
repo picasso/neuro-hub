@@ -1,14 +1,8 @@
 'use client'
 
-import Box from '@mui/material/Box'
-import Dialog from '@mui/material/Dialog'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
-import Stack from '@mui/material/Stack'
 import { useMemo, useState } from 'react'
 import type { PublicFreelancerProfile } from '@/lib/db/queries/freelancers'
-import { Badge, Link } from '@/ui'
-import { TS } from '@/ui/text-styled'
+import { Badge, Dialog, DialogContent, DialogHeader, DialogTitle, Link, Stack, TS } from '@/ui'
 
 function levelLabel(level: string | null) {
 	switch (level) {
@@ -54,8 +48,8 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 	)
 
 	return (
-		<Box>
-			<Box sx={{ mb: 4 }}>
+		<div>
+			<div className="mb-8">
 				<TS variant="h5" gutterBottom content="О себе" />
 				<TS
 					variant="body"
@@ -63,9 +57,9 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 					className="text-sm"
 					content={profile.userProfile?.bio || 'Пользователь пока не добавил описание.'}
 				/>
-			</Box>
+			</div>
 
-			<Box sx={{ mb: 4 }}>
+			<div className="mb-8">
 				<TS variant="h5" gutterBottom content="Навыки" />
 				{profile.skills.length === 0 ? (
 					<TS
@@ -75,7 +69,7 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 						content="Навыки не указаны."
 					/>
 				) : (
-					<Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+					<Stack gap={2} wrap>
 						{profile.skills.map((s) => (
 							<Badge
 								key={s.skillId}
@@ -92,9 +86,9 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 						))}
 					</Stack>
 				)}
-			</Box>
+			</div>
 
-			<Box sx={{ mb: 4 }}>
+			<div className="mb-8">
 				<TS variant="h5" gutterBottom content="Портфолио" />
 				{profile.portfolio.length === 0 ? (
 					<TS
@@ -104,27 +98,14 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 						content="Портфолио пока пустое."
 					/>
 				) : (
-					<Box
-						sx={{
-							display: 'grid',
-							gap: 2,
-							gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-						}}
-					>
+					<div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
 						{profile.portfolio.map((p) => (
-							<Box
+							<div
 								key={p.id}
 								onClick={() => setOpenId(p.id)}
 								role="button"
 								tabIndex={0}
-								sx={{
-									p: 2,
-									borderRadius: 2,
-									border: '1px solid',
-									borderColor: 'divider',
-									cursor: 'pointer',
-									'&:hover': { borderColor: 'text.primary' },
-								}}
+								className="p-4 rounded-lg border border-border cursor-pointer hover:border-foreground transition-colors"
 							>
 								<TS variant="subtitle" gutterBottom content={p.title} />
 								<TS
@@ -134,17 +115,10 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 									content={p.description || 'Без описания'}
 								/>
 								{isImage(p.mediaType, p.mediaUrl) ? (
-									<Box
-										component="img"
+									<img
 										src={p.mediaUrl}
 										alt={p.title}
-										sx={{
-											width: 1,
-											height: 220,
-											objectFit: 'cover',
-											borderRadius: 1.5,
-											bgcolor: 'action.hover',
-										}}
+										className="w-full h-55 object-cover rounded-xl bg-muted"
 									/>
 								) : (
 									<TS
@@ -154,13 +128,13 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 										inline
 									/>
 								)}
-							</Box>
+							</div>
 						))}
-					</Box>
+					</div>
 				)}
-			</Box>
+			</div>
 
-			<Box sx={{ mb: 4 }}>
+			<div className="mb-8">
 				<TS variant="h5" gutterBottom content="Отзывы" />
 				<TS
 					variant="body"
@@ -168,9 +142,9 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 					className="text-sm"
 					content="Раздел отзывов будет добавлен позже (этапы 4–5)."
 				/>
-			</Box>
+			</div>
 
-			<Box sx={{ mb: 2 }}>
+			<div className="mb-4">
 				<TS variant="h5" gutterBottom content="Статистика" />
 				<TS
 					variant="body"
@@ -178,13 +152,15 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 					className="text-sm"
 					content="Статистика будет рассчитана позже (нужны проекты/заказы)."
 				/>
-			</Box>
+			</div>
 
-			<Dialog open={!!openItem} onClose={() => setOpenId(null)} maxWidth="md" fullWidth>
-				{openItem ? (
-					<>
-						<DialogTitle>{openItem.title}</DialogTitle>
-						<DialogContent>
+			<Dialog open={!!openItem} onOpenChange={(open) => !open && setOpenId(null)}>
+				<DialogContent className="max-w-2xl">
+					{openItem ? (
+						<>
+							<DialogHeader>
+								<DialogTitle>{openItem.title}</DialogTitle>
+							</DialogHeader>
 							{openItem.description ? (
 								<TS
 									variant="body"
@@ -195,26 +171,19 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 							) : null}
 
 							{isImage(openItem.mediaType, openItem.mediaUrl) ? (
-								<Box
-									component="img"
+								<img
 									src={openItem.mediaUrl}
 									alt={openItem.title}
-									sx={{ width: 1, borderRadius: 2 }}
+									className="w-full rounded-lg"
 								/>
 							) : isVideo(openItem.mediaType, openItem.mediaUrl) ? (
-								<Box
-									component="video"
+								<video
 									controls
 									src={openItem.mediaUrl}
-									sx={{ width: 1, borderRadius: 2 }}
+									className="w-full rounded-lg"
 								/>
 							) : isAudio(openItem.mediaType, openItem.mediaUrl) ? (
-								<Box
-									component="audio"
-									controls
-									src={openItem.mediaUrl}
-									sx={{ width: 1 }}
-								/>
+								<audio controls src={openItem.mediaUrl} className="w-full" />
 							) : isPdf(openItem.mediaType, openItem.mediaUrl) ? (
 								<Link
 									href={openItem.mediaUrl}
@@ -236,10 +205,10 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 									Открыть медиа
 								</Link>
 							)}
-						</DialogContent>
-					</>
-				) : null}
+						</>
+					) : null}
+				</DialogContent>
 			</Dialog>
-		</Box>
+		</div>
 	)
 }

@@ -1,9 +1,5 @@
 // rendered only by Client Components
 // no 'use client' so this is not an entry (serializable props not required)
-import Box from '@mui/material/Box'
-import Dialog from '@mui/material/Dialog'
-import DialogContent from '@mui/material/DialogContent'
-import Stack from '@mui/material/Stack'
 import { sample } from 'effector'
 import { useUnit } from 'effector-react'
 import { random, uniqueId } from 'lodash'
@@ -12,10 +8,7 @@ import { delay } from 'patronum'
 import { type TransitionEventHandler, useCallback, useEffect } from 'react'
 import { type MediaKind, type MediaItem, MediaPlaceholder } from './portfolio-item'
 import { viewerDomain as domain } from '@/lib/logger'
-import { Icon, type IconName } from '@/ui/icon'
-import { IconButton } from '@/ui/icon-button'
-import { Link } from '@/ui/link'
-import { TS } from '@/ui/text-styled'
+import { Dialog, DialogContent, Icon, IconButton, Link, Stack, TS, type IconName } from '@/ui'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 const fadeTransition = `opacity ${500}ms ease-in-out`
@@ -98,41 +91,28 @@ export function PortfolioViewer({
 	const isLoaderRight = loaderDirection === 'right'
 
 	return (
-		<Dialog
-			open={isOpen}
-			onClose={onCloseProxy}
-			fullWidth
-			maxWidth="md"
-			slotProps={{
-				paper: { sx: { border: 'none', borderRadius: 1 } },
-				transition: { onExited: onDialogExited },
-			}}
-		>
-			<DialogContent sx={{ p: 0 }}>
+		<Dialog open={isOpen} onOpenChange={(open) => !open && onCloseProxy()}>
+			<DialogContent
+				className="max-w-2xl border-0 p-0 rounded-sm"
+				onAnimationEnd={(e) => {
+					if (!isOpen && e.target === e.currentTarget) onDialogExited()
+				}}
+			>
 				<Stack
 					direction="row"
-					alignItems="center"
-					justifyContent="space-between"
-					sx={{
-						p: 2,
-						borderBottom: '1px solid',
-						borderColor: 'divider',
-						gap: 2,
-					}}
+					align="center"
+					justify="space-between"
+					gap={4}
+					className="p-4 border-b border-border"
 				>
-					<Stack
-						direction="row"
-						alignItems="center"
-						justifyContent="space-between"
-						spacing={2}
-					>
+					<Stack align="center" gap={4}>
 						<Icon name={`media-${kind}` as IconName} size={40} color="secondary" />
 						<TS variant="h3" content={title ?? ''} className="mb-0.5 capitalize" />
 						{!!caption && (
 							<TS variant="caption" color="secondary" content={caption} inline />
 						)}
 					</Stack>
-					<Stack direction="row" alignItems="center" spacing={1}>
+					<Stack align="center" gap={2}>
 						<IconButton
 							rounded
 							size="md"
@@ -163,7 +143,11 @@ export function PortfolioViewer({
 					</Stack>
 				</Stack>
 
-				<MediaPlaceholder kind={kind} sx={{ p: 4, minHeight: 420, borderRadius: 0 }}>
+				<MediaPlaceholder
+					kind={kind}
+					className="p-8 rounded-none"
+					style={{ minHeight: 420 }}
+				>
 					{!mediaUrl ? null : kind === 'image' ? (
 						<Image
 							src={mediaUrl}
@@ -197,26 +181,21 @@ export function PortfolioViewer({
 							}}
 						/>
 					) : kind === 'audio' ? (
-						<Stack spacing={6} alignItems="center" sx={{ py: 6, width: 1 }}>
+						<Stack vertical gap={12} align="center" className="py-12 w-full">
 							<Icon name="media-audio" size={180} color="contrast" />
-							<Box
+							<div
 								onTransitionEnd={onTransitionEnd}
-								sx={{
-									width: 1,
-									maxWidth: 720,
-									opacity: fadeOpacity,
-									transition: fadeTransition,
-								}}
+								className="w-full max-w-180"
+								style={{ opacity: fadeOpacity, transition: fadeTransition }}
 							>
 								<audio controls src={mediaUrl} style={{ width: '100%' }} />
-							</Box>
+							</div>
 						</Stack>
 					) : kind === 'pdf' ? (
-						<Stack
-							spacing={3}
-							alignItems="center"
+						<div
 							onTransitionEnd={onTransitionEnd}
-							sx={{ py: 6, opacity: fadeOpacity, transition: fadeTransition }}
+							className="flex flex-col gap-6 items-center py-12"
+							style={{ opacity: fadeOpacity, transition: fadeTransition }}
 						>
 							<Icon name="media-pdf" size={180} color="contrast" />
 							<TS
@@ -234,13 +213,12 @@ export function PortfolioViewer({
 							>
 								Открыть PDF в новой вкладке
 							</Link>
-						</Stack>
+						</div>
 					) : (
-						<Stack
-							spacing={3}
-							alignItems="center"
+						<div
 							onTransitionEnd={onTransitionEnd}
-							sx={{ py: 6, opacity: fadeOpacity, transition: fadeTransition }}
+							className="flex flex-col gap-6 items-center py-12"
+							style={{ opacity: fadeOpacity, transition: fadeTransition }}
 						>
 							<Icon name="do-not-disturb" size={180} color="contrast" />
 							<TS
@@ -258,7 +236,7 @@ export function PortfolioViewer({
 							>
 								Открыть файл в новой вкладке
 							</Link>
-						</Stack>
+						</div>
 					)}
 				</MediaPlaceholder>
 			</DialogContent>

@@ -1,37 +1,20 @@
 'use client'
 
-import Alert from '@mui/material/Alert'
-import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
 import { useUnit } from 'effector-react'
 import { useRouter } from 'next/navigation'
 import { $credentials, setCurrentStep } from '@/stores/onboarding'
-import { Button } from '@/ui/button'
-import { Icon } from '@/ui/icon'
-import { TS } from '@/ui/text-styled'
+import { Alert, Button, Icon, Stack, TS } from '@/ui'
 
 export function EmailVerificationStep() {
 	const credentials = useUnit($credentials)
 	const router = useRouter()
 
 	return (
-		<Box>
-			<Box sx={{ mb: 4, textAlign: 'center' }}>
-				<Box
-					sx={{
-						width: 80,
-						height: 80,
-						borderRadius: '50%',
-						bgcolor: 'primary.main',
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						mx: 'auto',
-						mb: 3,
-					}}
-				>
+		<div>
+			<div className="mb-8 text-center">
+				<div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mx-auto mb-6">
 					<Icon name="email" size={40} color="contrast" />
-				</Box>
+				</div>
 
 				<TS variant="h5" gutterBottom content="Подтвердите email" />
 				<TS
@@ -45,17 +28,17 @@ export function EmailVerificationStep() {
 					className="font-semibold mb-6"
 					content={credentials?.email || 'ваш email'}
 				/>
-			</Box>
+			</div>
 
-			<Box sx={{ maxWidth: 500, mx: 'auto' }}>
-				<Alert severity="info" sx={{ mb: 4 }}>
+			<div className="max-w-125 mx-auto">
+				<Alert severity="info" className="mb-8">
 					<TS variant="body" className="text-sm">
 						Проверьте почту и перейдите по ссылке в письме для подтверждения вашего
 						аккаунта. Если письмо не пришло, проверьте папку "Спам".
 					</TS>
 				</Alert>
 
-				<Stack spacing={2}>
+				<Stack vertical gap={4}>
 					<Button
 						size="lg"
 						onClick={() => router.push('/dashboard' as never)}
@@ -70,7 +53,7 @@ export function EmailVerificationStep() {
 						label="Изменить email"
 					/>
 				</Stack>
-			</Box>
-		</Box>
+			</div>
+		</div>
 	)
 }

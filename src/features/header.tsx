@@ -1,15 +1,8 @@
 'use client'
 
-import AppBar from '@mui/material/AppBar'
-import Container from '@mui/material/Container'
-import Stack from '@mui/material/Stack'
-import Toolbar from '@mui/material/Toolbar'
 import { useRouter } from 'next/navigation'
 import { signOut, useSession } from '@/lib/auth/client'
-import { FontSwitcher } from '@/ui'
-import { Button } from '@/ui/button'
-import { Link } from '@/ui/link'
-import { TS } from '@/ui/text-styled'
+import { Button, FontSwitcher, Link, Stack, TS } from '@/ui'
 
 export function Header() {
 	const router = useRouter()
@@ -18,19 +11,14 @@ export function Header() {
 	const isAuthed = !!session?.user?.id
 
 	return (
-		<AppBar
-			position="static"
-			color="default"
-			elevation={0}
-			sx={{ borderBottom: `1px solid`, borderColor: 'primary.main' }}
-		>
-			<Container maxWidth="lg">
-				<Toolbar disableGutters>
+		<header className="border-b border-primary bg-background">
+			<div className="container max-w-5xl mx-auto px-4">
+				<div className="flex h-16 items-center">
 					<Link href="/" className="grow">
 						<TS variant="h5" strong content="NeuroGig" />
 					</Link>
 
-					<Stack direction="row" spacing={2} alignItems="center">
+					<Stack gap={4} align="center">
 						<FontSwitcher />
 						<Link href="/projects">Проекты</Link>
 						<Link href="/freelancers">Фрилансеры</Link>
@@ -68,8 +56,8 @@ export function Header() {
 							</>
 						)}
 					</Stack>
-				</Toolbar>
-			</Container>
-		</AppBar>
+				</div>
+			</div>
+		</header>
 	)
 }

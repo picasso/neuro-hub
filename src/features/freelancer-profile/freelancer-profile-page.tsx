@@ -24,7 +24,7 @@ export async function FreelancerProfilePage(props: PageProps) {
 	return (
 		<Container maxWidth="md">
 			<Box sx={{ mt: 6, mb: 8 }}>
-				<Stack direction="row" spacing={2} sx={{ mb: 4, alignItems: 'center' }}>
+				<Stack spacing={2} sx={{ mb: 4, alignItems: 'center' }}>
 					<Avatar
 						name={profile.userProfile?.name || 'Freelancer'}
 						size="lg"

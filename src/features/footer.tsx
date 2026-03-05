@@ -1,32 +1,18 @@
 'use client'
 
-import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
-import Grid from '@mui/material/Grid'
-import Stack from '@mui/material/Stack'
 import { config, contactContent } from '@/config'
-import { Badge } from '@/ui'
-import { Icon } from '@/ui/icon'
-import { IconButton } from '@/ui/icon-button'
-import { Link } from '@/ui/link'
-import { TS } from '@/ui/text-styled'
+import { Badge, Icon, IconButton, Link, Stack, TS } from '@/ui'
 
 export function Footer() {
 	return (
-		<Box
-			component="footer"
-			sx={{
-				py: 6,
-				px: 2,
-				mt: 'auto',
-				background: 'linear-gradient(to bottom, #169e5f, #1dbf73)',
-				color: 'contrast.main',
-			}}
+		<footer
+			className="py-12 px-4 mt-auto"
+			style={{ background: 'linear-gradient(to bottom, #169e5f, #1dbf73)' }}
 		>
-			<Container maxWidth="lg">
-				<Grid container spacing={4}>
-					<Grid size={{ xs: 12, sm: 4 }}>
-						<Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+			<div className="container max-w-5xl mx-auto">
+				<div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+					<div>
+						<Stack align="center" gap={2} className="mb-2">
 							<TS variant="h5">NeuroGig</TS>
 							<Badge
 								icon="done"
@@ -39,13 +25,13 @@ export function Footer() {
 						<TS variant="subtitle" color="soft">
 							Платформа для фриланса в сфере генеративного ИИ
 						</TS>
-					</Grid>
+					</div>
 
-					<Grid size={{ xs: 12, sm: 4 }}>
+					<div>
 						<TS variant="h5" gutterBottom>
 							Для фрилансеров
 						</TS>
-						<Stack spacing={1}>
+						<Stack vertical gap={2}>
 							<Link href="/projects" color="soft" hover="vivid">
 								Найти проекты
 							</Link>
@@ -53,13 +39,13 @@ export function Footer() {
 								Как это работает
 							</Link>
 						</Stack>
-					</Grid>
+					</div>
 
-					<Grid size={{ xs: 12, sm: 4 }}>
+					<div>
 						<TS variant="h5" gutterBottom>
 							Для заказчиков
 						</TS>
-						<Stack spacing={1}>
+						<Stack vertical gap={2}>
 							<Link href="/freelancers" color="soft" hover="vivid">
 								Найти фрилансера
 							</Link>
@@ -67,23 +53,11 @@ export function Footer() {
 								Разместить проект
 							</Link>
 						</Stack>
-					</Grid>
-				</Grid>
+					</div>
+				</div>
 
-				<Box
-					sx={{
-						mt: 4,
-						pt: 3,
-						borderTop: 1,
-						borderColor: 'text.pale',
-						display: 'flex',
-						flexDirection: { xs: 'column', sm: 'row' },
-						alignItems: 'center',
-						justifyContent: 'space-between',
-						gap: 2,
-					}}
-				>
-					<Stack direction="row" alignItems="center" spacing={1}>
+				<div className="mt-8 pt-6 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+					<Stack align="center" gap={2}>
 						<Icon name="email" size={20} className="text-white/80" />
 						<Link
 							href={`mailto:${contactContent.email}`}
@@ -95,7 +69,7 @@ export function Footer() {
 						</Link>
 					</Stack>
 
-					<Stack direction="row" spacing={1}>
+					<Stack gap={2}>
 						<IconButton
 							rounded
 							variant="contrast"
@@ -137,14 +111,14 @@ export function Footer() {
 							forceSize="md"
 						/>
 					</Stack>
-				</Box>
+				</div>
 
-				<Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'text.pale' }}>
+				<div className="mt-4 pt-4 border-t border-white/20">
 					<TS variant="caption" color="contrast" className="text-center">
 						© {new Date().getFullYear()} NeuroGig. Все права защищены.
 					</TS>
-				</Box>
-			</Container>
-		</Box>
+				</div>
+			</div>
+		</footer>
 	)
 }

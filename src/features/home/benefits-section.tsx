@@ -1,14 +1,8 @@
 'use client'
 
-import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
-import Grid from '@mui/material/Grid'
-import Paper from '@mui/material/Paper'
-import Stack from '@mui/material/Stack'
 import { map } from 'lodash'
 import { benefitsContent } from '@/config'
-import { Icon, type IconName } from '@/ui/icon'
-import { TS } from '@/ui/text-styled'
+import { Icon, Stack, TS, type IconName } from '@/ui'
 
 type BenefitCardProps = {
 	icon: IconName
@@ -18,44 +12,16 @@ type BenefitCardProps = {
 
 function BenefitCard({ icon, title, description }: BenefitCardProps) {
 	return (
-		<Paper
-			elevation={0}
-			sx={{
-				p: 3,
-				height: '100%',
-				width: 1,
-				display: 'flex',
-				flexDirection: 'row',
-				gap: 2,
-				border: 1,
-				borderColor: 'divider',
-				transition: 'all 0.3s',
-				'&:hover': {
-					boxShadow: 3,
-					borderColor: 'primary.main',
-				},
-			}}
+		<Stack
+			gap={4}
+			className="p-6 h-full w-full border border-border rounded-lg transition-all duration-300 hover:shadow-lg hover:border-primary"
 		>
-			<Box
-				sx={{
-					color: 'primary.main',
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center',
-					width: 56,
-					height: 56,
-					flexShrink: 0,
-					bgcolor: 'primary.light',
-					borderRadius: 2,
-				}}
-			>
+			<div className="flex items-center justify-center w-14 h-14 shrink-0 bg-primary/10 rounded-lg">
 				<Icon name={icon} size={32} color="contrast" />
-			</Box>
-			<Stack>
-				<TS variant="h5" gutterBottom className="font-semibold" content={title} />
-				<TS variant="body" color="secondary" className="text-sm" content={description} />
-			</Stack>
-		</Paper>
+			</div>
+			<TS variant="h5" gutterBottom className="font-semibold" content={title} />
+			<TS variant="body" color="secondary" className="text-sm" content={description} />
+		</Stack>
 	)
 }
 
@@ -64,8 +30,8 @@ const clientIcons: IconName[] = ['verified-user', 'visibility', 'thumb-up', 'sea
 
 export function BenefitsSection() {
 	return (
-		<Box sx={{ py: 8, bgcolor: 'grey.50' }}>
-			<Container maxWidth="lg">
+		<div className="py-16 bg-muted/50">
+			<div className="container max-w-5xl mx-auto px-4">
 				<TS
 					variant="h3"
 					strong
@@ -73,52 +39,46 @@ export function BenefitsSection() {
 					content="Почему выбирают NeuroGig"
 				/>
 
-				<Grid container spacing={6}>
-					<Grid size={{ xs: 12 }}>
+				<div className="grid grid-cols-1 gap-12">
+					<div>
 						<TS
 							variant="h5"
 							gutterBottom
 							className="font-semibold mb-6 text-primary"
 							content={benefitsContent.freelancers.title}
 						/>
-						<Grid container spacing={3} sx={{ width: 1 }}>
-							{map(benefitsContent.freelancers.items, (item, index) => {
-								return (
-									<Grid size={{ xs: 12, md: 6 }} key={item.title}>
-										<BenefitCard
-											icon={freelancerIcons[index]}
-											title={item.title}
-											description={item.description}
-										/>
-									</Grid>
-								)
-							})}
-						</Grid>
-					</Grid>
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							{map(benefitsContent.freelancers.items, (item, index) => (
+								<BenefitCard
+									key={item.title}
+									icon={freelancerIcons[index]}
+									title={item.title}
+									description={item.description}
+								/>
+							))}
+						</div>
+					</div>
 
-					<Grid size={{ xs: 12 }}>
+					<div>
 						<TS
 							variant="h5"
 							gutterBottom
 							className="font-semibold mb-6 text-secondary-foreground"
 							content={benefitsContent.clients.title}
 						/>
-						<Grid container spacing={3} sx={{ width: 1 }}>
-							{map(benefitsContent.clients.items, (item, index) => {
-								return (
-									<Grid size={{ xs: 12, md: 6 }} key={item.title}>
-										<BenefitCard
-											icon={clientIcons[index]}
-											title={item.title}
-											description={item.description}
-										/>
-									</Grid>
-								)
-							})}
-						</Grid>
-					</Grid>
-				</Grid>
-			</Container>
-		</Box>
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							{map(benefitsContent.clients.items, (item, index) => (
+								<BenefitCard
+									key={item.title}
+									icon={clientIcons[index]}
+									title={item.title}
+									description={item.description}
+								/>
+							))}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	)
 }

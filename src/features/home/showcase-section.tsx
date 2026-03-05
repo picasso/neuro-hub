@@ -1,7 +1,5 @@
 'use client'
 
-import Container from '@mui/material/Container'
-import Grid from '@mui/material/Grid'
 import { map } from 'lodash'
 import { showcaseContent } from '@/config'
 import {
@@ -106,7 +104,7 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 export function ShowcaseSection() {
 	return (
 		<div className="py-12 bg-surface">
-			<Container maxWidth="lg">
+			<div className="container max-w-5xl mx-auto px-4">
 				<TS
 					variant="h3"
 					strong
@@ -121,9 +119,9 @@ export function ShowcaseSection() {
 					content={showcaseContent.subtitle}
 				/>
 
-				<Grid container spacing={4}>
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 					{map(showcaseContent.cases, (caseItem) => (
-						<Grid size={{ xs: 12, md: 4 }} key={caseItem.id}>
+						<div key={caseItem.id}>
 							<CaseCard
 								category={caseItem.category}
 								title={caseItem.title}
@@ -132,10 +130,10 @@ export function ShowcaseSection() {
 								feedback={caseItem.feedback}
 								client={caseItem.client}
 							/>
-						</Grid>
+						</div>
 					))}
-				</Grid>
-			</Container>
+				</div>
+			</div>
 		</div>
 	)
 }

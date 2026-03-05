@@ -553,9 +553,9 @@ Use centralized wrapper components from `@/components/ui/`. All UI components ar
 **Rule:** Use `Stack` for flex layouts (row/column with spacing & alignment).
 
 ```tsx
-import { Stack } from '@/components/ui'
+import { Stack } from '@/ui'
 
-<Stack direction="row" spacing={2} align="center">
+<Stack spacing={2} align="center">
   <Link href="/a">A</Link>
   <Link href="/b">B</Link>
 </Stack>

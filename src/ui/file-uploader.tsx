@@ -125,7 +125,7 @@ export function FileUploader({
 				}}
 			>
 				<input key={inputKey} {...getInputProps()} />
-				<Stack direction="row" alignItems="center" gap={1} sx={{ mb: 3 }}>
+				<Stack alignItems="center" gap={1} sx={{ mb: 3 }}>
 					{titleIcon ? (
 						<Icon
 							name={titleIcon}
@@ -250,7 +250,7 @@ export function FileUploader({
 						/>
 					)}
 					{value ? (
-						<Stack direction="row" alignItems="center" gap={1}>
+						<Stack alignItems="center" gap={1}>
 							<TS
 								variant="caption"
 								content="Выбран файл: "

@@ -1,12 +1,9 @@
-import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
-import { Button } from '@/ui/button'
-import { TS } from '@/ui/text-styled'
+import { Button, TS } from '@/ui'
 
 export function PostProjectPage() {
 	return (
-		<Container maxWidth="md">
-			<Box sx={{ mt: 8, mb: 8, textAlign: 'center' }}>
+		<div className="container max-w-3xl mx-auto px-4">
+			<div className="mt-16 mb-16 text-center">
 				<TS variant="h3" gutterBottom content="Разместить проект" />
 				<TS
 					variant="body"
@@ -15,7 +12,7 @@ export function PostProjectPage() {
 					content="Эта страница в разработке"
 				/>
 				<Button href="/" label="На главную" />
-			</Box>
-		</Container>
+			</div>
+		</div>
 	)
 }

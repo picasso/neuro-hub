@@ -1,8 +1,5 @@
 'use client'
 
-import Container from '@mui/material/Container'
-import Paper from '@mui/material/Paper'
-import Stack from '@mui/material/Stack'
 import { useGate, useUnit } from 'effector-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
@@ -22,7 +19,7 @@ import {
 	setCurrentStep,
 	setRole,
 } from '@/stores/onboarding'
-import { Badge } from '@/ui'
+import { Badge, Stack } from '@/ui'
 
 const wizardSteps = {
 	freelancer: ['Роль', 'Профиль', 'Навыки', 'Аккаунт', 'Проверка'],
@@ -76,16 +73,10 @@ export function OnboardingWizard() {
 	}
 
 	return (
-		<Container maxWidth="lg" sx={{ py: 4 }}>
-			<Paper elevation={2} sx={{ p: { xs: 2, md: 4 } }}>
+		<div className="container max-w-5xl mx-auto px-4 py-8">
+			<div className="bg-background border border-border rounded-xl shadow p-4 md:p-8">
 				{role && currentStep !== 1 && (
-					<Stack
-						direction="row"
-						justifyContent="center"
-						alignItems="center"
-						spacing={2}
-						sx={{ mb: 3 }}
-					>
+					<Stack justify="center" align="center" gap={4} className="mb-6">
 						<Badge
 							variant="primary"
 							size="md"
@@ -98,7 +89,7 @@ export function OnboardingWizard() {
 				)}
 				{role && <ProgressStepper steps={wizardSteps[role]} />}
 				{renderStep()}
-			</Paper>
-		</Container>
+			</div>
+		</div>
 	)
 }

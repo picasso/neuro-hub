@@ -1,13 +1,11 @@
 'use client'
 
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
 import { useUnit } from 'effector-react'
 import { map } from 'lodash'
 import type { UserRole } from '@/lib/validations'
 import { cn } from '@/lib/utils'
 import { $role, setRole } from '@/stores/onboarding'
-import { Card, CardContent, TS, Icon, type IconName, CardFooter } from '@/ui'
+import { Card, CardContent, CardFooter, Icon, TS, type IconName } from '@/ui'
 
 type RoleOption = {
 	value: UserRole
@@ -35,8 +33,8 @@ export function RoleSelectionStep() {
 	const selectedRole = useUnit($role)
 
 	return (
-		<Box>
-			<Box sx={{ mb: 4, textAlign: 'center' }}>
+		<div>
+			<div className="mb-8 text-center">
 				<TS variant="h5" gutterBottom content="Выберите вашу роль" />
 				<TS
 					variant="body"
@@ -44,13 +42,13 @@ export function RoleSelectionStep() {
 					className="text-sm"
 					content="Это поможет нам персонализировать ваш опыт"
 				/>
-			</Box>
+			</div>
 
-			<Grid container spacing={3} sx={{ mb: 4 }}>
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 				{map(roleOptions, (option) => {
 					const isSelected = selectedRole === option.value
 					return (
-						<Grid size={{ xs: 12, md: 6 }} key={option.value}>
+						<div key={option.value}>
 							<Card
 								role="button"
 								tabIndex={0}
@@ -86,10 +84,10 @@ export function RoleSelectionStep() {
 									/>
 								</CardFooter>
 							</Card>
-						</Grid>
+						</div>
 					)
 				})}
-			</Grid>
-		</Box>
+			</div>
+		</div>
 	)
 }

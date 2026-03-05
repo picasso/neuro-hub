@@ -1,9 +1,5 @@
 'use client'
 
-import Box from '@mui/material/Box'
-import InputAdornment from '@mui/material/InputAdornment'
-import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import { useUnit } from 'effector-react'
 import { useState } from 'react'
 import {
@@ -14,9 +10,7 @@ import {
 	submitRegistration,
 	updateCredentialField,
 } from '@/stores/onboarding'
-import { IconButton } from '@/ui'
-import { Button } from '@/ui/button'
-import { TS } from '@/ui/text-styled'
+import { Button, Stack, TextField, TS } from '@/ui'
 
 export function CredentialsStep() {
 	const [credentials, credentialsErrors, isRegistering, onPrevStep, onUpdateField, onSubmit] =
@@ -33,8 +27,8 @@ export function CredentialsStep() {
 	const isValid = credentials?.email && credentials?.password && !isRegistering
 
 	return (
-		<Box>
-			<Box sx={{ mb: 4, textAlign: 'center' }}>
+		<div>
+			<div className="mb-8 text-center">
 				<TS variant="h5" gutterBottom content="Создайте аккаунт" />
 				<TS
 					variant="body"
@@ -42,46 +36,29 @@ export function CredentialsStep() {
 					className="text-sm"
 					content="Введите email и придумайте надежный пароль"
 				/>
-			</Box>
+			</div>
 
-			<Box sx={{ maxWidth: 500, mx: 'auto' }}>
+			<Stack vertical gap={4} className="max-w-125 mx-auto">
 				<TextField
 					label="Email"
 					type="email"
-					fullWidth
 					value={credentials?.email || ''}
 					onChange={(e) => onUpdateField({ field: 'email', value: e.target.value })}
-					error={!!credentialsErrors.email}
-					helperText={credentialsErrors.email}
-					sx={{ mb: 3 }}
+					error={credentialsErrors.email}
 				/>
 
 				<TextField
 					label="Пароль"
 					type={showPassword ? 'text' : 'password'}
-					fullWidth
 					value={credentials?.password ?? ''}
 					onChange={(e) => onUpdateField({ field: 'password', value: e.target.value })}
-					error={!!credentialsErrors.password}
-					helperText={credentialsErrors.password || 'Минимум 8 символов'}
-					slotProps={{
-						input: {
-							endAdornment: (
-								<InputAdornment position="end">
-									<IconButton
-										variant="outline"
-										icon={showPassword ? 'visibility-off' : 'visibility'}
-										onClick={() => setShowPassword(!showPassword)}
-										className="rounded-r-md"
-									/>
-								</InputAdornment>
-							),
-						},
-					}}
-					sx={{ mb: 4 }}
+					error={credentialsErrors.password}
+					helper="Минимум 8 символов"
+					endIcon={showPassword ? 'visibility-off' : 'visibility'}
+					onEndClick={() => setShowPassword(!showPassword)}
 				/>
 
-				<Stack direction="row" justifyContent="space-between">
+				<Stack justify="space-between">
 					<Button variant="outline" size="lg" onClick={onPrevStep} label="Назад" />
 					<Button
 						size="lg"
@@ -90,7 +67,7 @@ export function CredentialsStep() {
 						label={isRegistering ? 'Регистрация...' : 'Продолжить'}
 					/>
 				</Stack>
-			</Box>
-		</Box>
+			</Stack>
+		</div>
 	)
 }

@@ -1,9 +1,5 @@
 'use client'
 
-import Autocomplete from '@mui/material/Autocomplete'
-import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import { useUnit } from 'effector-react'
 import {
 	$profileData,
@@ -12,8 +8,7 @@ import {
 	updateProfileField,
 	validateAndContinue,
 } from '@/stores/onboarding'
-import { Button } from '@/ui/button'
-import { TS } from '@/ui/text-styled'
+import { Button, ComboboxSimple, Stack, TextField, TS } from '@/ui'
 
 const specializationOptions = [
 	'AI Developer',
@@ -39,8 +34,8 @@ export function FreelancerProfileStep() {
 	const isValid = isFreelancer && profileData.name && !profileErrors.name && !profileErrors.bio
 
 	return (
-		<Box>
-			<Box sx={{ mb: 4, textAlign: 'center' }}>
+		<div>
+			<div className="mb-8 text-center">
 				<TS variant="h5" gutterBottom content="Расскажите о себе" />
 				<TS
 					variant="body"
@@ -48,61 +43,51 @@ export function FreelancerProfileStep() {
 					className="text-sm"
 					content="Эта информация поможет заказчикам найти вас"
 				/>
-			</Box>
+			</div>
 
-			<Box sx={{ maxWidth: 600, mx: 'auto' }}>
+			<Stack vertical gap={4} className="max-w-xl mx-auto">
 				<TextField
 					label="Ваше имя"
-					fullWidth
 					required
 					value={isFreelancer ? profileData.name : ''}
 					onChange={(e) =>
 						onUpdateField({ kind: 'freelancer', field: 'name', value: e.target.value })
 					}
-					error={!!profileErrors.name}
-					helperText={profileErrors.name}
-					sx={{ mb: 3 }}
+					error={profileErrors.name}
 				/>
 
-				<Autocomplete
-					options={specializationOptions}
-					value={isFreelancer ? profileData.specialization || null : null}
-					onChange={(_, newValue) =>
+				<ComboboxSimple
+					items={specializationOptions}
+					value={isFreelancer ? profileData.specialization || '' : ''}
+					onValueChange={(newValue) =>
 						onUpdateField({
 							kind: 'freelancer',
 							field: 'specialization',
 							value: newValue || '',
 						})
 					}
-					renderInput={(params) => (
-						<TextField {...params} label="Специализация" helperText="Необязательно" />
-					)}
-					sx={{ mb: 3 }}
+					label="Специализация"
+					helper="Необязательно"
 				/>
 
 				<TextField
 					label="О себе"
-					fullWidth
 					multiline
 					rows={4}
 					value={isFreelancer ? profileData.bio || '' : ''}
 					onChange={(e) =>
 						onUpdateField({ kind: 'freelancer', field: 'bio', value: e.target.value })
 					}
-					error={!!profileErrors.bio}
-					helperText={
-						profileErrors.bio ||
-						`${isFreelancer ? (profileData.bio || '').length : 0}/500 символов (необязательно)`
-					}
-					slotProps={{ htmlInput: { maxLength: 500 } }}
-					sx={{ mb: 4 }}
+					error={profileErrors.bio}
+					helper={`${isFreelancer ? (profileData.bio || '').length : 0}/500 символов (необязательно)`}
+					maxLength={500}
 				/>
 
-				<Stack direction="row" justifyContent="space-between">
+				<Stack justify="space-between">
 					<Button variant="outline" size="lg" onClick={onPrevStep} label="Назад" />
 					<Button size="lg" onClick={onValidate} disabled={!isValid} label="Продолжить" />
 				</Stack>
-			</Box>
-		</Box>
+			</Stack>
+		</div>
 	)
 }

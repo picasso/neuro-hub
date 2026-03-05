@@ -1,12 +1,9 @@
-import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
 import { redirect } from 'next/navigation'
 import { FreelancerProfileEditor } from '@/features/freelancer-profile/freelancer-profile-editor'
 import { PortfolioEditor } from '@/features/portfolio/portfolio-editor'
 import { getSession } from '@/lib/auth/server'
 import { getOrCreateFreelancerProfileByUserId } from '@/lib/db/queries/freelancers'
-import { Link } from '@/ui'
-import { TS } from '@/ui/text-styled'
+import { Link, TS } from '@/ui'
 
 export async function DashboardPage() {
 	const session = await getSession()
@@ -22,8 +19,8 @@ export async function DashboardPage() {
 	if (session.user.role === 'freelancer' && !freelancerProfile) redirect('/login?next=/dashboard')
 
 	return (
-		<Container maxWidth="md">
-			<Box sx={{ mt: 8, mb: 8 }}>
+		<div className="container max-w-3xl mx-auto px-4">
+			<div className="mt-16 mb-16">
 				<TS variant="h3" gutterBottom content="Личный кабинет" />
 				<TS
 					variant="body"
@@ -33,7 +30,7 @@ export async function DashboardPage() {
 				/>
 
 				{session.user.role === 'freelancer' && freelancerProfile ? (
-					<Box sx={{ mt: 4 }}>
+					<div className="mt-8">
 						<TS
 							variant="body"
 							color="secondary"
@@ -48,17 +45,17 @@ export async function DashboardPage() {
 							{`/freelancers/${freelancerProfile.id}`}
 						</Link>
 
-						<Box sx={{ mt: 4 }}>
+						<div className="mt-8">
 							<FreelancerProfileEditor />
-						</Box>
+						</div>
 
-						<Box sx={{ mt: 5 }}>
+						<div className="mt-10">
 							<PortfolioEditor
 								userId={session.user.id}
 								profileId={freelancerProfile.id}
 							/>
-						</Box>
-					</Box>
+						</div>
+					</div>
 				) : (
 					<TS
 						variant="body"
@@ -67,7 +64,7 @@ export async function DashboardPage() {
 						content="Редактирование профиля клиента будет добавлено позже."
 					/>
 				)}
-			</Box>
-		</Container>
+			</div>
+		</div>
 	)
 }

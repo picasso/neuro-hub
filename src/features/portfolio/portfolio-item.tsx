@@ -1,11 +1,10 @@
 'use client'
 
-import Box, { type BoxProps } from '@mui/material/Box'
-import Tooltip from '@mui/material/Tooltip'
 import Image from 'next/image'
 import { type Photo, type RenderImageContext, type RenderImageProps } from 'react-photo-album'
 import 'react-photo-album/columns.css'
-import { Icon, type IconName } from '@/ui/icon'
+import { cn } from '@/lib/utils'
+import { Icon, Tooltip, TooltipContent, TooltipTrigger, type IconName } from '@/ui'
 
 export type MediaKind = 'image' | 'video' | 'audio' | 'pdf' | 'unknown'
 
@@ -84,7 +83,8 @@ type MediaPlaceholderProps = {
 	title?: RenderImageProps['title']
 	alt?: RenderImageProps['alt']
 	children?: React.ReactNode
-	sx?: BoxProps['sx']
+	className?: string
+	style?: React.CSSProperties
 	borderRadius?: number
 }
 
@@ -93,29 +93,35 @@ export function MediaPlaceholder({
 	alt,
 	title,
 	children,
-	sx,
+	className,
+	style,
 	borderRadius,
 }: MediaPlaceholderProps) {
 	const { name, forceSize, color, color2 } = placeholderProps[kind] ?? placeholderProps.unknown
 	return (
-		<Box
-			sx={{
-				position: children ? 'relative' : 'absolute',
-				inset: 0,
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
+		<div
+			className={cn(
+				children ? 'relative' : 'absolute inset-0',
+				'flex items-center justify-center',
+				className,
+			)}
+			style={{
 				background: color2 ? `linear-gradient(135deg, ${color} 0%, ${color2} 100%)` : color,
 				borderRadius: borderRadius ? `${borderRadius}px` : undefined,
-				...sx,
+				...style,
 			}}
 		>
 			{children ?? (
-				<Tooltip title={title ?? alt}>
-					<Icon name={name} size={forceSize} color="contrast" />
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<span>
+							<Icon name={name} size={forceSize} color="contrast" />
+						</span>
+					</TooltipTrigger>
+					<TooltipContent>{title ?? alt}</TooltipContent>
 				</Tooltip>
 			)}
-		</Box>
+		</div>
 	)
 }
 
@@ -164,8 +170,8 @@ const placeholderProps: Record<MediaKind, PlaceholderProps> = {
 // 	if (!kind || kind === 'image') return null
 
 // 	return (
-// 		<Box
-// 			sx={{
+// 		<div
+// 			style={{
 // 				position: 'absolute',
 // 				inset: 0,
 // 				display: 'flex',
@@ -177,16 +183,10 @@ const placeholderProps: Record<MediaKind, PlaceholderProps> = {
 // 			<Icon
 // 				name={getPlaceholderIcon(kind)}
 // 				forceSize={40}
-// 				sx={[
-// 					{
-// 						color: 'text.primary',
-// 						opacity: 0.85,
-// 						filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.12))',
-// 					},
-// 				]}
+// 				className="text-foreground opacity-85 drop-shadow-sm"
 // 			/>
-// 			<Box
-// 				sx={{
+// 			<div
+// 				style={{
 // 					position: 'absolute',
 // 					bottom: 8,
 // 					left: 8,
@@ -200,17 +200,9 @@ const placeholderProps: Record<MediaKind, PlaceholderProps> = {
 // 				<TS
 // 					variant="caption"
 // 					content={kind.toUpperCase()}
-// 					sx={[
-// 						{
-// 							px: 1,
-// 							py: 0.25,
-// 							borderRadius: 999,
-// 							backgroundColor: 'rgba(255,255,255,0.7)',
-// 							backdropFilter: 'blur(6px)',
-// 						},
-// 					]}
+// 					className="px-1 py-0.5 rounded-full bg-white/70 backdrop-blur"
 // 				/>
-// 			</Box>
-// 		</Box>
+// 			</div>
+// 		</div>
 // 	)
 // }

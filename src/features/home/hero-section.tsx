@@ -1,22 +1,15 @@
 'use client'
 
-import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
-import Stack from '@mui/material/Stack'
 import { heroContent } from '@/config'
-import { Button } from '@/ui/button'
-import { TS } from '@/ui/text-styled'
+import { Button, TS } from '@/ui'
 
 export function HeroSection() {
 	return (
-		<Box
-			sx={{
-				background: 'linear-gradient(135deg, #169e5f 0%, #764ba2 100%)',
-				py: { xs: 8, md: 12 },
-				textAlign: 'center',
-			}}
+		<div
+			className="py-16 md:py-24 text-center"
+			style={{ background: 'linear-gradient(135deg, #169e5f 0%, #764ba2 100%)' }}
 		>
-			<Container maxWidth="md">
+			<div className="container max-w-3xl mx-auto px-4">
 				<TS
 					variant="h2"
 					color="contrast"
@@ -39,12 +32,7 @@ export function HeroSection() {
 					content={heroContent.description}
 				/>
 
-				<Stack
-					direction={{ xs: 'column', sm: 'row' }}
-					spacing={2}
-					justifyContent="center"
-					sx={{ mb: 3 }}
-				>
+				<div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
 					<Button
 						href="/signup?role=freelancer"
 						size="lg"
@@ -65,7 +53,7 @@ export function HeroSection() {
 						// TODO: check after migration
 						className="border-white text-white px-8 py-3 text-[1.1rem] font-semibold hover:bg-white/10"
 					/>
-				</Stack>
+				</div>
 
 				<Button
 					href="/login"
@@ -76,7 +64,7 @@ export function HeroSection() {
 					// TODO: check after migration
 					className="text-white underline hover:bg-transparent hover:underline"
 				/>
-			</Container>
-		</Box>
+			</div>
+		</div>
 	)
 }

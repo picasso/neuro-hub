@@ -1,9 +1,5 @@
 'use client'
 
-import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
-import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import { useGate, useUnit } from 'effector-react'
 import { useEffect } from 'react'
 import {
@@ -16,8 +12,7 @@ import {
 	submitPortfolioItem,
 	submitFreelancerPortfolio,
 } from '@/stores/freelancer-portfolio'
-import { Button, IconButton } from '@/ui'
-import { TS } from '@/ui/text-styled'
+import { Button, IconButton, Separator, Stack, TextField, TS } from '@/ui'
 
 export function PortfolioEditor({ userId, profileId }: { userId: string; profileId: string }) {
 	useGate(FreelancerPortfolioGate)
@@ -39,7 +34,7 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 	}, [onSetUserId, profileId, userId])
 
 	return (
-		<Box>
+		<div>
 			<TS variant="h5" gutterBottom content="Портфолио" />
 			<TS
 				variant="body"
@@ -48,38 +43,34 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 				content="Загрузите медиа напрямую в Vercel Blob и сохраните элемент портфолио."
 			/>
 
-			<Stack spacing={2} sx={{ mb: 3 }}>
+			<Stack vertical gap={4} className="mb-6">
 				<TextField
 					label="Название"
-					fullWidth
 					required
 					value={form.title}
 					onChange={(e) => onFormUpdated({ title: e.target.value })}
 				/>
 				<TextField
 					label="Описание"
-					fullWidth
 					multiline
-					minRows={3}
+					rows={3}
 					value={form.description}
 					onChange={(e) => onFormUpdated({ description: e.target.value })}
 				/>
 				<TextField
 					label="Категория"
-					fullWidth
 					value={form.category}
 					onChange={(e) => onFormUpdated({ category: e.target.value })}
-					helperText="Например: chatbots, automation, analytics"
+					helper="Например: chatbots, automation, analytics"
 				/>
 				<TextField
 					label="Инструменты (через запятую)"
-					fullWidth
 					value={form.toolsUsed}
 					onChange={(e) => onFormUpdated({ toolsUsed: e.target.value })}
-					helperText="Например: LangChain, Postgres, OpenAI"
+					helper="Например: LangChain, Postgres, OpenAI"
 				/>
 
-				<Box>
+				<div>
 					<input
 						type="file"
 						onChange={(e) => onFormUpdated({ file: e.target.files?.[0] ?? null })}
@@ -91,7 +82,7 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 						className="block mt-1"
 						content="Поддерживаемые типы: image/video/audio/pdf. Лимит: 50MB."
 					/>
-				</Box>
+				</div>
 
 				<Button
 					variant="default"
@@ -102,29 +93,24 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 				/>
 			</Stack>
 
-			<Divider sx={{ mb: 2 }} />
+			<Separator className="mb-4" />
 
 			<TS variant="h5" gutterBottom content="Ваши работы" />
 
 			{portfolio.length === 0 ? (
 				<TS variant="body" color="secondary" className="text-sm" content="Пока пусто." />
 			) : (
-				<Stack spacing={1}>
+				<Stack vertical gap={2}>
 					{portfolio.map((item) => (
 						<Stack
 							key={item.id}
 							direction="row"
-							alignItems="center"
-							justifyContent="space-between"
-							sx={{
-								gap: 2,
-								p: 1.5,
-								borderRadius: 2,
-								border: '1px solid',
-								borderColor: 'divider',
-							}}
+							align="center"
+							justify="space-between"
+							gap={4}
+							className="p-3 rounded-lg border border-border"
 						>
-							<Box sx={{ minWidth: 0 }}>
+							<div className="min-w-0">
 								<TS variant="subtitle" content={item.title} className="mb-0.5" />
 								<TS
 									variant="caption"
@@ -132,7 +118,7 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 									className="block break-all"
 									content={item.mediaUrl}
 								/>
-							</Box>
+							</div>
 							<IconButton
 								rounded
 								icon="trash"
@@ -145,6 +131,6 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 					))}
 				</Stack>
 			)}
-		</Box>
+		</div>
 	)
 }
