@@ -1,4 +1,4 @@
-import clsx from 'clsx'
+import clsx, { type ClassValue } from 'clsx'
 import dayjs, { type Dayjs } from 'dayjs'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
@@ -6,6 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
 import { drop, isArray, upperFirst } from 'lodash'
 import { type ReactNode } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 dayjs.extend(relativeTime)
 dayjs.extend(isSameOrAfter)
@@ -16,6 +17,10 @@ export { dayjs }
 
 // just a more familiar name
 export const mergeClasses = clsx
+
+export function cn(...inputs: ClassValue[]) {
+	return twMerge(clsx(inputs))
+}
 
 export function sprintf(str: string, ...argv: string[]): string {
 	if (!argv.length) return str

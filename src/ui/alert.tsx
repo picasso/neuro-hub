@@ -7,7 +7,7 @@ import {
 	AlertTitle as ShadcnAlertTitle,
 	AlertDescription as ShadcnAlertDescription,
 } from './shadcn/alert'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 
 type Severity = 'info' | 'success' | 'warning' | 'error' | 'progress'
 type AlertVariant = 'standard' | 'filled' | 'outlined'

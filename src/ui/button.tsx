@@ -3,7 +3,7 @@ import { forwardRef, type ComponentProps, type ReactNode, type ForwardedRef } fr
 import { Icon, type IconProps, type IconOptions } from './icon'
 import { Button as ShadcnButton } from './shadcn/button'
 import { disabledLinkClasses, needsContrast } from './utils'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 
 type LinkProps = ComponentProps<typeof Link>
 type ButtonVariant = 'default' | 'outline' | 'secondary' | 'destructive' | 'ghost'

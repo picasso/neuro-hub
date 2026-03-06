@@ -3,7 +3,7 @@ import NextLink from 'next/link'
 import { type SemanticColor, type TextSize, linkColorClasses, textSizeClasses } from './types'
 import { disabledLinkClasses } from './utils'
 import type { ComponentProps } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 
 type NextLinkProps = ComponentProps<typeof NextLink>
 

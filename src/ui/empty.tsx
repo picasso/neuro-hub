@@ -13,8 +13,7 @@ import {
 	EmptyTitle,
 } from './shadcn/empty'
 import { TS } from './text-styled'
-import { cn } from '@/lib/utils'
-import { simpleMarkdown, type MarkdownParams } from '@/utils'
+import { cn, simpleMarkdown, type MarkdownParams } from '@/utils'
 
 // types ------------------------------------------------------------------------------------------]
 

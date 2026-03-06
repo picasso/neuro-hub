@@ -4,7 +4,7 @@ import { IconButton } from './icon-button'
 import { Badge as ShadcnBadge } from './shadcn/badge'
 import { type SemanticColor, semanticColorClasses, textSizeClasses } from './types'
 import { needsContrast } from './utils'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 
 export type BadgeVariant = 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link'
 export type BadgeSize = 'xs' | 'sm' | 'md' | 'lg'

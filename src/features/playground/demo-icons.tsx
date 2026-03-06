@@ -3,8 +3,8 @@
 import { DemoLabel, DemoRoot, DemoSection } from './components-utils'
 import { demoData, type IconDemoState, resolveSize } from './demo-icons-settings'
 import { useSettings } from './settings-store'
-import { cn } from '@/lib/utils'
 import { Stack, type IconName, Icon, needsContrast, type SemanticColor } from '@/ui'
+import { cn } from '@/utils'
 
 // data -------------------------------------------------------------------------------------------]
 

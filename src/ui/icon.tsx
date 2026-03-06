@@ -2,7 +2,7 @@ import { isNumber } from 'lodash'
 import { forwardRef } from 'react'
 import { getIcon, type IconName } from './assets'
 import { type IconColor, iconColorClasses } from './types'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 
 export type { IconName }
 export type { IconColor } from './types'

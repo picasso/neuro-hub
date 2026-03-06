@@ -3,7 +3,7 @@
 import { reduce } from 'lodash'
 import { forwardRef } from 'react'
 import { Avatar as AvatarRoot, AvatarBadge, AvatarFallback, AvatarImage } from './shadcn/avatar'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 
 export type AvatarSize = 'sm' | 'md' | 'lg'
 export type AvatarBadgeStatus = 'error' | 'success' | 'warning' | 'info'

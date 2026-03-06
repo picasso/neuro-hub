@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 
 type StackDirection = 'row' | 'column' | 'row-reverse' | 'column-reverse'
 type StackWrap = boolean | 'reverse'

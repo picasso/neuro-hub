@@ -11,9 +11,8 @@ import {
 	updateAlert,
 	type Alert as AlertOptions,
 } from '@/alerts'
-import { cn } from '@/lib/utils'
 import { Alert, Stack, type ButtonProps, Button, TS } from '@/ui'
-import { simpleMarkdown } from '@/utils'
+import { cn, simpleMarkdown } from '@/utils'
 
 type Severity = 'info' | 'success' | 'warning' | 'error' | 'progress'
 type AlertVariant = 'standard' | 'filled' | 'outlined'

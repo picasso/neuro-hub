@@ -3,8 +3,8 @@
 import { DemoLabel, DemoRoot, DemoSection } from './components-utils'
 import { type IconButtonDemoState } from './demo-icon-buttons-settings'
 import { useSettings } from './settings-store'
-import { cn } from '@/lib/utils'
 import { IconButton, needsContrast, Stack } from '@/ui'
+import { cn } from '@/utils'
 
 const icons = ['thumbs-up', 'search', 'trash', 'book-marked', 'eye', 'collections'] as const
 

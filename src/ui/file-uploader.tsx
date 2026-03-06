@@ -6,8 +6,7 @@ import { type IconOptions, type IconName } from './icon'
 import { Stack } from './stack'
 import { TextField } from './text-field'
 import { TS } from './text-styled'
-import { cn } from '@/lib/utils'
-import { fileSize, sprintf } from '@/utils'
+import { cn, fileSize, sprintf } from '@/utils'
 
 type UploaderVariant = 'primary' | 'secondary' | 'ghost'
 

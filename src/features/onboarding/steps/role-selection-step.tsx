@@ -3,9 +3,9 @@
 import { useUnit } from 'effector-react'
 import { map } from 'lodash'
 import type { UserRole } from '@/lib/validations'
-import { cn } from '@/lib/utils'
 import { $role, setRole } from '@/stores/onboarding'
 import { Card, CardContent, CardFooter, Icon, TS, type IconName } from '@/ui'
+import { cn } from '@/utils'
 
 type RoleOption = {
 	value: UserRole

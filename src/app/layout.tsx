@@ -5,8 +5,8 @@ import { AlertsPlugin } from '@/alerts'
 import { DbHealthAlert } from '@/features/db-health-alert'
 import { Footer } from '@/features/footer'
 import { Header } from '@/features/header'
-import { cn } from '@/lib/utils'
 import { FontProvider, ThemeRegistry, TooltipProvider } from '@/ui'
+import { cn } from '@/utils'
 
 export { homeMetadata as metadata, viewport } from '@/config'
 

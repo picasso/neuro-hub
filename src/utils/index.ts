@@ -10,6 +10,7 @@ export {
 
 export {
 	assert,
+	cn,
 	dayjs,
 	formatDistance,
 	sleep,

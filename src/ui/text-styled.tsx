@@ -1,8 +1,7 @@
 import { type ComponentProps, createElement, forwardRef, type ReactNode } from 'react'
 import { type SemanticColor, semanticColorClasses } from './types'
 import { needsContrast } from './utils'
-import { cn } from '@/lib/utils'
-import { type MarkdownParams, simpleMarkdown } from '@/utils'
+import { cn, type MarkdownParams, simpleMarkdown } from '@/utils'
 
 type TextStyledVariant =
 	| 'h1'

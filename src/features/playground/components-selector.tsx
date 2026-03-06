@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { type ComponentDemo, componentDemos, groupLabels } from './components'
-import { cn } from '@/lib/utils'
 import {
 	Button,
 	Command,
@@ -14,6 +13,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/ui'
+import { cn } from '@/utils'
 
 type ComponentSelectorProps = {
 	selected: ComponentDemo | null

@@ -4,7 +4,7 @@ import { type ButtonProps, buttonSize, HrefButton, outlineStyle } from './button
 import { Icon, type IconProps } from './icon'
 import { Button as ShadcnButton } from './shadcn/button'
 import { needsContrast } from './utils'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 
 type ButtonVariant = NonNullable<ButtonProps['variant']>
 

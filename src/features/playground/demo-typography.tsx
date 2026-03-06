@@ -7,8 +7,8 @@ import {
 	type TypographyDemoState,
 } from './demo-typography-settings'
 import { useSettings } from './settings-store'
-import { cn } from '@/lib/utils'
 import { Stack, TS } from '@/ui'
+import { cn } from '@/utils'
 
 // data -------------------------------------------------------------------------------------------]
 

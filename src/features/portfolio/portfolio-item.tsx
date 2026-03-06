@@ -3,8 +3,8 @@
 import Image from 'next/image'
 import { type Photo, type RenderImageContext, type RenderImageProps } from 'react-photo-album'
 import 'react-photo-album/columns.css'
-import { cn } from '@/lib/utils'
 import { Icon, Tooltip, TooltipContent, TooltipTrigger, type IconName } from '@/ui'
+import { cn } from '@/utils'
 
 export type MediaKind = 'image' | 'video' | 'audio' | 'pdf' | 'unknown'
 

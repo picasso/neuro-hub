@@ -3,8 +3,8 @@
 import { DemoRoot, DemoSection } from './components-utils'
 import { type BadgeDemoState } from './demo-badge-settings'
 import { useSettings } from './settings-store'
-import { cn } from '@/lib/utils'
 import { Badge, needsContrast, Stack } from '@/ui'
+import { cn } from '@/utils'
 
 const variants = ['primary', 'secondary', 'destructive', 'outline', 'ghost', 'link'] as const
 const sizes = ['xs', 'sm', 'md', 'lg'] as const

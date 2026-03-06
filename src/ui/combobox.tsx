@@ -31,8 +31,7 @@ import {
 	ItemMedia,
 	ItemTitle,
 } from './shadcn/item'
-import { cn } from '@/lib/utils'
-import { simpleMarkdown } from '@/utils'
+import { cn, simpleMarkdown } from '@/utils'
 
 // types ------------------------------------------------------------------------------------------]
 

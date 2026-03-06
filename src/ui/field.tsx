@@ -14,8 +14,7 @@ import {
 	type FieldSeparator,
 	type FieldSet,
 } from './shadcn/field'
-import { cn } from '@/lib/utils'
-import { simpleMarkdown, type MarkdownParams } from '@/utils'
+import { cn, simpleMarkdown, type MarkdownParams } from '@/utils'
 
 // types ------------------------------------------------------------------------------------------]
 

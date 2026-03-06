@@ -1,7 +1,7 @@
 import { useUpdateSettings } from './settings-store'
 import type { PropsWithChildren } from 'react'
-import { cn } from '@/lib/utils'
 import { Select, Separator, Switch, Stack, TS, Badge, type IconName } from '@/ui'
+import { cn } from '@/utils'
 
 // DemoSection ------------------------------------------------------------------------------------]
 

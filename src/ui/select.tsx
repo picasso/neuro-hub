@@ -11,7 +11,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from './shadcn/select'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 
 // types ------------------------------------------------------------------------------------------]
 

@@ -5,9 +5,8 @@ import { isNumber } from 'lodash'
 import { useCallback } from 'react'
 import { toast } from 'sonner'
 import { $alerts, type AlertProps } from './model'
-import { cn } from '@/lib/utils'
 import { Alert, Progress, TS } from '@/ui'
-import { simpleMarkdown, templatedMessage } from '@/utils'
+import { cn, simpleMarkdown, templatedMessage } from '@/utils'
 
 export function AlertComponent({ id }: AlertProps) {
 	const alert = useStoreMap({
