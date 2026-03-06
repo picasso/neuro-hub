@@ -57,6 +57,35 @@ Two escape hatches (rare — prefer the fix above):
 1. **Wrapper pattern**: Create a public wrapper in the barrel (with `'use client'`, serializable props only) that renders the internal component with callbacks
 2. **Server Actions**: Rename callback props to `xxxAction` suffix if they are actual Server Actions
 
+### Client boundary re-export pattern (confirmed working)
+
+When a component uses hooks AND must stay in the barrel AND has callback props — use a dedicated "boundary" file:
+
+```zsh
+component.tsx         ← NO 'use client', uses hooks, defines component (NOT in barrel directly)
+        ↑ re-export
+component-client.tsx  ← HAS 'use client', only re-exports from component.tsx
+        ↑
+ui/index.ts           ← imports from component-client.tsx
+```
+
+**Why it works:** Next.js applies "Props must be serializable" only to components **defined** in a `'use client'` file. Since `component-client.tsx` only re-exports and defines nothing, the warning does not appear.
+
+```ts
+// component.tsx — no 'use client', full implementation with hooks
+export function MyComponent({ onChange, value }: MyComponentProps) { ... }
+export type { MyComponentProps }
+
+// component-client.tsx — 'use client', re-export only
+'use client'
+export * from './component'
+
+// ui/index.ts — barrel imports from the client boundary file
+export { MyComponent, type MyComponentProps } from './component-client'
+```
+
+`component.tsx` has no `'use client'` but uses hooks — this is safe because it is only ever imported from `component-client.tsx` which is already a client boundary.
+
 ## Barrel Hygiene
 
 Barrel files (`index.ts`) export ONLY:
