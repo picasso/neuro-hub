@@ -15,10 +15,14 @@ import { DemoIcons } from './demo-icons'
 import { DemoIconsSettings } from './demo-icons-settings'
 import { DemoInputs } from './demo-inputs'
 import { DemoInputsSettings } from './demo-inputs-settings'
+import { PortfolioDemo } from './demo-portfolio'
+import { DemoPortfolioSettings } from './demo-portfolio-settings'
 import { DemoSelects } from './demo-selects'
 import { DemoSelectsSettings } from './demo-selects-settings'
 import { DemoTypography } from './demo-typography'
 import { DemoTypographySettings } from './demo-typography-settings'
+import { DemoUploader } from './demo-uploader'
+import { DemoUploaderSettings } from './demo-uploader-settings'
 
 export type ComponentDemo = {
 	id: string
@@ -113,6 +117,15 @@ export const componentDemos: ComponentDemo[] = [
 		settings: <DemoCheckboxesSettings />,
 	},
 	{
+		id: 'uploader',
+		name: 'Uploader',
+		group: 'forms',
+		description: 'File Uploader supporting multiple file selection and drop zone',
+		ready: true,
+		demo: <DemoUploader />,
+		settings: <DemoUploaderSettings />,
+	},
+	{
 		id: 'dialogs',
 		name: 'Dialogs',
 		group: 'feedback',
@@ -134,6 +147,15 @@ export const componentDemos: ComponentDemo[] = [
 		group: 'layout',
 		description: 'Tabs component',
 		ready: false,
+	},
+	{
+		id: 'portfolio',
+		name: 'Portfolio',
+		group: 'layout',
+		description: 'Portfolio component',
+		ready: true,
+		demo: <PortfolioDemo />,
+		settings: <DemoPortfolioSettings />,
 	},
 ]
 

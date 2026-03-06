@@ -13,7 +13,7 @@ export function UploaderDemo() {
 			<TS variant="h5" content="Uploader (combo)" />
 			<FileUploader
 				value={file}
-				onChangeAction={setFile}
+				onChange={setFile}
 				accept={{
 					'image/*': [],
 					'video/*': [],
@@ -23,13 +23,13 @@ export function UploaderDemo() {
 				maxSizeBytes={50 * 1024 * 1024}
 				title="Портфолио"
 				placeholder="Выберите медиафайл для портфолио"
-				helperText="Ничто в настоящей Декларации не может быть истолковано, как предоставление какомулибо государству, группе лиц или отдельным лицам права заниматься какойлибо деятельностью или совершать действия, направленные к уничтожению прав и свобод, изложенных в настоящей Декларации."
+				helper="Ничто в настоящей Декларации не может быть истолковано, как предоставление какомулибо государству, группе лиц или отдельным лицам права заниматься какойлибо деятельностью или совершать действия, направленные к уничтожению прав и свобод, изложенных в настоящей Декларации."
 			/>
 			<TS variant="h5" content="Uploader (drop only)" />
 			<FileUploader
-				titleIcon={false}
+				icon={false}
 				value={file2}
-				onChangeAction={setFile2}
+				onChange={setFile2}
 				dropOnly
 				accept={{ 'image/*': [] }}
 				maxSizeBytes={200 * 1024}

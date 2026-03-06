@@ -1,56 +1,71 @@
-'use client'
-
-import InputAdornment from '@mui/material/InputAdornment'
-import Paper from '@mui/material/Paper'
-import Stack from '@mui/material/Stack'
-import { alpha, darken, lighten } from '@mui/material/styles'
-import TextField from '@mui/material/TextField'
 import { isFunction, join, keys, replace } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { useDropzone, type Accept, type FileError, type FileRejection } from 'react-dropzone'
-import { Icon, type IconName } from './icon'
-import { IconButton } from './icon-button'
+import { Empty, type EmptyProps } from './empty'
+import { type IconOptions, type IconName } from './icon'
+import { Stack } from './stack'
+import { TextField } from './text-field'
 import { TS } from './text-styled'
+import { cn } from '@/lib/utils'
 import { fileSize, sprintf } from '@/utils'
+
+type UploaderVariant = 'primary' | 'secondary' | 'ghost'
 
 export type FileUploaderProps = {
 	value: File | null
-	onChangeAction: (file: File | null) => void
+	onChange: (file: File | null) => void
 	disabled?: boolean
 	accept?: Accept
 	maxSizeBytes?: number
-	helperText?: string
+	helper?: string
 	dropOnly?: boolean
 	placeholder?: string
 	title?: string
-	titleIcon?: IconName | false
+	icon?: IconName | false
+	iconOptions?: IconOptions
+	mediaIcon?: boolean
+	compact?: boolean
+	outline?: boolean
+	fullWidth?: boolean
+	align?: EmptyProps['align']
+	variant?: UploaderVariant
+	className?: string
+	wrapperClassName?: string
 }
 
 export function FileUploader({
 	value,
-	onChangeAction,
+	onChange,
 	disabled = false,
 	accept,
 	maxSizeBytes,
-	helperText,
+	helper,
 	dropOnly,
-	placeholder = 'Выберите файл',
-	title = 'Медиафайл',
-	titleIcon = 'collections-bookmark',
+	placeholder,
+	title,
+	icon: icon = 'collections-bookmark',
+	iconOptions,
+	mediaIcon,
+	compact,
+	outline,
+	fullWidth,
+	align = 'start',
+	variant = 'primary',
+	className,
+	wrapperClassName,
 }: FileUploaderProps) {
 	const [inputKey, setInputKey] = useState(0)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
-	const [acceptLabel] = useState<string | null>(() => (accept ? join(keys(accept), ', ') : null))
-
 	const setFileValue = useCallback(
 		(file: File | null) => {
-			if (isFunction(onChangeAction)) onChangeAction(file)
+			if (isFunction(onChange)) onChange(file)
 		},
-		[onChangeAction],
+		[onChange],
 	)
 
 	const onUpdate = useCallback(
 		(file: File | null) => {
+			dev.data({ onUpdate: file })
 			setErrorMessage(null)
 			setFileValue(file)
 		},
@@ -74,12 +89,12 @@ export function FileUploader({
 					buildErrorMessage(error, {
 						file: rejection.file,
 						maxSize: maxSizeBytes,
-						accept: acceptLabel,
+						accept: accept ? join(keys(accept), ', ') : null,
 					}),
 				)
 			}
 		},
-		[acceptLabel, maxSizeBytes],
+		[accept, maxSizeBytes],
 	)
 
 	const { getRootProps, getInputProps, inputRef, isDragActive, isDragReject } = useDropzone({
@@ -100,176 +115,110 @@ export function FileUploader({
 	}, [disabled, inputRef])
 
 	return (
-		<Stack spacing={1.5}>
-			<Paper
-				variant="outlined"
-				{...getRootProps()}
-				sx={{
-					p: 2,
-					borderStyle: 'dashed',
-					borderRadius: 1,
-					borderColor: isDragReject
-						? 'error.light'
-						: isDragActive
-							? 'primary.dark'
-							: 'primary.light',
-					bgcolor: (theme) =>
-						isDragReject
-							? lighten(theme.palette.error.light, 0.4)
-							: isDragActive
-								? 'primary.light'
-								: 'background.block',
-					color: isDragActive ? 'contrast.main' : undefined,
-					cursor: disabled ? 'not-allowed' : 'default',
-					userSelect: 'none',
+		<div {...getRootProps()} className={cn(fullWidth ? 'flex-1' : 'w-fit', wrapperClassName)}>
+			<Empty
+				mediaIcon={mediaIcon}
+				outline={outline}
+				fullWidth={fullWidth}
+				compact={compact}
+				align={align}
+				title={title}
+				icon={icon === false ? undefined : icon}
+				iconOptions={{
+					color: isDragActive ? 'contrast' : (iconOptions?.color ?? iconColors[variant]),
+					size: iconOptions?.size ?? 'lg',
+					spinning: iconOptions?.spinning,
+					tw: iconOptions?.tw,
 				}}
+				disabled={disabled}
+				error={!!errorMessage}
+				helper={helper}
+				data-drag={isDragActive || undefined}
+				data-reject={isDragReject || undefined}
+				className={cn(
+					'rounded p-4 select-none transition-colors',
+					variants[variant],
+					// dragging indicator styles
+					'data-drag:border-primary-dark data-drag:bg-primary-light data-drag:text-primary-foreground',
+					'data-reject:border-destructive data-reject:bg-destructive/60',
+					'data-drag:**:data-[input=control]:placeholder:text-white/70 data-reject:**:data-[input=control]:placeholder:text-white/70',
+					'data-drag:**:data-[input=wrapper]:text-white/70 data-drag:**:data-[input=wrapper]:border-white/30',
+					'data-reject:**:data-[input=wrapper]:text-white/70 data-reject:**:data-[input=wrapper]:border-white/40',
+					'data-drag:**:data-[slot=helper]:text-white/50 data-reject:**:data-[slot=helper]:text-white/50',
+					'data-drag:**:data-[clear=true]:[&_svg]:text-white/50 data-reject:**:data-[clear=true]:[&_svg]:text-white/50',
+					disabled ? 'cursor-not-allowed' : 'cursor-default',
+					className,
+				)}
+				mediaClassName={cn('m-0 rounded-full', mediaIcon && mediaBg[variant])}
+				helperClassName={cn(helperVariants[variant], fullWidth ? 'max-w-full' : 'max-w-sm')}
 			>
 				<input key={inputKey} {...getInputProps()} />
-				<Stack alignItems="center" gap={1} sx={{ mb: 3 }}>
-					{titleIcon ? (
-						<Icon
-							name={titleIcon}
-							size="md"
-							color={isDragActive ? 'contrast' : 'primary'}
-						/>
-					) : null}
-					{title ? (
-						<TS
-							strong
-							variant="body"
-							content={title}
-							color={isDragActive ? 'contrast' : 'primary'}
-						/>
-					) : null}
-				</Stack>
-				<Stack gap={0.5}>
+				<Stack
+					vertical
+					gap={0.5}
+					align={align === 'start' ? 'flex-start' : 'center'}
+					className={cn(fullWidth ? 'max-w-full' : 'w-full')}
+				>
 					<TS
 						variant="subtitle"
-						className="pb-2"
+						className="pb-2 w-full truncate"
 						content={
 							isDragActive
 								? 'Отпустите файл, чтобы выбрать его'
-								: 'Перетащите файл сюда или воспользуйтесь полем ввода ниже'
+								: 'Перетащите файл сюда' +
+									(dropOnly ? '' : ' или кликните для выбора ниже')
 						}
+						data-slot="dragging"
 					/>
 					{dropOnly ? null : (
 						<TextField
-							size="small"
+							showClear
+							readOnly
 							disabled={disabled}
 							value={value?.name ?? ''}
 							placeholder={placeholder}
 							onClick={openFileDialog}
+							onClearClick={() => onUpdate(null)}
 							onKeyDown={(e) => {
 								if (e.key === 'Enter' || e.key === ' ') {
 									e.preventDefault()
 									openFileDialog()
 								}
 							}}
+							onChange={() => {}}
 							error={!!errorMessage}
-							slotProps={{
-								htmlInput: {
-									accept: acceptLabel ?? undefined,
-									readOnly: true,
-								},
-								input: {
-									readOnly: true,
-									endAdornment:
-										!disabled && value ? (
-											<InputAdornment position="end">
-												<IconButton
-													rounded
-													icon="close"
-													variant="ghost"
-													title="Очистить файл"
-													aria-label="Очистить файл"
-													size="sm"
-													forceSize="xs"
-													onClick={(e) => {
-														e.preventDefault()
-														e.stopPropagation()
-														onUpdate(null)
-													}}
-													className="hover:bg-primary/10 mr-[-8]"
-													iconClassName="text-primary-dark"
-												/>
-											</InputAdornment>
-										) : undefined,
-								},
-							}}
-							sx={({ palette }) => ({
-								borderRadius: 2,
-								'& .MuiInputBase-root': {
-									backgroundColor: alpha(
-										isDragReject
-											? palette.error.dark
-											: isDragActive
-												? lighten(palette.primary.light, 1)
-												: palette.primary.light,
-										0.15,
-									),
-									color: isDragReject
-										? palette.contrast.main
-										: isDragActive
-											? palette.contrast.main
-											: darken(palette.primary.dark, 0.2),
-								},
-								'& .MuiInputBase-input': {
-									cursor: disabled ? 'not-allowed' : 'pointer',
-									caretColor: 'transparent',
-									userSelect: 'none',
-								},
-								'& .MuiInputBase-root .MuiOutlinedInput-notchedOutline': {
-									borderColor: alpha(
-										isDragReject ? palette.error.light : palette.primary.light,
-										0.3,
-									),
-								},
-								'&:hover .MuiInputBase-root .MuiOutlinedInput-notchedOutline': {
-									borderColor: alpha(palette.primary.light, 0.7),
-								},
-								// error styles
-								'& .MuiInputBase-root.Mui-error': {
-									backgroundColor: lighten(palette.error.dark, 0.9),
-									color: palette.error.dark,
-								},
-								'& .Mui-error .MuiOutlinedInput-notchedOutline': {
-									borderColor: alpha(palette.error.dark, 0.5),
-								},
-								// clear icon button styles
-								'& .MuiInputAdornment-positionEnd .MuiSvgIcon-root': {
-									color: isDragReject
-										? palette.error.dark
-										: isDragActive
-											? alpha(palette.contrast.main, 0.5)
-											: palette.primary.dark,
-								},
-								'& .Mui-error .MuiInputAdornment-positionEnd .MuiSvgIcon-root': {
-									color: palette.error.dark,
-								},
-							})}
+							className={cn(
+								'cursor-pointer select-none',
+								'data-[disabled=true]:cursor-not-allowed',
+								'*:data-[input=wrapper]:caret-transparent',
+							)}
 						/>
 					)}
 					{value ? (
-						<Stack alignItems="center" gap={1}>
+						<Stack
+							gap={1}
+							className={cn('mt-0.5', fullWidth ? 'max-w-full' : 'w-full')}
+							justify={align === 'start' ? 'flex-start' : 'center'}
+						>
 							<TS
+								inline
+								nowrap
 								variant="caption"
 								content="Выбран файл: "
-								color={isDragActive ? 'contrast' : 'secondary'}
-								inline
-								className="opacity-60"
+								color={isDragActive ? 'contrast' : 'dimmed'}
 							/>
 							<TS
 								variant="caption"
 								content={value.name}
 								color={isDragActive ? 'contrast' : 'secondary'}
-								inline
+								className="truncate"
 							/>
 							<TS
+								inline
+								nowrap
 								variant="caption"
 								content={`(${fileSize(value.size)})`}
 								color={isDragActive ? 'contrast' : 'primary'}
-								inline
-								className="opacity-80"
 							/>
 						</Stack>
 					) : null}
@@ -280,17 +229,9 @@ export function FileUploader({
 							content={errorMessage}
 						/>
 					) : null}
-					{helperText ? (
-						<TS
-							variant="caption"
-							content={helperText}
-							color={isDragActive ? 'contrast' : 'primary'}
-							className="block pt-4 opacity-70"
-						/>
-					) : null}
 				</Stack>
-			</Paper>
-		</Stack>
+			</Empty>
+		</div>
 	)
 }
 
@@ -316,4 +257,43 @@ function buildErrorMessage(
 		return sprintf(message, file.type, allowed)
 	}
 	return message
+}
+
+const variants: Record<UploaderVariant, EmptyProps['className']> = {
+	primary: cn(
+		'border-primary-light bg-primary-fond',
+		'**:data-[input=wrapper]:text-primary-dark **:data-[input=wrapper]:border-primary/30',
+		'**:data-[input=control]:placeholder:text-primary-dark/50',
+		'**:data-[clear=true]:[&_svg]:text-primary-dark/70 **:data-[clear=true]:hover:bg-primary/10',
+	),
+	secondary: cn(
+		'border-foreground/20 bg-secondary',
+		'**:data-[input=wrapper]:text-muted-foreground **:data-[input=wrapper]:border-foreground/10',
+		'**:data-[input=control]:placeholder:text-foreground/40',
+		'**:data-[clear=true]:[&_svg]:text-foreground/40 **:data-[clear=true]:hover:bg-foreground/5',
+	),
+	ghost: cn(
+		'border-border',
+		'**:data-[input=wrapper]:text-muted-foreground **:data-[input=wrapper]:border-border',
+		'**:data-[input=control]:placeholder:text-foreground/40',
+		'**:data-[clear=true]:[&_svg]:text-foreground/40 **:data-[clear=true]:hover:bg-foreground/5',
+	),
+}
+
+const helperVariants: Record<UploaderVariant, EmptyProps['helperClassName']> = {
+	primary: 'text-primary-dark/50',
+	secondary: 'text-foreground/50',
+	ghost: 'text-dimmed',
+}
+
+const iconColors: Record<UploaderVariant, IconOptions['color']> = {
+	primary: 'primary',
+	secondary: 'secondary',
+	ghost: 'dimmed',
+}
+
+const mediaBg: Record<UploaderVariant, IconOptions['tw']> = {
+	primary: 'bg-primary-light/10',
+	secondary: 'bg-foreground/5',
+	ghost: 'bg-dimmed/10',
 }
