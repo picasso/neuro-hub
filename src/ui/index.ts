@@ -35,6 +35,22 @@ export {
 export { Avatar, type AvatarProps, type AvatarBadgeStatus } from './avatar'
 export { Badge, type BadgeProps } from './badge'
 export { Alert, AlertTitle, AlertDescription, type AlertProps } from './alert'
+export {
+	Dialog,
+	DialogRoot,
+	type DialogProps,
+	type DialogSize,
+	type DialogAnimation,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogOverlay,
+	DialogPortal,
+	DialogTitle,
+	DialogTrigger,
+} from './dialog'
 export { type SemanticColor, type IconColor } from './types'
 export { needsContrast } from './utils'
 
@@ -60,18 +76,6 @@ export {
 	CommandShortcut,
 	CommandSeparator,
 } from './shadcn/command'
-export {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogOverlay,
-	DialogPortal,
-	DialogTitle,
-	DialogTrigger,
-} from './shadcn/dialog'
 export { Label } from './shadcn/label'
 export {
 	Popover,

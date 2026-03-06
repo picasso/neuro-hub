@@ -9,6 +9,8 @@ import { DemoButtons } from './demo-buttons'
 import { DemoButtonsSettings } from './demo-buttons-settings'
 import { DemoCheckboxes } from './demo-checkboxes'
 import { DemoCheckboxesSettings } from './demo-checkboxes-settings'
+import { DemoDialog } from './demo-dialog'
+import { DemoDialogSettings } from './demo-dialog-settings'
 import { DemoIconButtons } from './demo-icon-buttons'
 import { DemoIconButtonsSettings } from './demo-icon-buttons-settings'
 import { DemoIcons } from './demo-icons'
@@ -129,8 +131,10 @@ export const componentDemos: ComponentDemo[] = [
 		id: 'dialogs',
 		name: 'Dialogs',
 		group: 'feedback',
-		description: 'Dialog, AlertDialog, Sheet',
-		ready: false,
+		description: 'Dialog wrapper — size, icon in title, markdown description, overlay',
+		ready: true,
+		demo: <DemoDialog />,
+		settings: <DemoDialogSettings />,
 	},
 	{
 		id: 'alerts',
