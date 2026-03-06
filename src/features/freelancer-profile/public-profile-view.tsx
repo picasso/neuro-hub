@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import type { PublicFreelancerProfile } from '@/lib/db/queries/freelancers'
-import { Badge, Dialog, DialogContent, DialogHeader, DialogTitle, Link, Stack, TS } from '@/ui'
+import { Badge, Dialog, type IconName, Link, Stack, TS } from '@/ui'
 
 function levelLabel(level: string | null) {
 	switch (level) {
@@ -154,60 +154,52 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 				/>
 			</div>
 
-			<Dialog open={!!openItem} onOpenChange={(open) => !open && setOpenId(null)}>
-				<DialogContent className="max-w-2xl">
-					{openItem ? (
-						<>
-							<DialogHeader>
-								<DialogTitle>{openItem.title}</DialogTitle>
-							</DialogHeader>
-							{openItem.description ? (
-								<TS
-									variant="body"
-									color="secondary"
-									className="text-sm mb-4"
-									content={openItem.description}
-								/>
-							) : null}
-
-							{isImage(openItem.mediaType, openItem.mediaUrl) ? (
-								<img
-									src={openItem.mediaUrl}
-									alt={openItem.title}
-									className="w-full rounded-lg"
-								/>
-							) : isVideo(openItem.mediaType, openItem.mediaUrl) ? (
-								<video
-									controls
-									src={openItem.mediaUrl}
-									className="w-full rounded-lg"
-								/>
-							) : isAudio(openItem.mediaType, openItem.mediaUrl) ? (
-								<audio controls src={openItem.mediaUrl} className="w-full" />
-							) : isPdf(openItem.mediaType, openItem.mediaUrl) ? (
-								<Link
-									href={openItem.mediaUrl}
-									target="_blank"
-									rel="noreferrer"
-									color="dimmed"
-									hover="underline"
-								>
-									Открыть PDF
-								</Link>
-							) : (
-								<Link
-									href={openItem.mediaUrl}
-									target="_blank"
-									rel="noreferrer"
-									color="dimmed"
-									hover="underline"
-								>
-									Открыть медиа
-								</Link>
-							)}
-						</>
-					) : null}
-				</DialogContent>
+			<Dialog
+				open={!!openItem}
+				onClose={() => setOpenId(null)}
+				showCloseButton={false}
+				className="max-w-2xl"
+				title={openItem?.title}
+				description={openItem?.description}
+				icon={openItem?.mediaType as IconName}
+				//  === 'image' ? 'image' : openItem?.mediaType === 'video' ? 'video' : openItem?.mediaType === 'audio' ? 'audio' : openItem?.mediaType === 'pdf' ? 'pdf' : undefined}
+				iconOptions={{ color: 'primary' }}
+			>
+				{openItem ? (
+					<>
+						{isImage(openItem.mediaType, openItem.mediaUrl) ? (
+							<img
+								src={openItem.mediaUrl}
+								alt={openItem.title}
+								className="w-full rounded-lg"
+							/>
+						) : isVideo(openItem.mediaType, openItem.mediaUrl) ? (
+							<video controls src={openItem.mediaUrl} className="w-full rounded-lg" />
+						) : isAudio(openItem.mediaType, openItem.mediaUrl) ? (
+							<audio controls src={openItem.mediaUrl} className="w-full" />
+						) : isPdf(openItem.mediaType, openItem.mediaUrl) ? (
+							<Link
+								href={openItem.mediaUrl}
+								target="_blank"
+								rel="noreferrer"
+								color="dimmed"
+								hover="underline"
+							>
+								Открыть PDF
+							</Link>
+						) : (
+							<Link
+								href={openItem.mediaUrl}
+								target="_blank"
+								rel="noreferrer"
+								color="dimmed"
+								hover="underline"
+							>
+								Открыть медиа
+							</Link>
+						)}
+					</>
+				) : null}
 			</Dialog>
 		</div>
 	)

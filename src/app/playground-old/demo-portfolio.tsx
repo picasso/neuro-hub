@@ -3,8 +3,8 @@
 import Stack from '@mui/material/Stack'
 import { random, reduce, shuffle, uniqueId } from 'lodash'
 import { useMemo, useState } from 'react'
-import { pictures } from './pictures'
 import { Portfolio, type MediaItem } from '@/features'
+import { pictures } from '@/features/playground/pictures'
 import { Button } from '@/ui'
 
 export function PortfolioDemo() {

@@ -8,7 +8,7 @@ import { delay } from 'patronum'
 import { type TransitionEventHandler, useCallback, useEffect } from 'react'
 import { type MediaKind, type MediaItem, MediaPlaceholder } from './portfolio-item'
 import { viewerDomain as domain } from '@/lib/logger'
-import { Dialog, DialogContent, Icon, IconButton, Link, Stack, TS, type IconName } from '@/ui'
+import { Dialog, Icon, IconButton, Link, Stack, TS, type IconName } from '@/ui'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 const fadeTransition = `opacity ${500}ms ease-in-out`
@@ -91,155 +91,157 @@ export function PortfolioViewer({
 	const isLoaderRight = loaderDirection === 'right'
 
 	return (
-		<Dialog open={isOpen} onOpenChange={(open) => !open && onCloseProxy()}>
-			<DialogContent
-				className="max-w-2xl border-0 p-0 rounded-sm"
-				onAnimationEnd={(e) => {
-					if (!isOpen && e.target === e.currentTarget) onDialogExited()
-				}}
-			>
-				<Stack
-					direction="row"
-					align="center"
-					justify="space-between"
-					gap={4}
-					className="p-4 border-b border-border"
-				>
-					<Stack align="center" gap={4}>
-						<Icon name={`media-${kind}` as IconName} size={40} color="secondary" />
-						<TS variant="h3" content={title ?? ''} className="mb-0.5 capitalize" />
-						{!!caption && (
-							<TS variant="caption" color="secondary" content={caption} inline />
-						)}
-					</Stack>
-					<Stack align="center" gap={2}>
-						<IconButton
-							rounded
-							size="md"
-							icon={isLoaderLeft ? 'spinner' : 'chevron-left'}
-							color={isLoaderLeft ? 'primary' : !hasPrev ? 'dimmed' : undefined}
-							spinning={isLoaderLeft}
-							aria-label="Предыдущий"
-							onClick={onPrev}
-							disabled={!hasPrev}
-						/>
-						<IconButton
-							rounded
-							size="md"
-							icon={isLoaderRight ? 'spinner' : 'chevron-right'}
-							color={isLoaderRight ? 'primary' : !hasNext ? 'dimmed' : undefined}
-							spinning={isLoaderRight}
-							aria-label="Следующий"
-							onClick={onNext}
-							disabled={!hasNext}
-						/>
-						<IconButton
-							rounded
-							size="md"
-							icon="close"
-							aria-label="Закрыть"
-							onClick={onCloseProxy}
-						/>
-					</Stack>
-				</Stack>
-
-				<MediaPlaceholder
-					kind={kind}
-					className="p-8 rounded-none"
-					style={{ minHeight: 420 }}
-				>
-					{!mediaUrl ? null : kind === 'image' ? (
-						<Image
-							src={mediaUrl}
-							alt={title ?? caption ?? ''}
-							width={width}
-							height={height}
-							onTransitionEnd={onTransitionEnd}
-							style={{
-								maxWidth: '100%',
-								width: isPortrait ? 'auto' : undefined,
-								height: !isPortrait ? 'auto' : undefined,
-								aspectRatio: `${width} / ${height}`,
-								borderRadius,
-								maxHeight: 'calc(100vh - 300px)',
-								opacity: fadeOpacity,
-								transition: fadeTransition,
-							}}
-						/>
-					) : kind === 'video' ? (
-						<video
-							controls
-							src={mediaUrl}
-							onTransitionEnd={onTransitionEnd}
-							style={{
-								maxWidth: '100%',
-								width: '100%',
-								borderRadius,
-								background: 'black',
-								opacity: fadeOpacity,
-								transition: fadeTransition,
-							}}
-						/>
-					) : kind === 'audio' ? (
-						<Stack vertical gap={12} align="center" className="py-12 w-full">
-							<Icon name="media-audio" size={180} color="contrast" />
-							<div
-								onTransitionEnd={onTransitionEnd}
-								className="w-full max-w-180"
-								style={{ opacity: fadeOpacity, transition: fadeTransition }}
-							>
-								<audio controls src={mediaUrl} style={{ width: '100%' }} />
-							</div>
-						</Stack>
-					) : kind === 'pdf' ? (
-						<div
-							onTransitionEnd={onTransitionEnd}
-							className="flex flex-col gap-6 items-center py-12"
-							style={{ opacity: fadeOpacity, transition: fadeTransition }}
-						>
-							<Icon name="media-pdf" size={180} color="contrast" />
-							<TS
-								variant="body"
-								color="contrast"
-								className="text-sm"
-								content="Предпросмотр PDF пока недоступен."
-							/>
-							<Link
-								href={mediaUrl}
-								target="_blank"
-								rel="noreferrer"
-								hover="vivid"
-								color="soft"
-							>
-								Открыть PDF в новой вкладке
-							</Link>
-						</div>
-					) : (
-						<div
-							onTransitionEnd={onTransitionEnd}
-							className="flex flex-col gap-6 items-center py-12"
-							style={{ opacity: fadeOpacity, transition: fadeTransition }}
-						>
-							<Icon name="do-not-disturb" size={180} color="contrast" />
-							<TS
-								variant="body"
-								color="contrast"
-								className="text-sm"
-								content="Предпросмотр для этого типа файла пока недоступен."
-							/>
-							<Link
-								href={mediaUrl}
-								target="_blank"
-								rel="noreferrer"
-								hover="vivid"
-								color="soft"
-							>
-								Открыть файл в новой вкладке
-							</Link>
-						</div>
+		<Dialog
+			noPadding
+			srTitle="Preview"
+			size="full"
+			showCloseButton={false}
+			animation="fade"
+			open={isOpen}
+			onClose={onCloseProxy}
+			onAnimationEnd={(e) => {
+				if (!isOpen && e.target === e.currentTarget) onDialogExited()
+			}}
+			className="w-fit border-accent-foreground"
+		>
+			<Stack justify="space-between" gap={4} className="p-4 border-b border-border">
+				<Stack gap={4}>
+					<Icon name={`media-${kind}` as IconName} size={40} color="secondary" />
+					<TS
+						variant="h3"
+						content={title ?? ''}
+						className="mb-0.5 capitalize truncate max-w-sm"
+					/>
+					{!!caption && (
+						<TS variant="caption" color="secondary" content={caption} inline />
 					)}
-				</MediaPlaceholder>
-			</DialogContent>
+				</Stack>
+				<Stack>
+					<IconButton
+						rounded
+						size="md"
+						icon={isLoaderLeft ? 'spinner' : 'chevron-left'}
+						color={isLoaderLeft ? 'primary' : !hasPrev ? 'dimmed' : undefined}
+						spinning={isLoaderLeft}
+						aria-label="Предыдущий"
+						onClick={onPrev}
+						disabled={!hasPrev}
+					/>
+					<IconButton
+						rounded
+						size="md"
+						icon={isLoaderRight ? 'spinner' : 'chevron-right'}
+						color={isLoaderRight ? 'primary' : !hasNext ? 'dimmed' : undefined}
+						spinning={isLoaderRight}
+						aria-label="Следующий"
+						onClick={onNext}
+						disabled={!hasNext}
+					/>
+					<IconButton
+						rounded
+						size="md"
+						icon="close"
+						aria-label="Закрыть"
+						onClick={onCloseProxy}
+					/>
+				</Stack>
+			</Stack>
+
+			<MediaPlaceholder kind={kind} className="p-8 rounded-none" style={{ minHeight: 420 }}>
+				{!mediaUrl ? null : kind === 'image' ? (
+					<Image
+						src={mediaUrl}
+						alt={title ?? caption ?? ''}
+						width={width}
+						height={height}
+						onTransitionEnd={onTransitionEnd}
+						style={{
+							maxWidth: '100%',
+							width: 'auto',
+							// portrait: explicit height lets the browser resolve `width: auto`
+							// correctly inside a `w-fit` dialog (max-height alone doesn't work —
+							// browser falls back to intrinsic width for fit-content calculation)
+							height: isPortrait ? `min(${height}px, calc(100vh - 300px))` : 'auto',
+							maxHeight: !isPortrait ? 'calc(100vh - 300px)' : undefined,
+							aspectRatio: `${width} / ${height}`,
+							borderRadius,
+							opacity: fadeOpacity,
+							transition: fadeTransition,
+						}}
+					/>
+				) : kind === 'video' ? (
+					<video
+						controls
+						src={mediaUrl}
+						onTransitionEnd={onTransitionEnd}
+						style={{
+							maxWidth: '100%',
+							width: '100%',
+							borderRadius,
+							background: 'black',
+							opacity: fadeOpacity,
+							transition: fadeTransition,
+						}}
+					/>
+				) : kind === 'audio' ? (
+					<Stack vertical gap={12} align="center" className="py-12 w-full">
+						<Icon name="media-audio" size={180} color="contrast" />
+						<div
+							onTransitionEnd={onTransitionEnd}
+							className="w-full max-w-180"
+							style={{ opacity: fadeOpacity, transition: fadeTransition }}
+						>
+							<audio controls src={mediaUrl} style={{ width: '100%' }} />
+						</div>
+					</Stack>
+				) : kind === 'pdf' ? (
+					<div
+						onTransitionEnd={onTransitionEnd}
+						className="flex flex-col gap-6 items-center py-12"
+						style={{ opacity: fadeOpacity, transition: fadeTransition }}
+					>
+						<Icon name="media-pdf" size={180} color="contrast" />
+						<TS
+							variant="body"
+							color="contrast"
+							className="text-sm"
+							content="Предпросмотр PDF пока недоступен."
+						/>
+						<Link
+							href={mediaUrl}
+							target="_blank"
+							rel="noreferrer"
+							hover="vivid"
+							color="soft"
+						>
+							Открыть PDF в новой вкладке
+						</Link>
+					</div>
+				) : (
+					<div
+						onTransitionEnd={onTransitionEnd}
+						className="flex flex-col gap-6 items-center py-12"
+						style={{ opacity: fadeOpacity, transition: fadeTransition }}
+					>
+						<Icon name="do-not-disturb" size={180} color="contrast" />
+						<TS
+							variant="body"
+							color="contrast"
+							className="text-sm"
+							content="Предпросмотр для этого типа файла пока недоступен."
+						/>
+						<Link
+							href={mediaUrl}
+							target="_blank"
+							rel="noreferrer"
+							hover="vivid"
+							color="soft"
+						>
+							Открыть файл в новой вкладке
+						</Link>
+					</div>
+				)}
+			</MediaPlaceholder>
 		</Dialog>
 	)
 }

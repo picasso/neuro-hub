@@ -14,9 +14,10 @@ export type PortfolioAlbumProps = {
 	items: MediaItem[]
 	spacing?: number
 	onOpen?: (index: number) => void
+	disabled?: boolean
 }
 
-export function PortfolioAlbum({ items, spacing = 6, onOpen }: PortfolioAlbumProps) {
+export function PortfolioAlbum({ items, spacing = 6, onOpen, disabled }: PortfolioAlbumProps) {
 	const photos = useMemo(
 		() =>
 			map(items, (item) => {
@@ -47,7 +48,7 @@ export function PortfolioAlbum({ items, spacing = 6, onOpen }: PortfolioAlbumPro
 			}}
 			spacing={spacing}
 			padding={0}
-			onClick={({ index }) => onOpen?.(index)}
+			onClick={disabled ? undefined : ({ index }) => onOpen?.(index)}
 			render={{
 				image: renderMediaItem,
 				// extras: renderPortfolioExtras,
