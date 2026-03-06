@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pictures } from '../index'
-import { sleep } from '@/utils/common'
+import { sleep } from '@/utils'
 
 export const runtime = 'nodejs'
 
