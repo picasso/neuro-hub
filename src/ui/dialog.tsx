@@ -124,6 +124,7 @@ export function Dialog({
 				noPadding={noPadding}
 				animation={animation}
 				className={cn(sizeClasses[size], className)}
+				{...(description ? {} : { 'aria-describedby': undefined })}
 				{...props}
 			>
 				{titleNode || descriptionNode ? (

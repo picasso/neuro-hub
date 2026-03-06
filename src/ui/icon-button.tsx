@@ -10,6 +10,7 @@ type ButtonVariant = NonNullable<ButtonProps['variant']>
 
 export type IconButtonProps = Omit<React.ComponentPropsWithoutRef<'button'>, 'children'> & {
 	icon: IconProps['name']
+	color?: IconProps['color']
 	variant?: ButtonVariant | 'contrast'
 	size?: ButtonProps['size'] | 'icon'
 	// url/href: workaround when next.js expects route or URLObject instead of string
@@ -27,6 +28,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
 		{
 			disabled,
 			icon,
+			color = 'secondary',
 			variant = 'ghost',
 			size = 'icon',
 			href,
@@ -54,7 +56,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
 			<Icon
 				name={icon}
 				size={forceSize ?? (size === 'icon' ? 'sm' : size)}
-				color={contrast ? 'contrast' : 'secondary'}
+				color={contrast ? 'contrast' : color}
 				spinning={spinning}
 				className={cn(!!forceSize && 'w-auto! h-auto!', iconClassName)}
 			/>

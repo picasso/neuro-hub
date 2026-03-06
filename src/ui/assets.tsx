@@ -43,6 +43,7 @@ import {
 	LoaderPinwheel,
 	ChevronLeft,
 	ChevronRight,
+	History,
 } from 'lucide-react'
 import { type ComponentType, type SVGProps } from 'react'
 import { customIcons } from './icons/icons'
@@ -95,6 +96,7 @@ const lucideIcons = {
 	LoaderPinwheel,
 	ChevronLeft,
 	ChevronRight,
+	History,
 }
 
 // type generation --------------------------------------------------------------------------------]
