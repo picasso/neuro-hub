@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { type ChangeEvent, useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type InputDemoState } from './demo-inputs-settings'
 import { useSettings } from './settings-store'
@@ -18,6 +18,7 @@ export function DemoInputs() {
 		onEndClick,
 		multiline,
 		markdown,
+		showClear,
 	} = settings
 
 	const helperContent = helperText
@@ -26,6 +27,7 @@ export function DemoInputs() {
 			: 'Мы не передаём почту третьим лицам'
 		: undefined
 
+	const [value, setValue] = useState('')
 	const [showPassword, setShowPassword] = useState(false)
 
 	const resolvedStartIcon = startIcon !== 'none' ? startIcon : undefined
@@ -54,11 +56,17 @@ export function DemoInputs() {
 							? { helper: helperContent, md: markdown ? { br: true } : false }
 							: undefined
 					}
+					value={value}
+					onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+						setValue(e.target.value)
+					}
 					disabled={disabled}
 					required={required}
 					startIcon={resolvedStartIcon}
 					endIcon={resolvedEndIcon}
 					onEndClick={onEndClick && resolvedEndIcon ? () => {} : undefined}
+					showClear={showClear}
+					onClearClick={showClear ? () => setValue('') : undefined}
 				/>
 			</DemoSection>
 

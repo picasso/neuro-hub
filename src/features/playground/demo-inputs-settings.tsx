@@ -15,6 +15,7 @@ export type InputDemoState = {
 	startIcon: 'none' | 'search' | 'mail' | 'shield-check'
 	endIcon: 'none' | 'eye' | 'x' | 'image' | 'trash'
 	onEndClick: boolean
+	showClear: boolean
 }
 
 const defaultState: InputDemoState = {
@@ -27,6 +28,7 @@ const defaultState: InputDemoState = {
 	onEndClick: false,
 	multiline: false,
 	markdown: true,
+	showClear: false,
 }
 
 export function DemoInputsSettings() {
@@ -41,6 +43,7 @@ export function DemoInputsSettings() {
 		onEndClick,
 		multiline,
 		markdown,
+		showClear,
 	} = useSettings<InputDemoState>()
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -54,6 +57,7 @@ export function DemoInputsSettings() {
 			<SettingToggle id="required" label="Required" checked={required} />
 			<SettingToggle id="multiline" label="Multiline" checked={multiline} />
 			<SettingToggle id="markdown" label="Markdown" checked={markdown} />
+			<SettingToggle id="showClear" label="Show clear" checked={showClear} />
 			<Separator />
 			<SettingSelect
 				id="startIcon"
