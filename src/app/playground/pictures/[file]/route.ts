@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { pictures } from '../index'
+import { pictures } from '@/features/playground/pictures/index'
 import { sleep } from '@/utils'
 
 export const runtime = 'nodejs'
@@ -24,7 +24,14 @@ export async function GET(request: Request, context: RouteContext) {
 	const picture = pictures.find((p) => p.file === file)
 	if (!picture) return new Response('Not found', { status: 404 })
 
-	const filePath = path.join(process.cwd(), 'src', 'app', 'playground', 'pictures', picture.file)
+	const filePath = path.join(
+		process.cwd(),
+		'src',
+		'features',
+		'playground',
+		'pictures',
+		picture.file,
+	)
 	const buffer = await readFile(filePath)
 
 	return new Response(buffer, {
