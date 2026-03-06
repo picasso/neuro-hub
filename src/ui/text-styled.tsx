@@ -1,4 +1,4 @@
-import { createElement, forwardRef, type ReactNode } from 'react'
+import { type ComponentProps, createElement, forwardRef, type ReactNode } from 'react'
 import { type SemanticColor, semanticColorClasses } from './types'
 import { needsContrast } from './utils'
 import { cn } from '@/lib/utils'
@@ -16,12 +16,13 @@ type TextStyledVariant =
 	| 'quote'
 	| 'block'
 
-export type TextStyledProps = {
+export type TextStyledProps = ComponentProps<'span'> & {
 	variant?: TextStyledVariant
 	color?: SemanticColor
 	content?: string | number
 	strong?: boolean
 	thin?: boolean
+	nowrap?: boolean
 	inline?: boolean
 	inlineBlock?: boolean
 	gutterBottom?: boolean
@@ -66,12 +67,14 @@ export const TextStyled = forwardRef<HTMLElement, TextStyledProps>(
 			content,
 			strong,
 			thin,
+			nowrap,
 			inline,
 			inlineBlock,
 			gutterBottom,
 			md,
 			className,
 			children,
+			...props
 		},
 		ref,
 	) => {
@@ -86,13 +89,14 @@ export const TextStyled = forwardRef<HTMLElement, TextStyledProps>(
 			color && semanticColorClasses[color],
 			strong && 'font-bold',
 			thin && 'font-medium',
+			nowrap && 'whitespace-nowrap',
 			inlineBlock && 'inline-block',
 			gutterBottom && 'mb-4',
 			className,
 		)
 		return createElement(
 			tag,
-			{ ref, className: classes },
+			{ ref, className: classes, ...props },
 			md === false ? value : simpleMarkdown(value, md ?? { br: inline || inlineBlock }),
 		)
 	},

@@ -86,12 +86,12 @@ export function FieldWrapper({
 			{horizontal && (
 				<div className={cn('flex items-center gap-2', horizontalClassName)}>
 					{children}
-					{filedLabel}
+					{label && filedLabel}
 				</div>
 			)}
 			{!horizontal && (
 				<>
-					{filedLabel}
+					{label && filedLabel}
 					{children}
 				</>
 			)}
