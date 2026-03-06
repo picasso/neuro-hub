@@ -40,6 +40,7 @@
 	/* Custom: extended primary shades */
 	--color-primary-dark: var(--primary-dark);
 	--color-primary-light: var(--primary-light);
+	--color-primary-fond: var(--primary-fond);
 
 	/* Custom: dimmed text */
 	--color-dimmed: var(--dimmed);
@@ -71,6 +72,7 @@
 	--primary-foreground: #ffffff;
 	--primary-dark: #169e5f;
 	--primary-light: #35d48d;
+	--primary-fond: #e8f9f1;
 
 	/* CTA (violet) — CTA buttons, AI elements */
 	--cta: #7c3aed;
