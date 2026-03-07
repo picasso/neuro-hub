@@ -44,6 +44,13 @@ import {
 	ChevronLeft,
 	ChevronRight,
 	History,
+	CircuitBoard,
+	BrainCircuit,
+	Binoculars,
+	Film,
+	Scale,
+	Frown,
+	UsersRound,
 } from 'lucide-react'
 import { type ComponentType, type SVGProps } from 'react'
 import { customIcons } from './icons/icons'
@@ -97,6 +104,13 @@ const lucideIcons = {
 	ChevronLeft,
 	ChevronRight,
 	History,
+	CircuitBoard,
+	BrainCircuit,
+	Binoculars,
+	Film,
+	Scale,
+	Frown,
+	UsersRound,
 }
 
 // type generation --------------------------------------------------------------------------------]
