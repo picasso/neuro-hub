@@ -50,6 +50,15 @@ export {
 	DialogTitle,
 	DialogTrigger,
 } from './dialog'
+export {
+	Accordion,
+	AccordionRoot,
+	AccordionItem,
+	AccordionTrigger,
+	AccordionContent,
+	type AccordionProps,
+	type AccordionOption,
+} from './accordion'
 export { type SemanticColor, type IconColor } from './types'
 export { needsContrast } from './utils'
 
