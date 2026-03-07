@@ -85,6 +85,25 @@ Gzipped: ~11 KB
 2. Убрать htmlparser2 и вернуть ветку с document на клиенте + на сервере рендерить что-то стабильное (например, тот же HTML через dangerouslySetInnerHTML в одном контейнере или упрощённый вывод без парсинга), чтобы сервер и клиент давали один и тот же HTML и гидрация не падала.
 3. Облегчённый парсер — рассмотреть что-то вроде htmlparser2-20kb (форк под браузер, <20 KB) и заменить им текущий htmlparser2, если он подходит по API.
 
+## При желании заменить forwardRef (shadcn/v4)
+
+`forwardRef` в обёртках `src/ui/`
+
+В обёртках над shadcn используется `forwardRef`:
+- src/ui/avatar.tsx
+- src/ui/badge.tsx
+- src/ui/icon-button.tsx
+- src/ui/button.tsx
+- src/ui/text-styled.tsx
+- src/ui/alert.tsx
+- src/ui/icon.tsx
+
+В React 19 `ref` передаётся обычным пропом, `forwardRef` по-прежнему работает, но считается устаревшим. Для перехода на shadcn/v4 ничего менять не обязательно; при желании позже можно заменить на функции с пропом `ref`.
+
+## Цвета в globals.css - миграция на OKLCH
+
+В :root цвета заданы в `hex` (#1dbf73, #7c3aed и т.д.). В shadcn/v4 в доке рекомендуют `OKLCH` для точности, но `hex` поддерживается. Текущий вариант корректен, миграция на `OKLCH` — по желанию.
+
 ## Узнать побольше про
 
 - TanStack Query: v5
