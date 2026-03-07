@@ -151,7 +151,10 @@ export function DemoTypography() {
 				<Stack vertical gap={3} align="stretch">
 					<Stack gap={3} align="start">
 						<DemoLabel content="bold / em" size="md" className="pt-1" />
-						<TS variant="subtitle" content="**Жирный** и курсив — через `#**` и `#*`" />
+						<TS
+							variant="subtitle"
+							content="**Жирный** и *курсив* — через `#**` и `#*`"
+						/>
 					</Stack>
 					<Stack gap={3} align="start">
 						<DemoLabel content="code" size="md" className="pt-1" />

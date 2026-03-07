@@ -1,12 +1,8 @@
-import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
-import Stack from '@mui/material/Stack'
 import { notFound } from 'next/navigation'
 import { PublicFreelancerProfileView } from './public-profile-view'
 import { getPublicFreelancerProfileByProfileId } from '@/lib/db/queries/freelancers'
 import { freelancerProfileIdParamSchema } from '@/lib/validations'
-import { Avatar } from '@/ui'
-import { TS } from '@/ui/text-styled'
+import { Avatar, Stack, TS } from '@/ui'
 
 type PageProps = {
 	params: Promise<{ id: string }>
@@ -22,15 +18,15 @@ export async function FreelancerProfilePage(props: PageProps) {
 	if (!profile) notFound()
 
 	return (
-		<Container maxWidth="md">
-			<Box sx={{ mt: 6, mb: 8 }}>
-				<Stack spacing={2} sx={{ mb: 4, alignItems: 'center' }}>
+		<div className="container max-w-4xl mx-auto px-4 md:px-6">
+			<div className="mt-12 mb-16">
+				<Stack gap={2} align="center" className="mb-8">
 					<Avatar
 						name={profile.userProfile?.name || 'Freelancer'}
 						size="lg"
 						src={profile.userProfile?.avatarUrl ?? undefined}
 					/>
-					<Box sx={{ minWidth: 0 }}>
+					<div className="min-w-0">
 						<TS
 							variant="h4"
 							gutterBottom
@@ -44,11 +40,10 @@ export async function FreelancerProfilePage(props: PageProps) {
 								profile.freelancer.specialization || 'Специализация не указана'
 							}
 						/>
-					</Box>
+					</div>
 				</Stack>
-
 				<PublicFreelancerProfileView profile={profile} />
-			</Box>
-		</Container>
+			</div>
+		</div>
 	)
 }
