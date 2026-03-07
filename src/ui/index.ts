@@ -1,5 +1,4 @@
 // providers
-export { FontProvider, FontSwitcher } from './providers/font-provider'
 export { ThemeRegistry } from './providers/theme-registry'
 
 // custom UI primitives

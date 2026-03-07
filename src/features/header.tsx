@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { signOut, useSession } from '@/lib/auth/client'
-import { Button, FontSwitcher, Link, Stack, TS } from '@/ui'
+import { Button, Link, Stack, TS } from '@/ui'
 
 export function Header() {
 	const router = useRouter()
@@ -19,7 +19,6 @@ export function Header() {
 					</Link>
 
 					<Stack gap={4} align="center">
-						<FontSwitcher />
 						<Link href="/projects">Проекты</Link>
 						<Link href="/freelancers">Фрилансеры</Link>
 						<Link href="/api/docs">API</Link>
