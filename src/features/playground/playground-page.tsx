@@ -66,16 +66,13 @@ export function PlaygroundPage() {
 				justify="space-between"
 				className="py-2.5 pl-4 pr-2 md:pl-8 md:pr-4 bg-surface rounded-t-lg border-b"
 			>
-				<Stack>
-					<TS variant="h2" content="Playground" />
-					<IconButton rounded icon="business" href="/playground-old" />
-				</Stack>
+				<TS clean variant="h2" content="Playground" />
 				<Stack gap={2}>
 					<QuickAccess recent={recent} current={selected} onSelect={handleSelect} />
 					{recent.length > 0 && <Separator orientation="vertical" className="mx-1 h-5" />}
 					<ComponentSelector selected={selected} onSelect={handleSelect} />
 					<IconButton
-						icon="rotate-ccw"
+						icon="history"
 						variant="ghost"
 						size="sm"
 						onClick={() => {

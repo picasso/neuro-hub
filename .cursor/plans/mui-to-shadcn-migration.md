@@ -83,7 +83,6 @@ isProject: false
 
 6 файлов содержат упоминания MUI и требуют обновления:
 
-
 | Файл                                                           | Что менять                                                              |
 | -------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | [code-style/RULE.md](.cursor/rules/code-style/RULE.md)         | Секция "MUI sx Prop Syntax" -> Tailwind conventions                     |
@@ -92,7 +91,6 @@ isProject: false
 | [anti-patterns/RULE.md](.cursor/rules/anti-patterns/RULE.md)   | `styled-components -> @emotion` -> Tailwind                             |
 | [tech-stack/RULE.md](.cursor/rules/tech-stack/RULE.md)         | MUI 7.3+ / @emotion -> shadcn/ui + Tailwind                             |
 | [role-expertise/RULE.md](.cursor/rules/role-expertise/RULE.md) | Material UI в описании экспертизы -> shadcn/Tailwind                    |
-
 
 ### 0.3 Checkpoint: ревизия плана
 
@@ -365,4 +363,3 @@ isProject: false
 - Tailwind-first стилизация
 - Playground как центр разработки и тестирования компонентов
 - Обновлённые .cursor/rules под shadcn/Tailwind
-

@@ -1,6 +1,3 @@
-// providers
-export { ThemeRegistry } from './providers/theme-registry'
-
 // custom UI primitives
 export { Link, type LinkProps, type LinkColor } from './link'
 export { Icon, type IconProps, type IconName, type IconOptions, type IconSize } from './icon'
