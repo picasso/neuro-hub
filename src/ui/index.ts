@@ -59,6 +59,15 @@ export {
 	type AccordionProps,
 	type AccordionOption,
 } from './accordion'
+export {
+	Tabs,
+	TabsRoot,
+	TabsList,
+	TabsTrigger,
+	TabsContent,
+	type TabsProps,
+	type TabItem,
+} from './tabs'
 export { type SemanticColor, type IconColor } from './types'
 export { needsContrast } from './utils'
 
