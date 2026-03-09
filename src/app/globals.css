@@ -140,11 +140,11 @@
 }
 
 @layer components {
-	.markdown-root {
+	.markdown-root:not(.not-relaxed) {
 		@apply leading-relaxed;
 	}
-	.markdown-root [data-slot='alert-description'],
-	.markdown-root [data-slot='field-description'] {
+	.markdown-root:not(.not-relaxed) [data-slot='alert-description'],
+	.markdown-root:not(.not-relaxed) [data-slot='field-description'] {
 		@apply leading-relaxed;
 	}
 	.markdown-root [data-slot='field-description'] span.__code {

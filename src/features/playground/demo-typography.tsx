@@ -1,193 +1,97 @@
 'use client'
 
-import { DemoLabel, DemoRoot, DemoSection } from './components-utils'
-import {
-	type TextStyledColor,
-	type TextStyledVariant,
-	type TypographyDemoState,
-} from './demo-typography-settings'
-import { useSettings } from './settings-store'
-import { Stack, TS } from '@/ui'
-import { cn } from '@/utils'
-
-// data -------------------------------------------------------------------------------------------]
-
-const sampleTexts: Record<Exclude<TextStyledVariant, 'block'>, string> = {
-	h1: 'Marketplace для ИИ-специалистов',
-	h2: 'Генеративный ИИ — ваша профессия',
-	h3: 'Находите лучших фрилансеров',
-	h4: 'Профиль и портфолио',
-	h5: 'Настройки аккаунта',
-	subtitle: 'Платформа для специалистов в области **генеративного ИИ** — быстро, надёжно.',
-	body: 'Разместите проект и получите отклики от квалифицированных специалистов в течение нескольких часов.',
-	caption: 'Обновлено 3 минуты назад · Только для разработчиков',
-	quote: '“Находим лучших специалистов для вашего проекта”',
-}
-
-const interactiveSample =
-	'Платформа для **фрилансеров** с `опытом` в *генеративном ИИ* — [NeuroGig](https://neurogig.com).'
-
-const variants: Exclude<TextStyledVariant, 'block'>[] = [
-	'h1',
-	'h2',
-	'h3',
-	'h4',
-	'h5',
-	'quote',
-	'body',
-	'subtitle',
-	'caption',
-]
+import { DemoRoot, DemoSection } from './components-utils'
+import { DemoTypographyOptions } from './demo-typography-options'
+import { type TabItem, Tabs, TS } from '@/ui'
 
 // main demo --------------------------------------------------------------------------------------]
 
-const validVariants = new Set<string>(variants)
-const validColors = new Set<string>(['primary', 'secondary', 'dimmed', 'contrast', 'soft'])
-
 export function DemoTypography() {
-	const settings = useSettings<TypographyDemoState>()
-	const {
-		variant: rawVariant,
-		color: rawColor,
-		strong,
-		thin,
-		gutterBottom,
-		md,
-		inline,
-	} = settings
-	const variant: TextStyledVariant = validVariants.has(rawVariant)
-		? (rawVariant as TextStyledVariant)
-		: 'body'
-	const resolvedColor = validColors.has(rawColor) ? (rawColor as TextStyledColor) : undefined
-	const needsDarkBg = resolvedColor === 'contrast' || resolvedColor === 'soft'
+	return (
+		<DemoRoot>
+			<Tabs items={tabs} defaultValue="text" variant="line" contentClassName="pt-6" />
+		</DemoRoot>
+	)
+}
 
+export function DemoTypographyText() {
 	return (
 		<DemoRoot>
 			<DemoSection
-				title="Interactive"
-				desc="Обёртка `?Typography` на базе shadcn and **Tailwind CSS**"
-				separator
+				title="Typography"
+				desc="Использование `?Typography` для текста - headings, quotes, paragraphs, lists...etc"
+				className="max-w-3xl relative mt-4 mb-12 p-10 overflow-hidden rounded-xl border"
 			>
-				<div className={cn('min-h-14 rounded-md border p-4', needsDarkBg && 'bg-primary')}>
-					<TS
-						variant={variant}
-						color={resolvedColor}
-						strong={strong}
-						thin={thin}
-						gutterBottom={gutterBottom}
-						inline={inline}
-						md={md ? undefined : false}
-						content={interactiveSample}
-					/>
-				</div>
-			</DemoSection>
-
-			<DemoSection
-				title="Variants"
-				desc="Все поддерживаемые `variant`-ы"
-				asBadge="quote"
-				separator
-			>
-				<Stack vertical gap={4} align="stretch">
-					{variants.map((v) => (
-						<Stack key={v} gap={3} align="baseline">
-							<DemoLabel content={v} size="sm" />
-							<TS variant={v} content={sampleTexts[v]} />
-						</Stack>
-					))}
-				</Stack>
-			</DemoSection>
-
-			<DemoSection
-				title="Modifiers"
-				desc="`*strong` `*thin` `*gutterBottom` `*inline`"
-				asBadge="quote"
-				separator
-			>
-				<Stack vertical gap={3} align="stretch">
-					<Stack gap={3} align="baseline">
-						<DemoLabel content="default" size="md" />
-						<TS content="Обычный текст (body, без модификаторов)" />
-					</Stack>
-					<Stack gap={3} align="baseline">
-						<DemoLabel content="strong" size="md" />
-						<TS strong content="Strong — `font-bold (700)`" />
-					</Stack>
-					<Stack gap={3} align="baseline">
-						<DemoLabel content="thin" size="md" />
-						<TS
-							variant="h3"
-							thin
-							content="Thin на h3 — `font-medium` вместо `semibold`"
-						/>
-					</Stack>
-					<Stack gap={3} align="baseline">
-						<DemoLabel content="gutterBottom" size="md" />
-						<div>
-							<TS gutterBottom content="gutterBottom — добавляет `mb-4` снизу" />
-							<TS
-								color="secondary"
-								content="Этот текст идёт сразу после"
-								className="border-t"
-							/>
-						</div>
-					</Stack>
-					<Stack gap={3} align="baseline">
-						<DemoLabel content="inline" size="md" />
-						<span>
-							<TS inline content="Inline: " />
-							<TS inline strong content="`strong` " />
-							<TS inline color="secondary" content="и `muted` — в одной строке" />
-						</span>
-					</Stack>
-				</Stack>
-			</DemoSection>
-
-			<DemoSection
-				title="Markdown"
-				desc="Встроенная поддержка простого Markdown через `simpleMarkdown()`"
-				asBadge="quote"
-			>
-				<Stack vertical gap={3} align="stretch">
-					<Stack gap={3} align="start">
-						<DemoLabel content="bold / em" size="md" className="pt-1" />
-						<TS
-							variant="subtitle"
-							content="**Жирный** и *курсив* — через `#**` и `#*`"
-						/>
-					</Stack>
-					<Stack gap={3} align="start">
-						<DemoLabel content="code" size="md" className="pt-1" />
-						<TS
-							variant="subtitle"
-							content="`код` и цвета: `!ошибка` `?вопрос` `*успех` `+инфо` `#предупреждение`"
-						/>
-					</Stack>
-					<Stack gap={3} align="start">
-						<DemoLabel content="link" size="md" className="pt-1" />
-						<TS
-							variant="subtitle"
-							content="Ссылка: [NeuroGig](https://neurogig.com) откроется в новой вкладке"
-						/>
-					</Stack>
-					<Stack gap={3} align="start">
-						<DemoLabel content="br" size="md" className="pt-1" />
-						<TS
-							variant="subtitle"
-							inline
-							content={'Строка 1\nСтрока 2 через inline+br'}
-						/>
-					</Stack>
-					<Stack gap={3} align="start">
-						<DemoLabel content="md=false" size="md" className="pt-1" />
-						<TS
-							variant="subtitle"
-							md={false}
-							content="**Текст без Markdown** — отображается как есть"
-						/>
-					</Stack>
-				</Stack>
+				<TS variant="h1" content="Taxing Laughter: The Joke Tax Chronicles" />
+				<TS variant="lead">
+					Once upon a time, in a far-off land, there was a very lazy king who spent all
+					day lounging on his throne. One day, his advisors came to him with a problem:
+					the kingdom was running out of money.
+				</TS>
+				<TS variant="h2" content="The King's Plan" />
+				<TS variant="body">
+					The king thought long and hard, and finally came up with a brilliant plan: he
+					would tax the jokes in the kingdom.
+				</TS>
+				<TS variant="quote">
+					"After all," he said, "everyone enjoys a good joke, so it's only fair that they
+					should pay for the privilege."
+				</TS>
+				<TS variant="h3" content="The Joke Tax" />
+				<TS variant="body">
+					The king's subjects were not amused. They grumbled and complained, but the king
+					was firm:
+				</TS>
+				<TS
+					variant="list"
+					content="1st level of puns: **5 gold coins**\n2nd level of jokes: **10 gold coins**\n3rd level of one-liners : **20 gold coins**"
+				/>
+				<TS variant="subtitle">
+					As a result, people stopped telling jokes, and the kingdom fell into a gloom.
+					But there was one person who refused to let the king's foolishness get him down:
+					a court `jester` named **Jokester**.
+				</TS>
+				<TS variant="h4" content="Jokester's Revolt" />
+				<TS variant="body">
+					Jokester began sneaking into the castle in the middle of the night and leaving
+					jokes all over the place: under the king's pillow, in his soup, even in the
+					royal toilet. The king was furious, but he couldn't seem to stop Jokester.
+				</TS>
+				<TS variant="body">
+					And then, one day, the people of the kingdom discovered that the jokes left by
+					Jokester were so funny that they couldn't help but laugh. And once they started
+					laughing, they couldn't stop.
+				</TS>
+				<TS variant="h4" content="The People's Rebellion" />
+				<TS variant="body" color="destructive">
+					The people of the kingdom, feeling uplifted by the laughter, started to tell
+					jokes and puns again, and soon the entire kingdom was in on the joke.
+				</TS>
+				<TS variant="body" gutterBottom color="secondary">
+					The king, seeing how much happier his subjects were, realized the error of his
+					ways and repealed the joke tax. Jokester was declared a hero, and the kingdom
+					lived happily ever after.
+				</TS>
+				<TS variant="caption" color="dimmed">
+					The moral of the story is: never underestimate the power of a good laugh and
+					always be careful of bad ideas.
+				</TS>
 			</DemoSection>
 		</DemoRoot>
 	)
 }
+
+const tabs: TabItem[] = [
+	{
+		value: 'text',
+		title: 'Text',
+		icon: 'article',
+		content: <DemoTypographyText />,
+	},
+	{
+		value: 'options',
+		title: 'Options',
+		icon: 'sliders-horizontal',
+		content: <DemoTypographyOptions />,
+	},
+]

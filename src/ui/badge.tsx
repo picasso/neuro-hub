@@ -130,19 +130,18 @@ const iconColorMap: Record<SemanticColor, SemanticColor | 'contrast'> = {
 	dimmed: 'dimmed',
 	contrast: 'contrast',
 	soft: 'contrast',
+	destructive: 'contrast',
 }
 
 const textColorClasses: Record<SemanticColor, string> = {
+	...semanticColorClasses,
 	primary: 'text-primary',
-	secondary: semanticColorClasses.secondary,
-	dimmed: semanticColorClasses.dimmed,
-	contrast: semanticColorClasses.contrast,
-	soft: semanticColorClasses.soft,
 }
 
 const outlineColorClasses: Record<SemanticColor, string> = {
 	primary: 'border-primary/40',
 	secondary: 'border-dimmed/30',
+	destructive: 'border-destructive/40',
 	dimmed: 'border-border',
 	contrast: 'border-background/70',
 	soft: 'border-background/40',

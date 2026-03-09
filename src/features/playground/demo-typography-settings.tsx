@@ -16,6 +16,7 @@ export type TypographyDemoState = {
 	gutterBottom: boolean
 	md: boolean
 	inline: boolean
+	clean: boolean
 }
 
 const defaultState: TypographyDemoState = {
@@ -26,11 +27,12 @@ const defaultState: TypographyDemoState = {
 	gutterBottom: false,
 	md: true,
 	inline: false,
+	clean: false,
 }
 
 export function DemoTypographySettings() {
 	const reset = useReset<TypographyDemoState>(defaultState)
-	const { variant, color, strong, thin, gutterBottom, md, inline } =
+	const { variant, color, strong, thin, gutterBottom, md, inline, clean } =
 		useSettings<TypographyDemoState>()
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,7 +44,19 @@ export function DemoTypographySettings() {
 				id="variant"
 				label="Variant"
 				value={variant}
-				options={['h1', 'h2', 'h3', 'h4', 'h5', 'subtitle', 'body', 'caption', 'quote']}
+				options={[
+					'h1',
+					'h2',
+					'h3',
+					'h4',
+					'h5',
+					'subtitle',
+					'body',
+					'caption',
+					'quote',
+					'list',
+					'lead',
+				]}
 			/>
 			<SettingSelect
 				id="color"
@@ -58,6 +72,7 @@ export function DemoTypographySettings() {
 				]}
 			/>
 			<Separator />
+			<SettingToggle id="clean" label="Clean" checked={clean} />
 			<SettingToggle id="strong" label="Strong" checked={strong} />
 			<SettingToggle id="thin" label="Thin" checked={thin} />
 			<SettingToggle id="gutterBottom" label="Gutter bottom" checked={gutterBottom} />

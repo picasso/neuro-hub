@@ -1,6 +1,6 @@
 // shared UI types and class maps for color/size unification (SemanticColor = base, IconColor extends)
 
-export type SemanticColor = 'primary' | 'secondary' | 'dimmed' | 'contrast' | 'soft'
+export type SemanticColor = 'primary' | 'secondary' | 'dimmed' | 'contrast' | 'soft' | 'destructive'
 
 export type IconColor =
 	| SemanticColor
@@ -15,6 +15,7 @@ export const semanticColorClasses: Record<SemanticColor, string> = {
 	primary: 'text-foreground',
 	secondary: 'text-muted-foreground',
 	dimmed: 'text-dimmed',
+	destructive: 'text-destructive',
 	contrast: 'text-background',
 	soft: 'text-background/60',
 }
