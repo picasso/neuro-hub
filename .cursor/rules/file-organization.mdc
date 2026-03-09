@@ -13,7 +13,6 @@ src/
 ├── app/        ← Next.js routes only — thin files (import + re-export, no logic)
 ├── features/   ← All business-logic components; imported via '@/features' barrel
 ├── ui/         ← UI primitives and design system; imported via '@/ui' barrel
-├── ui-theme/   ← MUI theme (TEMPORARY — will be deleted in Phase 4 migration)
 ├── alerts/     ← Effector-based alert system
 ├── config/     ← Metadata, mocks, constants
 ├── lib/        ← auth, db, email, swagger, validations, utils

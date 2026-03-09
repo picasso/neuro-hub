@@ -17,7 +17,6 @@ src/
 │   ├── icons/        # Icon definitions
 │   ├── providers/    # ThemeRegistry, FontProvider, etc.
 │   └── index.ts      # Public API — always import from @/ui
-├── ui-theme/         # Legacy MUI theme (scheduled for removal)
 ├── features/         # Feature components with business logic
 │   ├── [feature]/    # Feature folder with index.ts barrel
 │   └── index.ts      # Public API — always import from @/features

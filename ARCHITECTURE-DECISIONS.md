@@ -69,15 +69,18 @@
 - Session management с автоматической ротацией
 - Более безопасный подход для веб-приложений по сравнению с JWT в localStorage
 
-### 6. UI Framework: Material UI + Emotion
+### 6. UI Framework: shadcn/ui + Tailwind CSS ~~(Material UI + Emotion)~~
 
-**Решение:** Material UI 7.3+ с Emotion для стилизации.
+> **Superseded (2026-03):** Мигрировали с Material UI 7.3+ + Emotion на shadcn/ui + Tailwind CSS 4. Причины: лучший контроль над стилями, отсутствие runtime CSS-in-JS, нативная совместимость с RSC, меньший bundle.
+
+**Решение:** shadcn/ui (Radix UI primitives) + Tailwind CSS 4 для стилизации.
 
 **Обоснование:**
-- Готовые компоненты высокого качества
-- Адаптивный дизайн из коробки
-- Хорошая документация и community support
-- Emotion обеспечивает гибкость стилизации
+- Полный контроль над кодом компонентов (copy-paste модель)
+- Zero runtime — Tailwind генерирует статический CSS
+- Нативная поддержка React Server Components
+- Radix UI обеспечивает accessibility из коробки
+- Меньший bundle size и лучшая производительность
 
 ### 7. Build Configuration: Без кастомного webpack config
 
@@ -217,56 +220,9 @@ EMAIL_REPLY_TO=support@neurohub.dev
 
 **Дата решения:** 2026-01-22
 
-### 12. Material UI Link + Next.js Link: Глобальная интеграция через Theme
+### 12. ~~Material UI Link + Next.js Link: Глобальная интеграция через Theme~~
 
-**Решение:** Настроить глобальную интеграцию MUI Link с Next.js Link через конфигурацию темы.
-
-**Проблема:**
-- Material UI Link предоставляет стилизацию и MUI API (variants, colors, underline props)
-- Next.js Link обеспечивает client-side navigation и prefetching
-- Необходимо объединить функциональность обоих без дублирования кода
-
-**Рассмотренные варианты:**
-1. **Глобальная настройка через theme** (выбран) - настроить один раз, работает везде
-2. Per-component LinkComponent - явно указывать на каждом компоненте
-3. Кастомный компонент-обертка - дополнительная абстракция
-
-**Обоснование выбранного решения:**
-- Настраивается один раз в `theme.ts`, работает для всех MUI компонентов
-- Все MUI Link и Button с href автоматически используют Next.js роутинг
-- Чистый код без оберток `<NextLink><MuiLink></MuiLink></NextLink>`
-- Можно использовать `<Link href="/path">` напрямую с MUI стилями
-- Решает проблемы с TypeScript типами и ref forwarding
-
-**Использование:**
-
-```tsx
-// До: NextLink обертка
-<NextLink href="/" passHref>
-  <MuiLink>Home</MuiLink>
-</NextLink>
-
-// После: чистый MUI Link с Next.js роутингом
-<Link href="/" underline="hover" color="inherit">
-  Home
-</Link>
-
-// Или Button с href
-<Button href="/" variant="contained">
-  Go Home
-</Button>
-```
-
-**Преимущества:**
-- ✅ Автоматический client-side navigation для всех MUI Link/Button
-- ✅ Полная поддержка MUI API (variants, colors, underline, sx props)
-- ✅ TypeScript type-safety с правильным ref forwarding
-- ✅ Убрана необходимость в `@ts-expect-error` комментариях
-- ✅ Удалены inline стили для навигационных ссылок
-- ✅ Совместимо с Next.js 13+ (где Link не требует дочернего `<a>`)
-
-**Источник решения:**
-[Stack Overflow: Using Material UI Link with Next.js Link](https://stackoverflow.com/a/74419666)
+> **Superseded (2026-03):** После миграции на shadcn/ui + Tailwind CSS данный ADR утратил актуальность. Навигационные ссылки реализуются через `<Link>` из `next/link` напрямую, стилизованный через Tailwind или компонент `ui/link.tsx`.
 
 **Дата решения:** 2026-01-24
 
@@ -492,7 +448,7 @@ src/app/playground/
 ### Frontend
 - Next.js 16+ (App Router) + React 19
 - TypeScript 5.9+ (strict mode)
-- Material UI 7.3+ + Emotion 11+
+- shadcn/ui (Radix UI) + Tailwind CSS 4
 - Effector 23+ для state management
 
 ### Backend

@@ -7,7 +7,6 @@ src/
 ├── app/          ← Thin routes only (import + re-export, no logic)
 ├── features/     ← All business-logic components; import via '@/features'
 ├── ui/           ← UI primitives & design system; import via '@/ui'
-├── ui-theme/     ← MUI theme (TEMPORARY — will be deleted in Phase 4 migration)
 ├── alerts/       ← Effector-based alert system
 ├── config/       ← Metadata, mocks, constants
 ├── lib/          ← auth, db, email, swagger, validations

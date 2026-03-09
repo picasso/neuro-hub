@@ -31,7 +31,7 @@ createAlert({
 The alerts system supports 5 severity levels:
 
 ```tsx
-// standard MUI severities
+// standard alert severities
 createAlert({ severity: 'info', message: 'Information message' })
 createAlert({ severity: 'success', message: 'Success message' })
 createAlert({ severity: 'warning', message: 'Warning message' })
@@ -506,7 +506,6 @@ createAlert({
 - `icon` - `IconName` - Custom icon name
 - `iconOptions` - `IconOptions` - Custom icon options (color, animation)
 - `md` - `Partial<MarkdownParams> | false` - Markdown configuration or disable
-- `sx` - `MuiAlertProps['sx']` - MUI sx prop for custom styling
 - `disableClose` - `boolean` - Hide close button (default: `false`)
 - `disableAutoClose` - `boolean` - Disable automatic closing (default: `false`)
 

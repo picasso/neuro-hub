@@ -86,7 +86,6 @@ src/
 │   ├── providers/
 │   ├── icons/
 │   └── index.ts       # barrel — import from '@/ui'
-├── ui-theme/          # MUI theme (TEMPORARY — Phase 4 will delete this)
 ├── alerts/            # Effector alert system
 ├── config/            # metadata, mocks
 ├── lib/               # auth, db, email, swagger, validations
