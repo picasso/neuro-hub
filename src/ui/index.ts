@@ -68,6 +68,7 @@ export {
 	type TabsProps,
 	type TabItem,
 } from './tabs'
+export { Stepper, type StepperProps, type StepperItem } from './stepper'
 export { type SemanticColor, type IconColor } from './types'
 export { needsContrast } from './utils'
 
