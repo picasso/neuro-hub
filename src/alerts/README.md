@@ -1,6 +1,6 @@
 # Alerts System: Connecting People
 
-Notifications with overlay support based on **Sonner** and **Effector**.
+Notifications with overlay support based on **Sonner**, **shadcn/ui**, and **Effector**.
 
 ## Linting notes (Effector)
 
@@ -43,6 +43,15 @@ createAlert({
     title: 'Loading...',
     message: 'Please wait while we process your request',
     progress: 0,
+})
+
+// progress without the percentage caption
+createAlert({
+    severity: 'progress',
+    title: 'Uploading...',
+    message: 'File transfer in progress',
+    progress: 65,
+    disableProgressCaption: true,
 })
 ```
 
@@ -104,7 +113,7 @@ createAlert({
 })
 ```
 
-### Title and Elevation
+### Title
 
 ```tsx
 // with title
@@ -113,16 +122,7 @@ createAlert({
     title: 'Registered successfully',
     message: 'The panel has been registered',
 })
-
-// with elevation (shadow)
-createAlert({
-    severity: 'warning',
-    elevation: 6,
-    message: 'Alert with shadow',
-})
 ```
-
-## Special Features
 
 ## Notes on options: Toaster vs Toast
 
@@ -193,7 +193,7 @@ createAlert({
     icon: 'warning',
     iconOptions: {
         color: 'error',
-        animation: 'rotate',
+        spinning: true,
     },
 })
 
@@ -501,13 +501,13 @@ createAlert({
 - `title` - `TemplatedMessage` - Optional alert title
 - `message` - `string | TemplatedMessage` - Alert message content
 - `variant` - `'standard' | 'filled' | 'outlined'` - Visual variant (default: `'standard'`)
-- `elevation` - `number` - Shadow elevation (0-24)
 - `overlay` - `boolean` - Show semi-transparent backdrop (default: `false`)
 - `icon` - `IconName` - Custom icon name
-- `iconOptions` - `IconOptions` - Custom icon options (color, animation)
+- `iconOptions` - `IconOptions` - Custom icon options (color, spinning)
 - `md` - `Partial<MarkdownParams> | false` - Markdown configuration or disable
 - `disableClose` - `boolean` - Hide close button (default: `false`)
 - `disableAutoClose` - `boolean` - Disable automatic closing (default: `false`)
+- `disableProgressCaption` - `boolean` - Hide the percentage caption below the progress bar (default: `false`)
 
 **Inherited from Sonner ToastProps:**
 
@@ -547,4 +547,4 @@ Effector effect for creating alerts with advanced features.
 
 ---
 
-Built on top of [Sonner](https://sonner.emilkowal.ski/) by Emil Kowalski.
+Built on top of [Sonner](https://sonner.emilkowal.ski/) by Emil Kowalski. Uses [shadcn/ui](https://ui.shadcn.com/) Alert and Progress components.
