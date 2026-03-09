@@ -108,6 +108,7 @@ export function PortfolioViewer({
 				<Stack gap={4}>
 					<Icon name={`media-${kind}` as IconName} size={40} color="secondary" />
 					<TS
+						clean
 						variant="h3"
 						content={title ?? ''}
 						className="mb-0.5 capitalize truncate max-w-sm"
@@ -202,6 +203,7 @@ export function PortfolioViewer({
 					>
 						<Icon name="media-pdf" size={180} color="contrast" />
 						<TS
+							clean
 							variant="body"
 							color="contrast"
 							className="text-sm"
@@ -225,6 +227,7 @@ export function PortfolioViewer({
 					>
 						<Icon name="do-not-disturb" size={180} color="contrast" />
 						<TS
+							clean
 							variant="body"
 							color="contrast"
 							className="text-sm"

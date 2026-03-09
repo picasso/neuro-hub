@@ -79,7 +79,7 @@
 	--cta-foreground: #ffffff;
 
 	/* Accent — subtle hover for menus, lists (NOT violet!) */
-	--accent: #f0f0eb;
+	--accent: #efede6; /* #f0f0eb */
 	--accent-foreground: #26251e;
 
 	/* Background & Surface */

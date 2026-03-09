@@ -98,7 +98,7 @@ export function Dialog({
 
 	const descriptionNode = description ? (
 		<ShadcnDialogDescription asChild>
-			{isString(description) ? <TS content={description} md={md} /> : description}
+			{isString(description) ? <TS clean content={description} md={md} /> : description}
 		</ShadcnDialogDescription>
 	) : null
 

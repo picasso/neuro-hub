@@ -70,15 +70,19 @@ export function Accordion({
 						{icon ? (
 							<Stack gap={3}>
 								<Icon name={icon} color="dimmed" />
-								<TS variant="body">{title ?? value}</TS>
+								<TS clean variant="body">
+									{title ?? value}
+								</TS>
 							</Stack>
 						) : (
-							<TS variant="body">{title ?? value}</TS>
+							<TS clean variant="body">
+								{title ?? value}
+							</TS>
 						)}
 					</AccordionTrigger>
 					<AccordionContent className={contentClassName}>
 						{isString(content) ? (
-							<TS variant="subtitle" color="dimmed" content={content} />
+							<TS clean variant="subtitle" color="dimmed" content={content} />
 						) : (
 							content
 						)}

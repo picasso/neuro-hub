@@ -51,6 +51,8 @@ import {
 	Scale,
 	Frown,
 	UsersRound,
+	SlidersHorizontal,
+	Cog,
 } from 'lucide-react'
 import { type ComponentType, type SVGProps } from 'react'
 import { customIcons } from './icons/icons'
@@ -111,6 +113,8 @@ const lucideIcons = {
 	Scale,
 	Frown,
 	UsersRound,
+	SlidersHorizontal,
+	Cog,
 }
 
 // type generation --------------------------------------------------------------------------------]

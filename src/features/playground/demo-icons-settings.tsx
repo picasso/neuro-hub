@@ -153,6 +153,8 @@ const libraryIcons: IconName[] = [
 	'scale',
 	'frown',
 	'users-round',
+	'sliders-horizontal',
+	'cog',
 ]
 
 const customIconNames: IconName[] = ['spinner', 'linked-in', 'telegram', 'x-twitter']

@@ -9,7 +9,7 @@ import { type TabItem, Tabs, TS } from '@/ui'
 export function DemoTypography() {
 	return (
 		<DemoRoot>
-			<Tabs items={tabs} defaultValue="text" variant="line" contentClassName="pt-6" />
+			<Tabs items={tabs} defaultValue="text" variant="default" contentClassName="pt-6" />
 		</DemoRoot>
 	)
 }
