@@ -68,19 +68,18 @@ Imports are automatically sorted by ESLint in this order:
 Within each group, imports are sorted alphabetically (case-insensitive).
 CRITICAL: NO empty lines between import groups! (`'newlines-between': 'never'`)
 
-## MUI sx Prop Syntax
+## Tailwind CSS Conventions
 
-When using MUI `sx` prop, prefer numeric values for percentage dimensions:
+Use Tailwind utility classes for styling. Prefer the `cn()` utility from `@/lib/utils` for conditional class merging:
 
-```typescript
-// ✅ CORRECT: numeric format
-sx={{ width: 1 }}       // 100%
-sx={{ width: 0.7 }}     // 70%
-sx={{ width: 0.5 }}     // 50%
+```tsx
+// ✅ CORRECT: Tailwind classes with cn()
+import { cn } from '@/lib/utils'
 
-// ❌ AVOID: string format
-sx={{ width: '100%' }}
-sx={{ width: '70%' }}
+<div className={cn('flex items-center gap-2', isActive && 'bg-primary text-primary-foreground')}>
+
+// ❌ AVOID: inline styles or style objects
+<div style={{ display: 'flex', gap: 8 }}>
 ```
 
-This applies to: `width`, `height`, `maxWidth`, `maxHeight`, `minWidth`, `minHeight`
+Use shadcn/ui CSS variables for theme colors (`bg-primary`, `text-foreground`, `border-border`, etc.).

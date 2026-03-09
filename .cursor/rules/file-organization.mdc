@@ -1,0 +1,151 @@
+---
+description: File & folder organization rules for the neuro-hub project
+globs:
+alwaysApply: true
+---
+
+# File & Folder Organization
+
+## Top-level source layout (`src/`)
+
+```zsh
+src/
+├── app/        ← Next.js routes only — thin files (import + re-export, no logic)
+├── features/   ← All business-logic components; imported via '@/features' barrel
+├── ui/         ← UI primitives and design system; imported via '@/ui' barrel
+├── ui-theme/   ← MUI theme (TEMPORARY — will be deleted in Phase 4 migration)
+├── alerts/     ← Effector-based alert system
+├── config/     ← Metadata, mocks, constants
+├── lib/        ← auth, db, email, swagger, validations, utils
+├── stores/     ← Effector stores
+├── utils/      ← Pure utility functions
+└── types/      ← Shared TypeScript types
+```
+
+## `app/` — Thin routes
+
+Every `page.tsx` must be a thin file: **import + re-export only**.
+
+```tsx
+// ✅ correct
+import { SomePage } from '@/features'
+export { someMetadata as metadata } from '@/config'
+export default SomePage
+
+// ❌ wrong — no JSX, no logic, no data fetching in page.tsx
+```
+
+- `layout.tsx` and `route.ts` (API routes) may contain setup code
+- Co-location of route-specific modules in the route folder is allowed only for API routes
+
+## `features/` — Business logic components
+
+All components with site-specific logic (auth state, DB calls, domain behavior):
+
+```zsh
+features/
+├── home/            home sections + HomePage
+├── dashboard/       DashboardPage (async Server Component — server-only)
+├── auth/            LoginForm, LoginPage
+├── onboarding/      OnboardingWizard, SignupPage
+├── portfolio/       Portfolio, PortfolioEditor, portfolio-item, portfolio-viewer
+├── freelancer-profile/  editor, public view, FreelancerProfilePage (server-only)
+├── playground/      PlaygroundPage + all demo components
+├── header.tsx
+├── footer.tsx
+├── db-health-alert.tsx
+├── index.ts         ← client-safe barrel — import from '@/features'
+└── server.ts        ← server-only barrel — import from '@/features/server'
+```
+
+**No sub-barrel `index.ts` files.** Subfolders do NOT have their own `index.ts`. Both `features/index.ts` and `features/server.ts` import directly from files:
+
+```tsx
+// features/index.ts — imports directly from files
+export { HomePage } from './home/home-page'
+export { LoginForm } from './auth/login-form'
+
+// features/server.ts — same pattern
+export { DashboardPage } from './dashboard/dashboard-page'
+```
+
+Two barrels:
+
+- `@/features` — client-safe exports (can be imported from both server and client components)
+- `@/features/server` — server-only exports (components using `next/headers`, DB queries, etc.)
+
+## `ui/` — Primitives & design system
+
+All reusable UI components with no business logic:
+
+```zsh
+ui/
+├── shadcn/          ← raw Radix/shadcn components (INTERNAL — never import directly)
+├── providers/       ← ThemeRegistry, FontProvider (no index.ts — exported via ui/index.ts)
+├── icons/           ← custom SVG icons (grouping file: icons.tsx, no index.ts)
+├── button.tsx
+├── icon.tsx
+├── icon-button.tsx
+├── link.tsx
+├── stack.tsx
+├── text-styled.tsx
+├── file-uploader.tsx
+├── assets.tsx
+└── index.ts         ← barrel — always import from '@/ui'
+```
+
+### Import rules
+
+```tsx
+// ✅ Always use the barrel
+import { Button, Icon, TS, Label, Separator } from '@/ui'
+
+// ❌ Never import from shadcn directly
+import { Button } from '@/ui/shadcn/button'   // FORBIDDEN
+
+// ❌ Never import from ui sub-paths for items in the barrel
+import { Button } from '@/ui/button'           // prefer barrel unless justified
+```
+
+All shadcn components that don't have a custom wrapper are re-exported from `ui/index.ts`.
+New shadcn installs: add the component to `ui/shadcn/`, then re-export it from `ui/index.ts`.
+
+## Flat structure preference
+
+- Prefer flat folders over deep nesting
+- Use prefix-based grouping for related files: `demo.tsx`, `demo-buttons.tsx`, `demo-icons.tsx`
+- Create subfolders only when there are 5+ related files forming a distinct domain
+
+## Barrel rules
+
+**Only top-level barrels.** `index.ts` files exist only at `features/index.ts`, `features/server.ts`, and `ui/index.ts`. Subfolders never have their own `index.ts`.
+
+Barrel files export only the public API:
+
+- Self-contained page/section components
+- Pure UI primitives
+- Types and constants
+
+Internal sub-components (those receiving callback props from a parent, or only meaningful as children of a specific component) stay as relative imports and are NOT exported from the barrel.
+
+### Grouping files (not barrels)
+
+When a subfolder contains many small related files (e.g. SVG icons), use a **grouping file** to encapsulate them. Name it after the group, not `index.ts`:
+
+```tsx
+// ui/icons/icons.tsx — groups small icon files
+import { LinkedIn } from './linkedin'
+import { Spinner } from './spinner'
+export const customIcons = { spinner: Spinner, linkedIn: LinkedIn, ... }
+
+// consumed by ui/assets.tsx:
+import { customIcons } from './icons/icons'
+```
+
+See `.cursor/rules/use-client.mdc` for how barrel exports interact with `'use client'` directives.
+
+## When to add a subfolder
+
+Only when all of these are true:
+1. More than 5 files in the group
+2. The group has a distinct domain (e.g. `freelancer-profile`, `onboarding`)

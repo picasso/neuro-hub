@@ -1,0 +1,227 @@
+@import 'tailwindcss';
+
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@theme inline {
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+	--radius-2xl: calc(var(--radius) + 8px);
+
+	--font-sans: var(--font-sans), 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+
+	/* Custom: CTA (violet) — main call-to-action, AI elements */
+	--color-cta: var(--cta);
+	--color-cta-dark: var(--cta-dark);
+	--color-cta-foreground: var(--cta-foreground);
+
+	/* Custom: extended primary shades */
+	--color-primary-dark: var(--primary-dark);
+	--color-primary-light: var(--primary-light);
+	--color-primary-fond: var(--primary-fond);
+
+	/* Custom: dimmed text */
+	--color-dimmed: var(--dimmed);
+
+	/* Custom: surface (cards, modals) */
+	--color-surface: var(--surface);
+
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+	--radius: 0.5rem;
+
+	/* Primary (green) — brand, links, navigation */
+	--primary: #1dbf73;
+	--primary-foreground: #ffffff;
+	--primary-dark: #169e5f;
+	--primary-light: #35d48d;
+	--primary-fond: #e8f9f1;
+
+	/* CTA (violet) — CTA buttons, AI elements */
+	--cta: #7c3aed;
+	--cta-dark: #6d28d9;
+	--cta-foreground: #ffffff;
+
+	/* Accent — subtle hover for menus, lists (NOT violet!) */
+	--accent: #efede6; /* #f0f0eb */
+	--accent-foreground: #26251e;
+
+	/* Background & Surface */
+	--background: #f7f7f4;
+	--surface: #ffffff;
+
+	/* Text */
+	--foreground: #26251e;
+	--muted-foreground: #62646a;
+	--dimmed: #808288;
+
+	/* Border */
+	--border: #e5e5e0;
+	--input: #e5e5e0;
+	--ring: #1dbf73;
+
+	/* Card / Popover */
+	--card: #ffffff;
+	--card-foreground: #26251e;
+	--popover: #ffffff;
+	--popover-foreground: #26251e;
+
+	/* Secondary */
+	--secondary: #e7e7e4;
+	--secondary-foreground: #26251e;
+
+	/* Muted */
+	--muted: #f5f5f0;
+
+	/* Destructive */
+	--destructive: #ef4444;
+
+	/* Chart colors */
+	--chart-1: #1dbf73;
+	--chart-2: #7c3aed;
+	--chart-3: #f59e0b;
+	--chart-4: #06b6d4;
+	--chart-5: #ec4899;
+
+	/* Sidebar */
+	--sidebar: #ffffff;
+	--sidebar-foreground: #26251e;
+	--sidebar-primary: #1dbf73;
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: #f5f5f0;
+	--sidebar-accent-foreground: #26251e;
+	--sidebar-border: #e5e5e0;
+	--sidebar-ring: #1dbf73;
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
+}
+
+@layer components {
+	.markdown-root:not(.not-relaxed) {
+		@apply leading-relaxed;
+	}
+	.markdown-root:not(.not-relaxed) [data-slot='alert-description'],
+	.markdown-root:not(.not-relaxed) [data-slot='field-description'] {
+		@apply leading-relaxed;
+	}
+	.markdown-root [data-slot='field-description'] span.__code {
+		@apply text-xs;
+	}
+	.markdown-root a,
+	.components-external-link {
+		color: var(--primary-dark);
+		letter-spacing: 0.25px;
+		font-weight: 700;
+		text-decoration: none;
+	}
+	.markdown-root a:hover,
+	.components-external-link:hover {
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+	.markdown-root.contrast a,
+	.markdown-root.contrast .components-external-link {
+		@apply text-background/90;
+	}
+	.markdown-root.contrast a:hover,
+	.markdown-root.contrast .components-external-link:hover {
+		@apply text-background;
+	}
+	.markdown-root br {
+		margin-bottom: 2px;
+	}
+	.markdown-root br + br {
+		margin-bottom: 0;
+	}
+	.markdown-root span.__code {
+		position: relative;
+		padding: 1px 6px 2px;
+		border-radius: 6px;
+		letter-spacing: 0.5px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: rgba(0, 0, 0, 0.2);
+		background-color: rgba(0, 0, 0, 0.04);
+		color: var(--muted-foreground);
+		outline: 0 solid transparent;
+		line-height: 1em;
+	}
+	.markdown-root.contrast span.__code {
+		border-color: rgba(255, 255, 255, 0.5);
+		background-color: rgba(0, 0, 0, 0.05);
+		color: inherit;
+	}
+	.markdown-root.narrow span.__code {
+		padding: 0 2px;
+		border-radius: 4px;
+		letter-spacing: 0.25px;
+	}
+	.markdown-root span.__code.__e {
+		background-color: color-mix(in srgb, #ff2020, white 78%);
+		color: color-mix(in srgb, #ff2020, black 30%);
+		border-color: color-mix(in srgb, #ff2020, black 20%);
+	}
+	.markdown-root span.__code.__q {
+		background-color: color-mix(in srgb, #cc0096, white 78%);
+		color: color-mix(in srgb, #cc0096, black 10%);
+		border-color: color-mix(in srgb, #cc0096, black 10%);
+	}
+	.markdown-root span.__code.__s {
+		background-color: color-mix(in srgb, #1f993f, white 66%);
+		color: color-mix(in srgb, #1f993f, black 30%);
+		border-color: color-mix(in srgb, #1f993f, black 10%);
+	}
+	.markdown-root span.__code.__i {
+		background-color: color-mix(in srgb, #0070c9, white 75%);
+		color: color-mix(in srgb, #0070c9, black 20%);
+		border-color: color-mix(in srgb, #0070c9, black 10%);
+	}
+	.markdown-root span.__code.__w {
+		background-color: color-mix(in srgb, #fb8c00, white 75%);
+		color: color-mix(in srgb, #fb8c00, black 40%);
+		border-color: color-mix(in srgb, #fb8c00, black 30%);
+	}
+}

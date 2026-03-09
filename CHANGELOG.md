@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-03-09
+
+### Added
+- shadcn/ui component system (Radix UI primitives + Tailwind CSS 4)
+- New `ui/` barrel with full set of reusable primitives:
+  Button, Icon, IconButton, Link, Stack, TextStyled, FileUploader,
+  Separator, Badge, Avatar, Dialog, Tooltip, Card, and more
+- Custom alert system rebuilt on shadcn/ui (Sonner stays for toasts)
+- Custom Stepper component (onboarding progress) using Tailwind
+- `use-client` boundary pattern for barrel-exported client components
+
+### Changed
+- Full migration from Material UI to shadcn/ui across all features:
+  header, footer, home sections, onboarding wizard (6 steps),
+  auth pages, freelancer profile, portfolio editor and viewer, dashboard
+- Styling fully ported to Tailwind CSS 4; `sx` prop usage eliminated
+- `ui-theme/` directory and MUI theme providers removed
+
+### Removed
+- `@mui/material`, `@mui/icons-material`, `@mui/lab` dependencies
+- `@emotion/react`, `@emotion/styled` dependencies
+- `src/ui-theme/` directory (MUI theme — Phase 4 cleanup complete)
+- `src/ui/providers/theme-registry.tsx` and `font-provider.tsx`
+- Playground legacy MUI demo page (`playground-old/`)
+
 ## [0.3.4] - 2026-02-18
 
 ### Added
@@ -155,9 +180,10 @@ All notable changes to this project will be documented in this file.
 - Database migrations for users, profiles, sessions, and skills
 - Comprehensive project documentation
 
-[0.2.5]: https://github.com/picasso/neuro-hub/compare/v0.2.2...v0.2.5
+[0.4.0]: https://github.com/picasso/neuro-hub/compare/v0.3.4...v0.4.0
 [0.3.4]: https://github.com/picasso/neuro-hub/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/picasso/neuro-hub/compare/v0.2.5...v0.3.3
+[0.2.5]: https://github.com/picasso/neuro-hub/compare/v0.2.2...v0.2.5
 [0.2.2]: https://github.com/picasso/neuro-hub/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/picasso/neuro-hub/compare/v0.1.5...v0.2.1
 [0.1.5]: https://github.com/picasso/neuro-hub/compare/v0.1.4...v0.1.5

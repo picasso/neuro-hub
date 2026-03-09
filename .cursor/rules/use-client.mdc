@@ -1,0 +1,130 @@
+---
+description: "'use client' directive placement rules — when to add, when to skip, how to resolve serialization warnings"
+globs: ["src/**/*.tsx", "src/**/*.ts"]
+alwaysApply: true
+---
+
+# `'use client'` Directive Rules
+
+## Decision Procedure
+
+```zsh
+Does the file use hooks (useState, useEffect, useMemo, useCallback, useRef,
+useUnit, useGate, useStoreMap, useRouter, useSearchParams, usePathname)
+or browser APIs (window, document, localStorage) at module scope?
+
+  NO  → no directive needed
+
+  YES → Is the file exported through a barrel (index.ts)?
+          YES → add 'use client' at line 1
+          NO  → Is it ONLY imported from files that already have 'use client'?
+                  YES → no directive needed (internal module)
+                  NO  → add 'use client' at line 1
+```
+
+## When `'use client'` is REQUIRED
+
+A file needs `'use client'` when BOTH are true:
+
+1. It uses React hooks, Effector-react hooks, Next.js client hooks, or browser APIs
+2. It is reachable from a Server Component through an import chain (including barrel re-exports)
+
+## When `'use client'` is NOT needed
+
+A file can skip `'use client'` when:
+
+- It is an internal module NOT exported through any barrel (`index.ts`)
+- AND it is only imported by files that already have `'use client'`
+
+These files inherit the client boundary from their parent importer.
+
+## Resolving "Props must be serializable" Warnings
+
+When adding `'use client'` causes:
+> Props must be serializable for components in the "use client" entry file.
+> "onSelect" is a function that's not a Server Action.
+
+This means the file receives callback props (`onXXX`) and should NOT be a client boundary entry point.
+
+### Fix: remove from barrel
+
+The component is an internal sub-component. Remove it from `index.ts` and import via relative path from its `'use client'` parent. Without the barrel export, it won't be traced from the server path and doesn't need `'use client'`.
+
+### If the component must be public AND receive callbacks
+
+Two escape hatches (rare — prefer the fix above):
+
+1. **Wrapper pattern**: Create a public wrapper in the barrel (with `'use client'`, serializable props only) that renders the internal component with callbacks
+2. **Server Actions**: Rename callback props to `xxxAction` suffix if they are actual Server Actions
+
+### Client boundary re-export pattern (confirmed working)
+
+When a component uses hooks AND must stay in the barrel AND has callback props — use a dedicated "boundary" file:
+
+```zsh
+component.tsx         ← NO 'use client', uses hooks, defines component (NOT in barrel directly)
+        ↑ re-export
+component-client.tsx  ← HAS 'use client', only re-exports from component.tsx
+        ↑
+ui/index.ts           ← imports from component-client.tsx
+```
+
+**Why it works:** Next.js applies "Props must be serializable" only to components **defined** in a `'use client'` file. Since `component-client.tsx` only re-exports and defines nothing, the warning does not appear.
+
+```ts
+// component.tsx — no 'use client', full implementation with hooks
+export function MyComponent({ onChange, value }: MyComponentProps) { ... }
+export type { MyComponentProps }
+
+// component-client.tsx — 'use client', re-export only
+'use client'
+export * from './component'
+
+// ui/index.ts — barrel imports from the client boundary file
+export { MyComponent, type MyComponentProps } from './component-client'
+```
+
+`component.tsx` has no `'use client'` but uses hooks — this is safe because it is only ever imported from `component-client.tsx` which is already a client boundary.
+
+## Barrel Hygiene
+
+Barrel files (`index.ts`) export ONLY:
+
+- Self-contained page/section components (with `'use client'` if they use hooks)
+- Pure UI primitives (stateless or with own `'use client'`)
+- Types and constants
+
+Barrel files NEVER export:
+
+- Internal sub-components that receive callback props from a parent
+- Components that only make sense as children of a specific parent component
+
+## Server-only Components in `features/`
+
+Components that import server-only modules (`next/headers`, `@/lib/auth/server`, `@/lib/db`, `pg`, `fs`) must NOT be in `features/index.ts`. They go in `features/server.ts` — a separate barrel for server-only exports.
+
+```tsx
+// app/dashboard/page.tsx — Server Component imports from server barrel
+import { DashboardPage } from '@/features/server'
+export default DashboardPage
+
+// app/page.tsx — can safely import from features/index.ts (client-safe)
+import { HomePage } from '@/features'
+export default HomePage
+```
+
+Why: `features/index.ts` is imported by client components. Next.js traces all barrel exports. If the barrel contains a server-only module, client components will fail with "next/headers only works in a Server Component".
+
+## Avoiding Unnecessary `useMemo` / `useCallback`
+
+If a file is a UI primitive exported through the barrel, avoid `useMemo`/`useCallback` for trivial computations. This forces `'use client'` on a file that could otherwise work as a Server Component. Inline the computation instead.
+
+## Quick Reference
+
+| Scenario | `'use client'`? |
+|---|---|
+| File in barrel + uses hooks | YES |
+| File in barrel + no hooks | NO |
+| Internal file + only imported from `'use client'` parent | NO |
+| Internal file + imported from server path | YES |
+| File receives `onX` callback props + adding `'use client'` causes serialization warning | Remove from barrel instead |

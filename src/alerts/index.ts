@@ -7,4 +7,5 @@ export {
 	updateAlertOptions,
 	resetAlertOptions,
 	type Alert,
+	type AlertOptions,
 } from './model'
