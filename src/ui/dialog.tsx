@@ -1,5 +1,16 @@
 import { produce } from 'immer'
-import { cloneDeep, filter, find, isPlainObject, isString, keys, map, values } from 'lodash'
+import {
+	cloneDeep,
+	filter,
+	find,
+	forEach,
+	has,
+	isPlainObject,
+	isString,
+	keys,
+	map,
+	values,
+} from 'lodash'
 import { VisuallyHidden } from 'radix-ui'
 import { useCallback, useMemo, type ComponentProps, type ReactNode } from 'react'
 import { Button, type ButtonProps } from './button'
@@ -42,12 +53,13 @@ export type DialogAction = Partial<
 	id: string
 	value?: unknown
 	kind?: 'button' | 'node'
+	linked?: unknown
 }
 
-export type DialogProps<T = unknown> = ComponentProps<typeof ShadcnDialogContent> & {
+export type DialogProps<T = unknown, L = unknown> = ComponentProps<typeof ShadcnDialogContent> & {
 	// controlled / uncontrolled
 	open?: boolean
-	onClose?: (value?: T) => void
+	onClose?: (value?: T | null, linked?: L) => void
 	defaultOpen?: boolean
 	modal?: boolean
 
@@ -66,6 +78,7 @@ export type DialogProps<T = unknown> = ComponentProps<typeof ShadcnDialogContent
 	labels?: ActionLabels | null
 	actions?: DialogAction[] | null
 	actionsPosition?: 'start' | 'end' | 'center'
+	linkedData?: Record<string, L>
 
 	// appearance
 	size?: DialogSize
@@ -83,7 +96,7 @@ export type DialogProps<T = unknown> = ComponentProps<typeof ShadcnDialogContent
 	md?: TextStyledProps['md']
 }
 
-export function Dialog<T = boolean>({
+export function Dialog<T = boolean, L = unknown>({
 	open,
 	onClose,
 	defaultOpen,
@@ -97,6 +110,7 @@ export function Dialog<T = boolean>({
 	footer,
 	footerClassName,
 	actions: dialogActions,
+	linkedData,
 	labels,
 	actionsPosition = 'end',
 	size = 'md',
@@ -109,7 +123,7 @@ export function Dialog<T = boolean>({
 	children,
 	md,
 	...props
-}: DialogProps<T>) {
+}: DialogProps<T, L>) {
 	const actions = useMemo(() => {
 		const defaults = cloneDeep(defaultActions) as DialogAction[]
 		const actions =
@@ -132,12 +146,20 @@ export function Dialog<T = boolean>({
 			if (buttonActions.length === 1) buttonActions[0].variant = 'default'
 			// if more than 2 actions then the leftmost will be 'ghost'
 			if (buttonActions.length > 2) buttonActions[0].variant = 'ghost'
+			// if linkedData is provided, then add it to the action
+			if (linkedData) {
+				forEach(draft, (action) => {
+					if (has(linkedData, action.id)) {
+						action.linked = linkedData[action.id]
+					}
+				})
+			}
 		})
-	}, [labels, dialogActions])
+	}, [dialogActions, labels, linkedData])
 
 	const createOnClick = useCallback(
-		(id: string, value: unknown) => {
-			return () => onClose?.((value ?? id) as T)
+		(id: string, value: unknown, linked: unknown) => {
+			return () => onClose?.((value ?? id) as T, linked as L)
 		},
 		[onClose],
 	)
@@ -210,6 +232,7 @@ export function Dialog<T = boolean>({
 									variant = 'outline',
 									value,
 									size = 'sm',
+									linked,
 									...actionProps
 								} = action
 								if (kind === 'button') {
@@ -218,7 +241,7 @@ export function Dialog<T = boolean>({
 											key={index}
 											variant={variant}
 											size={size}
-											onClick={createOnClick(id, value)}
+											onClick={createOnClick(id, value, linked)}
 											{...actionProps}
 										/>
 									)
@@ -242,7 +265,7 @@ export function Dialog<T = boolean>({
 		<ShadcnDialog
 			open={open}
 			onOpenChange={(isOpen) => {
-				if (!isOpen) onClose?.()
+				if (!isOpen) onClose?.(null)
 			}}
 			defaultOpen={defaultOpen}
 			modal={modal}
@@ -292,28 +315,24 @@ const defaultActions = [
 		label: 'Cancel',
 		value: false,
 		variant: 'outline',
-		size: 'sm',
 	},
 	{
 		id: 'ok',
 		label: 'Ok',
 		value: true,
 		variant: 'default',
-		size: 'sm',
 	},
 	{
 		id: 'no',
 		label: 'No',
 		variant: 'outline',
 		value: false,
-		size: 'sm',
 	},
 	{
 		id: 'yes',
 		label: 'Yes',
 		variant: 'default',
 		value: true,
-		size: 'sm',
 	},
 ] as const satisfies DialogAction[]
 

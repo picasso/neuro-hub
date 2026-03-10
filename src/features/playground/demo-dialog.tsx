@@ -1,7 +1,9 @@
 'use client'
 
+import { isNil, isString } from 'lodash'
 import { useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
+import { ModalDemo } from './demo-dialog-modals'
 import { type DialogDemoState } from './demo-dialog-settings'
 import { useSettings } from './settings-store'
 import { Button, Dialog, Stack, TS } from '@/ui'
@@ -37,6 +39,7 @@ export function DemoDialog() {
 		actionsPosition,
 	} = useSettings<DialogDemoState>()
 
+	const [value, setValue] = useState<unknown>(null)
 	const [open, setOpen] = useState<Record<OpenKey, boolean>>({
 		interactive: false,
 		sm: false,
@@ -55,6 +58,11 @@ export function DemoDialog() {
 
 	const setKey = (key: OpenKey, value: boolean) => setOpen((prev) => ({ ...prev, [key]: value }))
 
+	const onClose = (key: OpenKey) => (value: unknown) => {
+		setKey(key, false)
+		setValue(value as unknown as string)
+	}
+
 	return (
 		<DemoRoot>
 			<DemoSection
@@ -64,7 +72,7 @@ export function DemoDialog() {
 			>
 				<Dialog
 					open={open.interactive}
-					onClose={() => setKey('interactive', false)}
+					onClose={onClose('interactive')}
 					icon={icon ? 'briefcase' : undefined}
 					iconOptions={{ color: 'primary' }}
 					title={title ? 'Заголовок диалога' : undefined}
@@ -99,6 +107,15 @@ export function DemoDialog() {
 					leftIcon="briefcase"
 					onClick={() => setKey('interactive', true)}
 				/>
+				<TS
+					variant="subtitle"
+					color="secondary"
+					content={
+						`\`*value:\` -> \`${isString(value) ? '#"' : isNil(value) ? '!' : '+'}` +
+						`${value}${isString(value) ? '"' : ''}\``
+					}
+					className="mt-4"
+				/>
 			</DemoSection>
 
 			<DemoSection title="Sizes" asBadge="shield-check" separator>
@@ -107,7 +124,7 @@ export function DemoDialog() {
 						<div key={s}>
 							<Dialog
 								open={open[s]}
-								onClose={() => setKey(s, false)}
+								onClose={onClose(s)}
 								title={`Size: ${s}`}
 								description={`Диалог с размером **${s}**.\nШирина контролируется пропом \`size\``}
 								size={s}
@@ -137,7 +154,7 @@ export function DemoDialog() {
 						<div key={key}>
 							<Dialog
 								open={open[key as OpenKey]}
-								onClose={() => setKey(key as OpenKey, false)}
+								onClose={onClose(key as OpenKey)}
 								title={label}
 								icon={icon}
 								iconOptions={{ color }}
@@ -165,7 +182,7 @@ export function DemoDialog() {
 			<DemoSection title="With footer" asBadge="badge-check" separator>
 				<Dialog
 					open={open.footer}
-					onClose={() => setKey('footer', false)}
+					onClose={onClose('footer')}
 					title="Подтверждение действия"
 					description="Вы уверены, что хотите продолжить? Это действие **нельзя отменить**."
 					icon="alert-triangle"
@@ -177,7 +194,7 @@ export function DemoDialog() {
 								size="sm"
 								label="Удалить"
 								leftIcon="trash"
-								onClick={() => setKey('footer', false)}
+								onClick={() => onClose('footer')('delete')}
 							/>
 						</Stack>
 					}
@@ -185,7 +202,7 @@ export function DemoDialog() {
 				/>
 				<Dialog
 					open={open.actions}
-					onClose={() => setKey('actions', false)}
+					onClose={onClose('actions')}
 					title="Действия"
 					description="Выберите действие в зависимости от вашего желания:"
 					icon="cog"
@@ -259,6 +276,9 @@ export function DemoDialog() {
 					leftIcon="ban"
 					onClick={() => setKey('no-overlay', true)}
 				/>
+			</DemoSection>
+			<DemoSection title="Modals system" asBadge="badge-check">
+				<ModalDemo setValue={setValue} />
 			</DemoSection>
 		</DemoRoot>
 	)

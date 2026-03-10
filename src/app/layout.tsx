@@ -6,6 +6,7 @@ import { DbHealthAlert } from '@/features/db-health-alert'
 import { Footer } from '@/features/footer'
 import { Header } from '@/features/header'
 import { DebugPlugin } from '@/lib/logger/debug-plugin'
+import { ModalPlugin } from '@/modals'
 import { TooltipProvider } from '@/ui'
 
 export { homeMetadata as metadata, viewport } from '@/config'
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 				<TooltipProvider>
 					<DebugPlugin />
 					<AlertsPlugin />
+					<ModalPlugin />
 					<DbHealthAlert />
 					<Header />
 					<main className="flex-1">{children}</main>
