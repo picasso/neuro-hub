@@ -18,6 +18,7 @@ type OpenKey =
 	| 'icon-success'
 	| 'icon-error'
 	| 'footer'
+	| 'actions'
 	| 'no-overlay'
 
 export function DemoDialog() {
@@ -32,6 +33,8 @@ export function DemoDialog() {
 		title,
 		description,
 		content,
+		labels,
+		actionsPosition,
 	} = useSettings<DialogDemoState>()
 
 	const [open, setOpen] = useState<Record<OpenKey, boolean>>({
@@ -46,6 +49,7 @@ export function DemoDialog() {
 		'icon-success': false,
 		'icon-error': false,
 		footer: false,
+		actions: false,
 		'no-overlay': false,
 	})
 
@@ -75,6 +79,8 @@ export function DemoDialog() {
 					showCloseButton={closeButton}
 					showFooterClose={footerClose}
 					modal={modal}
+					actionsPosition={actionsPosition}
+					labels={labels ? ['no', 'yes'] : undefined}
 				>
 					{content && (
 						<>
@@ -83,12 +89,7 @@ export function DemoDialog() {
 								color="secondary"
 								content="Здесь может быть любой контент диалога:"
 							/>
-							<ul className="list-disc list-inside">
-								<li>формы</li>
-								<li>изображения</li>
-								<li>списки</li>
-								<li>и т.д.</li>
-							</ul>
+							<TS variant="list" content="формы\nизображения\nсписки\nи т.д." />
 						</>
 					)}
 				</Dialog>
@@ -182,12 +183,59 @@ export function DemoDialog() {
 					}
 					showFooterClose
 				/>
-				<Button
-					variant="destructive"
-					label="Dialog with footer"
-					leftIcon="trash"
-					onClick={() => setKey('footer', true)}
+				<Dialog
+					open={open.actions}
+					onClose={() => setKey('actions', false)}
+					title="Действия"
+					description="Выберите действие в зависимости от вашего желания:"
+					icon="cog"
+					iconOptions={{ color: 'info' }}
+					actions={[
+						{
+							id: 'cancel',
+							label: 'Отмена',
+							variant: 'outline',
+							leftIcon: 'x',
+							size: 'xs',
+						},
+						{
+							id: 'settings',
+							label: 'Настройки',
+							variant: 'outline',
+							leftIcon: 'cog',
+							size: 'xs',
+						},
+						{
+							id: 'delete',
+							label: 'Удалить',
+							variant: 'destructive',
+							leftIcon: 'trash',
+							size: 'xs',
+						},
+						{
+							id: 'confirm',
+							label: 'Подтвердить',
+							variant: 'default',
+							leftIcon: 'check',
+							size: 'xs',
+						},
+					]}
+					actionsPosition={actionsPosition}
 				/>
+				<Stack>
+					<Button
+						variant="destructive"
+						label="Dialog with footer"
+						leftIcon="trash"
+						onClick={() => setKey('footer', true)}
+					/>
+					<Button
+						variant="outline"
+						label="Dialog with actions"
+						leftIcon="cog"
+						onClick={() => setKey('actions', true)}
+					/>
+				</Stack>
 			</DemoSection>
 
 			<DemoSection title="No overlay" asBadge="badge-check" separator>

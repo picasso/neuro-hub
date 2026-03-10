@@ -46,7 +46,7 @@ export {
 	DialogPortal,
 	DialogTitle,
 	DialogTrigger,
-} from './dialog'
+} from './dialog-client'
 export {
 	Accordion,
 	AccordionRoot,

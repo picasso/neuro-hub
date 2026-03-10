@@ -46,6 +46,10 @@
 
 	/* Custom: surface (cards, modals) */
 	--color-surface: var(--surface);
+	--color-accent-dark: var(--accent-dark);
+
+	/* Custom: border */
+	--color-border-dark: var(--border-dark);
 
 	--color-chart-1: var(--chart-1);
 	--color-chart-2: var(--chart-2);
@@ -81,6 +85,7 @@
 	/* Accent — subtle hover for menus, lists (NOT violet!) */
 	--accent: #efede6; /* #f0f0eb */
 	--accent-foreground: #26251e;
+	--accent-dark: #e2e0d9;
 
 	/* Background & Surface */
 	--background: #f7f7f4;
@@ -95,6 +100,7 @@
 	--border: #e5e5e0;
 	--input: #e5e5e0;
 	--ring: #1dbf73;
+	--border-dark: #c7c7c4;
 
 	/* Card / Popover */
 	--card: #ffffff;
