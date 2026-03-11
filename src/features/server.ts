@@ -1,2 +1,5 @@
 export { DashboardPage } from './dashboard/dashboard-page'
 export { FreelancerProfilePage } from './freelancer-profile/freelancer-profile-page'
+export { AccountShell } from './account-shell'
+export { MarketingFooter } from './footer'
+export { MarketingHeader } from './header'

@@ -72,6 +72,8 @@ Review and refactor frontend code so it uses the project's existing building blo
 - for common layout containers in `src/app` and `src/features`, replace `div` + `flex` with `Stack`
 - when the layout matches `Stack` defaults, prefer the minimal form `<Stack>` instead of redundant props like `<Stack direction="row" gap={2}>`
 - only keep explicit `Stack` props when they differ from defaults: `direction="row"`, `gap={2}`, `align="center"`, `justify="flex-start"`
+- when `Stack` already supports a layout behavior via props, use props for the base behavior and reserve `className` for responsive overrides or styling that `Stack` cannot express directly
+- example: prefer `<Stack wrap gap={3} justify="space-between" className="md:flex-nowrap md:gap-6">` over moving the base `gap-3` into `className`
 - prefer `Stack` for common flex layouts
 - otherwise prefer `flex` with `gap-*` over `space-x-*` / `space-y-*`
 - avoid inline style objects when utility classes or wrapper props can express the same thing

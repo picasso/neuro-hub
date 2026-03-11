@@ -1,16 +1,11 @@
-'use client'
-
 import { config, contactContent } from '@/config'
-import { Badge, Icon, IconButton, Link, Stack, TS } from '@/ui'
+import { Badge, Icon, IconButton, Link, PageContainer, Stack, TS } from '@/ui'
 
-export function Footer() {
+export function MarketingFooter() {
 	return (
-		<footer
-			className="py-12 px-4 mt-auto"
-			style={{ background: 'linear-gradient(to bottom, #169e5f, #1dbf73)' }}
-		>
-			<div className="container max-w-5xl mx-auto">
-				<div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+		<footer className="mt-auto border-t bg-linear-to-b from-[#169e5f] to-[#1dbf73] py-12 text-white">
+			<PageContainer width="desktop">
+				<div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
 					<div>
 						<Stack align="center" gap={2} className="mb-2">
 							<TS variant="h5">NeuroGig</TS>
@@ -22,7 +17,7 @@ export function Footer() {
 								size="xs"
 							/>
 						</Stack>
-						<TS variant="subtitle" color="soft">
+						<TS variant="subtitle" color="soft" className="max-w-sm">
 							Платформа для фриланса в сфере генеративного ИИ
 						</TS>
 					</div>
@@ -43,7 +38,7 @@ export function Footer() {
 
 					<div>
 						<TS variant="h5" gutterBottom>
-							Для заказчиков
+							Платформа
 						</TS>
 						<Stack vertical gap={2}>
 							<Link href="/freelancers" color="soft" hover="vivid">
@@ -52,11 +47,14 @@ export function Footer() {
 							<Link href="/post-project" color="soft" hover="vivid">
 								Разместить проект
 							</Link>
+							<Link href="/api/docs" color="soft" hover="vivid">
+								API и документация
+							</Link>
 						</Stack>
 					</div>
 				</div>
 
-				<div className="mt-8 pt-6 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+				<div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-6 sm:flex-row">
 					<Stack align="center" gap={2}>
 						<Icon name="email" size={20} className="text-white/80" />
 						<Link
@@ -94,7 +92,7 @@ export function Footer() {
 							rounded
 							variant="contrast"
 							icon="linked-in"
-							href={contactContent.social.twitter}
+							href={contactContent.social.linkedin}
 							target="_blank"
 							rel="noopener noreferrer"
 							size="icon"
@@ -118,7 +116,7 @@ export function Footer() {
 						© {new Date().getFullYear()} NeuroGig. Все права защищены.
 					</TS>
 				</div>
-			</div>
+			</PageContainer>
 		</footer>
 	)
 }

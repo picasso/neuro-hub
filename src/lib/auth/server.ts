@@ -1,9 +1,10 @@
 import { headers } from 'next/headers'
+import { cache } from 'react'
 import { auth } from './config'
 import { kysely } from '@/lib/db'
 import { ForbiddenError, UnauthorizedError } from '@/utils/errors'
 
-export async function getSession() {
+export const getSession = cache(async function getSession() {
 	const headersList = await headers()
 	const session = await auth.api.getSession({
 		headers: headersList,
@@ -21,7 +22,7 @@ export async function getSession() {
 	if (!user) return null
 
 	return session
-}
+})
 
 export async function requireAuth() {
 	const session = await getSession()

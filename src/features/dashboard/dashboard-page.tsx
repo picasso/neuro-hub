@@ -3,7 +3,7 @@ import { FreelancerProfileEditor } from '@/features/freelancer-profile/freelance
 import { PortfolioEditor } from '@/features/portfolio/portfolio-editor'
 import { getSession } from '@/lib/auth/server'
 import { getOrCreateFreelancerProfileByUserId } from '@/lib/db/queries/freelancers'
-import { Link, PageShell, TS } from '@/ui'
+import { Link, TS } from '@/ui'
 
 export async function DashboardPage() {
 	const session = await getSession()
@@ -19,52 +19,50 @@ export async function DashboardPage() {
 	if (session.user.role === 'freelancer' && !freelancerProfile) redirect('/login?next=/dashboard')
 
 	return (
-		<PageShell preset="content" width="compact">
-			<div>
-				<TS variant="h3" gutterBottom content="Личный кабинет" />
-				<TS
-					variant="body"
-					color="secondary"
-					className="mb-4"
-					content={`Вы вошли как ${session.user.email}`}
-				/>
+		<div>
+			<TS variant="h3" gutterBottom content="Личный кабинет" />
+			<TS
+				variant="body"
+				color="secondary"
+				className="mb-4"
+				content={`Вы вошли как ${session.user.email}`}
+			/>
 
-				{session.user.role === 'freelancer' && freelancerProfile ? (
-					<div className="mt-8">
-						<TS
-							variant="body"
-							color="secondary"
-							className="text-sm mb-2"
-							content="Публичная страница профиля:"
-						/>
-						<Link
-							color="primary"
-							hover="underline"
-							href={`/freelancers/${freelancerProfile.id}`}
-						>
-							{`/freelancers/${freelancerProfile.id}`}
-						</Link>
-
-						<div className="mt-8">
-							<FreelancerProfileEditor />
-						</div>
-
-						<div className="mt-10">
-							<PortfolioEditor
-								userId={session.user.id}
-								profileId={freelancerProfile.id}
-							/>
-						</div>
-					</div>
-				) : (
+			{session.user.role === 'freelancer' && freelancerProfile ? (
+				<div className="mt-8">
 					<TS
 						variant="body"
 						color="secondary"
-						className="text-sm"
-						content="Редактирование профиля клиента будет добавлено позже."
+						className="text-sm mb-2"
+						content="Публичная страница профиля:"
 					/>
-				)}
-			</div>
-		</PageShell>
+					<Link
+						color="primary"
+						hover="underline"
+						href={`/freelancers/${freelancerProfile.id}`}
+					>
+						{`/freelancers/${freelancerProfile.id}`}
+					</Link>
+
+					<div className="mt-8">
+						<FreelancerProfileEditor />
+					</div>
+
+					<div className="mt-10">
+						<PortfolioEditor
+							userId={session.user.id}
+							profileId={freelancerProfile.id}
+						/>
+					</div>
+				</div>
+			) : (
+				<TS
+					variant="body"
+					color="secondary"
+					className="text-sm"
+					content="Редактирование профиля клиента будет добавлено позже."
+				/>
+			)}
+		</div>
 	)
 }

@@ -16,6 +16,7 @@ export type LinkProps = Omit<NextLinkProps, 'href'> & {
 	color?: LinkColor
 	hover?: LinkHover
 	disabled?: boolean
+	label?: string
 }
 
 export function Link({
@@ -24,6 +25,7 @@ export function Link({
 	color = 'inherit',
 	hover = 'none',
 	disabled,
+	label,
 	className,
 	children,
 	...rest
@@ -42,7 +44,7 @@ export function Link({
 			)}
 			{...rest}
 		>
-			{children}
+			{label ?? children}
 		</NextLink>
 	)
 }
