@@ -100,6 +100,7 @@ src/
 │   ├── file-organization.mdc
 │   ├── tech-stack.mdc
 │   ├── react-nextjs.mdc
+│   ├── tailwind4.mdc
 │   ├── api-design.mdc
 │   ├── effector.mdc
 │   ├── develop.mdc
@@ -113,6 +114,7 @@ src/
 
 - **TypeScript:** strict mode, no `any`, prefer `type`
 - **React:** Server Components by default; see `.cursor/rules/use-client.mdc` for `'use client'` placement rules
+- **Tailwind CSS:** prefer Tailwind 4 patterns; see `.cursor/rules/tailwind4.mdc`
 - **Server Actions** for mutations, Zod for validation
 - **Effector** for global state
 

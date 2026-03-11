@@ -1,0 +1,37 @@
+# Tailwind 4 Conventions
+
+Use Tailwind 4 idioms by default. Prefer stable, explicit, and predictable utilities over legacy Tailwind v3 habits.
+
+## Layout
+
+- For `flex` and `grid` layouts, prefer `gap-*` over `space-x-*` and `space-y-*`
+- Keep `space-x-*` / `space-y-*` only when the container is not a normal `flex` or `grid` spacing case
+- Prefer `Stack` in `src/app` and `src/features` when the layout matches the project wrapper
+
+## Utilities to Avoid
+
+- Do not use removed opacity utilities like `bg-opacity-*`, `text-opacity-*`, `border-opacity-*`, `divide-opacity-*`, `ring-opacity-*`, `placeholder-opacity-*`
+- Use slash opacity syntax instead, for example `bg-black/50` or `text-foreground/70`
+- Prefer `grow-*` and `shrink-*` over legacy `flex-grow-*` and `flex-shrink-*`
+- Prefer `text-ellipsis` over `overflow-ellipsis`
+- Prefer `box-decoration-slice` / `box-decoration-clone` over deprecated `decoration-slice` / `decoration-clone`
+
+## Explicit Visual Defaults
+
+- Do not assume Tailwind v3 defaults for `border`, `divide`, `ring`, `shadow`, `rounded`, `blur`, or `outline`
+- Specify `border-*` and `divide-*` colors explicitly when the visual result depends on them
+- Specify `ring-*` width and color explicitly when focus styling depends on old v3 defaults
+- Use `outline-hidden` when the intent is the old accessibility-friendly behavior that used to be expressed as `outline-none`
+
+## Interaction and State
+
+- Do not rely on `hover:*` as required UX for touch devices; hover should be progressive enhancement
+- Prefer explicit state variants and accessible always-visible affordances over hover-only interaction
+- Do not depend on `hidden` being overridden by `block`, `flex`, or similar display classes
+
+## Tailwind 4 Authoring
+
+- For custom utilities, prefer `@utility` instead of defining utility-like classes in `@layer utilities`
+- Prefer CSS theme variables and modern Tailwind CSS-first configuration over old JS-config habits when possible
+- When using arbitrary values with CSS variables, prefer the v4 syntax like `bg-(--brand-color)`
+- Be careful with order-sensitive stacked variants because Tailwind 4 applies them left to right
