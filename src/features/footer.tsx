@@ -1,121 +1,126 @@
 import { config, contactContent } from '@/config'
 import { Badge, Icon, IconButton, Link, PageContainer, Stack, TS } from '@/ui'
 
+const platformLinks = [
+	{ href: '/projects', label: 'Проекты' },
+	{ href: '/freelancers', label: 'Фрилансеры' },
+	{ href: '/post-project', label: 'Разместить проект' },
+	{ href: '/how-it-works', label: 'Как это работает' },
+]
+
+const resourceLinks = [{ href: '/api/reference', label: 'API for developers' }]
+
+const socialLinks = [
+	{ href: contactContent.social.github, icon: 'git-hub' as const, label: 'GitHub' },
+	{ href: contactContent.social.twitter, icon: 'x-twitter' as const, label: 'X / Twitter' },
+	{ href: contactContent.social.linkedin, icon: 'linked-in' as const, label: 'LinkedIn' },
+	{ href: contactContent.social.telegram, icon: 'telegram' as const, label: 'Telegram' },
+]
+
 export function MarketingFooter() {
 	return (
-		<footer className="mt-auto border-t bg-linear-to-b from-[#169e5f] to-[#1dbf73] py-12 text-white">
-			<PageContainer width="desktop">
-				<div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-					<div>
-						<Stack align="center" gap={2} className="mb-2">
-							<TS variant="h5">NeuroGig</TS>
+		<footer className="mt-auto border-t border-primary/25 bg-linear-to-b from-primary/12 via-primary/6 to-muted/30">
+			<PageContainer width="desktop" className="py-10 md:py-12">
+				<div className="grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_minmax(0,1fr)] md:gap-10">
+					<Stack vertical align="start" gap={3}>
+						<Stack gap={2}>
+							<TS variant="h5" clean strong content="NeuroGig" />
 							<Badge
 								icon="done"
 								variant="outline"
-								color="soft"
+								color="secondary"
 								label={config.version}
 								size="xs"
 							/>
 						</Stack>
-						<TS variant="subtitle" color="soft" className="max-w-sm">
-							Платформа для фриланса в сфере генеративного ИИ
-						</TS>
-					</div>
-
-					<div>
-						<TS variant="h5" gutterBottom>
-							Для фрилансеров
-						</TS>
-						<Stack vertical gap={2}>
-							<Link href="/projects" color="soft" hover="vivid">
-								Найти проекты
-							</Link>
-							<Link href="/how-it-works" color="soft" hover="vivid">
-								Как это работает
-							</Link>
-						</Stack>
-					</div>
-
-					<div>
-						<TS variant="h5" gutterBottom>
-							Платформа
-						</TS>
-						<Stack vertical gap={2}>
-							<Link href="/freelancers" color="soft" hover="vivid">
-								Найти фрилансера
-							</Link>
-							<Link href="/post-project" color="soft" hover="vivid">
-								Разместить проект
-							</Link>
-							<Link href="/api/docs" color="soft" hover="vivid">
-								API и документация
-							</Link>
-						</Stack>
-					</div>
-				</div>
-
-				<div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-6 sm:flex-row">
-					<Stack align="center" gap={2}>
-						<Icon name="email" size={20} className="text-white/80" />
-						<Link
-							href={`mailto:${contactContent.email}`}
-							color="contrast"
-							hover="underline"
-							size="sm"
-						>
-							{contactContent.email}
-						</Link>
+						<TS
+							variant="subtitle"
+							color="secondary"
+							className="max-w-md leading-6"
+							content="Платформа для проектов и найма специалистов по генеративному ИИ."
+						/>
 					</Stack>
 
-					<Stack gap={2}>
-						<IconButton
-							rounded
-							variant="contrast"
-							icon="git-hub"
-							href={contactContent.social.github}
-							target="_blank"
-							rel="noopener noreferrer"
-							size="icon"
-							forceSize="md"
-						/>
-						<IconButton
-							rounded
-							variant="contrast"
-							icon="x-twitter"
-							href={contactContent.social.twitter}
-							target="_blank"
-							rel="noopener noreferrer"
-							size="icon"
-							forceSize="md"
-						/>
-						<IconButton
-							rounded
-							variant="contrast"
-							icon="linked-in"
-							href={contactContent.social.linkedin}
-							target="_blank"
-							rel="noopener noreferrer"
-							size="icon"
-							forceSize="md"
-						/>
-						<IconButton
-							rounded
-							variant="contrast"
-							icon="telegram"
-							href={contactContent.social.telegram}
-							target="_blank"
-							rel="noopener noreferrer"
-							size="icon"
-							forceSize="md"
-						/>
+					<Stack vertical align="start" gap={3}>
+						<TS variant="h5" clean content="Платформа" />
+						<nav aria-label="Навигация footer">
+							<Stack vertical align="start" gap={2}>
+								{platformLinks.map(({ href, label }) => (
+									<Link
+										key={href}
+										href={href}
+										size="sm"
+										color="secondary"
+										hover="vivid"
+										label={label}
+									/>
+								))}
+							</Stack>
+						</nav>
+					</Stack>
+
+					<Stack vertical align="start" gap={3}>
+						<TS variant="h5" clean content="Ресурсы и контакты" />
+						<Stack vertical align="start" gap={2}>
+							{resourceLinks.map(({ href, label }) => (
+								<Link
+									key={href}
+									href={href}
+									size="sm"
+									color="secondary"
+									hover="vivid"
+									label={label}
+								/>
+							))}
+							<Stack gap={2}>
+								<Icon name="email" size={16} color="dimmed" />
+								<Link
+									href={`mailto:${contactContent.email}`}
+									size="sm"
+									color="secondary"
+									hover="underline"
+									label={contactContent.email}
+								/>
+							</Stack>
+						</Stack>
+						<Stack gap={2}>
+							{socialLinks.map(({ href, icon, label }) => (
+								<IconButton
+									key={href}
+									rounded
+									variant="ghost"
+									icon={icon}
+									href={href}
+									target="_blank"
+									rel="noopener noreferrer"
+									size="icon"
+									forceSize="md"
+									className="border border-border/80 bg-background/75 hover:bg-background"
+									title={label}
+								/>
+							))}
+						</Stack>
 					</Stack>
 				</div>
 
-				<div className="mt-4 pt-4 border-t border-white/20">
-					<TS variant="caption" color="contrast" className="text-center">
-						© {new Date().getFullYear()} NeuroGig. Все права защищены.
-					</TS>
-				</div>
+				<Stack
+					justify="space-between"
+					wrap
+					className="mt-8 border-t border-border pt-4 text-center md:text-left"
+				>
+					<TS
+						variant="caption"
+						color="secondary"
+						clean
+						content={`© ${new Date().getFullYear()} NeuroGig. Все права защищены.`}
+					/>
+					<TS
+						variant="caption"
+						color="secondary"
+						clean
+						content="Маркетинговый слой платформы: доверие, навигация и контакты."
+					/>
+				</Stack>
 			</PageContainer>
 		</footer>
 	)
