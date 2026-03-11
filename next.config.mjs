@@ -17,9 +17,10 @@ const nextConfig = {
 			},
 		],
 		localPatterns: [
-			// playground dev-only route: /playground/pictures/<file>?slowMs=900&v=...
-			// we omit `search` to allow any query string.
-			{ pathname: '/playground/pictures/**' },
+			// allow any asset from public/ to work with next/image as usual
+			// playground route still works because it also maps to a local pathname
+			// and we omit `search` to allow any query string.
+			{ pathname: '/**' },
 		],
 	},
 	webpack: (config, { isServer }) => {
