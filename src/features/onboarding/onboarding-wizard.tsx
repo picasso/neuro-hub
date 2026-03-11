@@ -19,7 +19,7 @@ import {
 	setCurrentStep,
 	setRole,
 } from '@/stores/onboarding'
-import { Badge, Stack } from '@/ui'
+import { Badge, PageShell, Stack } from '@/ui'
 
 const wizardSteps = {
 	freelancer: ['Роль', 'Профиль', 'Навыки', 'Аккаунт', 'Проверка'],
@@ -73,7 +73,7 @@ export function OnboardingWizard() {
 	}
 
 	return (
-		<div className="container max-w-5xl mx-auto px-4 py-8">
+		<PageShell preset="wide" spacing="md">
 			<div className="bg-background border border-border rounded-xl shadow p-4 md:p-8">
 				{role && currentStep !== 1 && (
 					<Stack justify="center" align="center" gap={4} className="mb-6">
@@ -90,6 +90,6 @@ export function OnboardingWizard() {
 				{role && <ProgressStepper steps={wizardSteps[role]} />}
 				{renderStep()}
 			</div>
-		</div>
+		</PageShell>
 	)
 }

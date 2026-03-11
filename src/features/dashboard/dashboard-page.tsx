@@ -3,7 +3,7 @@ import { FreelancerProfileEditor } from '@/features/freelancer-profile/freelance
 import { PortfolioEditor } from '@/features/portfolio/portfolio-editor'
 import { getSession } from '@/lib/auth/server'
 import { getOrCreateFreelancerProfileByUserId } from '@/lib/db/queries/freelancers'
-import { Link, TS } from '@/ui'
+import { Link, PageShell, TS } from '@/ui'
 
 export async function DashboardPage() {
 	const session = await getSession()
@@ -19,8 +19,8 @@ export async function DashboardPage() {
 	if (session.user.role === 'freelancer' && !freelancerProfile) redirect('/login?next=/dashboard')
 
 	return (
-		<div className="container max-w-3xl mx-auto px-4">
-			<div className="mt-16 mb-16">
+		<PageShell preset="content" width="compact">
+			<div>
 				<TS variant="h3" gutterBottom content="Личный кабинет" />
 				<TS
 					variant="body"
@@ -65,6 +65,6 @@ export async function DashboardPage() {
 					/>
 				)}
 			</div>
-		</div>
+		</PageShell>
 	)
 }

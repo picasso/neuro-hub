@@ -12,7 +12,7 @@ import {
 	updatedEmail,
 	updatedPassword,
 } from '@/stores/auth-login'
-import { Button, Checkbox, Stack, TextField, TS } from '@/ui'
+import { Button, Checkbox, PageShell, Stack, TextField, TS } from '@/ui'
 
 export function LoginForm() {
 	const router = useRouter()
@@ -30,8 +30,8 @@ export function LoginForm() {
 	])
 
 	return (
-		<div className="container max-w-3xl mx-auto px-4">
-			<div className="mt-16 mb-16 text-center">
+		<PageShell preset="form">
+			<div className="text-center">
 				<TS variant="h3" gutterBottom content="Вход" />
 				<TS
 					variant="body"
@@ -88,6 +88,6 @@ export function LoginForm() {
 					</div>
 				</div>
 			</div>
-		</div>
+		</PageShell>
 	)
 }

@@ -2,7 +2,7 @@
 
 import { map } from 'lodash'
 import { benefitsContent } from '@/config'
-import { Icon, Stack, TS, type IconName } from '@/ui'
+import { Icon, PageContainer, Stack, TS, type IconName } from '@/ui'
 
 type BenefitCardProps = {
 	icon: IconName
@@ -31,7 +31,7 @@ const clientIcons: IconName[] = ['verified-user', 'visibility', 'thumb-up', 'sea
 export function BenefitsSection() {
 	return (
 		<div className="py-16 bg-muted/50">
-			<div className="container max-w-5xl mx-auto px-4">
+			<PageContainer width="desktop">
 				<TS
 					variant="h3"
 					strong
@@ -78,7 +78,7 @@ export function BenefitsSection() {
 						</div>
 					</div>
 				</div>
-			</div>
+			</PageContainer>
 		</div>
 	)
 }

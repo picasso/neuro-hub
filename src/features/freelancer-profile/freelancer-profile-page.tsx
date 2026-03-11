@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { PublicFreelancerProfileView } from './public-profile-view'
 import { getPublicFreelancerProfileByProfileId } from '@/lib/db/queries/freelancers'
 import { freelancerProfileIdParamSchema } from '@/lib/validations'
-import { Avatar, Stack, TS } from '@/ui'
+import { Avatar, PageShell, Stack, TS } from '@/ui'
 
 type PageProps = {
 	params: Promise<{ id: string }>
@@ -18,8 +18,8 @@ export async function FreelancerProfilePage(props: PageProps) {
 	if (!profile) notFound()
 
 	return (
-		<div className="container max-w-4xl mx-auto px-4 md:px-6">
-			<div className="mt-12 mb-16">
+		<PageShell preset="content">
+			<div>
 				<Stack gap={2} align="center" className="mb-8">
 					<Avatar
 						name={profile.userProfile?.name || 'Freelancer'}
@@ -44,6 +44,6 @@ export async function FreelancerProfilePage(props: PageProps) {
 				</Stack>
 				<PublicFreelancerProfileView profile={profile} />
 			</div>
-		</div>
+		</PageShell>
 	)
 }

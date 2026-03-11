@@ -6,6 +6,7 @@ import {
 	Card,
 	CardContent,
 	Avatar,
+	PageContainer,
 	Stack,
 	TS,
 	type IconName,
@@ -104,7 +105,7 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 export function ShowcaseSection() {
 	return (
 		<div className="py-12 bg-surface">
-			<div className="container max-w-5xl mx-auto px-4">
+			<PageContainer width="desktop">
 				<TS
 					variant="h3"
 					strong
@@ -133,7 +134,7 @@ export function ShowcaseSection() {
 						</div>
 					))}
 				</div>
-			</div>
+			</PageContainer>
 		</div>
 	)
 }

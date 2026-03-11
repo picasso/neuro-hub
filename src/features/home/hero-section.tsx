@@ -1,7 +1,7 @@
 'use client'
 
 import { heroContent } from '@/config'
-import { Button, TS } from '@/ui'
+import { Button, PageContainer, TS } from '@/ui'
 
 export function HeroSection() {
 	return (
@@ -9,7 +9,7 @@ export function HeroSection() {
 			className="py-16 md:py-24 text-center"
 			style={{ background: 'linear-gradient(135deg, #169e5f 0%, #764ba2 100%)' }}
 		>
-			<div className="container max-w-3xl mx-auto px-4">
+			<PageContainer width="compact">
 				<TS
 					variant="h2"
 					color="contrast"
@@ -64,7 +64,7 @@ export function HeroSection() {
 					// TODO: check after migration
 					className="text-white underline hover:bg-transparent hover:underline"
 				/>
-			</div>
+			</PageContainer>
 		</div>
 	)
 }
