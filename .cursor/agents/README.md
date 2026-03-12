@@ -37,6 +37,27 @@
 - `Проверь @src/features/playground на legacy Tailwind patterns и исправь их`
 - `Приведи компонент к правилам develop.mdc: Effector вместо useEffect, Stack/gap вместо space-y`
 
+### `icon-auditor`
+
+Узкий агент для аудита и autofix-рефакторинга использования иконок в указанном scope.
+
+Он особенно полезен, когда нужно:
+
+- заменить прямые импорты иконок на `Icon` из `@/ui`
+- перевести пропсы и конфиги с raw icon component на `IconName`
+- добавить недостающую иконку в `src/ui/assets.tsx`
+- синхронизировать `libraryIcons` и `customIconNames` в playground после icon refactor
+- нормализовать наследование цвета иконок через `color="current"` вместо `className="text-current"`
+- наводить порядок только в переданных `@file` / `@folder`, не сканируя весь репозиторий
+
+По умолчанию агент не трогает исключения из своего списка, начиная с `src/ui/shadcn/*`.
+
+Примеры:
+
+- `Запусти icon-auditor для @src/features/account-nav.tsx и наведи порядок с иконками в этом файле`
+- `Запусти icon-auditor для @src/features/account-nav.tsx и @src/ui/sidebar-client.tsx. Scope только эти файлы, исключения оставить по умолчанию`
+- `Запусти icon-auditor для @src/features/playground. Проверь прямые иконки, добавь недостающие в библиотеку и синхронизируй demo-icons`
+
 ### `fullstack-dev`
 
 Агент для полноценной реализации фичи от данных и API до UI.
