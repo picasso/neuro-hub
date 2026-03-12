@@ -4,6 +4,7 @@ export type SemanticColor = 'primary' | 'secondary' | 'dimmed' | 'contrast' | 's
 
 export type IconColor =
 	| SemanticColor
+	| 'current'
 	| 'cta'
 	| 'error'
 	| 'success'
@@ -30,6 +31,7 @@ export const linkColorClasses: Record<SemanticColor | 'inherit', string> = {
 // icon tailwind classes: SemanticColor + semantic extensions (cta, error, success, etc.)
 export const iconColorClasses: Record<IconColor, string> = {
 	...semanticColorClasses,
+	current: 'text-current',
 	primary: 'text-primary',
 	cta: 'text-cta',
 	error: 'text-destructive',
