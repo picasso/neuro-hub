@@ -364,15 +364,16 @@ sample({
 
 // * * * UI helpers --------------------------------------------------------------------------------]
 
-export const $isBusy = combine(
+export const $isLoading = loadPortfolioFx.pending
+export const $isSaving = combine(
 	{
-		loading: loadPortfolioFx.pending,
 		uploading: uploadPortfolioMediaFx.pending,
 		creating: createPortfolioItemFx.pending,
 		deleting: deletePortfolioItemFx.pending,
 	},
-	({ loading, uploading, creating, deleting }) => loading || uploading || creating || deleting,
+	({ uploading, creating, deleting }) => uploading || creating || deleting,
 )
+export const $isBusy = combine($isLoading, $isSaving, (loading, saving) => loading || saving)
 
 // * * * Alerts -----------------------------------------------------------------------------------]
 const uploadAlertId = createAlertFx.alertId('portfolio-upload')

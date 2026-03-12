@@ -54,7 +54,12 @@ export function AccountLayout({ children }: AccountLayoutProps) {
 								<TS variant="body" clean strong content="Личный кабинет" />
 							</Stack>
 
-							<Stack vertical gap={0} className="flex-1 p-5 md:p-6">
+							<Stack
+								vertical
+								gap={0}
+								align="stretch"
+								className="min-w-0 flex-1 p-5 md:p-6"
+							>
 								{children}
 							</Stack>
 						</SidebarInset>

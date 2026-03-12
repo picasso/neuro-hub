@@ -6,6 +6,8 @@ import {
 	$portfolio,
 	$form,
 	$isBusy,
+	$isLoading,
+	$isSaving,
 	FreelancerPortfolioGate,
 	deletePortfolioItem,
 	portfolioFormUpdated,
@@ -17,10 +19,22 @@ import { Button, IconButton, Separator, Stack, TextField, TS } from '@/ui'
 export function PortfolioEditor({ userId, profileId }: { userId: string; profileId: string }) {
 	useGate(FreelancerPortfolioGate)
 
-	const [form, portfolio, isBusy, onFormUpdated, onSetUserId, onSubmit, onDelete] = useUnit([
+	const [
+		form,
+		portfolio,
+		isBusy,
+		isLoading,
+		isSaving,
+		onFormUpdated,
+		onSetUserId,
+		onSubmit,
+		onDelete,
+	] = useUnit([
 		$form,
 		$portfolio,
 		$isBusy,
+		$isLoading,
+		$isSaving,
 		portfolioFormUpdated,
 		submitFreelancerPortfolio,
 		submitPortfolioItem,
@@ -87,7 +101,13 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 				<Button
 					variant="default"
 					size="lg"
-					label={isBusy ? 'Сохраняем...' : 'Добавить в портфолио'}
+					label={
+						isSaving
+							? 'Сохраняем...'
+							: isLoading
+								? 'Загружаем...'
+								: 'Добавить в портфолио'
+					}
 					onClick={onSubmit}
 					disabled={!canSubmit}
 				/>

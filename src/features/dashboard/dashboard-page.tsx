@@ -19,7 +19,7 @@ export async function DashboardPage() {
 	if (session.user.role === 'freelancer' && !freelancerProfile) redirect('/login?next=/dashboard')
 
 	return (
-		<div>
+		<div className="w-full min-w-0">
 			<TS variant="h3" gutterBottom content="Личный кабинет" />
 			<TS
 				variant="body"
@@ -40,6 +40,7 @@ export async function DashboardPage() {
 						color="primary"
 						hover="underline"
 						href={`/freelancers/${freelancerProfile.id}`}
+						className="break-all"
 					>
 						{`/freelancers/${freelancerProfile.id}`}
 					</Link>
