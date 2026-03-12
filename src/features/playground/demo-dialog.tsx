@@ -6,7 +6,7 @@ import { DemoRoot, DemoSection } from './components-utils'
 import { ModalDemo } from './demo-dialog-modals'
 import { type DialogDemoState } from './demo-dialog-settings'
 import { useSettings } from './settings-store'
-import { openLoginModal } from '@/features'
+import { loginModal } from '@/features'
 import { Button, Dialog, Stack, TS } from '@/ui'
 
 type OpenKey =
@@ -284,7 +284,7 @@ export function DemoDialog() {
 					variant="secondary"
 					label="Login modal"
 					leftIcon="users-round"
-					onClick={() => openLoginModal()}
+					onClick={async () => await loginModal()}
 					className="mt-4"
 				/>
 			</DemoSection>

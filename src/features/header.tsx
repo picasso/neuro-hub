@@ -1,4 +1,6 @@
-import { HeaderAuthControls } from './header-auth-controls'
+import { LoginButton } from './auth/login-page'
+import { HeaderAuth } from './header-auth'
+import { PlaygroundButton } from './playground/playground-page'
 import { getSession } from '@/lib/auth/server'
 import { Button, Link, PageContainer, Stack, TS } from '@/ui'
 
@@ -43,23 +45,14 @@ export async function MarketingHeader() {
 										label={label}
 									/>
 								))}
-								{process.env.NODE_ENV === 'development' && (
-									<Button
-										href="/playground"
-										variant="ghost"
-										size="sm"
-										label="Playground"
-										leftIcon="code"
-										className="text-dimmed border border-dashed border-border-dark"
-									/>
-								)}
+								<PlaygroundButton />
 							</Stack>
 						</nav>
 					</Stack>
 
 					<Stack wrap justify="flex-end" className="shrink-0 gap-x-2 gap-y-2">
 						{session ? (
-							<HeaderAuthControls
+							<HeaderAuth
 								email={session.user.email}
 								name={session.user.name}
 								variant="marketing"
@@ -67,8 +60,8 @@ export async function MarketingHeader() {
 							/>
 						) : (
 							<>
-								<Button href="/login" variant="ghost" size="sm" label="Login" />
-								<Button href="/signup" size="sm" label="Signup" />
+								<LoginButton />
+								<Button href="/signup" size="sm" label="Регистрация" />
 							</>
 						)}
 					</Stack>

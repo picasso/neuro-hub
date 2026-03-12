@@ -6,7 +6,7 @@ import { type ComponentDemo, componentDemos } from './components'
 import { ComponentSelector } from './components-selector'
 import { DemoRenderer, SettingsRenderer } from './demo'
 import { QuickAccess } from './quick-access'
-import { Separator, Stack, TS, IconButton } from '@/ui'
+import { Separator, Stack, TS, IconButton, Button } from '@/ui'
 
 const MAX_RECENT = 3
 const LS_KEY = 'playground-recent'
@@ -127,4 +127,17 @@ export function PlaygroundPage() {
 			</Stack>
 		</Stack>
 	)
+}
+
+export function PlaygroundButton() {
+	return process.env.NODE_ENV === 'development' ? (
+		<Button
+			href="/playground"
+			variant="ghost"
+			size="sm"
+			label="Playground"
+			leftIcon="code"
+			className="text-dimmed border border-dashed border-border-dark"
+		/>
+	) : null
 }

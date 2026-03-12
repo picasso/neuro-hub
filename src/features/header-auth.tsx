@@ -5,14 +5,14 @@ import type { ReactNode } from 'react'
 import { signOut } from '@/lib/auth/client'
 import { Avatar, Button, Stack } from '@/ui'
 
-type HeaderAuthControlsProps = {
+type HeaderAuthProps = {
 	email: string
 	name?: string | null
 	variant?: 'marketing' | 'account'
 	slot?: ReactNode
 }
 
-export function HeaderAuthControls({ email, name, slot }: HeaderAuthControlsProps) {
+export function HeaderAuth({ email, name, slot }: HeaderAuthProps) {
 	const router = useRouter()
 	const displayName = name?.trim() || email
 
@@ -28,9 +28,9 @@ export function HeaderAuthControls({ email, name, slot }: HeaderAuthControlsProp
 
 	return (
 		<Stack>
-			<Avatar name={displayName} size="lg" bordered />
 			{slot}
 			<Button variant="outline" size="sm" label="Выйти" onClick={onSignOut} />
+			<Avatar name={displayName} size="lg" bordered />
 		</Stack>
 	)
 }

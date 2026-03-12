@@ -76,7 +76,7 @@ export function PageShell({
 }
 
 // `PageShell` defines single-column route-entry page intent.
-// Sidebar-based account or management pages should use a separate structural shell.
+// sidebar-based account or management pages should use a separate structural shell.
 const pagePresetConfigMap: Record<
 	PagePreset,
 	{ width: PageWidth; inset: PageInset; spacing: PageSpacing }

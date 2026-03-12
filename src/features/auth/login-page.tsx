@@ -1,19 +1,31 @@
-import { Suspense } from 'react'
-import { LoginForm } from './login-form'
-import { Icon, PageShell } from '@/ui'
+'use client'
+import { useEffect } from 'react'
+import { LoginModal } from './login-modal'
+import { createModal, registerModal } from '@/modals'
+import { Button, PageSuspense } from '@/ui'
 
 export function LoginPage() {
 	return (
-		<Suspense
-			fallback={
-				<PageShell preset="form" spacing="none">
-					<div className="flex items-center justify-center min-h-[60vh]">
-						<Icon name="loader-circle" spinning size="lg" />
-					</div>
-				</PageShell>
-			}
-		>
+		<PageSuspense preset="form">
 			<LoginForm />
-		</Suspense>
+		</PageSuspense>
+	)
+}
+
+function LoginForm() {
+	useEffect(() => {
+		loginModal()
+	}, [])
+	return null
+}
+
+const loginModalId = 'login-modal'
+registerModal(loginModalId, null, LoginModal)
+
+export const loginModal = createModal(loginModalId, null, true)
+
+export function LoginButton() {
+	return (
+		<Button variant="ghost" size="sm" label="Войти" onClick={async () => await loginModal()} />
 	)
 }

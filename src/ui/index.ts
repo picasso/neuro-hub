@@ -10,11 +10,8 @@ export {
 	PageShell,
 	type PageContainerProps,
 	type PageShellProps,
-	type PageInset,
-	type PagePreset,
-	type PageSpacing,
-	type PageWidth,
 } from './page-shell'
+export { PageSuspense, type PageSuspenseProps } from './page-suspense'
 export { FileUploader, type FileUploaderProps } from './file-uploader-client'
 export { FieldWrapper, type FieldWrapperProps } from './field'
 export { Empty, type EmptyProps, type EmptyShadcnProps } from './empty'
