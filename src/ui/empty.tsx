@@ -113,7 +113,10 @@ export function Empty({
 				)}
 			>
 				{icon && (
-					<EmptyMedia variant={mediaIcon ? 'icon' : 'default'} className={mediaClassName}>
+					<EmptyMedia
+						variant={mediaIcon ? 'icon' : 'default'}
+						className={cn(iconOptions?.size && `w-auto h-auto`, mediaClassName)}
+					>
 						<Icon
 							name={icon}
 							color={iconOptions?.color ?? (outline ? 'dimmed' : 'secondary')}
@@ -123,9 +126,11 @@ export function Empty({
 						/>
 					</EmptyMedia>
 				)}
-				{title && <EmptyTitle className="text-md font-semibold">{title}</EmptyTitle>}
+				{title && (
+					<EmptyTitle className="text-md font-semibold tracking-wide">{title}</EmptyTitle>
+				)}
 				{desc && (
-					<EmptyDescription>
+					<EmptyDescription className="text-dimmed/90">
 						{descNode}
 						{!descNode &&
 							(descMd === false ? descText : simpleMarkdown(descText, descMd))}

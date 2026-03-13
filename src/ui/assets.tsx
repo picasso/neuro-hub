@@ -2,6 +2,7 @@ import { kebabCase, reduce } from 'lodash'
 import {
 	AlertTriangle,
 	BadgeCheck,
+	Construction,
 	Ban,
 	Blocks,
 	BookMarked,
@@ -72,6 +73,7 @@ type SvgComponent = ComponentType<SVGProps<SVGSVGElement>>
 const lucideIcons = {
 	AlertTriangle,
 	BadgeCheck,
+	Construction,
 	Ban,
 	Blocks,
 	BookMarked,
