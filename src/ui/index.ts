@@ -65,8 +65,13 @@ export {
 	type SidebarProps,
 	type SidebarGroup,
 	type SidebarItem,
+	type SidebarItemClick,
 	type SidebarMenuProps,
 	type SidebarProviderProps,
+	type SidebarTriggerProps,
+	type SidebarRailProps,
+	type SidebarInsetProps,
+	type SidebarSeparatorProps,
 } from './sidebar-client'
 export {
 	Accordion,
@@ -87,6 +92,8 @@ export {
 	type TabItem,
 } from './tabs'
 export { Stepper, type StepperProps, type StepperItem } from './stepper'
+export { Skeleton, type SkeletonProps } from './skeleton'
+export { Breadcrumb, type BreadcrumbProps } from './breadcrumb'
 export { type SemanticColor, type IconColor } from './types'
 export { needsContrast } from './utils'
 
