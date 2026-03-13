@@ -12,18 +12,19 @@ type AccountShellProps = {
 
 export function AccountShell({ email, name, children }: AccountShellProps) {
 	return (
-		<SidebarProvider className="flex min-h-screen flex-col bg-muted/20">
-			<header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/85">
-				<AccountHeader email={email} name={name} />
-			</header>
+		<div className="flex min-h-svh flex-col">
+			<SidebarProvider className="block flex-1 min-h-0">
+				<header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/85">
+					<AccountHeader email={email} name={name} />
+				</header>
 
-			<main className="flex-1 py-4 md:py-6">
-				<PageContainer width="desktop">
-					<AccountLayout>{children}</AccountLayout>
-				</PageContainer>
-			</main>
-
+				<main className="py-4 md:py-6">
+					<PageContainer width="desktop">
+						<AccountLayout>{children}</AccountLayout>
+					</PageContainer>
+				</main>
+			</SidebarProvider>
 			<AccountFooter />
-		</SidebarProvider>
+		</div>
 	)
 }

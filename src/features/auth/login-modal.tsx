@@ -43,7 +43,7 @@ function getNextLoginCover() {
 export function LoginModal({ open, onClose }: ModalComponentProps) {
 	const router = useRouter()
 
-	useGate(LoginGate, { callbackURL: '/dashboard' })
+	useGate(LoginGate, { callbackURL: '/account/dashboard' })
 
 	const [credentials, isLoading, canSubmit] = useUnit([$credentials, $isLoading, $canSubmit])
 	const [onUpdatedEmail, onUpdatedPassword, onToggleRemember, onSignIn] = useUnit([
@@ -73,7 +73,7 @@ export function LoginModal({ open, onClose }: ModalComponentProps) {
 		try {
 			await onSignIn(credentials)
 			onClose(true)
-			router.push('/dashboard')
+			router.push('/account/dashboard')
 		} catch {
 			// handled by signInFx + alerts
 		}

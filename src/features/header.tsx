@@ -56,7 +56,9 @@ export async function MarketingHeader() {
 								email={session.user.email}
 								name={session.user.name}
 								variant="marketing"
-								slot={<Button href="/dashboard" size="sm" label="Dashboard" />}
+								slot={
+									<Button href="/account/dashboard" size="sm" label="Dashboard" />
+								}
 							/>
 						) : (
 							<>

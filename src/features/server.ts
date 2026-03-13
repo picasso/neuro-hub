@@ -1,4 +1,7 @@
-export { DashboardPage } from './dashboard/dashboard-page'
+export { AccountDashboard } from './account-dashboard'
+export { AccountProfile } from './account-profile'
+export { AccountPortfolio } from './account-portfolio'
+export { AccountPending } from './account-pending'
 export { FreelancerProfilePage } from './freelancer-profile/freelancer-profile-page'
 export { AccountShell } from './account'
 export { MarketingFooter } from './footer'

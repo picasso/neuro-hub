@@ -25,7 +25,7 @@ export const $credentials = domain.createStore<LoginCredentials>(
 		email: '',
 		password: '',
 		rememberMe: true,
-		callbackURL: '/dashboard',
+		callbackURL: '/account/dashboard',
 	},
 	{ name: '$credentials' },
 )
