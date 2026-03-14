@@ -102,17 +102,13 @@ export function PlaygroundPage() {
 				</div>
 				{/* Side panel — component-specific settings */}
 				<div className="hidden w-65 shrink-0 border-l bg-surface md:block">
-					<Stack
-						vertical
-						gap={4}
-						align="stretch"
-						className="overflow-y-auto px-4 pb-4 pt-2"
-					>
+					<Stack vertical gap={4} align="stretch" className="overflow-y-auto px-4 pb-4">
 						<Stack vertical gap={0} align="stretch">
 							<TS
+								clean
 								variant="h3"
 								content={selected?.name ?? 'Настройки'}
-								className="font-semibold text-base"
+								className="font-semibold text-base mt-2"
 							/>
 							<TS
 								variant="caption"

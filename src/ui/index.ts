@@ -94,13 +94,14 @@ export {
 export { Stepper, type StepperProps, type StepperItem } from './stepper'
 export { Skeleton, type SkeletonProps } from './skeleton'
 export { Breadcrumb, type BreadcrumbProps } from './breadcrumb'
-export { type SemanticColor, type IconColor } from './types'
+export { Card, type CardProps } from './card'
+export { type SemanticColor, type IconColor, type MaxW, type Shadow } from './types'
 export { needsContrast } from './utils'
 
 // shadcn/ui primitives (use @/ui, never @/ui/shadcn directly in app code)
 export { AvatarGroup, AvatarGroupCount } from './shadcn/avatar'
 export {
-	Card,
+	Card as CardRoot,
 	CardHeader,
 	CardFooter,
 	CardTitle,

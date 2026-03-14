@@ -1,6 +1,7 @@
 import { isArray, map } from 'lodash'
 import { Skeleton as ShadcnSkeleton } from './shadcn/skeleton'
 import { Stack } from './stack'
+import { maxWClasses, type MaxW } from './types'
 import type { ComponentProps } from 'react'
 import { cn } from '@/utils'
 
@@ -12,33 +13,22 @@ export type SkeletonProps = ShadcnSkeletonProps & {
 	shape?: Shape
 	clean?: boolean
 	filler?: string
-	maxW?:
-		| 'xs'
-		| 'sm'
-		| 'md'
-		| 'lg'
-		| 'xl'
-		| '2xl'
-		| '3xl'
-		| '4xl'
-		| '5xl'
-		| '6xl'
-		| '7xl'
-		| '8xl'
-		| '9xl'
-		| '10xl'
+	maxW?: MaxW
 }
 
-export function Skeleton({ shape = 'none', maxW, clean, filler, ...props }: SkeletonProps) {
+export function Skeleton({
+	shape = 'none',
+	maxW = 'none',
+	clean,
+	filler,
+	...props
+}: SkeletonProps) {
 	if (shape === 'none') return <ShadcnSkeleton {...props} />
 	const { className, ...rest } = props
 	const [baseClass, gap] = baseClasses[shape]
 	const items = shapes[shape]
 	return (
-		<Stack
-			gap={gap}
-			className={cn(baseClass, maxWClasses[maxW ?? 'none'], !clean && 'my-6', className)}
-		>
+		<Stack gap={gap} className={cn(baseClass, maxWClasses[maxW], !clean && 'my-6', className)}>
 			{map(items, (skItem, itemIndex) =>
 				isArray(skItem) ? (
 					<div key={itemIndex} className={skItem[0]}>
@@ -85,22 +75,4 @@ const shapes: Record<Shape, Array<string | string[]>> = {
 		['flex gap-4 w-full', 'h-4 flex-1', 'h-4 w-24', 'h-4 w-20'],
 	],
 	avatar: ['size-10 shrink-0 rounded-full', ['grid gap-2 flex-1', 'h-4 w-full', 'h-4 w-3/4']],
-}
-
-const maxWClasses: Record<NonNullable<SkeletonProps['maxW']> | 'none', string> = {
-	none: '',
-	xs: 'max-w-xs',
-	sm: 'max-w-sm',
-	md: 'max-w-md',
-	lg: 'max-w-lg',
-	xl: 'max-w-xl',
-	'2xl': 'max-w-2xl',
-	'3xl': 'max-w-3xl',
-	'4xl': 'max-w-4xl',
-	'5xl': 'max-w-5xl',
-	'6xl': 'max-w-6xl',
-	'7xl': 'max-w-7xl',
-	'8xl': 'max-w-8xl',
-	'9xl': 'max-w-9xl',
-	'10xl': 'max-w-10xl',
 }

@@ -1,4 +1,6 @@
 import { type ReactNode } from 'react'
+import { DemoAny } from './demo-aaa'
+import { DemoAnySettings } from './demo-aaa-settings'
 import { DemoAlert } from './demo-alert'
 import { DemoAlertSettings } from './demo-alert-settings'
 import { DemoAvatar } from './demo-avatar'
@@ -147,10 +149,12 @@ export const componentDemos: ComponentDemo[] = [
 	},
 	{
 		id: 'tabs',
-		name: 'Tabs',
+		name: 'Tabs, Cards and more',
 		group: 'layout',
-		description: 'Tabs component',
-		ready: false,
+		description: 'Tabs, Cards & more',
+		ready: true,
+		demo: <DemoAny />,
+		settings: <DemoAnySettings />,
 	},
 	{
 		id: 'portfolio',
