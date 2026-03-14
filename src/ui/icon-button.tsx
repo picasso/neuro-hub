@@ -21,6 +21,7 @@ export type IconButtonProps = Omit<React.ComponentPropsWithoutRef<'button'>, 'ch
 	spinning?: IconProps['spinning']
 	rounded?: boolean
 	iconClassName?: string
+	asSpan?: boolean
 }
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
@@ -39,6 +40,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
 			rounded,
 			className,
 			iconClassName,
+			asSpan,
 			...props
 		},
 		ref,
@@ -78,13 +80,37 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
 			)
 		}
 
+		const ariaLabel = capitalize(icon.replace(/-/g, ' '))
+		// workaround for shadcn button to render as span
+		// `ref` omitted intentionally to avoid warning
+		if (asSpan) {
+			return (
+				<ShadcnButton
+					asChild
+					variant={shadcnVariant}
+					size={buttonSize(size)}
+					className={mergedClassName}
+					disabled={disabled}
+				>
+					<span
+						role="button"
+						tabIndex={disabled ? -1 : 0}
+						aria-label={ariaLabel}
+						{...(props as React.ComponentPropsWithoutRef<'span'>)}
+					>
+						{inner}
+					</span>
+				</ShadcnButton>
+			)
+		}
+
 		return (
 			<ShadcnButton
 				ref={ref}
 				asChild={!!href}
 				variant={shadcnVariant}
 				size={buttonSize(size)}
-				aria-label={capitalize(icon.replace(/-/g, ' '))}
+				aria-label={ariaLabel}
 				disabled={disabled}
 				className={mergedClassName}
 				{...props}
