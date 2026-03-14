@@ -163,6 +163,8 @@ const libraryIcons: IconName[] = [
 	'binoculars',
 	'film',
 	'cog',
+	'file-sliders',
+	'construction',
 ]
 
 const customIconNames: IconName[] = ['spinner', 'linked-in', 'telegram', 'x-twitter']
