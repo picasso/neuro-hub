@@ -1,7 +1,7 @@
 import { LoginButton } from './auth/login-page'
 import { HeaderAuth } from './header-auth'
 import { PlaygroundButton } from './playground/playground-page'
-import { getSession } from '@/lib/auth/server'
+import { getSsrSafeSession } from '@/lib/auth/server'
 import { Button, Link, PageContainer, Stack, TS } from '@/ui'
 
 const guestNavItems = [
@@ -18,7 +18,7 @@ const authedNavItems = [
 ]
 
 export async function MarketingHeader() {
-	const session = await getSession()
+	const session = await getSsrSafeSession()
 	const navItems = session ? authedNavItems : guestNavItems
 
 	return (
