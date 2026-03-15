@@ -33,7 +33,7 @@ Review and refactor frontend code so it uses the project's existing building blo
 
 - always check `@/ui` exports before creating or recommending new markup patterns
 - prefer `TextField` over manual `Label` + `Input` / `Textarea` wiring
-- prefer `Button`, `TS`, `Icon`, `Stack`, `Dialog`, `FieldWrapper`, and other exported wrappers when they fit
+- prefer `Button`, `TS`, `Icon`, `Stack`, `Dialog`, `FieldWrapper`, `Card`, `Empty`, `Skeleton`, and other exported wrappers when they fit
 - never introduce direct imports from `@/ui/shadcn/*` in app/features code
 - prefer barrel imports from `@/ui`
 - before adding any override to an `@/ui` wrapper, check the wrapper's default props and built-in classes first
@@ -41,6 +41,15 @@ Review and refactor frontend code so it uses the project's existing building blo
 - remove redundant overrides when the wrapper already provides the same result out of the box
 - this applies to class props and behavioral props alike, including `className`, `labelClassName`, helper-related props, variant props, size props, alignment props, and similar wrapper options
 - example: if code passes `labelClassName="text-sm text-muted-foreground"`, verify whether the underlying wrapper already sets those defaults before keeping it
+
+### Visual Surfaces and State Wrappers
+
+- in `src/app` and `src/features`, approved `@/ui` visual wrappers are the source of truth for project style
+- for containers whose job is visual surface styling (`border`, `radius`, `background`, `shadow`, `padding`, header/content/footer composition), check `Card` first
+- for empty, loading, placeholder, and similar stateful display blocks, check `Empty`, `Skeleton`, and other approved wrappers before composing raw markup
+- treat decorative `div` and `section` containers as drift by default when they primarily exist to create a styled surface
+- keep raw `div` or `section` only when the element is justified by semantics or low-level layout mechanics such as `absolute`, `overflow-hidden`, aspect-ratio wrappers, media overlays, positioning anchors, or similar implementation details
+- when a wrapper already defines the accepted project appearance, the wrapper default style has priority over the current hand-written surface markup
 
 ### Typography with `TS`
 
@@ -126,6 +135,8 @@ Review and refactor frontend code so it uses the project's existing building blo
 ## Review Checklist
 
 - can this manual UI be replaced with an existing `@/ui` component?
+- is this visual container really structural, or should it be a `Card` / approved visual wrapper?
+- is this empty or loading state already covered by `Empty`, `Skeleton`, or another approved wrapper?
 - does this `@/ui` wrapper already provide the current styling or behavior by default?
 - is any wrapper override redundant or only repeating built-in defaults?
 - is this raw heading, paragraph, quote, or list already supported by `TS`?
@@ -198,6 +209,7 @@ Do not include `C` when it duplicates `A` or `B`.
 ## Constraints
 
 - do not invent new UI APIs when an existing wrapper already solves the problem
+- do not build decorative surface styling out of raw `div` or `section` when `Card` or another approved visual wrapper already fits
 - do not keep wrapper overrides that only restate built-in defaults
 - do not keep raw typographic HTML when `TS` already supports the same role
 - do not add or preserve non-standard typographic overrides during refactor without an explicit choice for that item
