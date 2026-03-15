@@ -1,5 +1,6 @@
 'use client'
 
+import { upperFirst } from 'lodash'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type BadgeDemoState } from './demo-badge-settings'
 import { useSettings } from './settings-store'
@@ -7,11 +8,11 @@ import { Badge, needsContrast, Stack } from '@/ui'
 import { cn } from '@/utils'
 
 const variants = ['primary', 'secondary', 'destructive', 'outline', 'ghost', 'link'] as const
-const sizes = ['xs', 'sm', 'md', 'lg'] as const
+const sizes = ['xs', 'sm', 'md'] as const
 
 export function DemoBadge() {
 	const settings = useSettings<BadgeDemoState>()
-	const { variant, size, color, withIcon, closable } = settings
+	const { variant, size, color, withIcon, closable, capitalized, lowercased } = settings
 
 	return (
 		<DemoRoot>
@@ -32,22 +33,30 @@ export function DemoBadge() {
 					<Badge
 						variant={variant}
 						size={size}
-						label={variant}
+						label={capitalized ? upperFirst(variant) : variant}
 						color={color === 'null' ? undefined : color}
 						icon={withIcon ? 'book-marked' : undefined}
 						onClose={closable ? () => {} : undefined}
+						lowercased={lowercased}
 					/>
 				</Stack>
 			</DemoSection>
 			<DemoSection title="Variants" asBadge="shield-check" separator>
 				<Stack wrap className="mb-4">
 					{variants.map((variant) => (
-						<Badge key={variant} variant={variant} size="md" label={variant} />
+						<Badge
+							lowercased={lowercased}
+							key={variant}
+							variant={variant}
+							size="md"
+							label={variant}
+						/>
 					))}
 				</Stack>
 				<Stack wrap className="mb-4">
 					{variants.map((variant) => (
 						<Badge
+							lowercased={lowercased}
 							key={variant}
 							variant={variant}
 							size="sm"
@@ -59,6 +68,7 @@ export function DemoBadge() {
 				<Stack wrap>
 					{variants.map((variant) => (
 						<Badge
+							lowercased={lowercased}
 							key={variant}
 							variant={variant}
 							size="xs"

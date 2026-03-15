@@ -30,6 +30,8 @@ export function DemoDialog() {
 		animation,
 		closeButton,
 		footerClose,
+		divider,
+		compactTitle,
 		overlay,
 		modal,
 		icon,
@@ -84,6 +86,8 @@ export function DemoDialog() {
 					}
 					size={size}
 					animation={animation}
+					divider={divider}
+					compactTitle={compactTitle}
 					overlay={overlay}
 					showCloseButton={closeButton}
 					showFooterClose={footerClose}
@@ -188,6 +192,7 @@ export function DemoDialog() {
 					description="Вы уверены, что хотите продолжить? Это действие **нельзя отменить**."
 					icon="alert-triangle"
 					iconOptions={{ color: 'warning' }}
+					divider
 					footer={
 						<Stack gap={2}>
 							<Button
@@ -205,9 +210,11 @@ export function DemoDialog() {
 					open={open.actions}
 					onClose={onClose('actions')}
 					title="Действия"
+					compactTitle
 					description="Выберите действие в зависимости от вашего желания:"
 					icon="cog"
 					iconOptions={{ color: 'info' }}
+					divider
 					actions={[
 						{
 							id: 'cancel',

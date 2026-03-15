@@ -53,6 +53,14 @@ export function PlaygroundPage() {
 		})
 	}, [])
 
+	const handleMakeFirst = useCallback(() => {
+		setRecent((prev) => {
+			const next = selected ? [selected, ...prev.filter((c) => c.id !== selected.id)] : prev
+			saveRecent(next)
+			return next
+		})
+	}, [selected])
+
 	return (
 		<Stack
 			vertical
@@ -71,6 +79,14 @@ export function PlaygroundPage() {
 					<QuickAccess recent={recent} current={selected} onSelect={handleSelect} />
 					{recent.length > 0 && <Separator orientation="vertical" className="mx-1 h-5" />}
 					<ComponentSelector selected={selected} onSelect={handleSelect} />
+					<IconButton
+						icon="shield-check"
+						variant="ghost"
+						size="sm"
+						onClick={handleMakeFirst}
+						title="Сделать текущий компонент первым"
+						className="-mr-4"
+					/>
 					<IconButton
 						icon="history"
 						variant="ghost"

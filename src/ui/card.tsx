@@ -10,7 +10,7 @@ import {
 	CardFooter,
 	Card as ShadcnCard,
 } from './shadcn/card'
-import { maxWClasses, type Shadow, shadowClasses, type MaxW } from './types'
+import { maxWClasses, type Shadow, shadowClasses, type MaxW, buttonOnAccent } from './types'
 import { cn } from '@/utils'
 
 type ShadcnCardProps = ComponentProps<typeof ShadcnCard>
@@ -70,11 +70,12 @@ export function Card({
 			)}
 			{...props}
 		>
-			{(title || description) && (
+			{(title || description || badge) && (
 				<CardHeader className={headerClassName}>
 					{badge && (
 						<CardAction>
 							<Badge
+								lowercased
 								size="xs"
 								variant="secondary"
 								{...badgeProps}
@@ -100,11 +101,7 @@ export function Card({
 			{(footer || button) && (
 				<CardFooter
 					className={cn(
-						'**:data-[variant=outline]:bg-surface',
-						' **:data-[variant=outline]:border-accent-dark ',
-						' **:data-[variant=outline]:hover:bg-primary-fond',
-						'**:data-[variant=outline]:hover:border-primary-light',
-						'**:data-[variant=ghost]:hover:bg-accent-dark',
+						buttonOnAccent(true),
 						isSmall ? 'py-3! text-sm' : 'py-5!',
 						footerClassName,
 					)}

@@ -97,3 +97,15 @@ export const shadowClasses: Record<Shadow, string> = {
 	xl: 'shadow-xl',
 	'2xl': 'shadow-2xl',
 }
+
+export function buttonOnAccent(bright?: boolean) {
+	return [
+		bright
+			? '**:data-[variant=outline]:border-accent-dark'
+			: '**:data-[variant=outline]:border-border-dark',
+		bright ? '**:data-[variant=outline]:bg-surface' : '**:data-[variant=outline]:bg-background',
+		'**:data-[variant=outline]:hover:bg-primary/10',
+		'**:data-[variant=outline]:hover:border-primary-light',
+		'**:data-[variant=ghost]:hover:bg-accent-dark',
+	].join(' ')
+}

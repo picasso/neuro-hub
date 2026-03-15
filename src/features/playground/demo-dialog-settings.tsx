@@ -10,6 +10,8 @@ export type DialogDemoState = {
 	animation: DialogAnimation
 	closeButton: boolean
 	footerClose: boolean
+	divider: boolean
+	compactTitle: boolean
 	overlay: boolean
 	modal: boolean
 	icon: boolean
@@ -25,6 +27,8 @@ const defaultState: DialogDemoState = {
 	animation: 'zoom',
 	closeButton: true,
 	footerClose: false,
+	divider: false,
+	compactTitle: false,
 	overlay: true,
 	modal: true,
 	icon: true,
@@ -42,6 +46,8 @@ export function DemoDialogSettings() {
 		animation,
 		closeButton,
 		footerClose,
+		divider,
+		compactTitle,
 		overlay,
 		modal,
 		icon,
@@ -61,6 +67,8 @@ export function DemoDialogSettings() {
 			<SettingToggle id="icon" label="Icon" checked={icon} />
 			<SettingToggle id="closeButton" label="Close (X)" checked={closeButton} />
 			<SettingToggle id="description" label="Description" checked={description} />
+			<SettingToggle id="divider" label="Divider" checked={divider} />
+			<SettingToggle id="compactTitle" label="Compact title" checked={compactTitle} />
 			<SettingToggle id="content" label="Content" checked={content} />
 			<SettingToggle id="labels" label="Labels" checked={labels} />
 			<SettingToggle id="footerClose" label="Footer close" checked={footerClose} />

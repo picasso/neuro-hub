@@ -39,9 +39,9 @@ export function DemoAny() {
 					description={
 						description ? 'Enter your email below to login to your account' : undefined
 					}
-					badge={badge ? 'Featured' : undefined}
+					badge={badge ? (badgeProps ? 'Featured' : 'updated') : undefined}
 					button={button ? 'Action' : undefined}
-					badgeProps={badgeProps ? { icon: 'star', color: 'dimmed' } : undefined}
+					badgeProps={badgeProps ? { icon: 'star', lowercased: false } : undefined}
 					buttonProps={
 						buttonProps
 							? { variant: 'outline', leftIcon: 'brain-circuit', fullWidth: false }

@@ -28,8 +28,10 @@ import {
 	DialogTitle as ShadcnDialogTitle,
 	DialogTrigger,
 } from './shadcn/dialog'
+import { Separator } from './shadcn/separator'
 import { Stack } from './stack'
 import { type TextStyledProps, TS } from './text-styled'
+import { buttonOnAccent } from './types'
 import { cn } from '@/utils'
 
 export type { DialogAnimation }
@@ -68,6 +70,8 @@ export type DialogProps<T = unknown, L = unknown> = ComponentProps<typeof Shadcn
 	icon?: IconName
 	iconOptions?: IconOptions
 	srTitle?: string
+	divider?: boolean
+	compactTitle?: boolean
 
 	// description — string → simpleMarkdown via TS; ReactNode → render as-is
 	description?: ReactNode
@@ -105,6 +109,8 @@ export function Dialog<T = boolean, L = unknown>({
 	icon,
 	iconOptions,
 	srTitle,
+	divider,
+	compactTitle,
 	description: desc,
 	trigger,
 	footer,
@@ -175,14 +181,19 @@ export function Dialog<T = boolean, L = unknown>({
 
 	const headerNode = useMemo(
 		() => (
-			<ShadcnDialogHeader>
+			<ShadcnDialogHeader className={cn(compactTitle && '-mt-3')}>
 				{icon || title ? (
 					<ShadcnDialogTitle>
-						<span className="flex items-center gap-2">
+						<span
+							className={cn(
+								'flex items-center gap-2 tracking-normal',
+								compactTitle && 'text-sm',
+							)}
+						>
 							{icon && (
 								<Icon
 									name={icon}
-									size={iconOptions?.size ?? 'md'}
+									size={iconOptions?.size ?? (compactTitle ? 'sm' : 'md')}
 									color={iconOptions?.color}
 									spinning={iconOptions?.spinning}
 									className={iconOptions?.tw}
@@ -194,6 +205,14 @@ export function Dialog<T = boolean, L = unknown>({
 				) : (
 					hiddenSrTitle
 				)}
+				{divider && (
+					<Separator
+						className={cn(
+							'-mx-5 w-[calc(100%+2.5rem)]!',
+							compactTitle ? (desc ? 'my-0.5' : 'mt-0.5') : desc ? 'my-1' : 'mt-1.5',
+						)}
+					/>
+				)}
 				{desc && (
 					<ShadcnDialogDescription asChild>
 						{isString(desc) ? <TS clean inlineBlock content={desc} md={md} /> : desc}
@@ -201,19 +220,13 @@ export function Dialog<T = boolean, L = unknown>({
 				)}
 			</ShadcnDialogHeader>
 		),
-		[title, icon, iconOptions, hiddenSrTitle, desc, md],
+		[title, icon, iconOptions, hiddenSrTitle, desc, md, divider, compactTitle],
 	)
 
 	const footerNode = useMemo(
 		() =>
 			footer !== undefined || showFooterClose || actions.length > 0 ? (
-				<ShadcnDialogFooter
-					className={cn(
-						'**:data-[variant=outline]:border-border-dark **:data-[variant=outline]:hover:border-primary',
-						'**:data-[variant=ghost]:hover:bg-accent-dark',
-						footerClassName,
-					)}
-				>
+				<ShadcnDialogFooter className={cn(buttonOnAccent(), footerClassName)}>
 					{footer}
 					{actions.length > 0 && (
 						<Stack
@@ -276,7 +289,11 @@ export function Dialog<T = boolean, L = unknown>({
 				showCloseButton={showCloseButton}
 				noPadding={noPadding}
 				animation={animation}
-				className={cn(sizeClasses[size], className)}
+				className={cn(
+					sizeClasses[size],
+					compactTitle && '**:data-[slot=dialog-close]:top-3',
+					className,
+				)}
 				{...(desc ? {} : { 'aria-describedby': undefined })}
 				{...props}
 			>

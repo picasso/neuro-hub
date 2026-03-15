@@ -111,8 +111,8 @@
 	--popover-foreground: #26251e;
 
 	/* Secondary */
-	--secondary: #e7e7e4;
-	--secondary-foreground: #26251e;
+	--secondary: #ece8e0; /* #e7e7e4 */
+	--secondary-foreground: #2b261a; /* #26251e */
 
 	/* Muted */
 	--muted: #f5f5f0;
