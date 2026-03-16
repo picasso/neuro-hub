@@ -64,6 +64,8 @@ import {
 	Binoculars,
 	Film,
 	Cog,
+	MessageCircleCheck,
+	ChartArea,
 } from 'lucide-react'
 import { type ComponentType, type SVGProps } from 'react'
 import { customIcons } from './icons/icons'
@@ -137,6 +139,8 @@ const lucideIcons = {
 	Binoculars,
 	Film,
 	Cog,
+	MessageCircleCheck,
+	ChartArea,
 }
 
 // type generation --------------------------------------------------------------------------------]

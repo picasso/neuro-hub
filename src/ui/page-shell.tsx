@@ -1,13 +1,16 @@
 import { type ComponentPropsWithoutRef, type ReactNode } from 'react'
 import { cn } from '@/utils'
 
-export type PagePreset = 'form' | 'content' | 'wide' | 'full'
+export type PagePreset = 'form' | 'content' | 'wide' | 'full' | 'public'
 export type PageWidth = 'compact' | 'tablet' | 'desktop' | 'full'
 export type PageInset = 'default' | 'none'
-export type PageSpacing = 'none' | 'md' | 'lg'
+export type PageSpacing = 'none' | 'sm' | 'smb' | 'md' | 'mdb' | 'lg' | 'lgb'
+export type PageAlign = 'center' | 'start' | 'end'
 
 export type PageContainerProps = ComponentPropsWithoutRef<'div'> & {
 	width?: PageWidth
+	innerWidth?: PageWidth
+	innerAlign?: PageAlign
 	inset?: PageInset
 	children: ReactNode
 }
@@ -24,6 +27,8 @@ export type PageShellProps = ComponentPropsWithoutRef<'div'> & {
 export function PageContainer({
 	width = 'tablet',
 	inset = 'default',
+	innerWidth,
+	innerAlign,
 	className,
 	children,
 	...props
@@ -31,14 +36,28 @@ export function PageContainer({
 	return (
 		<div
 			className={cn(
-				'mx-auto w-full',
+				'w-full mx-auto',
 				pageWidthClassMap[width],
 				pageInsetClassMap[inset],
 				className,
 			)}
 			{...props}
 		>
-			{children}
+			{innerWidth ? (
+				<div
+					className={cn(
+						'flex flex-col',
+						pageWidthClassMap[innerWidth],
+						innerAlign === 'center' && 'items-center',
+						innerAlign === 'start' && 'items-start',
+						innerAlign === 'end' && 'items-end',
+					)}
+				>
+					{children}
+				</div>
+			) : (
+				children
+			)}
 		</div>
 	)
 }
@@ -66,6 +85,8 @@ export function PageShell({
 				<PageContainer
 					width={resolvedWidth}
 					inset={resolvedInset}
+					innerWidth={resolvedPreset.innerWidth}
+					innerAlign={resolvedPreset.innerAlign}
 					className={containerClassName}
 				>
 					{children}
@@ -79,12 +100,26 @@ export function PageShell({
 // sidebar-based account or management pages should use a separate structural shell.
 const pagePresetConfigMap: Record<
 	PagePreset,
-	{ width: PageWidth; inset: PageInset; spacing: PageSpacing }
+	{
+		width: PageWidth
+		inset: PageInset
+		spacing: PageSpacing
+
+		innerWidth?: PageWidth
+		innerAlign?: PageAlign
+	}
 > = {
 	form: { width: 'compact', inset: 'default', spacing: 'lg' },
 	content: { width: 'tablet', inset: 'default', spacing: 'lg' },
 	wide: { width: 'desktop', inset: 'default', spacing: 'lg' },
 	full: { width: 'full', inset: 'none', spacing: 'none' },
+	public: {
+		width: 'desktop',
+		inset: 'default',
+		spacing: 'mdb',
+		innerAlign: 'start',
+		innerWidth: 'tablet',
+	},
 }
 
 const pageWidthClassMap: Record<PageWidth, string> = {
@@ -101,6 +136,10 @@ const pageInsetClassMap: Record<PageInset, string> = {
 
 const pageSpacingClassMap: Record<PageSpacing, string> = {
 	none: '',
+	sm: 'py-4 md:py-6',
+	smb: 'py-4 md:pt-2 md:pb-6',
 	md: 'py-8 md:py-10',
+	mdb: 'py-8 md:pt-4 md:pb-10',
 	lg: 'py-16 md:py-20',
+	lgb: 'py-16 md:pt-8 md:pb-20',
 }
