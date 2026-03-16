@@ -52,6 +52,7 @@ export function AlertComponent({ id }: AlertProps) {
 		color: (isProgress && variant === 'filled' ? 'contrast' : undefined) ?? iconOptions?.color,
 	}
 
+	const standardProgress = !variant || variant === 'standard'
 	return (
 		<Alert
 			className={cn(
@@ -74,6 +75,8 @@ export function AlertComponent({ id }: AlertProps) {
 							'h-1.5 rounded-full',
 							variant === 'filled' &&
 								'bg-background/20 *:data-[slot="progress-indicator"]:bg-background',
+							standardProgress &&
+								'bg-purple-500/20 *:data-[slot="progress-indicator"]:bg-purple-500',
 						)}
 					/>
 					{!disableProgressCaption && (
@@ -82,7 +85,7 @@ export function AlertComponent({ id }: AlertProps) {
 							content={`${Math.round(progressValue)}%`}
 							className={cn(
 								'block mt-1',
-								variant === 'filled' ? 'text-background' : 'text-primary',
+								variant === 'filled' ? 'text-background' : 'text-purple-700',
 							)}
 						/>
 					)}

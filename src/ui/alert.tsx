@@ -67,7 +67,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
 					variant={'ghost'}
 					onClick={onClose}
 					className={cn(
-						'absolute top-1 right-1 cursor-pointer opacity-50 hover:opacity-100 rounded-full',
+						'p-1.5! absolute top-1 right-1 cursor-pointer opacity-50 hover:opacity-100 rounded-full',
 						hoverClasses(severity, variant),
 					)}
 				/>
@@ -88,11 +88,11 @@ const variantClasses: Record<AlertVariant, string> = {
 const hoverClasses = (severity: Severity, variant: AlertVariant) => {
 	const classes: Record<AlertVariant, Record<Severity, string> | string> = {
 		standard: {
-			info: 'hover:bg-blue-100',
-			success: 'hover:bg-emerald-100',
-			warning: 'hover:bg-amber-100',
-			error: 'hover:bg-red-100',
-			progress: 'hover:bg-purple-100',
+			info: 'hover:bg-blue-200',
+			success: 'hover:bg-emerald-200',
+			warning: 'hover:bg-amber-200',
+			error: 'hover:bg-red-200',
+			progress: 'hover:bg-purple-300',
 		},
 		filled: '[&>svg]:text-white hover:bg-white/15',
 		outlined: {
@@ -110,11 +110,11 @@ const hoverClasses = (severity: Severity, variant: AlertVariant) => {
 const severityToClasses = (severity: Severity, variant: AlertVariant) => {
 	const classes: Record<AlertVariant, Record<Severity, string>> = {
 		standard: {
-			info: 'bg-blue-50 border-blue-200',
-			success: 'bg-emerald-50 border-emerald-200',
-			warning: 'bg-amber-50 border-amber-200',
-			error: 'bg-red-50 border-red-200',
-			progress: 'bg-purple-50 border-purple-200',
+			info: 'bg-blue-100 border-blue-200',
+			success: 'bg-emerald-100 border-emerald-200',
+			warning: 'bg-amber-100 border-amber-200',
+			error: 'bg-red-100 border-red-200',
+			progress: 'bg-purple-200 border-purple-300',
 		},
 		filled: {
 			info: 'bg-blue-500 text-white border-0',
