@@ -65,12 +65,12 @@ export function LoginModal({ open, onClose }: ModalComponentProps) {
 
 	const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
-
 		try {
 			await onSignIn(credentials)
-			onClose(true)
-			router.push('/account/dashboard')
+			// NOTE: no need to close modal here, it will be removed by Next router
+			// it also gives a better user experience
 		} catch {
+			onClose(null)
 			// handled by signInFx + alerts
 		}
 	}

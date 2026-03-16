@@ -4,7 +4,7 @@ import { combine, sample } from 'effector'
 import { createGate } from 'effector-react'
 import { produce } from 'immer'
 import type { LoginCredentials, LoginErrors } from './types'
-import { createAlert, createAlertFx } from '@/alerts'
+import { createAlert, createAlertFx, updateAlert } from '@/alerts'
 import { authClient } from '@/lib/auth/client'
 import { authDomain as domain } from '@/lib/logger'
 
@@ -122,11 +122,19 @@ export const signInFx = domain.createEffect<LoginCredentials, unknown, Error>({
 			})
 
 			clearTimeout(timerId)
-			createAlertFx.remove(loginAlertId)
 
 			if (!result.data) {
-				// Bubble up the adapter error object into catch()
+				createAlertFx.remove(loginAlertId)
+				// bubble up the adapter error object into catch()
 				throw (result.error as BetterAuthError) ?? new Error('Sign-in failed')
+			} else {
+				// NOTE: no need to remove progress alert here, it will be removed by Next router
+				// it also gives a better user experience
+				updateAlert({
+					id: loginAlertId,
+					title: 'Доступ разрешен',
+					message: 'Авторизация прошла успешно',
+				})
 			}
 
 			return result.data
