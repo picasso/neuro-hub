@@ -4,10 +4,6 @@ import { useGate, useUnit } from 'effector-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, type FormEvent } from 'react'
-import cover00003 from '../../../public/images/00003.jpg'
-import cover00053 from '../../../public/images/00053.jpg'
-import cover00092 from '../../../public/images/00092.jpg'
-import coverBeach005 from '../../../public/images/beach-005.jpg'
 import type { ModalComponentProps } from '@/modals'
 import {
 	$canSubmit,
@@ -22,10 +18,10 @@ import {
 import { Button, Checkbox, Dialog, IconButton, Stack, TextField, TS } from '@/ui'
 
 const loginCoverImages = [
-	{ src: cover00003, alt: 'AI specialist workspace' },
-	{ src: cover00053, alt: 'Creative technology team' },
-	{ src: cover00092, alt: 'Futuristic digital interface' },
-	{ src: coverBeach005, alt: 'Calm remote work atmosphere' },
+	{ src: '/images/00003.jpg', alt: 'AI specialist workspace' },
+	{ src: '/images/00053.jpg', alt: 'Creative technology team' },
+	{ src: '/images/00092.jpg', alt: 'Futuristic digital interface' },
+	{ src: '/images/beach-005.jpg', alt: 'Calm remote work atmosphere' },
 ] as const
 let previousLoginCoverIndex = -1
 
@@ -218,7 +214,6 @@ export function LoginModal({ open, onClose }: ModalComponentProps) {
 						alt={coverImage.alt}
 						fill
 						priority
-						placeholder="blur"
 						sizes="(max-width: 1024px) 0vw, 700px"
 						className={`object-cover transition-opacity duration-500 ${
 							isCoverLoaded ? 'opacity-100' : 'opacity-0'

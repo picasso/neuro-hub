@@ -1,5 +1,11 @@
 # Планы на будущее
 
+## Продумать loading-state для cover image в login modal
+
+- После отказа от `placeholder="blur"` в `src/features/auth/login-modal.tsx` решить, что показывать во время загрузки изображения.
+- Варианты: gradient/skeleton overlay, нейтральный poster frame, shimmer placeholder.
+- Проверить UX при медленной сети и при смене случайной картинки на повторном открытии модалки.
+
 ## Перейти с Jest на Vitest
 
 | Критерий          | Vitest                                                                                 | Jest                                                                                 |
