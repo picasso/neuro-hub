@@ -19,15 +19,15 @@ export function FreelancerGridCard({ item }: FreelancerGridCardProps) {
 			hover="underline"
 			className="group block h-full no-underline hover:no-underline"
 		>
-			<CardRoot className="h-full gap-0 overflow-hidden rounded-2xl border-border/70 py-0 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
-				<div className="relative aspect-4/3 overflow-hidden bg-muted/30">
+			<CardRoot className="h-full gap-0 overflow-hidden rounded-lg border-border/70 py-0 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
+				<div className="relative aspect-3/2 overflow-hidden bg-muted/30">
 					{renderPreview(item)}
-					<div className="absolute left-3 top-3">
-						<Badge variant="outline" size="xs" color="soft">
+					<div className="absolute right-3 top-3">
+						<Badge variant="outline" size="xs" color="contrast">
 							{item.latestPortfolioItem ? 'Latest work' : 'Portfolio soon'}
 						</Badge>
 					</div>
-					{item.latestPortfolioItem ? (
+					{/* {item.latestPortfolioItem ? (
 						<div className="absolute inset-x-3 bottom-3 rounded-lg bg-background/90 px-2.5 py-2 backdrop-blur-sm">
 							<TS
 								clean
@@ -37,23 +37,23 @@ export function FreelancerGridCard({ item }: FreelancerGridCardProps) {
 								content={item.latestPortfolioItem.title}
 							/>
 						</div>
-					) : null}
+					) : null} */}
 				</div>
 
 				<Stack vertical gap={4} align="stretch" className="flex-1 p-4">
-					<Stack gap={3} align="start">
+					<Stack gap={3}>
 						<Avatar
 							name={item.name || 'Freelancer'}
 							src={item.avatarUrl ?? undefined}
-							size="md"
+							size="lg"
 						/>
-						<Stack vertical gap={0.5} align="stretch" className="min-w-0 flex-1">
+						<Stack vertical gap={0} align="stretch" className="min-w-0 flex-1">
 							<div className="truncate text-sm font-semibold text-foreground">
 								{item.name || 'Freelancer'}
 							</div>
 							<TS
 								clean
-								variant="subtitle"
+								variant="caption"
 								color="secondary"
 								className="line-clamp-2"
 								content={
@@ -76,7 +76,7 @@ export function FreelancerGridCard({ item }: FreelancerGridCardProps) {
 
 					<Stack wrap gap={1.5} align="start">
 						{visibleSkills.map((skill) => (
-							<Badge key={skill.id} variant="outline" size="xs">
+							<Badge key={skill.id} variant="secondary" size="xs">
 								{skill.name}
 							</Badge>
 						))}

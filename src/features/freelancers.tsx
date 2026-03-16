@@ -32,18 +32,12 @@ export async function FreelancersPage({ searchParams }: PageProps) {
 	const directory = await listPublicFreelancers(filters)
 
 	return (
-		<PageShell preset="wide">
+		<PageShell preset="wide" spacing="lgb">
 			<Stack vertical gap={8} align="stretch">
 				<header>
 					<Stack vertical gap={5} align="stretch">
 						<Breadcrumb path={freelancerCatalogMock.breadcrumb} />
 						<Stack vertical gap={3} align="stretch">
-							<TS
-								variant="caption"
-								color="secondary"
-								className="uppercase tracking-[0.2em]"
-								content="Public directory"
-							/>
 							<TS clean variant="h2" content={freelancerCatalogMock.title} />
 							<TS
 								variant="body"
@@ -224,7 +218,7 @@ export async function FreelancersPage({ searchParams }: PageProps) {
 								helper="Попробуйте изменить поисковый запрос, категорию или отключить фильтр по портфолио."
 							/>
 						) : (
-							<div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+							<div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
 								{directory.items.map((item) => (
 									<FreelancerGridCard
 										key={item.freelancerProfileId}
