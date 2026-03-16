@@ -56,6 +56,9 @@ Do not treat these as optional hints. They are implementation rules.
 ## Frontend Rules
 
 - use `Stack`, `TS`, `TextField`, `Button`, `Icon`, and other `@/ui` wrappers when applicable
+- in frontend app code, use `Link` from `@/ui` as the default navigation primitive; do not import `next/link` when `@/ui` `Link` fits
+- in frontend React UI code, use `next/image` as the default image primitive; do not keep raw `<img>` when `next/image` is applicable
+- exceptions are limited to wrapper or infra code where those primitives are being implemented or where the replacement is technically not suitable
 - keep `Stack` minimal when defaults already match
 - prefer `gap-*` / `Stack` over legacy `space-x-*` / `space-y-*`
 - keep typography in `TS` when supported by the wrapper
@@ -92,6 +95,8 @@ Do not treat these as optional hints. They are implementation rules.
 - add accessible labels and keyboard support where relevant
 - write tests for new behavior
 - do not invent new wrappers when an existing `@/ui` abstraction already solves the task
+- do not use `next/link` in frontend app code when `@/ui` `Link` is applicable
+- do not use raw `<img>` in frontend React UI code when `next/image` is applicable
 
 ## Output Format
 
