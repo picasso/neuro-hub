@@ -4,7 +4,7 @@ import { useUnit } from 'effector-react'
 import { map } from 'lodash'
 import type { UserRole } from '@/lib/validations'
 import { $role, setRole } from '@/stores/onboarding'
-import { Card, CardContent, CardFooter, Icon, TS, type IconName } from '@/ui'
+import { Icon, TS, type IconName, Card } from '@/ui'
 import { cn } from '@/utils'
 
 type RoleOption = {
@@ -33,17 +33,12 @@ export function RoleSelectionStep() {
 	const selectedRole = useUnit($role)
 
 	return (
-		<div>
-			<div className="mb-8 text-center">
-				<TS variant="h5" gutterBottom content="Выберите вашу роль" />
-				<TS
-					variant="body"
-					color="secondary"
-					className="text-sm"
-					content="Это поможет нам персонализировать ваш опыт"
-				/>
-			</div>
-
+		<Card
+			title="Выберите вашу роль"
+			description="Это поможет нам персонализировать ваш опыт"
+			className="border-none"
+			headerClassName="justify-center text-center"
+		>
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 				{map(roleOptions, (option) => {
 					const isSelected = selectedRole === option.value
@@ -59,35 +54,29 @@ export function RoleSelectionStep() {
 										setRole(option.value)
 									}
 								}}
-								className="cursor-pointer max-w-auto transition-all duration-200 hover:shadow-md"
+								className="cursor-pointer max-w-auto transition-all duration-200 hover:shadow-sm"
+								contentClassName="pt-8 text-center"
+								footerClassName="p-6 text-center text-muted-foreground"
+								footer={option.description}
 							>
-								<CardContent className="pt-8 text-center">
-									<Icon
-										name={option.icon}
-										size={60}
-										className={cn(
-											'mx-auto mb-4 rounded-full transition-colors duration-200',
-											'outline-8 hover:outline-primary',
-											isSelected
-												? 'bg-primary text-primary-foreground outline-primary'
-												: 'bg-muted text-muted-foreground outline-muted',
-											'hover:bg-primary hover:text-primary-foreground',
-										)}
-									/>
-									<TS variant="h5" content={option.title} />
-								</CardContent>
-								<CardFooter className="p-6">
-									<TS
-										variant="subtitle"
-										color="dimmed"
-										content={option.description}
-									/>
-								</CardFooter>
+								<Icon
+									name={option.icon}
+									size={60}
+									className={cn(
+										'mx-auto mb-4 rounded-full transition-colors duration-200',
+										'outline-8 hover:outline-primary',
+										isSelected
+											? 'bg-primary text-primary-foreground outline-primary'
+											: 'bg-muted text-muted-foreground outline-muted',
+										'hover:bg-primary hover:text-primary-foreground',
+									)}
+								/>
+								<TS variant="h5" content={option.title} />
 							</Card>
 						</div>
 					)
 				})}
 			</div>
-		</div>
+		</Card>
 	)
 }

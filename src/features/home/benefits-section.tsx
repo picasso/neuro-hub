@@ -2,26 +2,35 @@
 
 import { map } from 'lodash'
 import { benefitsContent } from '@/config'
-import { Icon, PageContainer, Stack, TS, type IconName } from '@/ui'
+import { Card, Icon, PageContainer, Stack, TS, type IconName } from '@/ui'
+import { cn } from '@/utils'
 
 type BenefitCardProps = {
 	icon: IconName
 	title: string
 	description: string
+	iconColor: 'primary' | 'cta'
 }
 
-function BenefitCard({ icon, title, description }: BenefitCardProps) {
+function BenefitCard({ icon, title, description, iconColor }: BenefitCardProps) {
 	return (
-		<Stack
-			gap={4}
-			className="p-6 h-full w-full border border-border rounded-lg transition-all duration-300 hover:shadow-lg hover:border-primary"
-		>
-			<div className="flex items-center justify-center w-14 h-14 shrink-0 bg-primary/10 rounded-lg">
-				<Icon name={icon} size={32} color="contrast" />
-			</div>
-			<TS variant="h5" gutterBottom className="font-semibold" content={title} />
-			<TS variant="body" color="secondary" className="text-sm" content={description} />
-		</Stack>
+		<Card
+			title={
+				<Stack gap={4}>
+					<Stack
+						justify="center"
+						className={cn(
+							'w-14 h-14 shrink-0 rounded-lg',
+							iconColor === 'primary' ? 'bg-primary' : 'bg-cta',
+						)}
+					>
+						<Icon name={icon} size={32} color="contrast" />
+					</Stack>
+					<TS clean variant="h4" content={title} />
+				</Stack>
+			}
+			description={description}
+		/>
 	)
 }
 
@@ -50,6 +59,7 @@ export function BenefitsSection() {
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							{map(benefitsContent.freelancers.items, (item, index) => (
 								<BenefitCard
+									iconColor="primary"
 									key={item.title}
 									icon={freelancerIcons[index]}
 									title={item.title}
@@ -63,12 +73,13 @@ export function BenefitsSection() {
 						<TS
 							variant="h5"
 							gutterBottom
-							className="font-semibold mb-6 text-secondary-foreground"
+							className="font-semibold mb-6 text-cta"
 							content={benefitsContent.clients.title}
 						/>
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							{map(benefitsContent.clients.items, (item, index) => (
 								<BenefitCard
+									iconColor="cta"
 									key={item.title}
 									icon={clientIcons[index]}
 									title={item.title}

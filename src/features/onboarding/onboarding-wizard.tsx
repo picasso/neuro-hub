@@ -74,7 +74,7 @@ export function OnboardingWizard() {
 
 	return (
 		<PageShell preset="wide" spacing="md">
-			<div className="bg-background border border-border rounded-xl shadow p-4 md:p-8">
+			<div className="bg-surface border rounded-xl p-4 md:p-8">
 				{role && currentStep !== 1 && (
 					<Stack justify="center" align="center" gap={4} className="mb-6">
 						<Badge

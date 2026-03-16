@@ -13,15 +13,12 @@ import {
 import { maxWClasses, type Shadow, shadowClasses, type MaxW, buttonOnAccent } from './types'
 import { cn } from '@/utils'
 
-type ShadcnCardProps = ComponentProps<typeof ShadcnCard>
-type CardTitleProps = ComponentProps<typeof CardTitle>
-type CardDescriptionProps = ComponentProps<typeof CardDescription>
-type CardFooterProps = ComponentProps<typeof CardFooter>
+type ShadcnCardProps = Omit<ComponentProps<typeof ShadcnCard>, 'title'>
 
 export type CardProps = ShadcnCardProps & {
-	title?: CardTitleProps['children']
-	description?: CardDescriptionProps['children']
-	footer?: CardFooterProps['children']
+	title?: ReactNode
+	description?: ReactNode
+	footer?: ReactNode
 	button?: string
 	buttonProps?: Omit<ButtonProps, 'children' | 'label' | 'asChild'>
 	badge?: ReactNode
@@ -31,7 +28,9 @@ export type CardProps = ShadcnCardProps & {
 	maxW?: MaxW
 	fullWidth?: boolean
 	headerClassName?: string
+	headerStyle?: React.CSSProperties
 	footerClassName?: string
+	footerStyle?: React.CSSProperties
 	contentClassName?: string
 }
 
@@ -50,7 +49,9 @@ export function Card({
 	flush,
 	fullWidth,
 	headerClassName,
+	headerStyle,
 	footerClassName,
+	footerStyle,
 	contentClassName,
 	children,
 	...props
@@ -71,15 +72,15 @@ export function Card({
 			{...props}
 		>
 			{(title || description || badge) && (
-				<CardHeader className={headerClassName}>
+				<CardHeader className={headerClassName} style={headerStyle}>
 					{badge && (
 						<CardAction>
 							<Badge
 								lowercased
-								size="xs"
+								size={isSmall ? 'sm' : 'xs'}
 								variant="secondary"
 								{...badgeProps}
-								className={isSmall ? 'tracking-tight' : 'tracking-normal text-sm'}
+								className={isSmall ? 'tracking-tight' : 'tracking-normal'}
 							>
 								{badge}
 							</Badge>
@@ -105,6 +106,7 @@ export function Card({
 						isSmall ? 'py-3! text-sm' : 'py-5!',
 						footerClassName,
 					)}
+					style={footerStyle}
 				>
 					{footer}
 					{button && (
