@@ -6,7 +6,7 @@ export {
 	showcaseContent,
 	benefitsContent,
 	ctaContent,
-} from './mocks'
+} from './mocks/landing-content'
 export {
 	homeMetadata,
 	freelancersMetadata,
@@ -17,3 +17,4 @@ export {
 	signupMetadata,
 } from './metadata'
 export { viewport } from './metadata/utils'
+export { freelancerCatalogMock } from './mocks/freelancer-catalog'
