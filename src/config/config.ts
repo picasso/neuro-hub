@@ -11,6 +11,11 @@ export const config = {
 	baseUrl: isDevEnv ? '' : BASE_URL,
 	debugAuthErrors: process.env.DEBUG_AUTH_ERRORS ?? false,
 	isPlaygroundAvailable: true,
+	// files larger than this threshold show determinate upload progress;
+	// smaller files use staged loading states without percent progress
+	uploadProgressThreshold: 1 * 1024 * 1024,
+	// maximum file size for portfolio uploads
+	uploadMaxSize: 50 * 1024 * 1024,
 
 	// NOTE: * * * C A C H E D * * * seeds --------------------------------------------------------]
 

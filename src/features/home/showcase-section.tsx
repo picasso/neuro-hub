@@ -2,18 +2,7 @@
 
 import { map } from 'lodash'
 import { showcaseContent } from '@/config'
-import {
-	Card,
-	CardContent,
-	Avatar,
-	Stack,
-	TS,
-	type IconName,
-	Icon,
-	CardHeader,
-	CardTitle,
-	CardFooter,
-} from '@/ui'
+import { Avatar, PageContainer, Stack, TS, type IconName, Icon, Card } from '@/ui'
 
 type CategoryConfig = {
 	icon: IconName
@@ -56,31 +45,24 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 	const config = categoryConfig[category] || categoryConfig['Генерация текста']
 
 	return (
-		<Card size="sm" className="h-full">
-			<CardHeader className="py-4" style={{ background: config.gradient }}>
-				<CardTitle className="text-background">
-					<Stack>
-						<Icon name={config.icon} size={20} color="contrast" />
-						{category}
-					</Stack>
-				</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<TS variant="h5" strong gutterBottom content={title} />
-				<TS variant="subtitle" color="secondary" gutterBottom content={description} />
-				<Stack align="flex-start">
-					<Icon name="badge-check" size="lg" color="primary" />
-					<TS strong variant="subtitle" color="secondary" content="Результат:" />
-					<TS variant="caption" color="dimmed" content={result} gutterBottom />
+		<Card
+			flush
+			size="sm"
+			className="h-full"
+			headerClassName="px-6 pt-3 pb-1 text-background"
+			footerClassName="p-4"
+			headerStyle={{ background: config.gradient }}
+			title={
+				<Stack>
+					<Icon name={config.icon} size={24} color="contrast" />
+					{category}
 				</Stack>
-			</CardContent>
-			<CardFooter className="p-4" style={{ background: config.quoteBg }}>
+			}
+			footer={
 				<Stack vertical align="flex-start" gap={4}>
 					<Stack align="flex-start">
 						<Icon
 							name="format-quote"
-							size={20}
-							color="cta"
 							style={{ color: config.chipColor }}
 							className="mt-1"
 						/>
@@ -96,7 +78,16 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 						<TS strong variant="caption" color="secondary" content={client} />
 					</Stack>
 				</Stack>
-			</CardFooter>
+			}
+			footerStyle={{ background: config.quoteBg }}
+		>
+			<TS variant="h4" gutterBottom content={title} />
+			<TS variant="subtitle" color="secondary" gutterBottom content={description} />
+			<Stack align="flex-start">
+				<Icon name="badge-check" size="lg" color="primary" />
+				<TS strong variant="subtitle" color="secondary" content="Результат:" />
+				<TS variant="caption" color="dimmed" content={result} gutterBottom />
+			</Stack>
 		</Card>
 	)
 }
@@ -104,7 +95,7 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 export function ShowcaseSection() {
 	return (
 		<div className="py-12 bg-surface">
-			<div className="container max-w-5xl mx-auto px-4">
+			<PageContainer width="desktop">
 				<TS
 					variant="h3"
 					strong
@@ -133,7 +124,7 @@ export function ShowcaseSection() {
 						</div>
 					))}
 				</div>
-			</div>
+			</PageContainer>
 		</div>
 	)
 }

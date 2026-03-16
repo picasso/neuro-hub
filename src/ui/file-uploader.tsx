@@ -114,7 +114,10 @@ export function FileUploader({
 	}, [disabled, inputRef])
 
 	return (
-		<div {...getRootProps()} className={cn(fullWidth ? 'flex-1' : 'w-fit', wrapperClassName)}>
+		<div
+			{...getRootProps()}
+			className={cn(fullWidth ? 'flex-1 w-full' : 'w-fit', wrapperClassName)}
+		>
 			<Empty
 				mediaIcon={mediaIcon}
 				outline={outline}

@@ -41,7 +41,7 @@ export type EmptyProps = EmptyShadcnProps.Root & {
 	outline?: boolean
 	fullWidth?: boolean
 	compact?: boolean
-	mediaIcon?: boolean
+	mediaIcon?: boolean | 'center' | 'start'
 	align?: 'center' | 'start'
 	desc?: EmptyShadcnProps.Description['children'] | EmptyHelper
 	helper?: string | EmptyHelper
@@ -113,7 +113,15 @@ export function Empty({
 				)}
 			>
 				{icon && (
-					<EmptyMedia variant={mediaIcon ? 'icon' : 'default'} className={mediaClassName}>
+					<EmptyMedia
+						variant={mediaIcon ? 'icon' : 'default'}
+						className={cn(
+							iconOptions?.size && `w-auto h-auto`,
+							mediaIcon === 'start' && 'self-center rounded-full p-6',
+							mediaIcon === 'center' && 'self-center rounded-full p-6',
+							mediaClassName,
+						)}
+					>
 						<Icon
 							name={icon}
 							color={iconOptions?.color ?? (outline ? 'dimmed' : 'secondary')}
@@ -123,9 +131,11 @@ export function Empty({
 						/>
 					</EmptyMedia>
 				)}
-				{title && <EmptyTitle className="text-md font-semibold">{title}</EmptyTitle>}
+				{title && (
+					<EmptyTitle className="text-md font-semibold tracking-wide">{title}</EmptyTitle>
+				)}
 				{desc && (
-					<EmptyDescription>
+					<EmptyDescription className="text-dimmed/90">
 						{descNode}
 						{!descNode &&
 							(descMd === false ? descText : simpleMarkdown(descText, descMd))}
@@ -148,7 +158,11 @@ export function Empty({
 					data-slot="helper"
 					variant="caption"
 					content={helperMd === false ? helperText : simpleMarkdown(helperText, helperMd)}
-					className={cn('pt-2', align === 'start' && 'text-left', helperClassName)}
+					className={cn(
+						'pt-2 text-dimmed',
+						align === 'start' && 'text-left',
+						helperClassName,
+					)}
 				/>
 			)}
 		</EmptyRoot>

@@ -3,14 +3,27 @@
 import { random, reduce, shuffle, uniqueId } from 'lodash'
 import { useMemo } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
-import { type PortfolioDemoState } from './demo-portfolio-settings'
+import { mediaActionOptions, type PortfolioDemoState } from './demo-portfolio-settings'
 import { pictures } from './pictures'
 import { useSettings } from './settings-store'
-import { Portfolio, type MediaItem } from '@/features'
+import { Portfolio } from '@/features/portfolio/portfolio'
+import { type MediaItem } from '@/features/portfolio/portfolio-item'
 
 export function PortfolioDemo() {
 	const settings = useSettings<PortfolioDemoState>()
-	const { title: __, disabled, onlyImages, refreshKey } = settings
+	const {
+		allowSelection,
+		selectedActions,
+		disabled,
+		onlyImages,
+		refreshKey,
+		linkActionPreview,
+		fade,
+		fadeFn,
+		slow,
+		random,
+		delay,
+	} = settings
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const items = useMemo(() => getItems(onlyImages), [onlyImages, refreshKey])
@@ -23,9 +36,14 @@ export function PortfolioDemo() {
 				className="pt-6"
 			>
 				<Portfolio
-					// title={title ? 'Портфолио' : undefined}
+					allowSelection={allowSelection}
+					selectedActions={mediaActionOptions[selectedActions]}
+					linkActionPreview={linkActionPreview}
 					disabled={disabled}
 					items={items}
+					fade={fade}
+					fadeFn={fadeFn}
+					debug={{ slow, random, delay }}
 				/>
 			</DemoSection>
 		</DemoRoot>

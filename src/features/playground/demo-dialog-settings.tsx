@@ -10,12 +10,16 @@ export type DialogDemoState = {
 	animation: DialogAnimation
 	closeButton: boolean
 	footerClose: boolean
+	divider: boolean
+	compactTitle: boolean
 	overlay: boolean
 	modal: boolean
 	icon: boolean
 	title: boolean
 	description: boolean
 	content: boolean
+	labels: boolean
+	actionsPosition: NonNullable<DialogProps['actionsPosition']>
 }
 
 const defaultState: DialogDemoState = {
@@ -23,12 +27,16 @@ const defaultState: DialogDemoState = {
 	animation: 'zoom',
 	closeButton: true,
 	footerClose: false,
+	divider: false,
+	compactTitle: false,
 	overlay: true,
 	modal: true,
 	icon: true,
 	title: true,
 	description: true,
 	content: true,
+	labels: true,
+	actionsPosition: 'end',
 }
 
 export function DemoDialogSettings() {
@@ -38,12 +46,16 @@ export function DemoDialogSettings() {
 		animation,
 		closeButton,
 		footerClose,
+		divider,
+		compactTitle,
 		overlay,
 		modal,
 		icon,
 		title,
 		description,
 		content,
+		labels,
+		actionsPosition,
 	} = useSettings<DialogDemoState>()
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -55,7 +67,10 @@ export function DemoDialogSettings() {
 			<SettingToggle id="icon" label="Icon" checked={icon} />
 			<SettingToggle id="closeButton" label="Close (X)" checked={closeButton} />
 			<SettingToggle id="description" label="Description" checked={description} />
+			<SettingToggle id="divider" label="Divider" checked={divider} />
+			<SettingToggle id="compactTitle" label="Compact title" checked={compactTitle} />
 			<SettingToggle id="content" label="Content" checked={content} />
+			<SettingToggle id="labels" label="Labels" checked={labels} />
 			<SettingToggle id="footerClose" label="Footer close" checked={footerClose} />
 			<SettingToggle id="overlay" label="Overlay" checked={overlay} />
 			<SettingToggle id="modal" label="Modal (lock scroll)" checked={modal} />
@@ -71,6 +86,12 @@ export function DemoDialogSettings() {
 				label="Animation"
 				value={animation}
 				options={['zoom', 'fade', 'slide-up', 'slide-down', 'none']}
+			/>
+			<SettingSelect
+				id="actionsPosition"
+				label="Actions position"
+				value={actionsPosition}
+				options={['start', 'end', 'center']}
 			/>
 		</DemoRoot>
 	)

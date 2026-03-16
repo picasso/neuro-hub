@@ -6,13 +6,17 @@ import { createGate } from 'effector-react'
 import { produce } from 'immer'
 import { forEach, isEmpty, set } from 'lodash'
 import type { PortfolioForm, PortfolioItem, UploadResult } from './types'
-import { createAlertFx } from '@/alerts'
+import { createAlertFx, updateAlert } from '@/alerts'
+import { config } from '@/config'
 import { genericDomain as domain } from '@/lib/logger'
+import { fileSize } from '@/utils'
 
 type PortfolioContext = {
 	userId: string
 	profileId: string
 }
+
+type UploadFeedbackMode = 'staged' | 'progress'
 
 export const FreelancerPortfolioGate = createGate({
 	domain,
@@ -31,8 +35,6 @@ const ALLOWED_CONTENT_TYPES = [
 	'audio/webm',
 	'application/pdf',
 ]
-
-const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024 // 50MB
 
 // * * * Form state -------------------------------------------------------------------------------]
 
@@ -68,21 +70,36 @@ $form.on(portfolioFormUpdated, (store, update) =>
 // * * * $context ---------------------------------------------------------------------------------]
 
 export const resetFreelancerPortfolio = domain.createEvent('resetFreelancerPortfolio')
-export const submitFreelancerPortfolio = domain.createEvent<PortfolioContext>(
-	'submitFreelancerPortfolio',
+export const setFreelancerPortfolioContext = domain.createEvent<PortfolioContext>(
+	'setFreelancerPortfolioContext',
 )
 
 export const $context = domain.createStore<PortfolioContext | null>(null, { name: '$context' })
+export const $hasContext = $context.map(Boolean)
 
 $context.reset(resetFreelancerPortfolio)
-$context.on(submitFreelancerPortfolio, (_, ctx) => ctx)
+$context.on(setFreelancerPortfolioContext, (_, ctx) => ctx)
 
 // * * * Portfolio list ----------------------------------------------------------------------------]
 
 export const refreshPortfolio = domain.createEvent('refreshPortfolio')
 export const $portfolio = domain.createStore<PortfolioItem[]>([], { name: '$portfolio' })
+export const uploadProgressChanged = domain.createEvent<number | null>('uploadProgressChanged')
+export const uploadFeedbackModeChanged = domain.createEvent<UploadFeedbackMode | null>(
+	'uploadFeedbackModeChanged',
+)
+export const $uploadProgress = domain.createStore<number | null>(null, { name: '$uploadProgress' })
+export const $uploadFeedbackMode = domain.createStore<UploadFeedbackMode | null>(null, {
+	name: '$uploadFeedbackMode',
+})
 
 $portfolio.reset(resetFreelancerPortfolio)
+$uploadProgress
+	.on(uploadProgressChanged, (_, progress) => progress)
+	.reset(resetFreelancerPortfolio, resetForm)
+$uploadFeedbackMode
+	.on(uploadFeedbackModeChanged, (_, mode) => mode)
+	.reset(resetFreelancerPortfolio, resetForm)
 
 // * * * Effects ----------------------------------------------------------------------------------]
 
@@ -100,74 +117,35 @@ export const loadPortfolioFx = domain.createEffect<{ profileId: string }, Portfo
 })
 
 export const uploadPortfolioMediaFx = domain.createEffect<
-	{ userId: string; file: File },
-	{ blob: UploadResult; mediaType: string | null },
+	{ userId: string; profileId: string; file: File },
+	{ blob: UploadResult; mediaType: string | null; profileId: string },
 	Error
 >({
-	handler: async ({ userId, file }) => {
+	handler: async ({ userId, profileId, file }) => {
 		if (!ALLOWED_CONTENT_TYPES.includes(file.type)) {
 			throw new Error('Unsupported file type')
 		}
-		if (file.size > MAX_FILE_SIZE_BYTES) {
-			throw new Error('File is too large')
+		if (file.size > config.uploadMaxSize) {
+			throw new Error(`File is too large: ${fileSize(file.size, 0, true)}`)
 		}
 
 		const pathname = `portfolio/${userId}/${file.name}`
 		const blob = await upload(pathname, file, {
 			access: 'public',
 			handleUploadUrl: '/api/blob/portfolio-upload',
+			onUploadProgress: ({ percentage }) => {
+				if (shouldShowUploadProgress(file.size)) {
+					uploadProgressChanged(Math.round(percentage))
+				}
+			},
 			clientPayload: JSON.stringify({
 				userId,
 			}),
 		})
 
-		return { blob, mediaType: file.type || null }
+		return { blob, mediaType: file.type || null, profileId }
 	},
 	name: 'uploadPortfolioMediaFx',
-})
-
-export const computeImageDimensionsFx = domain.createEffect<
-	File,
-	{ width: number; height: number } | null,
-	Error
->({
-	handler: async (file) => {
-		if (!file.type.startsWith('image/')) return null
-
-		try {
-			const bitmap = await createImageBitmap(file)
-			const dims = { width: bitmap.width, height: bitmap.height }
-			bitmap.close?.()
-			if (!dims.width || !dims.height) return null
-			return dims
-		} catch (_error) {
-			// fallback for browsers without createImageBitmap support
-			const url = URL.createObjectURL(file)
-			try {
-				const img = new Image()
-				img.decoding = 'async'
-				img.src = url
-
-				// prefer decode() when available
-				if (img.decode) {
-					await img.decode()
-				} else {
-					await new Promise<void>((resolve, reject) => {
-						img.onload = () => resolve()
-						img.onerror = () => reject(new Error('Failed to load image'))
-					})
-				}
-
-				if (!img.naturalWidth || !img.naturalHeight) return null
-				return { width: img.naturalWidth, height: img.naturalHeight }
-			} catch (_error2) {
-				return null
-			} finally {
-				URL.revokeObjectURL(url)
-			}
-		}
-	},
-	name: 'computeImageDimensionsFx',
 })
 
 export const createPortfolioItemFx = domain.createEffect<
@@ -249,7 +227,7 @@ export const deletePortfolioItemFx = domain.createEffect<
 	name: 'deletePortfolioItemFx',
 })
 
-export const submitPortfolioItem = domain.createEvent('submitPortfolioItem')
+export const submitPortfolioItem = domain.createEvent<PortfolioContext>('submitPortfolioItem')
 export const deletePortfolioItem = domain.createEvent<string>('deletePortfolioItem')
 
 // * * * Wiring -----------------------------------------------------------------------------------]
@@ -262,7 +240,7 @@ sample({
 
 // load portfolio when userId is set
 sample({
-	clock: submitFreelancerPortfolio,
+	clock: setFreelancerPortfolioContext,
 	fn: ({ profileId }) => ({ profileId }),
 	target: loadPortfolioFx,
 })
@@ -286,45 +264,26 @@ sample({
 	target: portfolioFormUpdated,
 })
 
-// compute image dimensions when file selected
-sample({
-	clock: portfolioFormUpdated,
-	filter: (update) => 'file' in update && !!update.file,
-	fn: (update) => update.file!,
-	target: computeImageDimensionsFx,
-})
-
-sample({
-	clock: computeImageDimensionsFx.doneData,
-	fn: (dims) => ({
-		mediaWidth: dims?.width ?? null,
-		mediaHeight: dims?.height ?? null,
-	}),
-	target: portfolioFormUpdated,
-})
-
 // Submit: upload -> create -> refresh
 sample({
 	clock: submitPortfolioItem,
-	source: {
-		context: $context,
-		form: $form,
-	},
-	filter: ({ form, context }) => !!context && !!form.file && !!form.title.trim(),
-	fn: ({ form, context }) => ({ userId: context!.userId, file: form.file! }),
+	source: $form,
+	filter: (form, context) =>
+		!!context.userId && !!context.profileId && !!form.file && !!form.title.trim(),
+	fn: (form, context) => ({
+		userId: context.userId,
+		profileId: context.profileId,
+		file: form.file!,
+	}),
 	target: uploadPortfolioMediaFx,
 })
 
 // create portfolio item payload when upload completed
 sample({
 	clock: uploadPortfolioMediaFx.doneData,
-	source: {
-		context: $context,
-		form: $form,
-	},
-	filter: ({ context }) => !!context,
-	fn: ({ form, context }, { blob, mediaType }) => ({
-		profileId: context!.profileId,
+	source: $form,
+	fn: (form, { blob, mediaType, profileId }) => ({
+		profileId,
 		title: form.title.trim(),
 		description: form.description.trim() || undefined,
 		mediaWidth: form.mediaWidth ?? undefined,
@@ -364,37 +323,96 @@ sample({
 
 // * * * UI helpers --------------------------------------------------------------------------------]
 
-export const $isBusy = combine(
+export const $isLoading = loadPortfolioFx.pending
+export const $isUploading = uploadPortfolioMediaFx.pending
+export const $isSaving = combine(
 	{
-		loading: loadPortfolioFx.pending,
 		uploading: uploadPortfolioMediaFx.pending,
 		creating: createPortfolioItemFx.pending,
 		deleting: deletePortfolioItemFx.pending,
 	},
-	({ loading, uploading, creating, deleting }) => loading || uploading || creating || deleting,
+	({ uploading, creating, deleting }) => uploading || creating || deleting,
 )
+export const $isBusy = combine($isLoading, $isSaving, (loading, saving) => loading || saving)
 
 // * * * Alerts -----------------------------------------------------------------------------------]
 const uploadAlertId = createAlertFx.alertId('portfolio-upload')
+const syncUploadProgressFx = domain.createEffect<number, void>({
+	handler: (progress) => {
+		updateAlert({ id: uploadAlertId, progress })
+	},
+	name: 'syncUploadProgressFx',
+})
+const syncCreateStageAlertFx = domain.createEffect<UploadFeedbackMode | null, void>({
+	handler: (mode) => {
+		updateAlert({
+			id: uploadAlertId,
+			title: 'Сохраняем элемент...',
+			message: 'Создаём запись портфолио',
+			progress: mode === 'progress' ? 100 : undefined,
+		})
+	},
+	name: 'syncCreateStageAlertFx',
+})
 
 // show progress alert when upload starts
 sample({
 	clock: uploadPortfolioMediaFx,
-	fn: () =>
-		createAlertFx.props({
+	fn: ({ file }) => {
+		const mode = getUploadFeedbackMode(file.size)
+		return createAlertFx.props({
 			id: uploadAlertId,
 			severity: 'progress',
 			title: 'Загрузка файла...',
 			message: 'Загружаем медиа в хранилище',
+			progress: mode === 'progress' ? 0 : undefined,
 			disableClose: true,
 			disableAutoClose: true,
-		}),
+		})
+	},
 	target: createAlertFx,
+})
+
+sample({
+	clock: uploadPortfolioMediaFx,
+	fn: ({ file }) => getUploadFeedbackMode(file.size),
+	target: uploadFeedbackModeChanged,
+})
+
+sample({
+	clock: uploadPortfolioMediaFx,
+	filter: ({ file }) => shouldShowUploadProgress(file.size),
+	fn: () => 0,
+	target: uploadProgressChanged,
+})
+
+sample({
+	clock: uploadProgressChanged,
+	filter: (progress): progress is number => progress !== null,
+	target: syncUploadProgressFx,
+})
+
+sample({
+	clock: createPortfolioItemFx,
+	source: $uploadFeedbackMode,
+	target: syncCreateStageAlertFx,
 })
 
 // remove progress alert when upload/create finishes
 sample({
-	clock: [uploadPortfolioMediaFx.finally, createPortfolioItemFx.finally],
+	clock: [uploadPortfolioMediaFx.fail, createPortfolioItemFx.finally],
+	fn: () => null,
+	target: uploadProgressChanged,
+})
+
+sample({
+	clock: [uploadPortfolioMediaFx.fail, createPortfolioItemFx.finally],
+	fn: () => null,
+	target: uploadFeedbackModeChanged,
+})
+
+sample({
+	clock: [uploadPortfolioMediaFx.fail, createPortfolioItemFx.finally],
 	fn: () => ({ id: uploadAlertId }),
 	target: createAlertFx.removeFx,
 })
@@ -416,3 +434,11 @@ sample({
 		}),
 	target: createAlertFx,
 })
+
+function shouldShowUploadProgress(fileSize: number) {
+	return fileSize > config.uploadProgressThreshold
+}
+
+function getUploadFeedbackMode(fileSize: number): UploadFeedbackMode {
+	return shouldShowUploadProgress(fileSize) ? 'progress' : 'staged'
+}

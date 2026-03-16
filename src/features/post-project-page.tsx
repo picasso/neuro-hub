@@ -1,9 +1,9 @@
-import { Button, TS } from '@/ui'
+import { Button, PageShell, TS } from '@/ui'
 
 export function PostProjectPage() {
 	return (
-		<div className="container max-w-3xl mx-auto px-4">
-			<div className="mt-16 mb-16 text-center">
+		<PageShell preset="content" width="compact">
+			<div className="text-center">
 				<TS variant="h3" gutterBottom content="Разместить проект" />
 				<TS
 					variant="body"
@@ -13,6 +13,6 @@ export function PostProjectPage() {
 				/>
 				<Button href="/" label="На главную" />
 			</div>
-		</div>
+		</PageShell>
 	)
 }

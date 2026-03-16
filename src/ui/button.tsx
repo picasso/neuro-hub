@@ -13,6 +13,7 @@ export type ButtonProps = Omit<React.ComponentPropsWithoutRef<'button'>, 'childr
 	label?: string
 	bold?: boolean
 	noWrap?: boolean
+	inverse?: boolean
 	fullWidth?: boolean
 	leftIcon?: IconProps['name']
 	rightIcon?: IconProps['name']
@@ -29,6 +30,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 		{
 			disabled,
 			noWrap,
+			inverse,
 			label,
 			bold,
 			fullWidth,
@@ -36,7 +38,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			rightIcon,
 			iconOptions,
 			variant = 'default',
-			size = 'md',
+			size = 'sm',
 			href,
 			target,
 			className,
@@ -47,16 +49,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	) => {
 		const content = label ?? children
 		const shadcnSize = buttonSize(size)
-		const contrast = needsContrast(variant)
+		const contrastIcon = needsContrast(variant)
 		const mergedClassName = cn(
 			!!fullWidth && 'w-full',
 			!!noWrap && 'whitespace-nowrap',
 			!!bold && 'font-bold tracking-wide',
-			outlineStyle(variant),
+			!inverse && outlineStyle(variant),
+			inverse && inverseStyle[variant],
 			className,
 		)
 		const iconProps: Omit<IconProps, 'name'> = {
-			color: contrast ? 'contrast' : 'secondary',
+			color: contrastIcon ? 'contrast' : 'secondary',
 			size: iconOptions?.size,
 			spinning: iconOptions?.spinning,
 			className: iconOptions?.tw,
@@ -101,17 +104,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	},
 )
 
-export function outlineStyle(variant: 'outline' | unknown) {
-	return (
-		variant === 'outline' &&
-		'hover:bg-primary/5 hover:border-primary/50 hover:[&_svg]:text-primary'
-	)
-}
-
-export function buttonSize(size: ButtonSize | 'icon') {
-	return size === 'md' || size === undefined ? 'default' : size
-}
-
 type HrefButtonProps = {
 	ref: ForwardedRef<HTMLButtonElement>
 	href: NonNullable<ButtonProps['href']>
@@ -153,4 +145,28 @@ export function HrefButton({
 			</Link>
 		</ShadcnButton>
 	)
+}
+
+export function outlineStyle(variant: 'outline' | unknown) {
+	return (
+		variant === 'outline' &&
+		'hover:bg-primary/5 hover:border-primary/50 hover:[&_svg]:text-primary'
+	)
+}
+
+export function buttonSize(size: ButtonSize | 'icon') {
+	return size === 'md' || size === undefined ? 'default' : size
+}
+
+const inverseStyle: Record<ButtonVariant | 'link', string> = {
+	default:
+		'bg-white text-primary-dark [&_svg]:text-primary-dark hover:bg-white/80 hover:[&_svg]:text-primary-dark/90',
+	outline:
+		'bg-white/10 border-white text-white [&_svg]:text-white hover:bg-white/30 hover:text-white hover:border-white/50 hover:[&_svg]:text-white/80',
+	secondary:
+		'bg-white/30 text-secondary [&_svg]:text-secondary hover:bg-white/80 hover:text-muted-foreground hover:[&_svg]:text-muted-foreground',
+	destructive:
+		'bg-white text-destructive [&_svg]:text-destructive hover:bg-white/80 hover:[&_svg]:text-destructive/80',
+	ghost: 'text-white [&_svg]:text-white hover:bg-white/10 hover:text-white hover:[&_svg]:text-white/90',
+	link: 'text-white [&_svg]:text-white underline-none hover:bg-white/10 hover:text-white',
 }

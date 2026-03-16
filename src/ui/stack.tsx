@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ComponentProps, type ReactNode } from 'react'
 import { cn } from '@/utils'
 
 type StackDirection = 'row' | 'column' | 'row-reverse' | 'column-reverse'
@@ -16,7 +16,7 @@ type Justify =
 	| 'space-around'
 	| 'space-evenly'
 
-export type StackProps = {
+export type StackProps = ComponentProps<'div'> & {
 	direction?: StackDirection // default: 'row'
 	vertical?: boolean
 	horizontal?: boolean // default: true
@@ -24,7 +24,6 @@ export type StackProps = {
 	align?: Align // default: 'center'
 	justify?: Justify // default: 'flex-start'
 	wrap?: StackWrap
-	className?: string
 	children: ReactNode
 }
 
@@ -38,6 +37,7 @@ export function Stack({
 	wrap,
 	className,
 	children,
+	...props
 }: StackProps) {
 	const resolvedDirection = resolveDirection({ direction, vertical, horizontal })
 	const resolvedGapClass = isValidGap(gap) ? gapMap.get(gap) : undefined
@@ -53,6 +53,7 @@ export function Stack({
 				resolveWrap(wrap),
 				className,
 			)}
+			{...props}
 		>
 			{children}
 		</div>

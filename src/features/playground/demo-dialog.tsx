@@ -1,9 +1,12 @@
 'use client'
 
+import { isNil, isString } from 'lodash'
 import { useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
+import { ModalDemo } from './demo-dialog-modals'
 import { type DialogDemoState } from './demo-dialog-settings'
 import { useSettings } from './settings-store'
+import { loginModal } from '@/features'
 import { Button, Dialog, Stack, TS } from '@/ui'
 
 type OpenKey =
@@ -18,6 +21,7 @@ type OpenKey =
 	| 'icon-success'
 	| 'icon-error'
 	| 'footer'
+	| 'actions'
 	| 'no-overlay'
 
 export function DemoDialog() {
@@ -26,14 +30,19 @@ export function DemoDialog() {
 		animation,
 		closeButton,
 		footerClose,
+		divider,
+		compactTitle,
 		overlay,
 		modal,
 		icon,
 		title,
 		description,
 		content,
+		labels,
+		actionsPosition,
 	} = useSettings<DialogDemoState>()
 
+	const [value, setValue] = useState<unknown>(null)
 	const [open, setOpen] = useState<Record<OpenKey, boolean>>({
 		interactive: false,
 		sm: false,
@@ -46,10 +55,16 @@ export function DemoDialog() {
 		'icon-success': false,
 		'icon-error': false,
 		footer: false,
+		actions: false,
 		'no-overlay': false,
 	})
 
 	const setKey = (key: OpenKey, value: boolean) => setOpen((prev) => ({ ...prev, [key]: value }))
+
+	const onClose = (key: OpenKey) => (value: unknown) => {
+		setKey(key, false)
+		setValue(value as unknown as string)
+	}
 
 	return (
 		<DemoRoot>
@@ -60,7 +75,7 @@ export function DemoDialog() {
 			>
 				<Dialog
 					open={open.interactive}
-					onClose={() => setKey('interactive', false)}
+					onClose={onClose('interactive')}
 					icon={icon ? 'briefcase' : undefined}
 					iconOptions={{ color: 'primary' }}
 					title={title ? 'Заголовок диалога' : undefined}
@@ -71,10 +86,14 @@ export function DemoDialog() {
 					}
 					size={size}
 					animation={animation}
+					divider={divider}
+					compactTitle={compactTitle}
 					overlay={overlay}
 					showCloseButton={closeButton}
 					showFooterClose={footerClose}
 					modal={modal}
+					actionsPosition={actionsPosition}
+					labels={labels ? ['no', 'yes'] : undefined}
 				>
 					{content && (
 						<>
@@ -83,12 +102,7 @@ export function DemoDialog() {
 								color="secondary"
 								content="Здесь может быть любой контент диалога:"
 							/>
-							<ul className="list-disc list-inside">
-								<li>формы</li>
-								<li>изображения</li>
-								<li>списки</li>
-								<li>и т.д.</li>
-							</ul>
+							<TS variant="list" content="формы\nизображения\nсписки\nи т.д." />
 						</>
 					)}
 				</Dialog>
@@ -98,6 +112,15 @@ export function DemoDialog() {
 					leftIcon="briefcase"
 					onClick={() => setKey('interactive', true)}
 				/>
+				<TS
+					variant="subtitle"
+					color="secondary"
+					content={
+						`\`*value:\` -> \`${isString(value) ? '#"' : isNil(value) ? '!' : '+'}` +
+						`${value}${isString(value) ? '"' : ''}\``
+					}
+					className="mt-4"
+				/>
 			</DemoSection>
 
 			<DemoSection title="Sizes" asBadge="shield-check" separator>
@@ -106,7 +129,7 @@ export function DemoDialog() {
 						<div key={s}>
 							<Dialog
 								open={open[s]}
-								onClose={() => setKey(s, false)}
+								onClose={onClose(s)}
 								title={`Size: ${s}`}
 								description={`Диалог с размером **${s}**.\nШирина контролируется пропом \`size\``}
 								size={s}
@@ -136,7 +159,7 @@ export function DemoDialog() {
 						<div key={key}>
 							<Dialog
 								open={open[key as OpenKey]}
-								onClose={() => setKey(key as OpenKey, false)}
+								onClose={onClose(key as OpenKey)}
 								title={label}
 								icon={icon}
 								iconOptions={{ color }}
@@ -164,11 +187,12 @@ export function DemoDialog() {
 			<DemoSection title="With footer" asBadge="badge-check" separator>
 				<Dialog
 					open={open.footer}
-					onClose={() => setKey('footer', false)}
+					onClose={onClose('footer')}
 					title="Подтверждение действия"
 					description="Вы уверены, что хотите продолжить? Это действие **нельзя отменить**."
 					icon="alert-triangle"
 					iconOptions={{ color: 'warning' }}
+					divider
 					footer={
 						<Stack gap={2}>
 							<Button
@@ -176,18 +200,67 @@ export function DemoDialog() {
 								size="sm"
 								label="Удалить"
 								leftIcon="trash"
-								onClick={() => setKey('footer', false)}
+								onClick={() => onClose('footer')('delete')}
 							/>
 						</Stack>
 					}
 					showFooterClose
 				/>
-				<Button
-					variant="destructive"
-					label="Dialog with footer"
-					leftIcon="trash"
-					onClick={() => setKey('footer', true)}
+				<Dialog
+					open={open.actions}
+					onClose={onClose('actions')}
+					title="Действия"
+					compactTitle
+					description="Выберите действие в зависимости от вашего желания:"
+					icon="cog"
+					iconOptions={{ color: 'info' }}
+					divider
+					actions={[
+						{
+							id: 'cancel',
+							label: 'Отмена',
+							variant: 'outline',
+							leftIcon: 'x',
+							size: 'xs',
+						},
+						{
+							id: 'settings',
+							label: 'Настройки',
+							variant: 'outline',
+							leftIcon: 'cog',
+							size: 'xs',
+						},
+						{
+							id: 'delete',
+							label: 'Удалить',
+							variant: 'destructive',
+							leftIcon: 'trash',
+							size: 'xs',
+						},
+						{
+							id: 'confirm',
+							label: 'Подтвердить',
+							variant: 'default',
+							leftIcon: 'check',
+							size: 'xs',
+						},
+					]}
+					actionsPosition={actionsPosition}
 				/>
+				<Stack>
+					<Button
+						variant="destructive"
+						label="Dialog with footer"
+						leftIcon="trash"
+						onClick={() => setKey('footer', true)}
+					/>
+					<Button
+						variant="outline"
+						label="Dialog with actions"
+						leftIcon="cog"
+						onClick={() => setKey('actions', true)}
+					/>
+				</Stack>
 			</DemoSection>
 
 			<DemoSection title="No overlay" asBadge="badge-check" separator>
@@ -210,6 +283,16 @@ export function DemoDialog() {
 					label="Without overlay"
 					leftIcon="ban"
 					onClick={() => setKey('no-overlay', true)}
+				/>
+			</DemoSection>
+			<DemoSection title="Modals system" asBadge="badge-check">
+				<ModalDemo setValue={setValue} />
+				<Button
+					variant="secondary"
+					label="Login modal"
+					leftIcon="users-round"
+					onClick={async () => await loginModal()}
+					className="mt-4"
 				/>
 			</DemoSection>
 		</DemoRoot>

@@ -1,4 +1,5 @@
 import { isString, map } from 'lodash'
+import { Fragment } from 'react/jsx-runtime'
 import { Icon, type IconName } from './icon'
 import { cn } from '@/utils'
 
@@ -33,19 +34,15 @@ export function Stepper({
 			{map(items, (item: StepperItem | string, index: number) => {
 				const stepItem = isString(item) ? { label: item, step: index + 1 } : item
 				return (
-					<>
-						<StepperItem
-							key={stepItem.step}
-							active={stepItem.step === activeStep}
-							{...stepItem}
-						/>
+					<Fragment key={stepItem.step}>
+						<StepperItem active={stepItem.step === activeStep} {...stepItem} />
 						{chevron && (
 							<Icon
 								name={chevronIcon ?? 'chevron-right'}
 								className="text-dimmed/60"
 							/>
 						)}
-					</>
+					</Fragment>
 				)
 			})}
 		</ul>

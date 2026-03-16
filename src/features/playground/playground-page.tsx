@@ -6,7 +6,7 @@ import { type ComponentDemo, componentDemos } from './components'
 import { ComponentSelector } from './components-selector'
 import { DemoRenderer, SettingsRenderer } from './demo'
 import { QuickAccess } from './quick-access'
-import { Separator, Stack, TS, IconButton } from '@/ui'
+import { Separator, Stack, TS, IconButton, Button } from '@/ui'
 
 const MAX_RECENT = 3
 const LS_KEY = 'playground-recent'
@@ -53,6 +53,14 @@ export function PlaygroundPage() {
 		})
 	}, [])
 
+	const handleMakeFirst = useCallback(() => {
+		setRecent((prev) => {
+			const next = selected ? [selected, ...prev.filter((c) => c.id !== selected.id)] : prev
+			saveRecent(next)
+			return next
+		})
+	}, [selected])
+
 	return (
 		<Stack
 			vertical
@@ -71,6 +79,14 @@ export function PlaygroundPage() {
 					<QuickAccess recent={recent} current={selected} onSelect={handleSelect} />
 					{recent.length > 0 && <Separator orientation="vertical" className="mx-1 h-5" />}
 					<ComponentSelector selected={selected} onSelect={handleSelect} />
+					<IconButton
+						icon="shield-check"
+						variant="ghost"
+						size="sm"
+						onClick={handleMakeFirst}
+						title="Сделать текущий компонент первым"
+						className="-mr-4"
+					/>
 					<IconButton
 						icon="history"
 						variant="ghost"
@@ -102,17 +118,13 @@ export function PlaygroundPage() {
 				</div>
 				{/* Side panel — component-specific settings */}
 				<div className="hidden w-65 shrink-0 border-l bg-surface md:block">
-					<Stack
-						vertical
-						gap={4}
-						align="stretch"
-						className="overflow-y-auto px-4 pb-4 pt-2"
-					>
+					<Stack vertical gap={4} align="stretch" className="overflow-y-auto px-4 pb-4">
 						<Stack vertical gap={0} align="stretch">
 							<TS
+								clean
 								variant="h3"
 								content={selected?.name ?? 'Настройки'}
-								className="font-semibold text-base"
+								className="font-semibold text-base mt-2"
 							/>
 							<TS
 								variant="caption"
@@ -127,4 +139,17 @@ export function PlaygroundPage() {
 			</Stack>
 		</Stack>
 	)
+}
+
+export function PlaygroundButton() {
+	return process.env.NODE_ENV === 'development' ? (
+		<Button
+			href="/playground"
+			variant="ghost"
+			size="sm"
+			label="Playground"
+			leftIcon="code"
+			className="text-dimmed border border-dashed border-border-dark"
+		/>
+	) : null
 }

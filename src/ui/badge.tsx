@@ -7,7 +7,7 @@ import { needsContrast } from './utils'
 import { cn } from '@/utils'
 
 export type BadgeVariant = 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link'
-export type BadgeSize = 'xs' | 'sm' | 'md' | 'lg'
+export type BadgeSize = 'xs' | 'sm' | 'md'
 
 export type BadgeProps = Omit<React.ComponentPropsWithoutRef<'span'>, 'children'> & {
 	variant?: BadgeVariant
@@ -21,23 +21,25 @@ export type BadgeProps = Omit<React.ComponentPropsWithoutRef<'span'>, 'children'
 	iconClassName?: string
 	closeClassName?: string
 	ariaOnClose?: string
+	lowercased?: boolean
 }
 
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 	(
 		{
-			variant = 'primary',
-			asChild = false,
+			variant = 'secondary',
+			asChild,
 			label,
 			color,
 			icon,
-			size = 'md',
+			size = 'xs',
 			onClose,
 			className,
 			children,
 			iconClassName,
 			closeClassName,
 			ariaOnClose,
+			lowercased,
 			...props
 		},
 		ref,
@@ -46,9 +48,13 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 		const contrast = needsContrast(variant, color)
 		const defaultColor = contrast ? 'contrast' : variant === 'link' ? 'primary' : 'dimmed'
 		const mergedClassName = cn(
+			'px-2.5',
 			textSizeClasses[size],
 			sizeIconClasses[size],
 			color && textColorClasses[color],
+			lowercased && 'pt-0',
+			lowercased && size === 'xs' && 'h-6',
+			onClose && 'pr-0.5',
 			color && variant === 'outline' && outlineColorClasses[color],
 			className,
 		)
@@ -75,11 +81,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 						name={icon}
 						size={iconSizeMap[size]}
 						color={iconColor ?? defaultColor}
-						className={cn(
-							size === 'lg' && 'ml-1',
-							color === 'soft' && 'text-background/60',
-							iconClassName,
-						)}
+						className={cn(color === 'soft' && 'text-background/60', iconClassName)}
 						data-icon="inline-start"
 					/>
 				) : null}
@@ -88,7 +90,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 					<IconButton
 						icon="x"
 						variant={contrast ? 'default' : 'ghost'}
-						size={size === 'lg' ? 'sm' : 'xs'}
+						size="xs"
 						onClick={onClose}
 						className={cn(
 							'-mb-0.5 -ml-1 -mr-1 shrink-0',
@@ -114,14 +116,12 @@ const sizeIconClasses: Record<BadgeSize, string> = {
 	xs: '[&>svg]:size-3',
 	sm: '[&>svg]:size-3.5',
 	md: '[&>svg]:size-4',
-	lg: '[&>svg]:size-5',
 }
 
-const iconSizeMap: Record<BadgeSize, 'xs' | 'sm' | 'md' | 'lg'> = {
+const iconSizeMap: Record<BadgeSize, 'xs' | 'sm' | 'md'> = {
 	xs: 'xs',
 	sm: 'sm',
 	md: 'md',
-	lg: 'lg',
 }
 
 const iconColorMap: Record<SemanticColor, SemanticColor | 'contrast'> = {

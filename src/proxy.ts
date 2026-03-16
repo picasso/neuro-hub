@@ -72,7 +72,7 @@ export async function proxy(request: NextRequest) {
 	}
 
 	if (some(authPaths, (path) => pathname.startsWith(path))) {
-		return NextResponse.redirect(new URL('/dashboard', request.url))
+		return NextResponse.redirect(new URL('/account/dashboard', request.url))
 	}
 
 	const response = NextResponse.next()

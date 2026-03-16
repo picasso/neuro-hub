@@ -53,6 +53,7 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
 				spinning && 'animate-spin',
 				className,
 			)}
+			style={isNumber(size) ? { width: sizeValue, height: sizeValue } : undefined}
 			{...props}
 		/>
 	)

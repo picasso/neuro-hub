@@ -40,3 +40,11 @@ export {
 	type CreatePortfolioItemInput,
 	type UpdateFreelancerProfileInput,
 } from './freelancers'
+export {
+	freelancerDirectoryCategorySchema,
+	freelancerDirectoryQuerySchema,
+	freelancerDirectorySortSchema,
+	type FreelancerDirectoryCategory,
+	type FreelancerDirectoryQueryInput,
+	type FreelancerDirectorySort,
+} from './freelancer-directory'

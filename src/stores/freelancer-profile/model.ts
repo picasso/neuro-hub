@@ -103,13 +103,9 @@ export const saveFreelancerProfileFx = domain.createEffect<
 
 // * * * computed stores --------------------------------------------------------------------------]
 
-export const $isBusy = combine(
-	{
-		loading: loadFreelancerProfileFx.pending,
-		saving: saveFreelancerProfileFx.pending,
-	},
-	({ loading, saving }) => loading || saving,
-)
+export const $isLoading = loadFreelancerProfileFx.pending
+export const $isSaving = saveFreelancerProfileFx.pending
+export const $isBusy = combine($isLoading, $isSaving, (loading, saving) => loading || saving)
 
 // * * * events -----------------------------------------------------------------------------------]
 

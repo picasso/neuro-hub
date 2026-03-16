@@ -1,9 +1,11 @@
 import { map } from 'lodash'
-import { useMemo } from 'react'
+import { type RefObject, useMemo } from 'react'
 import { ColumnsPhotoAlbum } from 'react-photo-album'
 import 'react-photo-album/columns.css'
 import {
 	type ExtendedPhoto,
+	type MediaAction,
+	type MediaActionFn,
 	type MediaItem,
 	type MediaKind,
 	renderMediaItem,
@@ -11,13 +13,28 @@ import {
 import { getMediaKind } from './portfolio-viewer'
 
 export type PortfolioAlbumProps = {
+	ref?: RefObject<HTMLDivElement | null>
 	items: MediaItem[]
 	spacing?: number
-	onOpen?: (index: number) => void
 	disabled?: boolean
+	selectedId?: string | null
+	selectedActions?: MediaAction[]
+	onOpen?: (index: number) => void
+	onClick?: (item: MediaItem, index: number) => void
+	onAction?: MediaActionFn
 }
 
-export function PortfolioAlbum({ items, spacing = 6, onOpen, disabled }: PortfolioAlbumProps) {
+export function PortfolioAlbum({
+	ref,
+	items,
+	spacing = 6,
+	selectedId,
+	selectedActions,
+	onOpen,
+	onClick,
+	onAction,
+	disabled,
+}: PortfolioAlbumProps) {
 	const photos = useMemo(
 		() =>
 			map(items, (item) => {
@@ -40,6 +57,7 @@ export function PortfolioAlbum({ items, spacing = 6, onOpen, disabled }: Portfol
 
 	return (
 		<ColumnsPhotoAlbum
+			ref={ref}
 			photos={photos}
 			columns={(containerWidth) => {
 				if (containerWidth < 420) return 2
@@ -48,10 +66,26 @@ export function PortfolioAlbum({ items, spacing = 6, onOpen, disabled }: Portfol
 			}}
 			spacing={spacing}
 			padding={0}
-			onClick={disabled ? undefined : ({ index }) => onOpen?.(index)}
+			onClick={
+				disabled
+					? undefined
+					: ({ index }) => {
+							const item = items[index]
+							if (!item) return
+							onClick?.(item, index)
+							onOpen?.(index)
+						}
+			}
 			render={{
-				image: renderMediaItem,
-				// extras: renderPortfolioExtras,
+				image: (props, context) =>
+					renderMediaItem(
+						props,
+						context,
+						6,
+						String(context.photo.key) === selectedId,
+						onAction,
+						selectedActions,
+					),
 			}}
 		/>
 	)

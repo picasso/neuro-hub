@@ -1,6 +1,16 @@
 import { isTag, isText, type ChildNode } from 'domhandler'
 import { parseDocument } from 'htmlparser2'
-import { castArray, defaults, forEach, includes, isString, map, reduce } from 'lodash'
+import {
+	castArray,
+	defaults,
+	escapeRegExp,
+	forEach,
+	includes,
+	isString,
+	map,
+	reduce,
+	replace,
+} from 'lodash'
 
 export type MarkdownParams = {
 	links: string | string[] | null
@@ -25,6 +35,14 @@ export type MarkdownParams = {
 // replaces newlines with <p> or <br/> if 'params.br' is true
 // also replaces $link<index> constructs with elements from the 'params.links' array
 
+// replace symbols with more readable ones
+const pairs = [
+	['->', '→'],
+	['<-', '←'],
+	['=>', '⇢'],
+	['<=', '⬅︎'],
+	['>>', '»'],
+]
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 	if (!isString(str)) return str
@@ -50,6 +68,9 @@ export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 		(msg, link, index) => msg.replace(`$link${index + 1}`, link),
 		str,
 	)
+	// replace symbols
+	md = reduce(pairs, (s, [from, to]) => replace(s, new RegExp(escapeRegExp(from), 'g'), to), md)
+
 	// replace <span>
 	md = md.replace(/(^|[^`])`([^`]+)`/gm, '$1<span class="__code">$2</span>')
 	// replace color modifications

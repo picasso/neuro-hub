@@ -1,12 +1,21 @@
-'use client'
-
+import { includes, map } from 'lodash'
 import Image from 'next/image'
 import { type Photo, type RenderImageContext, type RenderImageProps } from 'react-photo-album'
 import 'react-photo-album/columns.css'
-import { Icon, Tooltip, TooltipContent, TooltipTrigger, type IconName } from '@/ui'
+import {
+	Icon,
+	IconButton,
+	Stack,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+	type IconName,
+} from '@/ui'
 import { cn } from '@/utils'
 
 export type MediaKind = 'image' | 'video' | 'audio' | 'pdf' | 'unknown'
+export type MediaAction = 'edit' | 'preview' | 'delete'
+export type MediaActionFn = (id: MediaItem['id'], action: MediaAction) => void
 
 export interface ExtendedPhoto extends Photo {
 	kind: MediaKind
@@ -44,16 +53,21 @@ export type MediaItem = {
 // }
 
 export function renderMediaItem(
-	{ alt = '', title, sizes }: RenderImageProps,
+	{ id, alt = '', title, sizes }: RenderImageProps,
 	{ photo, width, height }: RenderImageContext<ExtendedPhoto>,
 	borderRadius = 6,
+	selected = false,
+	onAction?: MediaActionFn,
+	actions?: MediaAction[],
 ) {
 	return (
 		<div
+			className="group overflow-hidden transition-[transform,box-shadow] duration-200"
 			style={{
 				width: '100%',
 				position: 'relative',
 				aspectRatio: `${width} / ${height}`,
+				borderRadius,
 			}}
 		>
 			{photo.kind !== 'image' ? (
@@ -62,6 +76,10 @@ export function renderMediaItem(
 					alt={alt}
 					title={title}
 					borderRadius={borderRadius}
+					className={cn(
+						'transition-all',
+						selected && 'outline-4 -outline-offset-4 outline-primary',
+					)}
 				/>
 			) : (
 				<Image
@@ -72,8 +90,45 @@ export function renderMediaItem(
 					sizes={sizes}
 					placeholder={'blurDataURL' in photo ? 'blur' : undefined}
 					style={{ borderRadius }}
+					className={cn(
+						'transition-all',
+						selected && 'outline-4 -outline-offset-4 outline-primary',
+					)}
 				/>
 			)}
+			{selected ? (
+				<div className="pointer-events-none absolute right-3 top-3 rounded-full bg-primary/90 p-1 outline-2 outline-white">
+					<Icon name="check" size="sm" color="contrast" />
+				</div>
+			) : null}
+			{selected && actions?.length ? (
+				<Stack
+					gap={0}
+					justify="end"
+					className="absolute left-1 right-1 bottom-1 rounded-md bg-black/40 p-1"
+				>
+					{/* special trick to render actions in the predefined order */}
+					{map(actionsOrdered, (action) =>
+						includes(actions, action) ? (
+							<IconButton
+								asSpan
+								key={action}
+								title={action}
+								icon={actionIcons[action]}
+								size={width > 200 ? 'md' : 'xs'}
+								forceSize={width > 200 ? 24 : 20}
+								variant="contrast"
+								color="primary"
+								onClick={(ev) => {
+									onAction?.(id ?? photo.key ?? '', action as MediaAction)
+									ev.preventDefault()
+									ev.stopPropagation()
+								}}
+							/>
+						) : null,
+					)}
+				</Stack>
+			) : null}
 		</div>
 	)
 }
@@ -162,6 +217,14 @@ const placeholderProps: Record<MediaKind, PlaceholderProps> = {
 		forceSize: 80,
 		color: '#ab2d2d',
 	},
+}
+
+const actionsOrdered: MediaAction[] = ['preview', 'edit', 'delete']
+
+const actionIcons: Record<MediaAction, IconName> = {
+	edit: 'file-sliders',
+	preview: 'eye',
+	delete: 'trash',
 }
 
 // TODO: Оставлено для будущего использования

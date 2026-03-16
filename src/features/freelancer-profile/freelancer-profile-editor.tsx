@@ -4,6 +4,8 @@ import { useGate, useUnit } from 'effector-react'
 import {
 	$form,
 	$isBusy,
+	$isLoading,
+	$isSaving,
 	FreelancerProfileGate,
 	profileFormUpdated,
 	saveFreelancerProfileClicked,
@@ -13,9 +15,11 @@ import { Button, Stack, TextField, TS } from '@/ui'
 export function FreelancerProfileEditor() {
 	useGate(FreelancerProfileGate)
 
-	const [form, isBusy, onFormUpdated, onSave] = useUnit([
+	const [form, isBusy, isLoading, isSaving, onFormUpdated, onSave] = useUnit([
 		$form,
 		$isBusy,
+		$isLoading,
+		$isSaving,
 		profileFormUpdated,
 		saveFreelancerProfileClicked,
 	])
@@ -60,7 +64,7 @@ export function FreelancerProfileEditor() {
 
 			<Button
 				size="lg"
-				label={isBusy ? 'Сохраняем...' : 'Сохранить профиль'}
+				label={isSaving ? 'Сохраняем...' : isLoading ? 'Загружаем...' : 'Сохранить профиль'}
 				onClick={() => onSave()}
 				disabled={isBusy}
 			/>

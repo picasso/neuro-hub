@@ -5,6 +5,13 @@ export { TS, TextStyled, type TextStyledProps } from './text-styled'
 export { Button, HrefButton, buttonSize, outlineStyle, type ButtonProps } from './button'
 export { IconButton, contrastStyle, type IconButtonProps } from './icon-button'
 export { Stack, type StackProps } from './stack'
+export {
+	PageContainer,
+	PageShell,
+	type PageContainerProps,
+	type PageShellProps,
+} from './page-shell'
+export { PageSuspense, type PageSuspenseProps } from './page-suspense'
 export { FileUploader, type FileUploaderProps } from './file-uploader-client'
 export { FieldWrapper, type FieldWrapperProps } from './field'
 export { Empty, type EmptyProps, type EmptyShadcnProps } from './empty'
@@ -46,7 +53,26 @@ export {
 	DialogPortal,
 	DialogTitle,
 	DialogTrigger,
-} from './dialog'
+} from './dialog-client'
+export {
+	SidebarProvider,
+	Sidebar,
+	SidebarRoot,
+	SidebarTrigger,
+	SidebarInset,
+	useSidebar,
+	type SidebarRootProps,
+	type SidebarProps,
+	type SidebarGroup,
+	type SidebarItem,
+	type SidebarItemClick,
+	type SidebarMenuProps,
+	type SidebarProviderProps,
+	type SidebarTriggerProps,
+	type SidebarRailProps,
+	type SidebarInsetProps,
+	type SidebarSeparatorProps,
+} from './sidebar-client'
 export {
 	Accordion,
 	AccordionRoot,
@@ -66,13 +92,16 @@ export {
 	type TabItem,
 } from './tabs'
 export { Stepper, type StepperProps, type StepperItem } from './stepper'
-export { type SemanticColor, type IconColor } from './types'
+export { Skeleton, type SkeletonProps } from './skeleton'
+export { Breadcrumb, type BreadcrumbProps } from './breadcrumb'
+export { Card, type CardProps } from './card'
+export { type SemanticColor, type IconColor, type MaxW, type Shadow } from './types'
 export { needsContrast } from './utils'
 
 // shadcn/ui primitives (use @/ui, never @/ui/shadcn directly in app code)
 export { AvatarGroup, AvatarGroupCount } from './shadcn/avatar'
 export {
-	Card,
+	Card as CardRoot,
 	CardHeader,
 	CardFooter,
 	CardTitle,
@@ -170,3 +199,4 @@ export {
 	ItemHeader,
 	ItemFooter,
 } from './shadcn/item'
+export { Collapsible, CollapsibleTrigger, CollapsibleContent } from './shadcn/collapsible'

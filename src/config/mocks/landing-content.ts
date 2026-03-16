@@ -167,7 +167,7 @@ export const ctaContent = {
 }
 
 export const contactContent = {
-	email: 'contact@neurogig.io',
+	email: 'contact@neurogig.ru',
 	social: {
 		github: 'https://github.com/neurogig',
 		twitter: 'https://twitter.com/neurogig',
