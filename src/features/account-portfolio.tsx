@@ -1,6 +1,6 @@
-import { PortfolioEditor } from './portfolio/portfolio-editor'
+import { PortfolioEditor } from './account-portfolio-editor'
 import { getAccountContext } from '@/lib/account'
-import { Breadcrumb, TS } from '@/ui'
+import { TS } from '@/ui'
 
 export async function AccountPortfolio() {
 	const context = await getAccountContext()
@@ -9,16 +9,20 @@ export async function AccountPortfolio() {
 	const { session, profileId } = context
 
 	return (
-		<div className="w-full min-w-0">
+		<div className="w-full min-w-0 space-y-6">
 			<TS clean variant="h3" gutterBottom content="Портфолио" />
-			<Breadcrumb
-				path={[['Портфолио', '/account/portfolio'], 'Посмотреть']}
-				className="px-3"
+			<TS
+				variant="body"
+				color="dimmed"
+				className="max-w-3xl text-sm md:text-base"
+				content={
+					'Собирайте лучшие кейсы в одном месте: загружайте медиа,' +
+					' вводите описание, задавайте категорию и инструменты' +
+					' и постепенно формируйте витрину своего профиля.'
+				}
 			/>
 			{session.user.role === 'freelancer' && profileId ? (
-				<div className="mt-8">
-					<PortfolioEditor userId={session.user.id} profileId={profileId} />
-				</div>
+				<PortfolioEditor userId={session.user.id} profileId={profileId} />
 			) : (
 				<TS
 					variant="body"

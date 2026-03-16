@@ -4,41 +4,6 @@ import { useMemo, useState } from 'react'
 import type { PublicFreelancerProfile } from '@/lib/db/queries/freelancers'
 import { Badge, Dialog, type IconName, Link, Stack, TS } from '@/ui'
 
-function levelLabel(level: string | null) {
-	switch (level) {
-		case 'beginner':
-			return 'Beginner'
-		case 'intermediate':
-			return 'Intermediate'
-		case 'advanced':
-			return 'Advanced'
-		case 'expert':
-			return 'Expert'
-		default:
-			return '—'
-	}
-}
-
-function isImage(mediaType: string | null, url: string) {
-	if (mediaType?.startsWith('image/')) return true
-	return /\.(png|jpe?g|gif|webp)$/i.test(url)
-}
-
-function isVideo(mediaType: string | null, url: string) {
-	if (mediaType?.startsWith('video/')) return true
-	return /\.(mp4|webm)$/i.test(url)
-}
-
-function isAudio(mediaType: string | null, url: string) {
-	if (mediaType?.startsWith('audio/')) return true
-	return /\.(mp3|wav|webm)$/i.test(url)
-}
-
-function isPdf(mediaType: string | null, url: string) {
-	if (mediaType === 'application/pdf') return true
-	return /\.pdf$/i.test(url)
-}
-
 export function PublicFreelancerProfileView({ profile }: { profile: PublicFreelancerProfile }) {
 	const [openId, setOpenId] = useState<string | null>(null)
 
@@ -162,7 +127,6 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 				title={openItem?.title}
 				description={openItem?.description}
 				icon={openItem?.mediaType as IconName}
-				//  === 'image' ? 'image' : openItem?.mediaType === 'video' ? 'video' : openItem?.mediaType === 'audio' ? 'audio' : openItem?.mediaType === 'pdf' ? 'pdf' : undefined}
 				iconOptions={{ color: 'primary' }}
 			>
 				{openItem ? (
@@ -203,4 +167,41 @@ export function PublicFreelancerProfileView({ profile }: { profile: PublicFreela
 			</Dialog>
 		</div>
 	)
+}
+
+// helpers ----------------------------------------------------------------------------------------]
+
+function levelLabel(level: string | null) {
+	switch (level) {
+		case 'beginner':
+			return 'Beginner'
+		case 'intermediate':
+			return 'Intermediate'
+		case 'advanced':
+			return 'Advanced'
+		case 'expert':
+			return 'Expert'
+		default:
+			return '—'
+	}
+}
+
+function isImage(mediaType: string | null, url: string) {
+	if (mediaType?.startsWith('image/')) return true
+	return /\.(png|jpe?g|gif|webp)$/i.test(url)
+}
+
+function isVideo(mediaType: string | null, url: string) {
+	if (mediaType?.startsWith('video/')) return true
+	return /\.(mp4|webm)$/i.test(url)
+}
+
+function isAudio(mediaType: string | null, url: string) {
+	if (mediaType?.startsWith('audio/')) return true
+	return /\.(mp3|wav|webm)$/i.test(url)
+}
+
+function isPdf(mediaType: string | null, url: string) {
+	if (mediaType === 'application/pdf') return true
+	return /\.pdf$/i.test(url)
 }

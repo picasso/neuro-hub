@@ -5,19 +5,37 @@ import { useUnit } from 'effector-react'
 import { random, uniqueId } from 'lodash'
 import Image from 'next/image'
 import { delay } from 'patronum'
-import { type TransitionEventHandler, useCallback, useEffect } from 'react'
+import {
+	type CSSProperties,
+	type TransitionEventHandler,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react'
 import { type MediaKind, type MediaItem, MediaPlaceholder } from './portfolio-item'
 import { viewerDomain as domain } from '@/lib/logger'
 import { Dialog, Icon, IconButton, Link, Stack, TS, type IconName } from '@/ui'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
-const fadeTransition = `opacity ${500}ms ease-in-out`
+// const fadeTransition = `opacity ${500}ms ease-in-out`
+
+type DebugOptions = {
+	slow?: boolean
+	random?: boolean
+	delay?: number
+}
+
+type FadeDuration = '200' | '300' | '500' | '800' | '1000'
+type FadeFunction = 'ease-in-out' | 'ease-in' | 'ease-out' | 'linear'
 
 export type PortfolioViewerProps = {
 	items: MediaItem[]
 	openIndex: number | null
 	onClose: () => void
 	borderRadius?: number
+	debug?: DebugOptions
+	fade?: FadeDuration
+	fadeFn?: FadeFunction
 }
 
 export function PortfolioViewer({
@@ -25,6 +43,13 @@ export function PortfolioViewer({
 	openIndex,
 	onClose,
 	borderRadius = 6,
+	fade = '500',
+	fadeFn = 'ease-in',
+	debug = {
+		slow: false,
+		random: false,
+		delay: 0,
+	},
 }: PortfolioViewerProps) {
 	const [currentIndex, fadeOpacity, isTransitioning, loaderDirection] = useUnit([
 		$currentIndex,
@@ -42,13 +67,29 @@ export function PortfolioViewer({
 	const isOpen = openIndex !== null
 	const onDialogExited = useCallback(() => closed(), [])
 
-	const item = currentIndex !== null ? items[currentIndex] : null
+	const displayIndex = currentIndex ?? openIndex
+	const item = displayIndex !== null ? (items[displayIndex] ?? null) : null
 	const { title, caption, mediaWidth, mediaHeight, mediaUrl, mediaType } = item ?? {}
 	const kind = getMediaKind(mediaType)
 
 	const width = mediaWidth ?? 1200
 	const height = mediaHeight ?? 900
-	const isPortrait = width < height
+	const viewerSize = getViewerSize({ kind, width, height })
+	const mediaSrc = mediaUrl ?? null
+	const [isMediaLoading, setIsMediaLoading] = useState(false)
+
+	useEffect(() => {
+		if (!isOpen || !mediaSrc) {
+			setIsMediaLoading(false)
+			return
+		}
+
+		setIsMediaLoading(true)
+		if (kind === 'pdf' || kind === 'unknown') {
+			const timer = window.setTimeout(() => setIsMediaLoading(false), 160)
+			return () => window.clearTimeout(timer)
+		}
+	}, [kind, mediaSrc, isOpen])
 
 	const canNavigate = items.length > 1 && isOpen
 	const hasPrev = canNavigate && !isTransitioning
@@ -65,10 +106,10 @@ export function PortfolioViewer({
 		navigated({
 			direction: 'right',
 			nextIndex,
-			nextUrl: getSlowUrl({ index: nextIndex, mediaUrl: nextItem.mediaUrl }),
+			nextUrl: getSlowUrl({ index: nextIndex, mediaUrl: nextItem.mediaUrl, debug }),
 			nextKind: getMediaKind(nextItem.mediaType),
 		})
-	}, [currentIndex, items])
+	}, [currentIndex, items, debug])
 
 	const onPrev = useCallback(() => {
 		if (currentIndex === null || items.length <= 1) return
@@ -77,18 +118,31 @@ export function PortfolioViewer({
 		navigated({
 			direction: 'left',
 			nextIndex,
-			nextUrl: getSlowUrl({ index: nextIndex, mediaUrl: nextItem.mediaUrl }),
+			nextUrl: getSlowUrl({ index: nextIndex, mediaUrl: nextItem.mediaUrl, debug }),
 			nextKind: getMediaKind(nextItem.mediaType),
 		})
-	}, [currentIndex, items])
+	}, [currentIndex, items, debug])
 
 	const onTransitionEnd: TransitionEventHandler = useCallback((event) => {
 		if (event.propertyName !== 'opacity') return
 		fadeCompleted()
 	}, [])
+	const onMediaReady = useCallback(() => {
+		setIsMediaLoading(false)
+	}, [])
 
 	const isLoaderLeft = loaderDirection === 'left'
 	const isLoaderRight = loaderDirection === 'right'
+	const mediaFrameStyle = getViewerFrameStyle({
+		width: viewerSize.width,
+		height: viewerSize.height,
+		borderRadius,
+		fadeOpacity,
+		fade,
+		fadeFn,
+	})
+
+	const dialogStyle = getViewerDialogStyle(viewerSize)
 
 	return (
 		<Dialog
@@ -103,6 +157,7 @@ export function PortfolioViewer({
 				if (!isOpen && e.target === e.currentTarget) onDialogExited()
 			}}
 			className="w-fit border-accent-foreground"
+			style={dialogStyle}
 		>
 			<Stack justify="space-between" gap={4} className="p-4 border-b border-border">
 				<Stack gap={4}>
@@ -149,99 +204,109 @@ export function PortfolioViewer({
 			</Stack>
 
 			<MediaPlaceholder kind={kind} className="p-8 rounded-none" style={{ minHeight: 420 }}>
-				{!mediaUrl ? null : kind === 'image' ? (
-					<Image
-						src={mediaUrl}
-						alt={title ?? caption ?? ''}
-						width={width}
-						height={height}
-						onTransitionEnd={onTransitionEnd}
-						style={{
-							maxWidth: '100%',
-							width: 'auto',
-							// portrait: explicit height lets the browser resolve `width: auto`
-							// correctly inside a `w-fit` dialog (max-height alone doesn't work —
-							// browser falls back to intrinsic width for fit-content calculation)
-							height: isPortrait ? `min(${height}px, calc(100vh - 300px))` : 'auto',
-							maxHeight: !isPortrait ? 'calc(100vh - 300px)' : undefined,
-							aspectRatio: `${width} / ${height}`,
-							borderRadius,
-							opacity: fadeOpacity,
-							transition: fadeTransition,
-						}}
-					/>
-				) : kind === 'video' ? (
-					<video
-						controls
-						src={mediaUrl}
-						onTransitionEnd={onTransitionEnd}
-						style={{
-							maxWidth: '100%',
-							width: '100%',
-							borderRadius,
-							background: 'black',
-							opacity: fadeOpacity,
-							transition: fadeTransition,
-						}}
-					/>
-				) : kind === 'audio' ? (
-					<Stack vertical gap={12} align="center" className="py-12 w-full">
-						<Icon name="media-audio" size={180} color="contrast" />
-						<div
-							onTransitionEnd={onTransitionEnd}
-							className="w-full max-w-180"
-							style={{ opacity: fadeOpacity, transition: fadeTransition }}
-						>
-							<audio controls src={mediaUrl} style={{ width: '100%' }} />
-						</div>
-					</Stack>
-				) : kind === 'pdf' ? (
-					<div
-						onTransitionEnd={onTransitionEnd}
-						className="flex flex-col gap-6 items-center py-12"
-						style={{ opacity: fadeOpacity, transition: fadeTransition }}
-					>
-						<Icon name="media-pdf" size={180} color="contrast" />
-						<TS
-							clean
-							variant="body"
-							color="contrast"
-							className="text-sm"
-							content="Предпросмотр PDF пока недоступен."
-						/>
-						<Link
-							href={mediaUrl}
-							target="_blank"
-							rel="noreferrer"
-							hover="vivid"
-							color="soft"
-						>
-							Открыть PDF в новой вкладке
-						</Link>
-					</div>
-				) : (
-					<div
-						onTransitionEnd={onTransitionEnd}
-						className="flex flex-col gap-6 items-center py-12"
-						style={{ opacity: fadeOpacity, transition: fadeTransition }}
-					>
-						<Icon name="do-not-disturb" size={180} color="contrast" />
-						<TS
-							clean
-							variant="body"
-							color="contrast"
-							className="text-sm"
-							content="Предпросмотр для этого типа файла пока недоступен."
-						/>
-						<Link
-							href={mediaUrl}
-							target="_blank"
-							rel="noreferrer"
-							hover="vivid"
-							color="soft"
-						>
-							Открыть файл в новой вкладке
-						</Link>
+				{!mediaUrl ? null : (
+					<div onTransitionEnd={onTransitionEnd} style={mediaFrameStyle}>
+						{kind === 'image' ? (
+							<Image
+								src={mediaUrl}
+								alt={title ?? caption ?? ''}
+								width={width}
+								height={height}
+								onLoad={onMediaReady}
+								onError={onMediaReady}
+								style={{
+									display: 'block',
+									width: '100%',
+									height: '100%',
+									objectFit: 'contain',
+								}}
+							/>
+						) : kind === 'video' ? (
+							<video
+								controls
+								src={mediaUrl}
+								onLoadedData={onMediaReady}
+								onCanPlay={onMediaReady}
+								onError={onMediaReady}
+								style={{
+									display: 'block',
+									width: '100%',
+									height: '100%',
+									borderRadius,
+									background: 'black',
+								}}
+							/>
+						) : kind === 'audio' ? (
+							<Stack
+								vertical
+								gap={12}
+								align="center"
+								justify="center"
+								className="h-full w-full py-12"
+							>
+								<Icon name="media-audio" size={180} color="contrast" />
+								<div className="w-full max-w-180">
+									<audio
+										controls
+										src={mediaUrl}
+										onLoadedData={onMediaReady}
+										onCanPlay={onMediaReady}
+										onError={onMediaReady}
+										style={{ width: '100%' }}
+									/>
+								</div>
+							</Stack>
+						) : kind === 'pdf' ? (
+							<div className="flex h-full w-full flex-col items-center justify-center gap-6 py-12">
+								<Icon name="media-pdf" size={180} color="contrast" />
+								<TS
+									clean
+									variant="body"
+									color="contrast"
+									className="text-sm"
+									content="Предпросмотр PDF пока недоступен."
+								/>
+								<Link
+									href={mediaUrl}
+									target="_blank"
+									rel="noreferrer"
+									hover="vivid"
+									color="soft"
+								>
+									Открыть PDF в новой вкладке
+								</Link>
+							</div>
+						) : (
+							<div className="flex h-full w-full flex-col items-center justify-center gap-6 py-12">
+								<Icon name="do-not-disturb" size={180} color="contrast" />
+								<TS
+									clean
+									variant="body"
+									color="contrast"
+									className="text-sm"
+									content="Предпросмотр для этого типа файла пока недоступен."
+								/>
+								<Link
+									href={mediaUrl}
+									target="_blank"
+									rel="noreferrer"
+									hover="vivid"
+									color="soft"
+								>
+									Открыть файл в новой вкладке
+								</Link>
+							</div>
+						)}
+						{isMediaLoading ? (
+							<Stack
+								align="center"
+								justify="center"
+								aria-hidden
+								className="pointer-events-none absolute inset-0 bg-black/25 backdrop-blur-[1px]"
+							>
+								<Icon name="spinner" size={48} color="contrast" spinning />
+							</Stack>
+						) : null}
 					</div>
 				)}
 			</MediaPlaceholder>
@@ -387,14 +452,88 @@ export function getMediaKind(mediaType?: string | null): MediaKind {
 	return 'unknown'
 }
 
-function getSlowUrl({ index, mediaUrl }: { index: number; mediaUrl: string }) {
-	if (!isDevelopment) return mediaUrl
+function getSlowUrl({
+	index,
+	mediaUrl,
+	debug,
+}: {
+	index: number
+	mediaUrl: string
+	debug: DebugOptions
+}) {
+	if (!isDevelopment || !debug.slow) return mediaUrl
 	if (typeof window === 'undefined') return mediaUrl
 	if (!mediaUrl.startsWith('/playground/pictures/')) return mediaUrl
 
 	const url = new URL(mediaUrl, window.location.origin)
-	const slowMs = random(500, 2000)
+	const slowMs = debug.random ? random(500, 2000) : debug.delay
 	url.searchParams.set('slowMs', String(slowMs))
 	url.searchParams.set('v', `${index}-${uniqueId('preload-')}`)
 	return url.pathname + url.search
+}
+
+function fadeTransition(duration: FadeDuration, fn: FadeFunction) {
+	return `opacity ${duration}ms ${fn}` //  `opacity ${500}ms ease-in-out`
+}
+
+function getViewerFrameStyle({
+	width,
+	height,
+	borderRadius,
+	fadeOpacity,
+	fade,
+	fadeFn,
+}: {
+	width: number
+	height: number
+	borderRadius: number
+	fadeOpacity: number
+	fade: FadeDuration
+	fadeFn: FadeFunction
+}): CSSProperties {
+	return {
+		position: 'relative',
+		display: 'inline-block',
+		maxWidth: '100%',
+		width: getViewerDisplayWidth({ width, height }),
+		aspectRatio: `${width} / ${height}`,
+		borderRadius,
+		overflow: 'hidden',
+		opacity: fadeOpacity,
+		transition: fadeTransition(fade, fadeFn),
+	}
+}
+
+function getViewerDialogStyle({ width, height }: { width: number; height: number }): CSSProperties {
+	return {
+		width: `min(calc(${width}px + 4rem), calc(((100vh - 300px) * ${width} / ${height}) + 4rem), 95vw, calc(100vw - 2rem))`,
+	}
+}
+
+function getViewerDisplayWidth({ width, height }: { width: number; height: number }) {
+	return `min(${width}px, calc((100vh - 300px) * ${width} / ${height}), calc(95vw - 4rem), calc(100vw - 6rem))`
+}
+
+function getViewerSize({
+	kind,
+	width,
+	height,
+}: {
+	kind: MediaKind
+	width: number
+	height: number
+}) {
+	switch (kind) {
+		case 'image':
+			return { width, height }
+		case 'video':
+			return { width: 1280, height: 720 }
+		case 'audio':
+			return { width: 720, height: 420 }
+		case 'pdf':
+			return { width: 760, height: 520 }
+		case 'unknown':
+		default:
+			return { width: 760, height: 520 }
+	}
 }

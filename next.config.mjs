@@ -15,6 +15,11 @@ const nextConfig = {
 				hostname: 'raw.githubusercontent.com',
 				pathname: '/**',
 			},
+			{
+				protocol: 'https',
+				hostname: '**.public.blob.vercel-storage.com',
+				pathname: '/**',
+			},
 		],
 		localPatterns: [
 			// allow any asset from public/ to work with next/image as usual

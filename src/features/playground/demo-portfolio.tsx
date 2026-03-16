@@ -6,7 +6,8 @@ import { DemoRoot, DemoSection } from './components-utils'
 import { mediaActionOptions, type PortfolioDemoState } from './demo-portfolio-settings'
 import { pictures } from './pictures'
 import { useSettings } from './settings-store'
-import { Portfolio, type MediaItem } from '@/features'
+import { Portfolio } from '@/features/portfolio/portfolio'
+import { type MediaItem } from '@/features/portfolio/portfolio-item'
 
 export function PortfolioDemo() {
 	const settings = useSettings<PortfolioDemoState>()
