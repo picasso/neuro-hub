@@ -10,10 +10,9 @@ type ProgressStepperProps = {
 
 export function ProgressStepper({ steps }: ProgressStepperProps) {
 	const currentStep = useUnit($currentStep)
-	const activeStep = currentStep - 1
 	return (
 		<div className="w-full mb-4">
-			<Stepper activeStep={activeStep} items={steps} align="center" fullWidth />
+			<Stepper activeStep={currentStep} items={steps} align="center" fullWidth />
 
 			<div className="mt-4 text-center">
 				<TS
