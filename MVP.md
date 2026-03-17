@@ -177,7 +177,7 @@ API-слой реализуется через RESTful Next.js API Routes с а�
 - Better Auth 1+ для аутентификации
 
 **Инструменты разработки:**
-- Yarn Classic 1.x для управления зависимостями
+- Yarn 4.x (через Corepack) для управления зависимостями
 - ESLint 9+ с TypeScript для линтинга
 - Prettier 3+ для форматирования кода
 - Jest 29+ с Testing Library для тестирования

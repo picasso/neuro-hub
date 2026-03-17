@@ -51,7 +51,7 @@ fi
 
 echo ""
 echo "4️⃣ Running Better Auth migrations..."
-if yes | npx @better-auth/cli migrate; then
+if yarn db:auth:migrate; then
   echo "✅ Better Auth migrations completed"
 else
   echo ""

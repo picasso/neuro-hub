@@ -39,11 +39,11 @@ Framework Preset: Next.js
 Root Directory: ./
 Build Command: yarn build
 Output Directory: .next
-Install Command: yarn install --frozen-lockfile
+Install Command: yarn install --immutable
 Development Command: yarn dev
 ```
 
-**Важно:** Не изменяйте эти настройки - они оптимальны для проекта.
+**Важно:** Не включайте override для `Install Command`, если в этом нет необходимости. Проект использует Yarn 4 через committed release file в `.yarn/releases`, поэтому Vercel должен запускать стандартный `yarn install` без `ENABLE_EXPERIMENTAL_COREPACK`.
 
 ## Настройка переменных окружения
 
@@ -152,6 +152,16 @@ Vercel использует версию из `package.json`:
   "node": ">=24.0.0"
 }
 ```
+
+#### Yarn 4 на Vercel
+
+Для этого проекта рабочая схема такая:
+
+- Yarn 4 зафиксирован в `package.json`
+- локальный release binary закоммичен в `.yarn/releases/`
+- `.yarnrc.yml` использует `yarnPath`
+
+Это позволяет Vercel запускать Yarn 4 без `ENABLE_EXPERIMENTAL_COREPACK`. Не включайте этот флаг для данного репозитория: на Vercel он приводил к падению install с ошибкой `Dynamic require of "util" is not supported`.
 
 ### 3. Первый деплой
 
@@ -330,7 +340,7 @@ Vercel добавляет GitHub status checks:
 # Оптимизации только для production
 NODE_ENV=production
 
-# Disable telemetry (уже в Dockerfile)
+# Disable telemetry (опционально для production)
 NEXT_TELEMETRY_DISABLED=1
 ```
 
@@ -354,7 +364,7 @@ Preview deployments автоматически используют:
 
 ```bash
 # Проверьте зависимости
-yarn install --frozen-lockfile
+yarn install --immutable
 
 # Убедитесь что все импорты корректны
 yarn type-check
@@ -362,6 +372,19 @@ yarn type-check
 # Проверьте build локально
 yarn build
 ```
+
+#### Ошибка: `Dynamic require of "util" is not supported`
+
+Это известный сбой Vercel при попытке запускать Yarn 4 через `ENABLE_EXPERIMENTAL_COREPACK` в ESM-проекте.
+
+Что делать для этого репозитория:
+
+1. Убедиться, что `ENABLE_EXPERIMENTAL_COREPACK` удалён из Vercel Environment Variables
+2. Не использовать override для `Install Command`
+3. Оставить committed Yarn release file в `.yarn/releases/`
+4. Проверить, что `.yarnrc.yml` содержит `yarnPath`
+
+После этого Vercel должен использовать Yarn 4 через локальный release binary из репозитория, а не через Corepack runtime.
 
 #### Ошибка: "Out of memory"
 

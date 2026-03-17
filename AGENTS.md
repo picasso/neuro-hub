@@ -38,6 +38,7 @@ Configuration for AI coding agents. See also: [.cursor/rules/](.cursor/rules/)
 ## Commands
 
 ```bash
+corepack enable
 yarn install
 yarn dev          # HMR — use during development
 yarn lint

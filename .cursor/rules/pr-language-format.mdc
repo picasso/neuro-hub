@@ -1,0 +1,21 @@
+---
+description: PR language format for titles, headings, checklists, and descriptions
+alwaysApply: true
+---
+
+# PR Language Format
+
+When preparing, proposing, creating, or editing a pull request:
+
+- Keep PR titles in English
+- Keep PR headings in English
+- Keep checklist items in English
+- Keep descriptive body content in Russian
+- Preserve repository PR templates, but translate free-form description text to Russian
+
+Before showing a PR draft to the user or calling `gh pr create` / `gh pr edit`, do a final language check:
+
+- English: title, section headings, checkbox labels
+- Russian: summary paragraphs, change descriptions, testing details, notes
+
+Do not submit a PR draft until this language split has been verified.

@@ -6,6 +6,24 @@ Update application version in package.json based on completed stage from DEVELOP
 ## CRITICAL
 It is better to give answers in Russian if possible.
 
+## Fast Path: Explicit Version Provided
+
+If the user explicitly provides a target version in the request, for example:
+
+- `/ver 0.4.1`
+- `/ver на 0.4.1`
+- `update version to 0.4.1`
+
+then:
+
+1. **Do not analyze `DEVELOPMENT-PLAN.md`**
+2. **Treat the user-provided version as the source of truth**
+3. **Skip stage detection and stage suggestion**
+4. **Still show a change plan and ask for confirmation before editing files**
+5. **If the user also asks to update `CHANGELOG.md`, propose the changelog entry and wait for approval**
+
+Use the normal stage-analysis flow only when the user did **not** provide an explicit version.
+
 ## Version Format Logic
 
 Version is formed from stage number:
@@ -14,6 +32,8 @@ Version is formed from stage number:
 - Format: `0.{stage}.{substage}`
 
 ## STEP 1: Analyze DEVELOPMENT-PLAN.md Automatically
+
+**Skip this entire step if the user already provided an explicit version.**
 
 **Read and analyze development plan:**
 
@@ -60,6 +80,8 @@ This is important!
 
 ## STEP 2: Confirm or Correct Stage with User
 
+**Skip this entire step if the user already provided an explicit version.**
+
 After presenting analysis:
 
 **User options:**
@@ -85,6 +107,8 @@ After presenting analysis:
 ## STEP 3: Propose Changes
 
 **Present change plan:**
+
+If the user explicitly provided a version, show that version directly and do not mention stage-based calculation.
 
 ```zsh
 Planned changes:
@@ -372,8 +396,9 @@ STAGE 6: Interaction and responses
 - **Verify result** after each change
 - **Don't commit without explicit "yes"** from user
 - **Version format is strict**: `0.{stage}.{substage}`
-- **First analyze DEVELOPMENT-PLAN.md** to detect completed stages
-- **Suggest the stage** before asking user to confirm
+- **If the user explicitly provides a version, do not analyze `DEVELOPMENT-PLAN.md`**
+- **First analyze DEVELOPMENT-PLAN.md** only when version is not provided
+- **Suggest the stage** only when version is not provided
 
 ## Example Workflow
 
