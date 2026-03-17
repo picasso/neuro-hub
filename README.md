@@ -40,11 +40,11 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
 
 ### Development Tools
 
-- **Package Manager**: Yarn Classic 1.x
+- **Package Manager**: Yarn 4.x (via Corepack)
 - **Linting**: ESLint 9+ with TypeScript
 - **Formatting**: Prettier 3+
 - **Testing**: Jest 29+ with Testing Library
-- **Containerization**: Docker with Docker Compose
+- **Local database**: PostgreSQL via Docker Compose
 
 ### Key Dependencies
 
@@ -68,7 +68,7 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
 ### Prerequisites
 
 - Node.js 24+ LTS
-- Yarn 1.x
+- Corepack-enabled Yarn 4.x
 - Docker & Docker Compose (for local database)
 
 ### Installation
@@ -80,9 +80,10 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
     cd neuro-hub
     ```
 
-2. **Install dependencies**
+2. **Enable Corepack and install dependencies**
 
     ```bash
+    corepack enable
     yarn install
     ```
 
@@ -194,31 +195,6 @@ docker compose up -d postgres
 
 # watch Postgres logs
 docker compose logs -f postgres
-```
-
-## 🐳 Docker
-
-### Development with Docker
-
-```bash
-# Start all services
-docker compose up
-
-# Start in detached mode
-docker compose up -d
-
-# Stop services
-docker compose down
-
-# View logs
-docker compose logs -f app
-```
-
-### Production Build
-
-```bash
-docker build -t neuro-hub .
-docker run -p 3000:3000 neuro-hub
 ```
 
 ## 🚀 Deployment

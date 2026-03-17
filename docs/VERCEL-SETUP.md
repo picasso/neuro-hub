@@ -39,7 +39,7 @@ Framework Preset: Next.js
 Root Directory: ./
 Build Command: yarn build
 Output Directory: .next
-Install Command: yarn install --frozen-lockfile
+Install Command: yarn install --immutable
 Development Command: yarn dev
 ```
 
@@ -330,7 +330,7 @@ Vercel добавляет GitHub status checks:
 # Оптимизации только для production
 NODE_ENV=production
 
-# Disable telemetry (уже в Dockerfile)
+# Disable telemetry (опционально для production)
 NEXT_TELEMETRY_DISABLED=1
 ```
 
@@ -354,7 +354,7 @@ Preview deployments автоматически используют:
 
 ```bash
 # Проверьте зависимости
-yarn install --frozen-lockfile
+yarn install --immutable
 
 # Убедитесь что все импорты корректны
 yarn type-check

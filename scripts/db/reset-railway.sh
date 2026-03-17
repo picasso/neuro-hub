@@ -55,7 +55,7 @@ fi
 echo ""
 echo "Step 2/4: Running Better Auth migrations..."
 echo "─────────────────────────────────────────────────"
-if yes | npx @better-auth/cli migrate; then
+if yarn db:auth:migrate; then
   echo "✅ Better Auth migrations completed"
 else
   echo "❌ Better Auth migrations failed"
