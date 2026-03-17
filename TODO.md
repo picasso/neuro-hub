@@ -39,6 +39,18 @@
 - Проверить совместимость Next.js, Vercel, Husky hooks, DB-скриптов, локального DX и IDE/tooling
 - Если риски окажутся приемлемыми, подготовить отдельный план миграции без смешивания с текущей Yarn 4 стабилизацией
 
+## Изучить и перейти на better-auth 1.5.*
+
+- Изучить changelog и [blog 1.5](https://better-auth.com/blog/1-5): новый CLI (`npx auth` вместо `@better-auth/cli`), OAuth 2.1, i18n, изменения в миграциях
+- Обновить зависимости, скрипты (`db:auth:migrate`, CI, deploy) и конфиг под 1.5
+- Прогнать сценарии входа, 2FA, OAuth и миграции БД
+
+## Изучить и перейти на ESLint 10
+
+- Изучить [Migrate to ESLint 10.0.0](https://eslint.org/docs/latest/use/migrate-to-10.0.0): отказ от eslintrc, новый поиск конфига, Node ≥20.19
+- Обновить конфиг (flat config), правила и пресеты (eslint-config-next и др.)
+- Прогнать `yarn lint` и исправить возможные новые предупреждения
+
 ## Добавить в стэк TanStack Query: v5
 
 |                  | TanStack Query              | Kysely                           |
