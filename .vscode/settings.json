@@ -6,8 +6,10 @@
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"typescript.enablePromptUseWorkspaceTsdk": true,
 	"files.associations": {
-		"*.css": "css"
+		"*.css": "tailwindcss"
 	},
+	"css.validate": false,
+	"tailwindCSS.experimental.configFile": "src/app/globals.css",
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 	"prettier.requireConfig": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -16,7 +18,8 @@
 		"**/node_modules": true
 	},
 	"search.exclude": {
-		"**/node_modules": true
+		"**/node_modules": true,
+		"**/.next": true
 	},
 	"files.watcherExclude": {
 		"**/node_modules/**": true

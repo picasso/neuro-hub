@@ -148,7 +148,7 @@ API-слой реализуется через RESTful Next.js API Routes с а�
 
 ### 5.2. Фронтенд-архитектура
 
-Клиентская часть платформы разрабатывается на базе Next.js 16 с использованием App Router и React 19 с серверными компонентами. Приложение обеспечивает адаптивный интерфейс для desktop и mobile устройств через Material UI 7.3+ с использованием Emotion для стилизации, поддержка Grid и Flexbox обеспечивается нативно.
+Клиентская часть платформы разрабатывается на базе Next.js 16 с использованием App Router и React 19 с серверными компонентами. Приложение обеспечивает адаптивный интерфейс для desktop и mobile устройств через shadcn/ui (Radix UI) с Tailwind CSS 4 для стилизации, поддержка Grid и Flexbox обеспечивается нативно.
 
 Состояние приложения управляется через Effector 23+ — reactive state manager с предсказуемым поведением и встроенной поддержкой TypeScript. Роутинг реализуется через Next.js App Router с поддержкой typed routes, nested layouts и deep-linking. Загрузка данных осуществляется асинхронно через Server Components и Client Components с отображением loading states через Suspense boundaries и обработкой ошибок через Error Boundaries.
 
@@ -165,8 +165,8 @@ API-слой реализуется через RESTful Next.js API Routes с а�
 **Frontend:**
 - Next.js 16+ (App Router) с React 19
 - TypeScript 5.9+ в strict mode
-- Material UI 7.3+ для UI-компонентов
-- Emotion 11+ для стилизации
+- shadcn/ui (Radix UI) для UI-компонентов
+- Tailwind CSS 4 для стилизации
 - Effector 23+ для управления состоянием
 
 **Backend:**

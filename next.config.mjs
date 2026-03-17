@@ -6,19 +6,26 @@ const nextConfig = {
 	typedRoutes: true,
 	serverExternalPackages: ['knex', 'pg'],
 	turbopack: {},
-	experimental: {
-		optimizePackageImports: ['@mui/material', '@mui/icons-material'],
-	},
-	compiler: {
-		emotion: true,
-	},
+	experimental: {},
 	images: {
 		formats: ['image/avif', 'image/webp'],
-		remotePatterns: [],
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'raw.githubusercontent.com',
+				pathname: '/**',
+			},
+			{
+				protocol: 'https',
+				hostname: '**.public.blob.vercel-storage.com',
+				pathname: '/**',
+			},
+		],
 		localPatterns: [
-			// playground dev-only route: /playground/pictures/<file>?slowMs=900&v=...
-			// we omit `search` to allow any query string.
-			{ pathname: '/playground/pictures/**' },
+			// allow any asset from public/ to work with next/image as usual
+			// playground route still works because it also maps to a local pathname
+			// and we omit `search` to allow any query string.
+			{ pathname: '/**' },
 		],
 	},
 	webpack: (config, { isServer }) => {

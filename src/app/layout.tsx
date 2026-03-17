@@ -1,12 +1,13 @@
+import './globals.css'
 import { fontSans } from './fonts'
 import type { ReactNode } from 'react'
 import { AlertsPlugin } from '@/alerts'
-import { DbHealthAlert } from '@/components/db-health-alert'
-import { ThemeRegistry } from '@/components/providers'
-import { Footer, Header } from '@/components/ui'
+import { DbHealthAlert } from '@/features/db-health-alert'
+import { DebugPlugin } from '@/lib/logger/debug-plugin'
+import { ModalPlugin } from '@/modals'
+import { TooltipProvider } from '@/ui'
 
-export { homeMetadata as metadata } from '@/config/metadata'
-export { viewport } from '@/config/metadata/utils'
+export { homeMetadata as metadata, viewport } from '@/config'
 
 type RootLayoutProps = {
 	children: ReactNode
@@ -15,17 +16,14 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
 	return (
 		<html lang="ru">
-			<body
-				className={fontSans.variable}
-				style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
-			>
-				<ThemeRegistry>
+			<body className={`${fontSans.variable} min-h-screen bg-background text-foreground`}>
+				<TooltipProvider>
+					<DebugPlugin />
 					<AlertsPlugin />
+					<ModalPlugin />
 					<DbHealthAlert />
-					<Header />
-					<main style={{ flex: 1 }}>{children}</main>
-					<Footer />
-				</ThemeRegistry>
+					{children}
+				</TooltipProvider>
 			</body>
 		</html>
 	)

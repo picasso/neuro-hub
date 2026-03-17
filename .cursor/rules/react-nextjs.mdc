@@ -1,6 +1,6 @@
 ---
-description: React and Next.js patterns — App Router, Server Components, proxy, index exports
-globs: ["src/app/**/*", "src/components/**/*"]
+description: React and Next.js patterns — App Router, Server Components, proxy, barrel exports
+alwaysApply: true
 ---
 
 # React / Next.js Rules
@@ -9,45 +9,64 @@ globs: ["src/app/**/*", "src/components/**/*"]
 
 ```zsh
 src/
-├── app/
-│   ├── (auth)/           # login, register
-│   ├── (app)/            # protected: dashboard, settings
-│   ├── api/              # route handlers
-│   └── layout.tsx
-├── components/
-│   ├── ui/               # base UI
-│   ├── forms/            # form components
-│   └── features/         # feature components
-└── lib/
-    ├── auth/
-    ├── db/
-    └── validations/
+├── app/              # Thin route files only (page.tsx, layout.tsx, route.ts)
+│   ├── api/          # Route handlers
+│   └── [route]/page.tsx
+├── ui/               # Reusable UI primitives and shadcn components
+│   ├── shadcn/       # Generated shadcn/ui components (never import directly)
+│   ├── icons/        # Icon definitions
+│   ├── providers/    # ThemeRegistry, FontProvider, etc.
+│   └── index.ts      # Public API — always import from @/ui
+├── features/         # Feature components with business logic
+│   ├── [feature]/    # Flat feature files and folders; no subfolder barrels
+│   ├── index.ts      # Client-safe public API — import from @/features
+│   └── server.ts     # Server-only public API — import from @/features/server
+├── alerts/           # Alert system
+├── config/           # Metadata, constants
+└── lib/              # Utilities, DB, auth, validations
 ```
 
 ## App Router
 
-- Pages: `src/app/[route]/page.tsx`
+- Pages: `src/app/[route]/page.tsx` — thin wrappers importing from `@/features` or `@/features/server`
 - Layouts: `src/app/layout.tsx`
 - API: `src/app/api/[route]/route.ts`
 
 ## Server vs Client Components
 
-Default: Server Components. Add `'use client'` only when needed for:
+Default: Server Components. See `.cursor/rules/use-client.mdc` for the full decision procedure on `'use client'` placement.
 
-- Event handlers (onClick, onChange)
-- React hooks (useState, useEffect)
-- Browser APIs (localStorage, window)
-- Effector stores or other client state
+Key points:
+
+- Files in barrel exports that use hooks → add `'use client'`
+- Internal files only imported from `'use client'` parents → no directive needed
+- Never add `'use client'` to barrel files (`index.ts`) themselves
 
 ## Data & State
 
 | Type        | Use                          |
 |-------------|------------------------------|
 | Server data | Server Components, Suspense  |
-| Client data | TanStack Query               |
 | Global      | Effector                     |
 | URL         | searchParams                 |
 | Local UI    | useState / useReducer        |
+
+## Component Boundaries
+
+- Use `useState` only for local UI state such as open/closed state, selected tab, or search query.
+- Keep business data in Effector stores instead of component-local state.
+- Do not put business logic, validation, or orchestration in React components when it belongs in Effector or server-side code.
+- Avoid `useEffect` for business logic or standard data fetching when Server Components or Effector can own that flow.
+
+## Component Style
+
+- Export React components as `function` declarations, not `FC`.
+- Keep components thin and presentation-focused whenever possible.
+
+## User Feedback
+
+- User-visible success, warning, and error messages must go through `@/alerts`.
+- Do not use `alert()` or ad-hoc toast implementations for app feedback.
 
 ## Server Actions
 
@@ -64,8 +83,10 @@ Next.js deprecated `middleware.ts`. Use `proxy.ts` instead:
 - Export: `proxy(request)`, not `middleware`
 - Use for: auth redirects, rate limiting, security headers
 
-## Index Files
+## Barrel Files & Imports
 
-- Every reusable folder has `index.ts` as public API
-- External imports: `import { X } from '@/components/ui'` (not `from './button'`)
-- Exception: `page.tsx`, `layout.tsx`, `route.ts` — no index needed
+- Use only the top-level barrels: `@/ui`, `@/features`, and `@/features/server`
+- Do not create subfolder `index.ts` barrels inside feature folders
+- Import client-safe exports from `@/features` and server-only exports from `@/features/server`
+- Never import directly from `@/ui/shadcn/` — use `@/ui` barrel
+- Barrel files export only the public API — see `.cursor/rules/use-client.mdc` for barrel hygiene rules

@@ -68,6 +68,6 @@ After implementing a new authentication flow:
 ```bash
 mcp__serena__write_memory {
   "memory_file_name": "architecture.md",
-  "content": "## Authentication Flow\n\n- Uses NextAuth.js v5 with JWT strategy\n- Session checked in middleware for protected routes\n- Role-based access via RBAC middleware\n- Key files: lib/auth.ts, middleware.ts"
+  "content": "## Authentication Flow\n\n- Uses Better Auth with cookie-based sessions\n- Protected routes are checked through src/proxy.ts\n- Server auth helpers live under src/lib/auth/\n- Key files: src/lib/auth/, src/proxy.ts"
 }
 ```

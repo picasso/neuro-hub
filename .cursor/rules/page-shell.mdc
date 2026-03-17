@@ -1,0 +1,50 @@
+---
+description: PageShell and PageContainer conventions for route-entry pages
+globs:
+  - "src/ui/**/*.tsx"
+  - "src/features/**/*.tsx"
+  - "src/app/**/*.tsx"
+alwaysApply: false
+---
+
+# PageShell
+
+- Use `PageShell` for route-entry page layout in `src/features`; keep `src/app/**/page.tsx` thin.
+- Use `PageContainer` as a low-level primitive for inner width caps and gutters inside sections or special layouts.
+- Prefer `preset` as the main API for `PageShell`: `form | content | wide | full`.
+- Tailwind width classes stay internal to `src/ui/page-shell.tsx`; do not expose `max-w-*` semantics in page code.
+- Use overrides only when needed: `width` for exceptions, `spacing` for page-level vertical rhythm, `inset` for gutter control.
+- Do not model sidebar/account/management pages as another `PageShell` preset. Create a separate structural shell such as `SidebarPageShell`.
+
+## Preset Guide
+
+- `form`: login, signup, narrow step flows.
+- `content`: profile pages, medium-width readable content.
+- `wide`: broader standard pages without sidebar.
+- `full`: full-bleed outer shell; inner sections may still use `PageContainer`.
+
+## Examples
+
+```tsx
+// auth or narrow flow page
+<PageShell preset="form">...</PageShell>
+
+// medium-width content page
+<PageShell preset="content">...</PageShell>
+
+// wide standard page
+<PageShell preset="wide" spacing="md">...</PageShell>
+
+// full-bleed page shell with capped inner section
+<PageShell preset="full">
+  <section>
+    <PageContainer width="desktop">...</PageContainer>
+  </section>
+</PageShell>
+```
+
+## Override Heuristics
+
+- Use `width="compact"` only for intentional narrower-than-preset pages.
+- Use `spacing="none"` for loaders, splash states, or full-height placeholders.
+- Use `inset="none"` only when the page or section fully owns its own horizontal gutters.

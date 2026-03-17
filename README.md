@@ -23,8 +23,8 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
 
 - **Framework**: Next.js 16+ (App Router)
 - **Language**: TypeScript 5.9+ (strict mode)
-- **UI Components**: Material UI 7.3+
-- **Styling**: Emotion 11+
+- **UI Components**: shadcn/ui (Radix UI primitives)
+- **Styling**: Tailwind CSS 4+
 - **State Management**: Effector 23+
 
 ### Backend
@@ -50,8 +50,6 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
 
 ```zsh
 "dependencies": {
-  "@emotion/*": "...",                       // Стилизация (CSS-in-JS)
-  "@mui/material": "...",                    // UI компоненты
   "@scalar/nextjs-api-reference": "...",     // Scalar API documentation
   "better-auth": "...",                      // Аутентификация и авторизация
   "effector": "...",                         // State management (reactive)
@@ -270,7 +268,7 @@ Production PostgreSQL database is hosted on Railway with automatic backups and m
 ## 🔗 Links
 
 - [Next.js Documentation](https://nextjs.org/docs)
-- [Material UI Documentation](https://mui.com/material-ui/)
+- [shadcn/ui Documentation](https://ui.shadcn.com/)
 - [Effector Documentation](https://effector.dev/)
 - [Better Auth Documentation](https://www.better-auth.com/)
 - [OpenAPI Specification](https://swagger.io/specification/)

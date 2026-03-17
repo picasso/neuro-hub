@@ -1,7 +1,7 @@
 ---
 name: Code Style Guide
 description: This rule defines your formatting preferences.
-globs: ["src/**/*", "scripts/**/*"]
+alwaysApply: true
 ---
 
 # Code Implementation Guidelines
@@ -59,7 +59,7 @@ Imports are automatically sorted by ESLint in this order:
 
 1. builtin - Node.js built-in modules (fs, path, etc.)
 2. external - npm packages (next, react, etc.)
-3. internal - internal aliases (@/components, @/lib, @/utils)
+3. internal - internal aliases (@/ui, @/features, @/lib, @/utils)
 4. parent - relative parent imports (../)
 5. sibling - relative sibling imports (./)
 6. index - index imports
@@ -68,19 +68,18 @@ Imports are automatically sorted by ESLint in this order:
 Within each group, imports are sorted alphabetically (case-insensitive).
 CRITICAL: NO empty lines between import groups! (`'newlines-between': 'never'`)
 
-## MUI sx Prop Syntax
+## Tailwind CSS Conventions
 
-When using MUI `sx` prop, prefer numeric values for percentage dimensions:
+Use Tailwind utility classes for styling. Prefer the `cn()` utility from `@/utils` for conditional class merging:
 
-```typescript
-// ✅ CORRECT: numeric format
-sx={{ width: 1 }}       // 100%
-sx={{ width: 0.7 }}     // 70%
-sx={{ width: 0.5 }}     // 50%
+```tsx
+// ✅ CORRECT: Tailwind classes with cn()
+import { cn } from '@/utils'
 
-// ❌ AVOID: string format
-sx={{ width: '100%' }}
-sx={{ width: '70%' }}
+<div className={cn('flex items-center gap-2', isActive && 'bg-primary text-primary-foreground')}>
+
+// ❌ AVOID: inline styles or style objects
+<div style={{ display: 'flex', gap: 8 }}>
 ```
 
-This applies to: `width`, `height`, `maxWidth`, `maxHeight`, `minWidth`, `minHeight`
+Use shadcn/ui CSS variables for theme colors (`bg-primary`, `text-foreground`, `border-border`, etc.).

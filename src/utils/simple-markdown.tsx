@@ -1,5 +1,16 @@
-import { darken, lighten } from '@mui/material/styles'
-import { castArray, defaults, find, includes, isString, map, reduce } from 'lodash'
+import { isTag, isText, type ChildNode } from 'domhandler'
+import { parseDocument } from 'htmlparser2'
+import {
+	castArray,
+	defaults,
+	escapeRegExp,
+	forEach,
+	includes,
+	isString,
+	map,
+	reduce,
+	replace,
+} from 'lodash'
 
 export type MarkdownParams = {
 	links: string | string[] | null
@@ -24,6 +35,14 @@ export type MarkdownParams = {
 // replaces newlines with <p> or <br/> if 'params.br' is true
 // also replaces $link<index> constructs with elements from the 'params.links' array
 
+// replace symbols with more readable ones
+const pairs = [
+	['->', '→'],
+	['<-', '←'],
+	['=>', '⇢'],
+	['<=', '⬅︎'],
+	['>>', '»'],
+]
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 	if (!isString(str)) return str
@@ -49,6 +68,9 @@ export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 		(msg, link, index) => msg.replace(`$link${index + 1}`, link),
 		str,
 	)
+	// replace symbols
+	md = reduce(pairs, (s, [from, to]) => replace(s, new RegExp(escapeRegExp(from), 'g'), to), md)
+
 	// replace <span>
 	md = md.replace(/(^|[^`])`([^`]+)`/gm, '$1<span class="__code">$2</span>')
 	// replace color modifications
@@ -86,23 +108,61 @@ export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 	if (mod.raw) return md
 	if (md.match(/<[^<]+>/gm) === null) return str
 
-	const body = string2dom(md)
-	const markdown = <>{map(body?.childNodes, node2comp)}</>
+	const nodes = parseHtmlToNodes(md)
+	const markdown = <>{map(nodes, node2jsx)}</>
 
 	return mod.container ? <span className="__markdown">{markdown}</span> : markdown
 }
 
-function string2dom(str: string) {
-	const el = document.createElement('html')
-	el.innerHTML = str
-	return find(el.childNodes, { nodeName: 'BODY' })
+// minimal node shape used for SSR and client so output is identical (no hydration mismatch)
+export type ParsedNode = {
+	tag: string
+	className?: string
+	textContent?: string
+	children?: ParsedNode[]
+	href?: string
+	rel?: string
+	target?: string
 }
 
-function node2comp(node: HTMLElement | HTMLAnchorElement, index: number) {
-	const tag = String(node.nodeName).toLowerCase()
-	const className = node.className ? node.className : undefined
-	const text = node.textContent
-	const anchor = node as HTMLAnchorElement
+// parses HTML to a tree of `ParsedNode`
+// works on server and client so SSR and client output match
+function parseHtmlToNodes(html: string): ParsedNode[] {
+	const doc = parseDocument(html)
+	const nodes: ParsedNode[] = []
+	forEach(doc.children, (node) => {
+		const parsed = nodeToParsed(node)
+		if (parsed) nodes.push(parsed)
+	})
+	return nodes
+}
+
+function nodeToParsed(node: ChildNode): ParsedNode | null {
+	if (isText(node)) return { tag: '#text', textContent: node.data }
+	if (isTag(node)) {
+		const children = node.children.map(nodeToParsed).filter((n): n is ParsedNode => n !== null)
+		return {
+			tag: node.name.toLowerCase(),
+			className: node.attribs?.class,
+			children: children.length ? children : undefined,
+			href: node.attribs?.href,
+			rel: node.attribs?.rel,
+			target: node.attribs?.target,
+		}
+	}
+	return null
+}
+
+function getTextContent(p: ParsedNode): string {
+	if (p.tag === '#text') return p.textContent ?? ''
+	// `simpleMarkdown` doesn't support nested nodes,
+	// so we just concat the text content of the `children`
+	return map(p.children, getTextContent).join('')
+}
+
+function node2jsx(node: ParsedNode, index: number) {
+	const { tag, className, children: childNodes, href, rel, target, textContent = '' } = node
+	const text = getTextContent(node)
 
 	if (tag === 'strong')
 		return (
@@ -123,72 +183,18 @@ function node2comp(node: HTMLElement | HTMLAnchorElement, index: number) {
 			</span>
 		)
 	if (tag === 'br') return <br key={index} />
-	if (tag === '#text') return text
+	if (tag === '#text') return textContent
 	if (tag === 'p')
 		return (
 			<p key={index} className={className}>
-				{map(node.childNodes, node2comp)}
+				{map(childNodes, node2jsx)}
 			</p>
 		)
 	if (tag === 'a')
 		return (
-			<a
-				key={index}
-				className={className}
-				href={anchor.href}
-				rel={anchor.rel}
-				target={anchor.target}
-			>
-				{map(node.childNodes, node2comp)}
+			<a key={index} className={className} href={href} rel={rel} target={target}>
+				{map(childNodes, node2jsx)}
 			</a>
 		)
-}
-
-export const markdownCss = {
-	'& br': {
-		marginBottom: '3px',
-	},
-	'& a': {
-		color: 'var(--mui-palette-primary-dark)',
-		letterSpacing: '0.25px',
-		fontWeight: 700,
-		textDecoration: 'none',
-		'&:hover': {
-			textDecoration: 'underline',
-		},
-	},
-	'span.__code': {
-		position: 'relative',
-		padding: '1px 6px 2px',
-		borderRadius: '6px',
-		letterSpacing: '0.5px',
-		'&.__e': {
-			backgroundColor: lighten('#FF2020', 0.78),
-			color: darken('#ff2020', 0.3),
-			borderColor: darken('#ff2020', 0.8),
-		},
-		'&.__q': {
-			backgroundColor: lighten('#cc0096', 0.78),
-			color: darken('#cc0096', 0.1),
-			borderColor: darken('#cc0096', 0.8),
-		},
-		'&.__s': {
-			backgroundColor: lighten('#2fb344', 0.6),
-			color: darken('#1f993f', 0.4),
-			borderColor: darken('#1f993f', 0.8),
-		},
-		'&.__i': {
-			backgroundColor: lighten('#1e88e5', 0.7),
-			color: darken('#0070c9', 0.2),
-			borderColor: darken('#0070c9', 0.7),
-		},
-		'&.__w': {
-			backgroundColor: lighten('#fb8c00', 0.7),
-			color: darken('#fb8c00', 0.4),
-			borderColor: darken('#fb8c00', 0.8),
-			// backgroundColor: 'var(--mui-palette-LinearProgress-warningBg)',
-			// color: 'var(--mui-palette-warning-dark)',
-			// borderColor: 'var(--mui-palette-warning-main)',
-		},
-	},
+	return null
 }

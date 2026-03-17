@@ -1,6 +1,9 @@
 ---
 description: Testing patterns for unit, integration, and e2e tests
-globs: ["**/*.test.*", "**/*.spec.*", "__tests__/**/*", "e2e/**/*"]
+globs:
+  - "**/*.test.*"
+  - "**/*.spec.*"
+  - "tests/**/*"
 ---
 
 # Testing Rules

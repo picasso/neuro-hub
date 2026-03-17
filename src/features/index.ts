@@ -1,0 +1,20 @@
+// pages (client-safe only; server-only pages live in ./server.ts)
+export { HomePage } from './home/home-page'
+export { LoginPage } from './auth/login-page'
+export { SignupPage } from './onboarding/signup-page'
+export { HowItWorksPage } from './how-it-works'
+export { ProjectsPage } from './projects-page'
+export { PostProjectPage } from './post-project-page'
+export { PlaygroundPage } from './playground/playground-page'
+
+// sections & components
+export { BenefitsSection } from './home/benefits-section'
+export { FaqSection } from './home/faq-section'
+export { HeroSection } from './home/hero-section'
+export { ShowcaseSection } from './home/showcase-section'
+export { FreelancerProfileEditor } from './freelancer-profile/freelancer-profile-editor'
+export { FreelancerPublic as PublicFreelancer } from './freelancer-profile/freelancer-public'
+export { OnboardingWizard } from './onboarding/onboarding-wizard'
+export { PortfolioEditor } from './account-portfolio-editor'
+export { DbHealthAlert } from './db-health-alert'
+export { loginModal } from './auth/login-page'

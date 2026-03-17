@@ -17,5 +17,5 @@
 - no-console: warn (allow warn/error)
 
 ## Structure
-- Use MUI components from ui-theme (theme.ts, feedback.ts, components.ts)
+- Use shadcn/ui components from @/components/ui/ (Tailwind CSS + Radix UI)
 - Effector for state; patronum for helpers

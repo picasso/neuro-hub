@@ -1,8 +1,12 @@
 ---
-description: Guidelines for creating database utility scripts.
-globs: ["scripts/**/*"]
+description: Reference guide for creating and maintaining database utility scripts.
+globs:
+  - "scripts/**/*"
+alwaysApply: false
 ---
 # Database Scripts Development Guide
+
+Reference-only guide for database and CLI scripts. Do not rely on this rule being auto-attached; use it when working in `scripts/` or when a task explicitly involves database utilities.
 
 Guidelines for creating consistent, maintainable database utility scripts.
 

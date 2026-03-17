@@ -33,7 +33,7 @@
 ### 0.4 Development Infrastructure
 - [x] Debug logger система с conditional logging
 - [x] Development Playground для демонстрации компонентов
-- [x] Markdown утилита с MUI theme support
+- [x] Markdown утилита
 - [x] Unit тесты для утилит (Jest)
 
 ---

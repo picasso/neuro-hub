@@ -1,0 +1,324 @@
+---
+description: How to create shadcn component wrappers and Playground demos
+globs:
+  - "src/ui/**/*"
+  - "src/features/playground/**/*"
+---
+
+# Shadcn Wrapper & Playground Demo — Agent Instructions
+
+Step-by-step guide for creating UI wrappers over shadcn components and adding them to Playground. Based on analysis of [button.tsx](src/ui/button.tsx), [badge.tsx](src/ui/badge.tsx), [avatar.tsx](src/ui/avatar.tsx), [icon.tsx](src/ui/icon.tsx), [link.tsx](src/ui/link.tsx) and demos [demo-buttons](src/features/playground/demo-buttons.tsx), [demo-badge](src/features/playground/demo-badge.tsx), [demo-typography](src/features/playground/demo-typography.tsx).
+
+---
+
+## Part 1: Creating a shadcn Wrapper
+
+### 1.1 Prerequisites
+
+1. **Install shadcn component** (if not yet installed):
+
+   ```bash
+   npx shadcn@latest add <component-name>
+   ```
+
+   Component lands in `src/ui/shadcn/<component>.tsx`.
+
+2. **Never import from `@/ui/shadcn/*` in app/features** — only from `@/ui` barrel.
+
+### 1.2 Wrapper File Location
+
+- Wrapper: `src/ui/<component>.tsx` (e.g. `button.tsx`, `badge.tsx`)
+- Raw shadcn: `src/ui/shadcn/<component>.tsx` (internal, not exported from barrel)
+
+### 1.3 Wrapper Structure
+
+```tsx
+// 1. imports: external → internal (@/) → sibling (./) → type
+import { forwardRef } from 'react'
+import { Component as ShadcnComponent } from './shadcn/component'
+import { cn } from '@/utils'
+// use types.ts and utils.ts for shared logic
+
+// 2. type definitions (prefer type over interface)
+export type ComponentVariant = '...'
+export type ComponentSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+export type ComponentProps = Omit<React.ComponentPropsWithoutRef<'...'>, 'children'> & {
+  variant?: ComponentVariant
+  size?: ComponentSize
+  // domain-specific props
+  children?: ReactNode
+}
+
+// 3. component with forwardRef
+export const Component = forwardRef<HTMLElement, ComponentProps>(function Component(
+  { variant = 'default', size = 'md', className, children, ...props },
+  ref,
+) {
+  // 4. map wrapper API → shadcn API (e.g. md → default)
+  const shadcnVariant = variant === 'primary' ? 'default' : variant
+  const shadcnSize = size === 'md' ? 'default' : size
+
+  // 5. merge classes via cn()
+  const mergedClassName = cn(
+    textSizeClasses[size],        // from types.ts if applicable
+    variant && variantClasses[variant],
+    className,
+  )
+
+  return (
+    <ShadcnComponent
+      ref={ref}
+      variant={shadcnVariant}
+      size={shadcnSize}
+      className={mergedClassName}
+      {...props}
+    >
+      {children}
+    </ShadcnComponent>
+  )
+})
+```
+
+### 1.4 Use Shared Types & Utils
+
+| Need | Source | Example |
+|------|--------|---------|
+| SemanticColor, IconColor | `./types` | `color?: SemanticColor` |
+| textSizeClasses, semanticColorClasses | `./types` | `textSizeClasses[size]` |
+| needsContrast | `./utils` | `needsContrast(variant, color)`; use `needsContrast(null, color)` when only color matters (e.g. demo bg) |
+| disabledLinkClasses | `./utils` | disabled link/button styling |
+| cn | `@/utils` | conditional class merging |
+
+### 1.5 Color Unification
+
+- **SemanticColor** (base): `primary | secondary | dimmed | contrast | soft`
+- **IconColor** (extends): SemanticColor + `cta | error | success | warning | info`
+- `undefined` = inherit. Use `semanticColorClasses`, `iconColorClasses`, `linkColorClasses` from `types.ts`.
+
+### 1.6 Size Mapping
+
+- Wrapper sizes: `xs | sm | md | lg | xl` (or subset)
+- shadcn often uses `default` instead of `md` — map: `size === 'md' ? 'default' : size`
+- Use `textSizeClasses` from `types.ts` for text size (xs→text-xs, etc.)
+
+### 1.7 Icons in Wrappers
+
+- Use `Icon` from `@/ui` with `IconProps['name']`
+- Icon color: `needsContrast(variant, color) ? 'contrast' : 'secondary'` for buttons/badges on colored bg
+- Pass `iconOptions?: IconOptions` for size/spinning/className override
+
+### 1.8 href / asChild Pattern
+
+If wrapper supports link mode (like Button):
+
+```tsx
+if (href) {
+  return (
+    <ShadcnButton asChild variant={...} size={...}>
+      <Link href={href} className={cn(disabled && disabledLinkClasses)}>
+        {children}
+      </Link>
+    </ShadcnButton>
+  )
+}
+return <ShadcnButton ...>{children}</ShadcnButton>
+```
+
+### 1.9 Export from Barrel
+
+Add to `src/ui/index.ts`:
+
+```ts
+export { Component, type ComponentProps, type ComponentVariant } from './component'
+```
+
+Do **not** export internal helpers unless needed elsewhere.
+
+---
+
+## Part 2: Playground Demo
+
+### 2.1 File Pair
+
+- **Demo**: `src/features/playground/demo-<name>.tsx` (e.g. `demo-buttons.tsx`)
+- **Settings**: `src/features/playground/demo-<name>-settings.tsx` (e.g. `demo-buttons-settings.tsx`)
+
+### 2.2 Settings Component Pattern
+
+```tsx
+'use client'
+
+import { useEffect } from 'react'
+import { DemoRoot, SettingSelect, SettingToggle } from './components-utils'
+import { useReset, useSettings } from './settings-store'
+import { Separator, type ComponentProps } from '@/ui'
+
+export type ComponentDemoState = {
+  variant: NonNullable<ComponentProps['variant']>
+  size: NonNullable<ComponentProps['size']>
+  color: NonNullable<ComponentProps['color']> | 'null'
+  someToggle: boolean
+}
+
+const defaultState: ComponentDemoState = {
+  variant: 'default',
+  size: 'md',
+  color: 'null',
+  someToggle: false,
+}
+
+export function DemoComponentSettings() {
+  const reset = useReset<ComponentDemoState>(defaultState)
+  const { variant, size, color, someToggle } = useSettings<ComponentDemoState>()
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => reset(), [])
+
+  return (
+    <DemoRoot>
+      <SettingSelect id="variant" label="Variant" value={variant} options={['default', 'outline', ...]} />
+      <SettingSelect id="size" label="Size" value={size} options={['xs', 'sm', 'md', 'lg', 'xl']} />
+      <SettingSelect
+        id="color"
+        label="Color"
+        value={color}
+        options={[
+          { label: '— (inherit)', value: 'null' },
+          { label: 'primary', value: 'primary' },
+          { label: 'secondary', value: 'secondary' },
+          { label: 'contrast', value: 'contrast' },
+        ]}
+      />
+      <Separator />
+      <SettingToggle id="someToggle" label="Some toggle" checked={someToggle} />
+    </DemoRoot>
+  )
+}
+```
+
+When options are objects (`{ label, value }[]`), use `value: 'null'` for inherit and pass `color={color === 'null' ? undefined : color}` to the component in the demo.
+
+### 2.3 Demo Component Pattern
+
+```tsx
+'use client'
+
+import { DemoRoot, DemoSection } from './components-utils'
+import { type ComponentDemoState } from './demo-<name>-settings'
+import { useSettings } from './settings-store'
+import { Component, Stack } from '@/ui'
+
+export function DemoComponent() {
+  const settings = useSettings<ComponentDemoState>()
+  const { variant, size, someToggle } = settings
+
+  return (
+    <DemoRoot>
+      <DemoSection
+        title="Interactive"
+        desc="Обёртка `Component` на базе **shadcn** — краткое описание"
+        separator
+      >
+        <Component variant={variant} size={size} someProp={someToggle} />
+      </DemoSection>
+      <DemoSection title="Variants" separator>
+        <Stack gap={2} wrap align="stretch">
+          {['default', 'outline', 'secondary'].map((v) => (
+            <Component key={v} variant={v} label={v} />
+          ))}
+        </Stack>
+      </DemoSection>
+      <DemoSection title="Sizes">
+        <Stack gap={2} wrap align="stretch">
+          {['xs', 'sm', 'md', 'lg', 'xl'].map((s) => (
+            <Component key={s} size={s} label={`Size ${s}`} />
+          ))}
+        </Stack>
+      </DemoSection>
+    </DemoRoot>
+  )
+}
+```
+
+### 2.4 DemoSection Usage
+
+- **title**: Section heading (h3)
+- **desc**: Optional, supports Markdown (`**bold**`, `` `code` ``)
+- **separator**: Adds `<Separator />` after section (except last)
+
+### 2.5 Best Demo Practices
+
+1. **Interactive section first** — one instance driven by settings, shows live control.
+2. **Variants section** — all variants in a row/grid.
+3. **Sizes section** — all sizes.
+4. **Feature sections** — e.g. "With icon", "Closable", "Colors" for specific props.
+5. **needsContrast for dark bg** — when demoing `color="contrast"` or `color="soft"`, wrap in container with `needsContrast(null, color) && 'bg-primary'` so text is visible.
+6. **SettingSelect for null/undefined** — use `{ label: '— (inherit)', value: 'null' }` and convert `color === 'null' ? undefined : color` when passing to component.
+
+### 2.6 components-utils
+
+- `DemoRoot` — vertical Stack wrapper
+- `DemoSection` — title + optional desc + children + optional Separator
+- `DemoLabel` — caption for labels (size: xs | sm | md)
+- `SettingSelect` — dropdown, options: `string[]` or `{ label, value }[]`
+- `SettingToggle` — Switch for boolean, uses `toggle(id)` from settings-store
+
+### 2.7 settings-store
+
+- `useSettings<T>()` — read current state
+- `useUpdateSettings<T>()` — returns `[update, toggle]`; `update({ key: value })`, `toggle('key')`
+- `useReset<T>(defaultState)` — reset + apply defaults on mount
+- State is global per Playground; `id` in SettingSelect/SettingToggle must match `ComponentDemoState` keys.
+
+### 2.8 Register in components.tsx
+
+```tsx
+import { DemoComponent } from './demo-<name>'
+import { DemoComponentSettings } from './demo-<name>-settings'
+
+// In componentDemos array:
+{
+  id: 'component-id',
+  name: 'Component',
+  group: 'base',  // or 'forms', 'feedback', 'layout', 'icons'
+  description: 'Short description',
+  ready: true,
+  demo: <DemoComponent />,
+  settings: <DemoComponentSettings />,
+}
+```
+
+### 2.9 Group Labels
+
+`groupLabels` in components.tsx: `base`, `icons`, `forms`, `feedback`, `layout`.
+
+---
+
+## Part 3: Checklist
+
+### Wrapper
+
+- [ ] shadcn component installed in `src/ui/shadcn/`
+- [ ] Wrapper in `src/ui/<name>.tsx` with forwardRef
+- [ ] Types from `./types` (SemanticColor, textSizeClasses) where applicable
+- [ ] Helpers from `./utils` (needsContrast, disabledLinkClasses) where applicable
+- [ ] Map wrapper variant/size to shadcn (e.g. primary→default, md→default)
+- [ ] Export from `src/ui/index.ts`
+- [ ] No direct `@/ui/shadcn/*` imports in features/app
+
+### Demo
+
+- [ ] `demo-<name>.tsx` and `demo-<name>-settings.tsx` created
+- [ ] `ComponentDemoState` type, `defaultState`, `useEffect(() => reset(), [])` in settings
+- [ ] Interactive section with `useSettings<ComponentDemoState>()`
+- [ ] Variants and Sizes sections
+- [ ] Feature-specific sections (icon, closable, etc.)
+- [ ] needsContrast for contrast/soft color demos
+- [ ] Registered in `componentDemos` with `ready: true`
+
+### Code Style
+
+- [ ] Single-line comments, lowercase
+- [ ] Import order (external → internal → sibling → type)
+- [ ] `cn()` for conditional classes
+- [ ] Named exports, function declarations

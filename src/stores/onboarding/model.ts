@@ -254,7 +254,7 @@ export const registerUserFx = domain.createEffect<RegisterUserInput, unknown, Er
 					email,
 					password,
 					name,
-					callbackURL: '/dashboard',
+					callbackURL: '/account/dashboard',
 					fetchOptions: {
 						onSuccess: () => {},
 						body: {

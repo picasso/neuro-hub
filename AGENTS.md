@@ -57,15 +57,52 @@ yarn db:check     # Inspect DB
 
 ---
 
+## File Organization
+
+- Flat structure; `app/` contains thin route files only (import + re-export)
+- `features/` — all business-logic components, imported via `@/features` or `@/features/server`
+- `ui/` — all UI primitives, imported via `@/ui` barrel (never `@/ui/shadcn` directly)
+- Only top-level barrels are allowed; do not create subfolder `index.ts` files inside feature folders
+- Details: [.cursor/rules/file-organization.mdc](.cursor/rules/file-organization.mdc)
+
 ## File Structure
 
 ```zsh
+src/
+├── app/               # Thin routes: page.tsx = import + re-export only
+│   └── api/           # API route handlers (logic allowed here)
+├── features/          # Business-logic components
+│   ├── home/
+│   ├── dashboard/
+│   ├── auth/
+│   ├── onboarding/
+│   ├── portfolio/
+│   ├── freelancer-profile/
+│   ├── playground/
+│   ├── header.tsx
+│   ├── footer.tsx
+│   ├── index.ts       # client-safe barrel — import from '@/features'
+│   └── server.ts      # server-only barrel — import from '@/features/server'
+├── ui/                # UI primitives & design system
+│   ├── shadcn/        # raw Radix/shadcn (INTERNAL — use '@/ui' barrel)
+│   ├── providers/
+│   ├── icons/
+│   └── index.ts       # barrel — import from '@/ui'
+├── alerts/            # Effector alert system
+├── config/            # metadata, mocks
+├── lib/               # auth, db, email, swagger, validations
+├── stores/            # Effector stores
+├── utils/             # pure utilities
+└── types/             # shared TypeScript types
+
 .cursor/
 ├── agents/            # Task-specific agents (see Available Agents)
 ├── mcp.json           # MCP servers (see table below)
 ├── rules/             # Project rules (.mdc)
+│   ├── file-organization.mdc
 │   ├── tech-stack.mdc
 │   ├── react-nextjs.mdc
+│   ├── tailwind4.mdc
 │   ├── api-design.mdc
 │   ├── effector.mdc
 │   ├── develop.mdc
@@ -78,11 +115,29 @@ yarn db:check     # Inspect DB
 ## Code Style
 
 - **TypeScript:** strict mode, no `any`, prefer `type`
-- **React:** Server Components by default, `'use client'` only when needed
+- **React:** Server Components by default; see `.cursor/rules/use-client.mdc` for `'use client'` placement rules
+- **Tailwind CSS:** prefer Tailwind 4 patterns; see `.cursor/rules/tailwind4.mdc`
+- **Page layout:** use `PageShell` presets (`form | content | wide | full`) for route-entry pages and `PageContainer` for inner width caps; see `.cursor/rules/page-shell.mdc`
 - **Server Actions** for mutations, Zod for validation
 - **Effector** for global state
 
 Details: [.cursor/rules/code-style.mdc](.cursor/rules/code-style.mdc)
+
+## Rule Routing
+
+Use this routing when Cursor rule auto-application is unreliable:
+
+- Reach for `.cursor/rules/effector.mdc` when the task is primarily about model/store architecture, unit naming, `sample()` orchestration, or domain structure.
+- Reach for `.cursor/rules/develop.mdc` when the task is primarily about frontend anti-patterns, alert wiring, wrapper usage from `@/ui`, or deciding what logic should stay out of components.
+- Base React/Next frontend invariants: `.cursor/rules/react-nextjs.mdc`
+- Formatting and naming conventions: `.cursor/rules/code-style.mdc`
+- API route and response conventions: `.cursor/rules/api-design.mdc`
+- `'use client'` boundary rules: `.cursor/rules/use-client.mdc`
+- Effector-specific patterns and syntax: `.cursor/rules/effector.mdc`
+- Detailed frontend anti-patterns and examples: `.cursor/rules/develop.mdc`
+- Page layout conventions: `.cursor/rules/page-shell.mdc`
+- Testing guidance: `.cursor/rules/testing.mdc`
+- Database script conventions: `.cursor/rules/db-scripts.mdc`
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 description: REST API design patterns for endpoints, responses, and status codes
-globs: ["src/app/api/**/*"]
+alwaysApply: true
 ---
 
 # API Design Rules

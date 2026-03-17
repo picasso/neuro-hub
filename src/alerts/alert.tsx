@@ -1,25 +1,14 @@
 'use client'
 
-import MuiAlert, { type AlertProps as MuiAlertProps } from '@mui/material/Alert'
-import MuiAlertTitle from '@mui/material/AlertTitle'
-import Box from '@mui/material/Box'
-import LinearProgress from '@mui/material/LinearProgress'
 import { useStoreMap } from 'effector-react'
 import { isNumber } from 'lodash'
 import { useCallback } from 'react'
 import { toast } from 'sonner'
-import { $alerts, type AlertId } from './model'
-import { Icon, TS } from '@/components/ui'
-import { markdownCss, simpleMarkdown, templatedMessage } from '@/utils'
+import { $alerts, type AlertProps } from './model'
+import { Alert, Progress, TS } from '@/ui'
+import { cn, simpleMarkdown, templatedMessage } from '@/utils'
 
-const iconMapping: MuiAlertProps['iconMapping'] = {
-	success: <Icon name="done-filled" color="success" />,
-	info: <Icon name="info-filled" color="info" />,
-	warning: <Icon name="warning-filled" color="warning" />,
-	error: <Icon name="error-filled" color="error" />,
-}
-
-export function AlertComponent({ id }: { id: AlertId }) {
+export function AlertComponent({ id }: AlertProps) {
 	const alert = useStoreMap({
 		store: $alerts,
 		keys: [String(id)],
@@ -36,7 +25,6 @@ export function AlertComponent({ id }: { id: AlertId }) {
 		severity,
 		progress,
 		disableProgressCaption = false,
-		elevation,
 		variant,
 		icon,
 		iconOptions,
@@ -53,69 +41,56 @@ export function AlertComponent({ id }: { id: AlertId }) {
 		}
 	}, [disableClose, id])
 
-	const iconNode =
-		!icon && !isProgress ? null : (
-			<Icon
-				name={icon ?? 'spinner'}
-				color={iconOptions?.color ?? (isProgress ? 'secondary' : undefined)}
-				fontSize={iconOptions?.size}
-				animation={iconOptions?.animation ?? (isProgress ? 'rotate' : undefined)}
-				sx={{ mr: iconOptions?.spacing }}
-			/>
-		)
-
 	const mergedMessage = templatedMessage(message)
 	const mergedTitle = title ? templatedMessage(title) : undefined
+	const titleContent = mergedTitle ? simpleMarkdown(mergedTitle, md || {}) : undefined
+	const messageContent = md === false ? mergedMessage : simpleMarkdown(mergedMessage, md || {})
 
+	const mergedIconOptions = {
+		...iconOptions,
+		spinning: iconOptions?.spinning ?? isProgress,
+		color: (isProgress && variant === 'filled' ? 'contrast' : undefined) ?? iconOptions?.color,
+	}
+
+	const standardProgress = !variant || variant === 'standard'
 	return (
-		<MuiAlert
-			onClose={disableClose ? undefined : onClose}
-			severity={severity}
+		<Alert
+			className={cn(
+				'markdown-root min-w-[320px] lg:min-w-100 xl:min-w-150',
+				variant === 'filled' && 'contrast',
+			)}
 			variant={variant}
-			icon={iconNode}
-			iconMapping={iconMapping}
-			elevation={elevation ?? 3}
-			sx={[
-				md !== false && markdownCss,
-				{ minWidth: { md: 'none', lg: 400, xl: 600 } },
-				{ '.MuiAlert-message': { width: '100%' } },
-				!title && { '.MuiAlert-action': { py: 0.75, pl: 2 } },
-			]}
+			severity={severity}
+			title={titleContent}
+			icon={icon ?? (isProgress ? 'spinner' : undefined)}
+			iconOptions={mergedIconOptions}
+			onClose={disableClose ? undefined : onClose}
 		>
-			{mergedTitle && <MuiAlertTitle>{simpleMarkdown(mergedTitle, md || {})}</MuiAlertTitle>}
-			{md === false ? mergedMessage : simpleMarkdown(mergedMessage, md)}
-
-			{progressValue !== undefined ? (
-				<Box sx={{ mt: 1 }}>
-					<LinearProgress
-						variant="determinate"
+			{messageContent}
+			{progressValue !== undefined && (
+				<div className="mt-2">
+					<Progress
 						value={progressValue}
-						sx={(theme) => ({
-							height: 6,
-							borderRadius: 999,
-							backgroundColor:
-								isProgress && variant === 'filled'
-									? theme.palette.primary.dark
-									: theme.palette.action.disabledBackground,
-							'& .MuiLinearProgress-bar': {
-								borderRadius: 999,
-								backgroundColor:
-									isProgress && variant === 'filled'
-										? theme.palette.contrast.main
-										: undefined,
-							},
-						})}
+						className={cn(
+							'h-1.5 rounded-full',
+							variant === 'filled' &&
+								'bg-background/20 *:data-[slot="progress-indicator"]:bg-background',
+							standardProgress &&
+								'bg-purple-500/20 *:data-[slot="progress-indicator"]:bg-purple-500',
+						)}
 					/>
 					{!disableProgressCaption && (
 						<TS
 							variant="caption"
-							sx={{ display: 'block', mt: 0.5 }}
 							content={`${Math.round(progressValue)}%`}
-							color={isProgress && variant === 'filled' ? 'contrast' : 'primary.dark'}
+							className={cn(
+								'block mt-1',
+								variant === 'filled' ? 'text-background' : 'text-purple-700',
+							)}
 						/>
 					)}
-				</Box>
-			) : null}
-		</MuiAlert>
+				</div>
+			)}
+		</Alert>
 	)
 }
