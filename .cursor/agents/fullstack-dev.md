@@ -35,6 +35,8 @@ Do not treat these as optional hints. They are implementation rules.
 
 - `src/app` files must stay thin; business logic belongs in `src/features`
 - prefer `@/features`, `@/features/server`, and `@/ui` barrels
+- prefer existing shared helpers from `@/utils` instead of recreating small local formatting utilities
+- for Russian numeral declension, use `pluralizeRu` / `pluralizeRuWithCount` from `@/utils` instead of feature-local helper functions
 - never import from `@/ui/shadcn/*` in app/features code
 - prefer existing wrappers from `@/ui` instead of manual composition
 - use Better Auth and `src/proxy.ts` conventions for protected flows
@@ -56,6 +58,7 @@ Do not treat these as optional hints. They are implementation rules.
 ## Frontend Rules
 
 - use `Stack`, `TS`, `TextField`, `Button`, `Icon`, and other `@/ui` wrappers when applicable
+- do not add local helpers like `profileLabel`, `portfolioLabel`, or similar ad hoc declension functions when `pluralizeRu` or `pluralizeRuWithCount` already solves the case
 - in frontend app code, use `Link` from `@/ui` as the default navigation primitive; do not import `next/link` when `@/ui` `Link` fits
 - in frontend React UI code, use `next/image` as the default image primitive; do not keep raw `<img>` when `next/image` is applicable
 - exceptions are limited to wrapper or infra code where those primitives are being implemented or where the replacement is technically not suitable
@@ -95,6 +98,7 @@ Do not treat these as optional hints. They are implementation rules.
 - add accessible labels and keyboard support where relevant
 - write tests for new behavior
 - do not invent new wrappers when an existing `@/ui` abstraction already solves the task
+- do not invent local Russian numeral declension helpers when `pluralizeRu` or `pluralizeRuWithCount` from `@/utils` is applicable
 - do not use `next/link` in frontend app code when `@/ui` `Link` is applicable
 - do not use raw `<img>` in frontend React UI code when `next/image` is applicable
 

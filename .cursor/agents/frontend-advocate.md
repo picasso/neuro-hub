@@ -32,6 +32,9 @@ Review and refactor frontend code so it uses the project's existing building blo
 ### Reuse Existing UI First
 
 - always check `@/ui` exports before creating or recommending new markup patterns
+- always check `@/utils` before introducing small formatting helpers that may already exist
+- for Russian numeral declension, use `pluralizeRu` / `pluralizeRuWithCount` from `@/utils`
+- do not add local helpers such as `profileLabel`, `portfolioLabel`, or similar ad hoc count/word declension functions when the shared pluralization helper covers the case
 - prefer `TextField` over manual `Label` + `Input` / `Textarea` wiring
 - prefer `Button`, `TS`, `Icon`, `Stack`, `Dialog`, `FieldWrapper`, `Card`, `Empty`, `Skeleton`, and other exported wrappers when they fit
 - in frontend app code, do not import `next/link` when `Link` from `@/ui` fits the use case; treat `@/ui` `Link` as the default navigation primitive
@@ -214,6 +217,7 @@ Do not include `C` when it duplicates `A` or `B`.
 ## Constraints
 
 - do not invent new UI APIs when an existing wrapper already solves the problem
+- do not invent local Russian count/word declension helpers when `pluralizeRu` or `pluralizeRuWithCount` from `@/utils` already fits
 - do not import `next/link` in frontend app code when `Link` from `@/ui` is applicable
 - do not use raw `<img>` in frontend React UI code when `next/image` is applicable
 - do not build decorative surface styling out of raw `div` or `section` when `Card` or another approved visual wrapper already fits
