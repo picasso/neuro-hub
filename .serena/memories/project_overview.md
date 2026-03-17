@@ -8,5 +8,5 @@ Platform for freelancing in generative AI. Specialized marketplace connecting AI
 
 - **Frontend**: Next.js 16+, TypeScript 5.9+ (strict), shadcn/ui + Tailwind CSS 4+, lucide-react, Effector 23+
 - **Backend**: Node.js 24 LTS, Next.js API Routes, PostgreSQL 16, Knex (migrations/seeds), Kysely (runtime queries), Better Auth 1+
-- **Package Manager**: Yarn Classic 1.x
+- **Package Manager**: Yarn 4.x via Corepack
 - **System**: Darwin (macOS)

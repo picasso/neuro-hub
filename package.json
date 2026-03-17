@@ -1,6 +1,6 @@
 {
 	"name": "neuro-hub",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -16,14 +16,14 @@
 		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css}\"",
 		"test": "jest --passWithNoTests",
 		"test:watch": "jest --watch --passWithNoTests",
-		"db:auth:migrate": "yes | npx @better-auth/cli migrate",
-		"db:migrate": "tsx node_modules/.bin/knex migrate:latest --knexfile knexfile.ts",
-		"db:migrate:make": "tsx node_modules/.bin/knex migrate:make --knexfile knexfile.ts",
-		"db:migrate:rollback": "tsx node_modules/.bin/knex migrate:rollback --knexfile knexfile.ts",
-		"db:migrate:status": "tsx node_modules/.bin/knex migrate:status --knexfile knexfile.ts",
+		"db:auth:migrate": "yes | better-auth migrate",
+		"db:migrate": "NODE_OPTIONS='--import tsx' knex migrate:latest --knexfile knexfile.ts",
+		"db:migrate:make": "NODE_OPTIONS='--import tsx' knex migrate:make --knexfile knexfile.ts",
+		"db:migrate:rollback": "NODE_OPTIONS='--import tsx' knex migrate:rollback --knexfile knexfile.ts",
+		"db:migrate:status": "NODE_OPTIONS='--import tsx' knex migrate:status --knexfile knexfile.ts",
 		"db:migrate:production": "./scripts/db/migrate-production.sh",
-		"db:seed": "tsx node_modules/.bin/knex seed:run --knexfile knexfile.ts",
-		"db:seed:make": "tsx node_modules/.bin/knex seed:make --knexfile knexfile.ts",
+		"db:seed": "NODE_OPTIONS='--import tsx' knex seed:run --knexfile knexfile.ts",
+		"db:seed:make": "NODE_OPTIONS='--import tsx' knex seed:make --knexfile knexfile.ts",
 		"db:test": "tsx src/lib/db/test-connection.ts",
 		"db:generate-types": "kysely-codegen --out-file=src/types/database.ts",
 		"db:export": "./scripts/db/export-data.sh",
@@ -108,7 +108,7 @@
 	},
 	"engines": {
 		"node": "24.x",
-		"yarn": ">=1.0.0"
+		"yarn": "4.x"
 	},
-	"packageManager": "yarn@1.22.22"
+	"packageManager": "yarn@4.13.0"
 }

@@ -4,6 +4,6 @@
 # export PATH="$HOME/Library/Application Support/fnm/aliases/default/bin:$PATH"
 
 echo "🚀 Running checks on staged files..."
-yarn lint-staged || exit 1
+corepack yarn lint-staged || exit 1
 
 echo "✅ Pre-commit checks passed!"

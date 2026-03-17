@@ -10,6 +10,7 @@ coverage
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
-.yarnrc
+.yarn
+.yarnrc.yml
 *.md
 *.mdc
