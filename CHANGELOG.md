@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.1] - 2026-03-17
+
+### Added
+- PR language format rule to keep pull request headings and checklists in English while keeping descriptive content in Russian
+- Additional post-migration shadcn/ui wrappers and primitives: `Card`, `Breadcrumb`, `Collapsible`, `Sidebar`, `Sheet`, `Skeleton`, and `DropdownMenu`
+- `freelancers` page for browsing freelancer profiles
+
+### Changed
+- Migrated the project from Yarn Classic to Yarn 4 with Corepack-managed installs
+- Updated CI and deployment workflows to use `yarn install --immutable`
+- Hardened Husky hooks and database scripts to run Yarn through Corepack-compatible commands
+- Updated project documentation and internal rules to reflect the new package manager workflow
+- Refined the UI layer after the main shadcn migration with follow-up wrapper improvements
+- Updated alerts documentation to reflect shadcn/ui-based components and the current alert behavior
+
+### Removed
+- Unused Next.js application Docker runtime setup, keeping Docker Compose only for local PostgreSQL
+
 ## [0.4.0] - 2026-03-09
 
 ### Added
@@ -180,6 +198,7 @@ All notable changes to this project will be documented in this file.
 - Database migrations for users, profiles, sessions, and skills
 - Comprehensive project documentation
 
+[0.4.1]: https://github.com/picasso/neuro-hub/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/picasso/neuro-hub/compare/v0.3.4...v0.4.0
 [0.3.4]: https://github.com/picasso/neuro-hub/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/picasso/neuro-hub/compare/v0.2.5...v0.3.3
