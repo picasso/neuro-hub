@@ -19,7 +19,7 @@ import {
 	submitPortfolioItem,
 } from '@/stores/freelancer-portfolio'
 import { Badge, Card, Empty, FileUploader, Skeleton, Stack, TextField } from '@/ui'
-import { fileSize } from '@/utils'
+import { fileSize, pluralizeRuWithCount } from '@/utils'
 
 const fileLimit = fileSize(config.uploadMaxSize, 0, true)
 
@@ -153,7 +153,7 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 					'Нажмите на карточку, чтобы выбрать работу для предпросмотра или удаления.' +
 					' Полноценное редактирование метаданных добавим вместе с backend update flow.'
 				}
-				badge={`${portfolio.length} работ`}
+				badge={pluralizeRuWithCount(portfolio.length, 'work')}
 			>
 				{isLoading ? (
 					<Skeleton shape="card" clean maxW="none" />

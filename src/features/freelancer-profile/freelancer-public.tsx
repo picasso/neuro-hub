@@ -1,8 +1,9 @@
 'use client'
 
-import { Portfolio } from '../portfolio/portfolio'
 import type { PublicFreelancerProfile } from '@/lib/db/queries/freelancers'
+import { Portfolio } from '@/features/portfolio/portfolio'
 import { Badge, Card, Empty, Stack, TS } from '@/ui'
+import { pluralizeRuWithCount } from '@/utils'
 
 export function FreelancerPublic({ profile }: { profile: PublicFreelancerProfile }) {
 	return (
@@ -35,7 +36,7 @@ export function FreelancerPublic({ profile }: { profile: PublicFreelancerProfile
 				fullWidth
 				title="Навыки"
 				description="Ключевые компетенции и текущий уровень владения."
-				badge={`${profile.skills.length} ${skillCountLabel(profile.skills.length)}`}
+				badge={pluralizeRuWithCount(profile.skills.length, 'skill')}
 			>
 				{profile.skills.length === 0 ? (
 					<Empty
@@ -67,7 +68,7 @@ export function FreelancerPublic({ profile }: { profile: PublicFreelancerProfile
 				fullWidth
 				title="Портфолио"
 				description="Галерея работ с готовым предпросмотром медиа через PortfolioViewer."
-				badge={`${profile.portfolio.length} ${portfolioCountLabel(profile.portfolio.length)}`}
+				badge={pluralizeRuWithCount(profile.portfolio.length, 'work')}
 			>
 				{profile.portfolio.length === 0 ? (
 					<Empty
@@ -136,20 +137,4 @@ function levelLabel(level: string | null) {
 		default:
 			return '—'
 	}
-}
-
-function skillCountLabel(count: number) {
-	if (count % 10 === 1 && count % 100 !== 11) return 'навык'
-	if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
-		return 'навыка'
-	}
-	return 'навыков'
-}
-
-function portfolioCountLabel(count: number) {
-	if (count % 10 === 1 && count % 100 !== 11) return 'работа'
-	if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
-		return 'работы'
-	}
-	return 'работ'
 }

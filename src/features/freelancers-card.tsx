@@ -2,6 +2,7 @@ import Image from 'next/image'
 import type { PublicFreelancerGridItem } from '@/lib/db/queries/freelancers'
 import type { Route } from 'next'
 import { Avatar, Badge, CardRoot, Icon, Link, Stack, TS } from '@/ui'
+import { pluralizeRuWithCount } from '@/utils'
 
 type FreelancerGridCardProps = {
 	item: PublicFreelancerGridItem
@@ -22,11 +23,13 @@ export function FreelancerGridCard({ item }: FreelancerGridCardProps) {
 			<CardRoot className="h-full gap-0 overflow-hidden rounded-lg border-border/70 py-0 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
 				<div className="relative aspect-3/2 overflow-hidden bg-muted/30">
 					{renderPreview(item)}
-					<div className="absolute right-3 top-3">
-						<Badge variant="outline" size="xs" color="contrast">
-							{item.latestPortfolioItem ? 'Latest work' : 'Portfolio soon'}
-						</Badge>
-					</div>
+					<Badge
+						variant="outline"
+						size="xs"
+						color="contrast"
+						label={item.latestPortfolioItem ? 'Latest work' : 'Portfolio soon'}
+						className="absolute right-3 top-3"
+					/>
 					{/* {item.latestPortfolioItem ? (
 						<div className="absolute inset-x-3 bottom-3 rounded-lg bg-background/90 px-2.5 py-2 backdrop-blur-sm">
 							<TS
@@ -55,7 +58,7 @@ export function FreelancerGridCard({ item }: FreelancerGridCardProps) {
 								clean
 								variant="caption"
 								color="secondary"
-								className="line-clamp-2"
+								className="line-clamp-2 leading-normal"
 								content={
 									item.specialization || 'Специализация будет добавлена позже'
 								}
@@ -92,13 +95,13 @@ export function FreelancerGridCard({ item }: FreelancerGridCardProps) {
 							clean
 							variant="caption"
 							color="secondary"
-							content={meta || 'Профиль доступен публично'}
+							content={meta || `ставки (${formatRate(-1)}) не указаны`}
 						/>
 						<TS
 							clean
 							variant="caption"
 							color="secondary"
-							content={portfolioLabel(item.portfolioCount)}
+							content={pluralizeRuWithCount(item.portfolioCount, 'work')}
 						/>
 					</Stack>
 				</Stack>
@@ -116,7 +119,7 @@ function renderPreview(item: PublicFreelancerGridItem) {
 				src={portfolio.mediaUrl}
 				alt={portfolio.title}
 				sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-				className="transition-transform duration-300 group-hover:scale-[1.1]"
+				className="object-cover transition-transform duration-300 group-hover:scale-[1.1]"
 			/>
 		)
 	}
@@ -158,7 +161,7 @@ function renderPreview(item: PublicFreelancerGridItem) {
 
 function formatRate(rate: number | null) {
 	if (!rate) return null
-	return `$${rate}/hr`
+	return `$${rate === -1 ? '' : rate}/hr`
 }
 
 function isImagePreview(url: string, mediaType: string | null) {
@@ -170,10 +173,4 @@ function mediaPlaceholderIcon(mediaType: string | null) {
 	if (mediaType?.startsWith('video/')) return 'video'
 	if (mediaType?.startsWith('audio/')) return 'volume'
 	return 'image'
-}
-
-function portfolioLabel(count: number) {
-	if (count === 0) return 'без работ'
-	if (count === 1) return '1 work'
-	return `${count} works`
 }

@@ -7,7 +7,6 @@ export {
 	noContentResponse,
 	successResponse,
 } from './api-response'
-
 export {
 	assert,
 	cn,
@@ -19,11 +18,9 @@ export {
 	sprintf,
 	type TemplatedMessage,
 } from './common'
-
 export { findChild, findParent } from './dom'
-
 export { fileSize } from './file'
-
+export { pluralizeRu, pluralizeRuWithCount } from './pluralize-ru'
 export {
 	AppError,
 	ConflictError,
@@ -33,5 +30,4 @@ export {
 	UnauthorizedError,
 	ValidationError,
 } from './errors'
-
 export { type MarkdownParams, simpleMarkdown } from './simple-markdown'

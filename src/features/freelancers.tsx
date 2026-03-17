@@ -8,6 +8,7 @@ import {
 	type FreelancerDirectorySort,
 } from '@/lib/validations'
 import { Badge, Breadcrumb, Button, Card, Empty, Input, Link, PageShell, Stack, TS } from '@/ui'
+import { pluralizeRuWithCount } from '@/utils'
 
 type PageProps = {
 	searchParams?: Promise<Record<string, string | string[] | undefined>>
@@ -264,9 +265,10 @@ export async function FreelancersPage({ searchParams }: PageProps) {
 
 function describeResults(total: number, filters: FreelancerDirectoryQueryInput) {
 	if (total === 0) return 'Пока нет профилей, подходящих под выбранные условия.'
-	if (filters.q) return `Найдено ${total} ${profileLabel(total)} по запросу "${filters.q}".`
-	if (filters.category) return `Найдено ${total} ${profileLabel(total)} в выбранной категории.`
-	return `Найдено ${total} ${profileLabel(total)} для публичного каталога.`
+	const plural = pluralizeRuWithCount(total, 'profile')
+	if (filters.q) return `Найдено ${plural} по запросу "${filters.q}".`
+	if (filters.category) return `Найдено ${plural} в выбранной категории.`
+	return `Найдено ${plural} для публичного каталога.`
 }
 
 function buildDirectoryHref(
@@ -300,12 +302,4 @@ function normalizeSearchParams(raw: Record<string, string | string[] | undefined
 			.map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])
 			.filter(([, value]) => value !== undefined),
 	)
-}
-
-function profileLabel(count: number) {
-	if (count % 10 === 1 && count % 100 !== 11) return 'профиль'
-	if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
-		return 'профиля'
-	}
-	return 'профилей'
 }
