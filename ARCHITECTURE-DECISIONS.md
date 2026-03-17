@@ -443,6 +443,26 @@ src/app/playground/
 
 **Дата решения:** 2026-02-06
 
+### 19. Yarn 4 on Vercel: committed release binary via `yarnPath`
+
+**Решение:** Для деплоя на Vercel использовать Yarn 4 через committed release binary в `.yarn/releases` и `yarnPath` в `.yarnrc.yml`, а не через `ENABLE_EXPERIMENTAL_COREPACK`.
+
+**Обоснование:**
+- Проект зафиксирован на Yarn 4 через `packageManager`
+- Vercel корректно использует Yarn 4 из репозитория через `yarnPath`
+- Попытка включить `ENABLE_EXPERIMENTAL_COREPACK` на Vercel приводила к падению install с ошибкой `Dynamic require of "util" is not supported`
+- Решение сохраняет Yarn 4 без отката на Yarn 3 и без ослабления `engines.yarn`
+
+**Практические правила:**
+- Держать release file в `.yarn/releases/` под версионированием
+- Держать `yarnPath` в `.yarnrc.yml`
+- Не включать `ENABLE_EXPERIMENTAL_COREPACK` для этого репозитория в Vercel
+- Не переопределять `Install Command`, если нет отдельной необходимости
+
+**Компромисс:** В репозиторий добавляется Yarn binary, но это даёт стабильный deploy path на Vercel и устраняет зависимость от проблемного Corepack runtime.
+
+**Дата решения:** 2026-03-17
+
 ## Технологический стек MVP
 
 ### Frontend

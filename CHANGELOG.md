@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - Updated project documentation and internal rules to reflect the new package manager workflow
 - Refined the UI layer after the main shadcn migration with follow-up wrapper improvements
 - Updated alerts documentation to reflect shadcn/ui-based components and the current alert behavior
+- Stabilized Vercel Yarn 4 deployments by using a committed release binary via `yarnPath` instead of `ENABLE_EXPERIMENTAL_COREPACK`
 
 ### Removed
 - Unused Next.js application Docker runtime setup, keeping Docker Compose only for local PostgreSQL
