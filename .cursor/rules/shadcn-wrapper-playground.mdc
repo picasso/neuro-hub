@@ -36,7 +36,7 @@ Step-by-step guide for creating UI wrappers over shadcn components and adding th
 // 1. imports: external → internal (@/) → sibling (./) → type
 import { forwardRef } from 'react'
 import { Component as ShadcnComponent } from './shadcn/component'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 // use types.ts and utils.ts for shared logic
 
 // 2. type definitions (prefer type over interface)
@@ -87,7 +87,7 @@ export const Component = forwardRef<HTMLElement, ComponentProps>(function Compon
 | textSizeClasses, semanticColorClasses | `./types` | `textSizeClasses[size]` |
 | needsContrast | `./utils` | `needsContrast(variant, color)`; use `needsContrast(null, color)` when only color matters (e.g. demo bg) |
 | disabledLinkClasses | `./utils` | disabled link/button styling |
-| cn | `@/lib/utils` | conditional class merging |
+| cn | `@/utils` | conditional class merging |
 
 ### 1.5 Color Unification
 

@@ -1,7 +1,8 @@
 ---
 name: Immer Guide
 description: Best practices for using Immer for immutable state updates
-globs: ["src/**/*"]
+globs:
+  - "src/**/*"
 ---
 
 # Immer - Immutable State Updates

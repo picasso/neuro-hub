@@ -1,6 +1,6 @@
 ---
 description: React and Next.js patterns — App Router, Server Components, proxy, barrel exports
-globs: ["src/app/**/*", "src/ui/**/*", "src/features/**/*"]
+alwaysApply: true
 ---
 
 # React / Next.js Rules
@@ -18,8 +18,9 @@ src/
 │   ├── providers/    # ThemeRegistry, FontProvider, etc.
 │   └── index.ts      # Public API — always import from @/ui
 ├── features/         # Feature components with business logic
-│   ├── [feature]/    # Feature folder with index.ts barrel
-│   └── index.ts      # Public API — always import from @/features
+│   ├── [feature]/    # Flat feature files and folders; no subfolder barrels
+│   ├── index.ts      # Client-safe public API — import from @/features
+│   └── server.ts     # Server-only public API — import from @/features/server
 ├── alerts/           # Alert system
 ├── config/           # Metadata, constants
 └── lib/              # Utilities, DB, auth, validations
@@ -27,7 +28,7 @@ src/
 
 ## App Router
 
-- Pages: `src/app/[route]/page.tsx` — thin wrappers importing from `@/features`
+- Pages: `src/app/[route]/page.tsx` — thin wrappers importing from `@/features` or `@/features/server`
 - Layouts: `src/app/layout.tsx`
 - API: `src/app/api/[route]/route.ts`
 
@@ -50,6 +51,23 @@ Key points:
 | URL         | searchParams                 |
 | Local UI    | useState / useReducer        |
 
+## Component Boundaries
+
+- Use `useState` only for local UI state such as open/closed state, selected tab, or search query.
+- Keep business data in Effector stores instead of component-local state.
+- Do not put business logic, validation, or orchestration in React components when it belongs in Effector or server-side code.
+- Avoid `useEffect` for business logic or standard data fetching when Server Components or Effector can own that flow.
+
+## Component Style
+
+- Export React components as `function` declarations, not `FC`.
+- Keep components thin and presentation-focused whenever possible.
+
+## User Feedback
+
+- User-visible success, warning, and error messages must go through `@/alerts`.
+- Do not use `alert()` or ad-hoc toast implementations for app feedback.
+
 ## Server Actions
 
 - For mutations (create, update, delete)
@@ -67,7 +85,8 @@ Next.js deprecated `middleware.ts`. Use `proxy.ts` instead:
 
 ## Barrel Files & Imports
 
-- Every reusable module has `index.ts` as its public API
-- Import from barrels: `import { X } from '@/ui'` and `import { Y } from '@/features'`
+- Use only the top-level barrels: `@/ui`, `@/features`, and `@/features/server`
+- Do not create subfolder `index.ts` barrels inside feature folders
+- Import client-safe exports from `@/features` and server-only exports from `@/features/server`
 - Never import directly from `@/ui/shadcn/` — use `@/ui` barrel
 - Barrel files export only the public API — see `.cursor/rules/use-client.mdc` for barrel hygiene rules

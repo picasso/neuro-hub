@@ -1,6 +1,9 @@
 ---
 description: PageShell and PageContainer conventions for route-entry pages
-globs: src/{ui,features,app}/**/*.tsx
+globs:
+  - "src/ui/**/*.tsx"
+  - "src/features/**/*.tsx"
+  - "src/app/**/*.tsx"
 alwaysApply: false
 ---
 

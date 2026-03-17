@@ -1,7 +1,7 @@
 ---
 name: Code Style Guide
 description: This rule defines your formatting preferences.
-globs: ["src/**/*", "scripts/**/*"]
+alwaysApply: true
 ---
 
 # Code Implementation Guidelines
@@ -59,7 +59,7 @@ Imports are automatically sorted by ESLint in this order:
 
 1. builtin - Node.js built-in modules (fs, path, etc.)
 2. external - npm packages (next, react, etc.)
-3. internal - internal aliases (@/components, @/lib, @/utils)
+3. internal - internal aliases (@/ui, @/features, @/lib, @/utils)
 4. parent - relative parent imports (../)
 5. sibling - relative sibling imports (./)
 6. index - index imports
@@ -70,11 +70,11 @@ CRITICAL: NO empty lines between import groups! (`'newlines-between': 'never'`)
 
 ## Tailwind CSS Conventions
 
-Use Tailwind utility classes for styling. Prefer the `cn()` utility from `@/lib/utils` for conditional class merging:
+Use Tailwind utility classes for styling. Prefer the `cn()` utility from `@/utils` for conditional class merging:
 
 ```tsx
 // ✅ CORRECT: Tailwind classes with cn()
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 
 <div className={cn('flex items-center gap-2', isActive && 'bg-primary text-primary-foreground')}>
 

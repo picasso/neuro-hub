@@ -60,8 +60,9 @@ yarn db:check     # Inspect DB
 ## File Organization
 
 - Flat structure; `app/` contains thin route files only (import + re-export)
-- `features/` — all business-logic components, imported via `@/features` barrel
+- `features/` — all business-logic components, imported via `@/features` or `@/features/server`
 - `ui/` — all UI primitives, imported via `@/ui` barrel (never `@/ui/shadcn` directly)
+- Only top-level barrels are allowed; do not create subfolder `index.ts` files inside feature folders
 - Details: [.cursor/rules/file-organization.mdc](.cursor/rules/file-organization.mdc)
 
 ## File Structure
@@ -80,7 +81,8 @@ src/
 │   ├── playground/
 │   ├── header.tsx
 │   ├── footer.tsx
-│   └── index.ts       # barrel — import from '@/features'
+│   ├── index.ts       # client-safe barrel — import from '@/features'
+│   └── server.ts      # server-only barrel — import from '@/features/server'
 ├── ui/                # UI primitives & design system
 │   ├── shadcn/        # raw Radix/shadcn (INTERNAL — use '@/ui' barrel)
 │   ├── providers/
@@ -120,6 +122,22 @@ src/
 - **Effector** for global state
 
 Details: [.cursor/rules/code-style.mdc](.cursor/rules/code-style.mdc)
+
+## Rule Routing
+
+Use this routing when Cursor rule auto-application is unreliable:
+
+- Reach for `.cursor/rules/effector.mdc` when the task is primarily about model/store architecture, unit naming, `sample()` orchestration, or domain structure.
+- Reach for `.cursor/rules/develop.mdc` when the task is primarily about frontend anti-patterns, alert wiring, wrapper usage from `@/ui`, or deciding what logic should stay out of components.
+- Base React/Next frontend invariants: `.cursor/rules/react-nextjs.mdc`
+- Formatting and naming conventions: `.cursor/rules/code-style.mdc`
+- API route and response conventions: `.cursor/rules/api-design.mdc`
+- `'use client'` boundary rules: `.cursor/rules/use-client.mdc`
+- Effector-specific patterns and syntax: `.cursor/rules/effector.mdc`
+- Detailed frontend anti-patterns and examples: `.cursor/rules/develop.mdc`
+- Page layout conventions: `.cursor/rules/page-shell.mdc`
+- Testing guidance: `.cursor/rules/testing.mdc`
+- Database script conventions: `.cursor/rules/db-scripts.mdc`
 
 ---
 

@@ -7,27 +7,35 @@ alwaysApply: false
 
 ## Directory Structure
 
-Feature-Based Structure: Components organized by business domain rather than technical type.
+Feature-based structure: business logic lives in `features/`, reusable primitives live in `ui/`, and routes stay thin in `app/`.
 
 src/
-├── app/                  # Next.js App Router
-│   ├── (auth)/           # auth routes (grouped)
+├── app/                  # Next.js App Router routes and layouts
+│   ├── (marketing)/      # grouped marketing routes
+│   ├── (account)/        # grouped account routes
 │   ├── api/              # API routes (RESTful)
 │   └── layout.tsx
-├── components/
-│   ├── ui/               # base UI components
-│   ├── forms/
-│   └── features/
-├── lib/
-│   ├── db/               # Kysely client and queries
-│   ├── auth/
-│   └── validations/
+├── features/             # business-logic components
+│   ├── [feature]/        # flat feature files/folders, no subfolder barrels
+│   ├── index.ts          # client-safe public API
+│   └── server.ts         # server-only public API
+├── ui/                   # reusable UI primitives and wrappers
+│   ├── shadcn/           # raw shadcn primitives (internal only)
+│   ├── icons/            # icon definitions
+│   ├── providers/        # theme and font providers
+│   └── index.ts          # public UI barrel
+├── alerts/               # user feedback system
+├── config/               # metadata, mocks, constants
+├── lib/                  # auth, db, email, swagger, validations
+├── stores/               # Effector stores
 ├── utils/                # pure utilities, no side effects
 └── types/                # shared TypeScript types
 
 ## Key Patterns
 
-- Feature-based organization in components/features/
-- Database queries via lib/db/ (Kysely)
-- Business logic in lib/ or API route handlers
+- Thin route files in `src/app/**/page.tsx`: import + re-export only
+- Business logic in `src/features/` and server-only exports in `src/features/server.ts`
+- Reusable UI accessed through `@/ui`, never `@/ui/shadcn/*`
+- Database queries via `src/lib/db/` (Kysely)
+- Route protection and request-level auth checks use `src/proxy.ts`
 - Shared types are defined once in types/ and imported everywhere
