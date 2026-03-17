@@ -33,6 +33,12 @@
 
 - Playwright: latest (e2e testing)
 
+## Исследовать переход на Yarn PnP
+
+- После стабилизации Yarn 4 на Vercel провести отдельный этап исследования и оценить возможный переход с `nodeLinker: node-modules` на PnP
+- Проверить совместимость Next.js, Vercel, Husky hooks, DB-скриптов, локального DX и IDE/tooling
+- Если риски окажутся приемлемыми, подготовить отдельный план миграции без смешивания с текущей Yarn 4 стабилизацией
+
 ## Добавить в стэк TanStack Query: v5
 
 |                  | TanStack Query              | Kysely                           |
