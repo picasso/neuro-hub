@@ -1,5 +1,4 @@
 import { betterFetch } from '@better-fetch/fetch'
-import { some } from 'lodash'
 import { type NextRequest, NextResponse } from 'next/server'
 import { debugAuthMiddleware } from './middleware/debug-auth'
 import type { Session } from 'better-auth/types'
@@ -11,8 +10,16 @@ const RATE_LIMIT_CONFIG = {
 	maxRequests: 100,
 }
 
-const publicPaths = ['/', '/api/auth', '/api/health', '/api/docs', '/api/reference']
-const authPaths = ['/login', '/register', '/forgot-password']
+const PUBLIC_PAGE_PATHS = [
+	'/',
+	'/projects',
+	'/freelancers',
+	'/how-it-works',
+	'/post-project',
+	'/playground',
+]
+const AUTH_PAGE_PATHS = ['/login', '/signup', '/register', '/forgot-password']
+const PROTECTED_PAGE_PATHS = ['/account']
 
 function getRateLimitKey(request: NextRequest): string {
 	const forwarded = request.headers.get('x-forwarded-for')
@@ -42,6 +49,7 @@ function checkRateLimit(key: string): boolean {
 
 export async function proxy(request: NextRequest) {
 	const pathname = request.nextUrl.pathname
+	const isApiRoute = matchesPath(pathname, '/api')
 
 	// debug middleware for auth endpoints (development only) - return null if not in debug mode
 	if (pathname.startsWith('/api/auth/')) {
@@ -51,33 +59,8 @@ export async function proxy(request: NextRequest) {
 		}
 	}
 
-	if (some(publicPaths, (path) => pathname.startsWith(path))) {
-		return NextResponse.next()
-	}
-
-	const { data: session } = await betterFetch<Session>('/api/auth/get-session', {
-		baseURL: request.nextUrl.origin,
-		headers: {
-			cookie: request.headers.get('cookie') || '',
-		},
-	})
-
-	if (!session) {
-		if (some(authPaths, (path) => pathname.startsWith(path))) {
-			return NextResponse.next()
-		}
-		const loginUrl = new URL('/login', request.url)
-		loginUrl.searchParams.set('from', pathname)
-		return NextResponse.redirect(loginUrl)
-	}
-
-	if (some(authPaths, (path) => pathname.startsWith(path))) {
-		return NextResponse.redirect(new URL('/account/dashboard', request.url))
-	}
-
-	const response = NextResponse.next()
-
-	if (pathname.startsWith('/api')) {
+	if (isApiRoute) {
+		const response = NextResponse.next()
 		const rateLimitKey = getRateLimitKey(request)
 		const allowed = checkRateLimit(rateLimitKey)
 
@@ -116,13 +99,59 @@ export async function proxy(request: NextRequest) {
 
 		const start = Date.now()
 		response.headers.set('X-Response-Time', `${Date.now() - start}ms`)
+
+		return response
 	}
 
-	return response
+	if (matchesAnyPath(pathname, PUBLIC_PAGE_PATHS)) {
+		return NextResponse.next()
+	}
+
+	const needsSession =
+		matchesAnyPath(pathname, AUTH_PAGE_PATHS) || matchesAnyPath(pathname, PROTECTED_PAGE_PATHS)
+
+	if (!needsSession) {
+		return NextResponse.next()
+	}
+
+	const { data: session } = await betterFetch<Session>('/api/auth/get-session', {
+		baseURL: request.nextUrl.origin,
+		headers: {
+			cookie: request.headers.get('cookie') || '',
+		},
+	})
+
+	if (!session) {
+		if (matchesAnyPath(pathname, AUTH_PAGE_PATHS)) {
+			return NextResponse.next()
+		}
+
+		const loginUrl = new URL('/login', request.url)
+		loginUrl.searchParams.set('from', pathname)
+		return NextResponse.redirect(loginUrl)
+	}
+
+	if (matchesAnyPath(pathname, AUTH_PAGE_PATHS)) {
+		return NextResponse.redirect(new URL('/account/dashboard', request.url))
+	}
+
+	return NextResponse.next()
 }
 
 export const config = {
 	matcher: [
 		'/((?!_next/static|_next/image|favicon.ico|public|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
 	],
+}
+
+function matchesAnyPath(pathname: string, paths: string[]) {
+	return paths.some((path) => matchesPath(pathname, path))
+}
+
+function matchesPath(pathname: string, path: string) {
+	if (path === '/') {
+		return pathname === '/'
+	}
+
+	return pathname === path || pathname.startsWith(`${path}/`)
 }

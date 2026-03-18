@@ -48,3 +48,33 @@ export {
 	type FreelancerDirectoryQueryInput,
 	type FreelancerDirectorySort,
 } from './freelancer-directory'
+export {
+	applicationsQuerySchema,
+	projectDirectoryQuerySchema,
+	projectDirectorySortSchema,
+	type ApplicationsQueryInput,
+	type ProjectDirectoryQueryInput,
+	type ProjectDirectorySort,
+} from './project-directory'
+export {
+	applicationIdParamSchema,
+	applicationStatusSchema,
+	createApplicationSchema,
+	createProjectSchema,
+	fullProjectSchema,
+	projectAttachmentSchema,
+	projectBudgetTypeSchema,
+	projectExperienceLevelSchema,
+	projectIdParamSchema,
+	projectStatusSchema,
+	updateProjectSchema,
+	type ApplicationStatus,
+	type CreateApplicationInput,
+	type CreateProjectInput,
+	type FullProjectInput,
+	type ProjectAttachmentInput,
+	type ProjectBudgetType,
+	type ProjectExperienceLevel,
+	type ProjectStatus,
+	type UpdateProjectInput,
+} from './projects'

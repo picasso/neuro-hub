@@ -1,3 +1,4 @@
+import type { Route } from 'next'
 import { getAccountContext } from '@/lib/account'
 import { Button, Link, Stack, TS } from '@/ui'
 
@@ -21,7 +22,7 @@ export async function AccountDashboard() {
 				<TS
 					variant="body"
 					color="secondary"
-					content="Управляйте профилем, портфолио и навигацией по основным разделам аккаунта."
+					content="Управляйте профилем, портфолио и заявками в основных разделах аккаунта."
 				/>
 
 				<Stack wrap className="gap-3">
@@ -32,6 +33,14 @@ export async function AccountDashboard() {
 						variant="outline"
 						label="Открыть портфолио"
 					/>
+					{session.user.role === 'freelancer' ? (
+						<Button
+							href={'/account/applications' as Route}
+							size="lg"
+							variant="outline"
+							label="Мои заявки"
+						/>
+					) : null}
 				</Stack>
 
 				{session.user.role === 'freelancer' && profileId ? (

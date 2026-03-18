@@ -24,10 +24,16 @@ export const swaggerConfig: OpenAPIV3.Document = {
 		{ name: 'Auth', description: 'Authentication endpoints' },
 		{ name: 'Skills', description: 'Skills management' },
 		{ name: 'Projects', description: 'Project management' },
+		{ name: 'Applications', description: 'Freelancer applications management' },
 		{ name: 'Orders', description: 'Order management' },
 	],
 	components: {
 		securitySchemes: {
+			cookieAuth: {
+				type: 'apiKey',
+				in: 'cookie',
+				name: 'better-auth.session_token',
+			},
 			bearerAuth: {
 				type: 'http',
 				scheme: 'bearer',
