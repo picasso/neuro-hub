@@ -1,3 +1,4 @@
+import { PendingContent } from './account-pending'
 import { PortfolioEditor } from './account-portfolio-editor'
 import { getAccountContext } from '@/lib/account'
 import { TS } from '@/ui'
@@ -24,11 +25,9 @@ export async function AccountPortfolio() {
 			{session.user.role === 'freelancer' && profileId ? (
 				<PortfolioEditor userId={session.user.id} profileId={profileId} />
 			) : (
-				<TS
-					variant="body"
-					color="secondary"
-					className="text-sm"
-					content="Редактирование портфолио клиента будет добавлено позже."
+				<PendingContent
+					icon="construction"
+					description="Редактирование портфолио клиента будет добавлено позже."
 				/>
 			)}
 		</div>

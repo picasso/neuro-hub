@@ -1,6 +1,6 @@
-import type { Route } from 'next'
+import { PendingContent } from './account-pending'
 import { getAccountContext } from '@/lib/account'
-import { Button, Link, Stack, TS } from '@/ui'
+import { Link, Stack, TS } from '@/ui'
 
 export async function AccountDashboard() {
 	const context = await getAccountContext()
@@ -19,7 +19,7 @@ export async function AccountDashboard() {
 			/>
 
 			<Stack vertical gap={4} className="mt-8">
-				<TS
+				{/* <TS
 					variant="body"
 					color="secondary"
 					content="Управляйте профилем, портфолио и заявками в основных разделах аккаунта."
@@ -41,7 +41,7 @@ export async function AccountDashboard() {
 							label="Мои заявки"
 						/>
 					) : null}
-				</Stack>
+				</Stack> */}
 
 				{session.user.role === 'freelancer' && profileId ? (
 					<div className="rounded-xl border border-border p-4">
@@ -56,11 +56,9 @@ export async function AccountDashboard() {
 						</Link>
 					</div>
 				) : (
-					<TS
-						variant="body"
-						color="secondary"
-						className="text-sm"
-						content="Редактирование профиля и портфолио клиента будет добавлено позже."
+					<PendingContent
+						icon="construction"
+						description="Редактирование профиля и портфолио клиента будет добавлено позже."
 					/>
 				)}
 			</Stack>

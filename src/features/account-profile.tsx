@@ -1,3 +1,4 @@
+import { PendingContent } from './account-pending'
 import { FreelancerProfileEditor } from './freelancer-profile/freelancer-profile-editor'
 import { getAccountContext } from '@/lib/account'
 import { Link, TS } from '@/ui'
@@ -11,12 +12,12 @@ export async function AccountProfile() {
 	return (
 		<div className="w-full min-w-0">
 			<TS clean variant="h3" gutterBottom content="Профиль" />
-			<TS
+			{/* <TS
 				variant="body"
 				color="secondary"
 				className="mb-4"
 				content={`Вы вошли как ${session.user.email}`}
-			/>
+			/> */}
 
 			{session.user.role === 'freelancer' && profileId ? (
 				<div className="mt-8">
@@ -40,11 +41,9 @@ export async function AccountProfile() {
 					</div>
 				</div>
 			) : (
-				<TS
-					variant="body"
-					color="secondary"
-					className="text-sm"
-					content="Редактирование профиля клиента будет добавлено позже."
+				<PendingContent
+					icon="construction"
+					description="Редактирование профиля клиента будет добавлено позже."
 				/>
 			)}
 		</div>

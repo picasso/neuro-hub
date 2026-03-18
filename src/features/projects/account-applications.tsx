@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { PendingContent } from '../account-pending'
 import {
 	canWithdrawApplication,
 	describeClient,
@@ -36,7 +37,13 @@ const statusOptions: Array<{ label: string; value: ApplicationStatus | undefined
 export async function AccountApplications({ searchParams }: PageProps) {
 	const context = await getAccountContext()
 	if (!context) redirect('/login?from=/account/applications')
-	if (context.session.user.role !== 'freelancer') redirect('/account/dashboard')
+	if (context.session.user.role !== 'freelancer')
+		return (
+			<PendingContent
+				icon="construction"
+				description="Заявки доступны только для фрилансеров. Для клиентов этот раздел будет добавлен позже."
+			/>
+		)
 
 	const rawSearchParams = searchParams ? await searchParams : {}
 	const parsedParams = applicationsQuerySchema.safeParse(normalizeSearchParams(rawSearchParams))
@@ -68,10 +75,7 @@ export async function AccountApplications({ searchParams }: PageProps) {
 							variant={isActive ? 'secondary' : 'outline'}
 							size="sm"
 						>
-							<Link
-								href={buildApplicationsHref(filters, option.value)}
-								hover="underline"
-							>
+							<Link href={buildApplicationsHref(filters, option.value)}>
 								{option.label}
 							</Link>
 						</Badge>

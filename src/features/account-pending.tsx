@@ -1,4 +1,4 @@
-import { Empty, Skeleton, Stack } from '@/ui'
+import { Empty, Icon, type IconName, Skeleton, Stack, TS } from '@/ui'
 
 export async function AccountPending() {
 	return (
@@ -22,5 +22,22 @@ export async function AccountPending() {
 				<Skeleton shape="card" maxW="xl" />
 			</Stack>
 		</div>
+	)
+}
+
+type PendingContentProps = {
+	title?: string
+	description: string
+	icon?: IconName
+}
+
+export function PendingContent({ title, description, icon }: PendingContentProps) {
+	return (
+		<Stack vertical gap={0} className="w-full mt-4" align="start">
+			{icon && <Icon name={icon} size={30} color="dimmed" className="self-center" />}
+			{title && <TS clean variant="h5" content={title} />}
+			<TS variant="body" color="secondary" className="text-sm" content={description} />
+			<Skeleton shape="card" />
+		</Stack>
 	)
 }
