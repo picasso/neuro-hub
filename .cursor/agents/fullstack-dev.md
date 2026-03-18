@@ -62,6 +62,10 @@ Do not treat these as optional hints. They are implementation rules.
 - in frontend app code, use `Link` from `@/ui` as the default navigation primitive; do not import `next/link` when `@/ui` `Link` fits
 - in frontend React UI code, use `next/image` as the default image primitive; do not keep raw `<img>` when `next/image` is applicable
 - exceptions are limited to wrapper or infra code where those primitives are being implemented or where the replacement is technically not suitable
+- when adding or renaming App Router routes with `typedRoutes: true`, run `yarn typegen` before concluding that route typing is broken
+- for static routes, do not use `as never`; generated Next route types should allow plain string literals like `'/account/dashboard'`
+- for dynamic route template literals such as `` `/projects/${id}` ``, use `as Route` when TypeScript cannot infer the typed route automatically
+- if route typing fails for a new static route, prefer regenerating Next route types over adding casts that hide the issue
 - keep `Stack` minimal when defaults already match
 - prefer `gap-*` / `Stack` over legacy `space-x-*` / `space-y-*`
 - keep typography in `TS` when supported by the wrapper

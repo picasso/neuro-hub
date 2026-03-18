@@ -7,6 +7,7 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
+		"typegen": "next typegen",
 		"type-check": "tsc --noEmit",
 		"lint": "eslint . --ext .ts,.tsx",
 		"lint:ci": "eslint . --ext .ts,.tsx --max-warnings 0",
