@@ -54,6 +54,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
 					name={icon ?? iconMap[severity]}
 					size={iconOptions?.size ?? 'lg'}
 					color={iconOptions?.color ?? severity}
+					accent={iconOptions?.accent}
 					spinning={!!(iconOptions?.spinning ?? severity === 'progress')}
 					className={iconOptions?.tw}
 				/>

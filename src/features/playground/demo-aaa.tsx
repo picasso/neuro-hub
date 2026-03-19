@@ -19,6 +19,7 @@ export function DemoAny() {
 		badge,
 		badgeProps,
 		buttonProps,
+		image,
 		headerClassName,
 		footerClassName,
 		contentClassName,
@@ -47,6 +48,10 @@ export function DemoAny() {
 							? { variant: 'outline', leftIcon: 'brain-circuit', fullWidth: false }
 							: undefined
 					}
+					image={image ? imageUrl : undefined}
+					imageAspect={'3/2'}
+					titleOver={true}
+					descriptionOver={true}
 					footer={footer ? 'Это скорее про ширину контейнера в layout API' : undefined}
 					headerClassName={headerClassName ? 'bg-primary text-white' : undefined}
 					footerClassName={footerClassName ? 'bg-primary text-white' : undefined}
@@ -60,3 +65,6 @@ export function DemoAny() {
 		</DemoRoot>
 	)
 }
+
+const imageUrl =
+	'https://bycp5hmwsix5qx2u.public.blob.vercel-storage.com/portfolio/XD5LXKVkaPXvPFDNS0tfwYWPeirXGbT2/fantasy-01-QlbQcYix5SMh60NYLd8fg2BBF1E3Ei.jpg'

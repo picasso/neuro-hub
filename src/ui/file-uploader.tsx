@@ -131,6 +131,7 @@ export function FileUploader({
 					size: iconOptions?.size ?? 'lg',
 					spinning: iconOptions?.spinning,
 					tw: iconOptions?.tw,
+					accent: iconOptions?.accent,
 				}}
 				disabled={disabled}
 				error={!!errorMessage}

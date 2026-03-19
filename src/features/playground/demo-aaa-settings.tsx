@@ -15,6 +15,7 @@ export type AnyDemoState = {
 	button: boolean
 	badge: boolean
 	badgeProps: boolean
+	image: boolean
 	buttonProps: boolean
 	footer: boolean
 	headerClassName: boolean
@@ -32,6 +33,7 @@ const defaultState: AnyDemoState = {
 	button: false,
 	badge: false,
 	badgeProps: false,
+	image: false,
 	buttonProps: false,
 	footer: false,
 	headerClassName: false,
@@ -52,6 +54,7 @@ export function DemoAnySettings() {
 		button,
 		badge,
 		badgeProps,
+		image,
 		buttonProps,
 		headerClassName,
 		footerClassName,
@@ -63,12 +66,6 @@ export function DemoAnySettings() {
 
 	return (
 		<DemoRoot>
-			{/* <SettingSelect
-				id="variant"
-				label="Variant"
-				value={variant}
-				options={['primary', 'secondary', 'destructive', 'outline', 'ghost', 'link']}
-			/> */}
 			<SettingSelect id="size" label="Size" value={size} options={['default', 'sm']} />
 			<SettingSelect
 				id="maxW"
@@ -115,6 +112,7 @@ export function DemoAnySettings() {
 			<SettingToggle id="badgeProps" label="Badge props" checked={badgeProps} />
 			<SettingToggle id="button" label="Button" checked={button} />
 			<SettingToggle id="buttonProps" label="Button props" checked={buttonProps} />
+			<SettingToggle id="image" label="Image" checked={image} />
 			<SettingToggle
 				id="headerClassName"
 				label="Header class name"

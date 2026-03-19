@@ -156,31 +156,31 @@
 ## ЭТАП 4: Проекты и поиск для фрилансера
 
 ### 4.1 База данных проектов
-- [ ] Миграция таблицы `projects` (id, client_id, title, description, category, budget_type, budget_min, budget_max, deadline, status, created_at)
-- [ ] Миграция таблицы `project_skills` (project_id, skill_id)
-- [ ] Миграция таблицы `project_attachments` (id, project_id, filename, file_url)
-- [ ] Миграция таблицы `applications` (id, project_id, freelancer_id, cover_letter, proposed_price, proposed_deadline, status, created_at)
+- [x] Миграция таблицы `projects` (id, client_id, title, description, category, budget_type, budget_min, budget_max, deadline, status, created_at)
+- [x] Миграция таблицы `project_skills` (project_id, skill_id)
+- [x] Миграция таблицы `project_attachments` (id, project_id, filename, file_url)
+- [x] Миграция таблицы `applications` (id, project_id, freelancer_id, cover_letter, proposed_price, proposed_deadline, status, created_at)
 
 ### 4.2 API endpoints проектов
-- [ ] `GET /api/projects` - лента проектов с фильтрами
-- [ ] `GET /api/projects/:id` - детальная информация о проекте
-- [ ] `POST /api/projects` - создание проекта (заказчик)
-- [ ] `PUT /api/projects/:id` - обновление проекта
-- [ ] `DELETE /api/projects/:id` - удаление проекта
-- [ ] `POST /api/projects/:id/applications` - подача заявки (фрилансер)
-- [ ] `GET /api/applications` - список заявок фрилансера
-- [ ] `DELETE /api/applications/:id` - отзыв заявки
+- [x] `GET /api/projects` - лента проектов с фильтрами
+- [x] `GET /api/projects/:id` - детальная информация о проекте
+- [x] `POST /api/projects` - создание проекта (заказчик)
+- [x] `PUT /api/projects/:id` - обновление проекта
+- [x] `DELETE /api/projects/:id` - удаление проекта
+- [x] `POST /api/projects/:id/applications` - подача заявки (фрилансер)
+- [x] `GET /api/applications` - список заявок фрилансера
+- [x] `DELETE /api/applications/:id` - отзыв заявки
 
 ### 4.3 UI поиска проектов
-- [ ] Страница ленты проектов
-- [ ] Карточка проекта в ленте
-- [ ] Фильтры (категория, бюджет, срок, уровень)
-- [ ] Сортировка (дата, релевантность, бюджет)
+- [x] Страница ленты проектов
+- [x] Карточка проекта в ленте
+- [x] Фильтры (категория, бюджет, срок, уровень)
+- [x] Сортировка (дата, релевантность, бюджет)
 - [ ] Бесконечный скролл с пагинацией
-- [ ] Детальная страница проекта
-- [ ] Форма подачи заявки
-- [ ] Страница истории откликов
-- [ ] Шаблоны откликов (сохранение/загрузка)
+- [x] Детальная страница проекта
+- [x] Форма подачи заявки
+- [x] Страница истории заявок (Мои заявки)
+- [ ] Шаблоны заявок (сохранение/загрузка)
 
 ### 4.4 Умные уведомления
 - [ ] Миграция таблицы `notification_preferences` (user_id, email_daily, email_instant, push_enabled)
@@ -195,16 +195,67 @@
 
 ---
 
-## ЭТАП 5: Управление заказами (Kanban)
+## ЭТАП 5: Личный кабинет заказчика
 
-### 5.1 База данных заказов
+### 5.1 База данных заказчика
+- [ ] Миграция таблицы `client_profiles` (user_id, company_name, company_role, typical_tasks)
+- [ ] Миграция таблицы `project_templates` (id, client_id, template_name, template_data)
+- [ ] Миграция таблицы `invitations` (id, project_id, freelancer_id, message, status, created_at)
+- [ ] Миграция таблицы `favorite_freelancers` (client_id, freelancer_id, created_at)
+
+### 5.2 API endpoints заказчика
+- [ ] `GET /api/clients/:id` - профиль заказчика
+- [ ] `PUT /api/clients/:id` - обновление профиля
+- [ ] `GET /api/freelancers` - каталог фрилансеров с фильтрами
+- [ ] `POST /api/invitations` - приглашение фрилансера
+- [ ] `GET /api/projects/:id/applications` - просмотр откликов на проект
+- [ ] `PUT /api/applications/:id/status` - принятие/отклонение заявки
+- [ ] `POST /api/favorite-freelancers` - добавление в избранное
+- [ ] `GET /api/favorite-freelancers` - список избранных
+- [ ] `POST /api/project-templates` - сохранение шаблона проекта
+- [ ] `GET /api/project-templates` - список шаблонов
+
+### 5.3 UI создания проекта
+- [ ] Wizard создания проекта (многошаговая форма)
+- [ ] Шаг 1: Название и категория
+- [ ] Шаг 2: Описание и требования (с markdown)
+- [ ] Шаг 3: Бюджет (фиксированный/почасовой)
+- [ ] Шаг 4: Срок исполнения
+- [ ] Шаг 5: Прикрепление файлов ТЗ
+- [ ] Превью проекта перед публикацией
+- [ ] Сохранение как шаблона
+- [ ] Загрузка из шаблона
+
+### 5.4 UI поиска исполнителей
+- [ ] Страница каталога фрилансеров
+- [ ] Карточка фрилансера в каталоге
+- [ ] Фильтры (категория, навыки, рейтинг, цена, доступность)
+- [ ] Сортировка (рейтинг, цена, кол-во проектов)
+- [ ] Детальная страница профиля фрилансера (view only)
+- [ ] Кнопка приглашения в проект
+- [ ] Список избранных фрилансеров
+
+### 5.5 UI управления проектами
+- [ ] Страница списка проектов заказчика
+- [ ] Страница откликов на конкретный проект
+- [ ] Сортировка откликов (релевантность, цена, рейтинг, дата)
+- [ ] Карточка отклика с информацией о фрилансере
+- [ ] Кнопки принятия/отклонения заявки
+- [ ] Интерфейс приёма работы
+- [ ] Форма оставления отзыва и рейтинга
+
+---
+
+## ЭТАП 6: Управление заказами (Kanban)
+
+### 6.1 База данных заказов
 - [ ] Миграция таблицы `orders` (id, project_id, freelancer_id, client_id, status, price, started_at, completed_at)
 - [ ] Миграция таблицы `order_messages` (id, order_id, sender_id, message, attachments, created_at)
 - [ ] Миграция таблицы `order_deliverables` (id, order_id, files, description, submitted_at)
 - [ ] Миграция таблицы `order_revisions` (id, order_id, revision_number, feedback, created_at)
 - [ ] Миграция таблицы `time_tracking` (id, order_id, started_at, stopped_at, duration_seconds)
 
-### 5.2 API endpoints заказов
+### 6.2 API endpoints заказов
 - [ ] `GET /api/orders` - список заказов с фильтром по статусу
 - [ ] `GET /api/orders/:id` - детальная информация о заказе
 - [ ] `PUT /api/orders/:id/status` - обновление статуса заказа
@@ -216,7 +267,7 @@
 - [ ] `POST /api/orders/:id/time-tracking` - трекинг времени (старт/стоп)
 - [ ] `GET /api/orders/:id/time-tracking` - получение записей времени
 
-### 5.3 UI Kanban доски
+### 6.3 UI Kanban доски
 - [ ] Компонент Kanban доски с колонками (Входящие, В работе, На проверке, Завершённые)
 - [ ] Карточка заказа в Kanban
 - [ ] Drag & drop между колонками
@@ -230,57 +281,6 @@
 - [ ] Форма запроса правок
 - [ ] Счётчик оставшихся бесплатных правок
 - [ ] Прогресс-бар выполнения заказа
-
----
-
-## ЭТАП 6: Личный кабинет заказчика
-
-### 6.1 База данных заказчика
-- [ ] Миграция таблицы `client_profiles` (user_id, company_name, company_role, typical_tasks)
-- [ ] Миграция таблицы `project_templates` (id, client_id, template_name, template_data)
-- [ ] Миграция таблицы `invitations` (id, project_id, freelancer_id, message, status, created_at)
-- [ ] Миграция таблицы `favorite_freelancers` (client_id, freelancer_id, created_at)
-
-### 6.2 API endpoints заказчика
-- [ ] `GET /api/clients/:id` - профиль заказчика
-- [ ] `PUT /api/clients/:id` - обновление профиля
-- [ ] `GET /api/freelancers` - каталог фрилансеров с фильтрами
-- [ ] `POST /api/invitations` - приглашение фрилансера
-- [ ] `GET /api/projects/:id/applications` - просмотр откликов на проект
-- [ ] `PUT /api/applications/:id/status` - принятие/отклонение заявки
-- [ ] `POST /api/favorite-freelancers` - добавление в избранное
-- [ ] `GET /api/favorite-freelancers` - список избранных
-- [ ] `POST /api/project-templates` - сохранение шаблона проекта
-- [ ] `GET /api/project-templates` - список шаблонов
-
-### 6.3 UI создания проекта
-- [ ] Wizard создания проекта (многошаговая форма)
-- [ ] Шаг 1: Название и категория
-- [ ] Шаг 2: Описание и требования (с markdown)
-- [ ] Шаг 3: Бюджет (фиксированный/почасовой)
-- [ ] Шаг 4: Срок исполнения
-- [ ] Шаг 5: Прикрепление файлов ТЗ
-- [ ] Превью проекта перед публикацией
-- [ ] Сохранение как шаблона
-- [ ] Загрузка из шаблона
-
-### 6.4 UI поиска исполнителей
-- [ ] Страница каталога фрилансеров
-- [ ] Карточка фрилансера в каталоге
-- [ ] Фильтры (категория, навыки, рейтинг, цена, доступность)
-- [ ] Сортировка (рейтинг, цена, кол-во проектов)
-- [ ] Детальная страница профиля фрилансера (view only)
-- [ ] Кнопка приглашения в проект
-- [ ] Список избранных фрилансеров
-
-### 6.5 UI управления проектами
-- [ ] Страница списка проектов заказчика
-- [ ] Страница откликов на конкретный проект
-- [ ] Сортировка откликов (релевантность, цена, рейтинг, дата)
-- [ ] Карточка отклика с информацией о фрилансере
-- [ ] Кнопки принятия/отклонения заявки
-- [ ] Интерфейс приёма работы
-- [ ] Форма оставления отзыва и рейтинга
 
 ---
 

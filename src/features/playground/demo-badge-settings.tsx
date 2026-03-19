@@ -11,7 +11,7 @@ export type BadgeDemoState = {
 	color: NonNullable<BadgeProps['color']> | 'null'
 	withIcon: boolean
 	closable: boolean
-	capitalized: boolean
+	capitalize: boolean
 	lowercased: boolean
 }
 
@@ -21,13 +21,13 @@ const defaultState: BadgeDemoState = {
 	color: 'null',
 	withIcon: false,
 	closable: false,
-	capitalized: false,
+	capitalize: false,
 	lowercased: false,
 }
 
 export function DemoBadgeSettings() {
 	const reset = useReset<BadgeDemoState>(defaultState)
-	const { variant, size, color, withIcon, closable, capitalized, lowercased } =
+	const { variant, size, color, withIcon, closable, capitalize, lowercased } =
 		useSettings<BadgeDemoState>()
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,12 +53,17 @@ export function DemoBadgeSettings() {
 					{ label: 'dimmed', value: 'dimmed' },
 					{ label: 'contrast', value: 'contrast' },
 					{ label: 'soft', value: 'soft' },
+					{ label: 'destructive', value: 'destructive' },
+					{ label: 'error', value: 'error' },
+					{ label: 'success', value: 'success' },
+					{ label: 'warning', value: 'warning' },
+					{ label: 'info', value: 'info' },
 				]}
 			/>
 			<Separator />
 			<SettingToggle id="withIcon" label="With icon" checked={withIcon} />
 			<SettingToggle id="closable" label="Closable" checked={closable} />
-			<SettingToggle id="capitalized" label="Capitalized text" checked={capitalized} />
+			<SettingToggle id="capitalize" label="Capitalize text" checked={capitalize} />
 			<SettingToggle id="lowercased" label="Lowercase compensation" checked={lowercased} />
 		</DemoRoot>
 	)

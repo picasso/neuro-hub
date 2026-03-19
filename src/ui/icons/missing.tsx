@@ -1,0 +1,106 @@
+import type { SVGProps } from 'react'
+
+export function Missing({
+	accent = '#1dbf73', // '#a6eaca',
+	...props
+}: SVGProps<SVGSVGElement> & { accent?: string }) {
+	return (
+		<svg viewBox="0 0 46 46" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
+			<g>
+				<circle
+					cx="16.52"
+					cy="27.06"
+					r="3.74"
+					fill="none"
+					stroke="currentColor"
+					strokeMiterlimit="10"
+					strokeWidth="1.5"
+				/>
+				<path
+					d="m10.15,18.23h13.54v-3.65c0-1.66-1.34-3-3-3H4.95c-1.66,0-3,1.34-3,3v10.98c0,1.66,1.34,3,3,3h2.2v-7.33c0-1.66,1.34-3,3-3Z"
+					fill={accent}
+					fillOpacity={0.5}
+					stroke="currentColor"
+					strokeMiterlimit="10"
+					strokeWidth="1.5"
+				/>
+				<line
+					x1="25.25"
+					y1="22.58"
+					x2="31.04"
+					y2="22.58"
+					fill="none"
+					stroke="currentColor"
+					strokeMiterlimit="10"
+					strokeWidth="1.5"
+				/>
+				<polyline
+					points="23.68 26.93 32.93 26.93 36.08 23.89"
+					fill="none"
+					stroke="currentColor"
+					strokeMiterlimit="10"
+					strokeWidth="1.5"
+				/>
+				<path
+					d="m39.38,31.28h-14.28l-7.17,6.3c-.35.35-.91.37-1.3.06l-5.02-3.6c-.38-.32-.93-.3-1.3.03l-3.17,2.5"
+					fill="none"
+					stroke="currentColor"
+					strokeMiterlimit="10"
+					strokeWidth="1.5"
+				/>
+				<polyline
+					points="30.72 35.63 26.64 35.63 20.75 40.9"
+					fill="none"
+					stroke="currentColor"
+					strokeMiterlimit="10"
+					strokeWidth="1.5"
+				/>
+				<line
+					x1="37.34"
+					y1="35.63"
+					x2="34.37"
+					y2="35.63"
+					fill="none"
+					stroke="currentColor"
+					strokeMiterlimit="10"
+					strokeWidth="1.5"
+				/>
+				<path
+					d="m34.99,39.98h-6.32l-4.83,4.36h-13.69c-1.66,0-3-1.34-3-3v-20.11c0-1.66,1.34-3,3-3h22.29"
+					fill="none"
+					stroke="currentColor"
+					strokeMiterlimit="10"
+					strokeWidth="1.5"
+				/>
+				<line
+					x1="29.32"
+					y1="44.33"
+					x2="37.34"
+					y2="44.33"
+					fill="none"
+					stroke="currentColor"
+					strokeMiterlimit="10"
+					strokeWidth="1.5"
+				/>
+			</g>
+			<circle
+				cx="37.75"
+				cy="21.99"
+				r="2.53"
+				fill="none"
+				stroke="currentColor"
+				strokeMiterlimit="10"
+				strokeWidth="1.5"
+			/>
+			<circle
+				cx="41.52"
+				cy="31.28"
+				r="2.53"
+				fill="none"
+				stroke="currentColor"
+				strokeMiterlimit="10"
+				strokeWidth="1.5"
+			/>
+		</svg>
+	)
+}

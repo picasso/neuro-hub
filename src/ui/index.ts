@@ -36,7 +36,7 @@ export {
 	type SelectOptionGroup,
 } from './select'
 export { Avatar, type AvatarProps, type AvatarBadgeStatus } from './avatar'
-export { Badge, type BadgeProps } from './badge'
+export { Badge, type BadgeProps, type BadgeColor } from './badge'
 export { Alert, AlertTitle, AlertDescription, type AlertProps } from './alert'
 export {
 	Dialog,

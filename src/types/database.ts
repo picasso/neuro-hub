@@ -40,6 +40,18 @@ export interface Accounts {
 	userId: string
 }
 
+export interface Applications {
+	cover_letter: string
+	created_at: Generated<Timestamp | null>
+	freelancer_id: string
+	id: Generated<string>
+	project_id: string
+	proposed_deadline: Timestamp | null
+	proposed_price: number
+	status: string
+	updated_at: Generated<Timestamp | null>
+}
+
 export interface FreelancerProfiles {
 	availability: string | null
 	created_at: Generated<Timestamp | null>
@@ -77,6 +89,38 @@ export interface PortfolioItems {
 	title: string
 	tools_used: Json | null
 	updated_at: Generated<Timestamp | null>
+}
+
+export interface ProjectAttachments {
+	created_at: Generated<Timestamp | null>
+	file_size_bytes: number | null
+	file_url: string
+	filename: string
+	id: Generated<string>
+	mime_type: string | null
+	project_id: string
+}
+
+export interface Projects {
+	budget_max: number
+	budget_min: number
+	budget_type: string
+	category: string
+	client_id: string
+	created_at: Generated<Timestamp | null>
+	deadline: Timestamp
+	description: string
+	experience_level: string
+	id: Generated<string>
+	status: string
+	title: string
+	updated_at: Generated<Timestamp | null>
+}
+
+export interface ProjectSkills {
+	created_at: Generated<Timestamp | null>
+	project_id: string
+	skill_id: string
 }
 
 export interface Sessions {
@@ -142,10 +186,14 @@ export interface Verifications {
 
 export interface DB {
 	accounts: Accounts
+	applications: Applications
 	freelancer_profiles: FreelancerProfiles
 	knex_migrations: KnexMigrations
 	knex_migrations_lock: KnexMigrationsLock
 	portfolio_items: PortfolioItems
+	project_attachments: ProjectAttachments
+	project_skills: ProjectSkills
+	projects: Projects
 	sessions: Sessions
 	skills: Skills
 	user_profiles: UserProfiles

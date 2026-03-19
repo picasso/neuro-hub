@@ -26,6 +26,7 @@ export type IconProps = React.ComponentProps<ReturnType<typeof getIcon>> & {
 	size?: IconSize | number
 	color?: IconColor
 	spinning?: boolean
+	accent?: string
 }
 
 export type IconOptions = {
@@ -33,10 +34,11 @@ export type IconOptions = {
 	size?: IconProps['size']
 	spinning?: IconProps['spinning']
 	tw?: IconProps['className']
+	accent?: IconProps['accent']
 }
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
-	{ name, size = 'md', color = 'secondary', spinning, className, ...props },
+	{ name, size = 'md', color = 'secondary', spinning, className, accent, ...props },
 	ref,
 ) {
 	const IconComponent = getIcon(name)
@@ -55,6 +57,9 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
 			)}
 			style={isNumber(size) ? { width: sizeValue, height: sizeValue } : undefined}
 			{...props}
+			{...(accentSupports.includes(name) ? { accent } : {})}
 		/>
 	)
 })
+
+const accentSupports: IconName[] = ['missing', 'missing-more', 'nobody', 'api']

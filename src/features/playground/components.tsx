@@ -70,7 +70,7 @@ export const componentDemos: ComponentDemo[] = [
 		id: 'badges',
 		name: 'Badges',
 		group: 'base',
-		description: 'Badge variants, sizes, icon, closable',
+		description: 'Badge variants, sizes, colors, icon, closable, capitalize',
 		ready: true,
 		demo: <DemoBadge />,
 		settings: <DemoBadgeSettings />,

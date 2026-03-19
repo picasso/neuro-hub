@@ -1,6 +1,5 @@
 'use client'
 
-import { upperFirst } from 'lodash'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type BadgeDemoState } from './demo-badge-settings'
 import { useSettings } from './settings-store'
@@ -9,16 +8,28 @@ import { cn } from '@/utils'
 
 const variants = ['primary', 'secondary', 'destructive', 'outline', 'ghost', 'link'] as const
 const sizes = ['xs', 'sm', 'md'] as const
+const colors = [
+	'primary',
+	'secondary',
+	'dimmed',
+	'contrast',
+	'soft',
+	'destructive',
+	'error',
+	'success',
+	'warning',
+	'info',
+] as const
 
 export function DemoBadge() {
 	const settings = useSettings<BadgeDemoState>()
-	const { variant, size, color, withIcon, closable, capitalized, lowercased } = settings
+	const { variant, size, color, withIcon, closable, capitalize, lowercased } = settings
 
 	return (
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Обёртка `?Badge` на базе **shadcn** —> варианты, размеры, иконка, onClose"
+				desc="Обёртка `Badge` на базе **shadcn**: variant, size, color, icon, onClose, capitalize"
 				separator
 			>
 				<Stack
@@ -33,10 +44,11 @@ export function DemoBadge() {
 					<Badge
 						variant={variant}
 						size={size}
-						label={capitalized ? upperFirst(variant) : variant}
+						label={variant}
 						color={color === 'null' ? undefined : color}
 						icon={withIcon ? 'book-marked' : undefined}
 						onClose={closable ? () => {} : undefined}
+						capitalize={capitalize}
 						lowercased={lowercased}
 					/>
 				</Stack>
@@ -45,6 +57,7 @@ export function DemoBadge() {
 				<Stack wrap className="mb-4">
 					{variants.map((variant) => (
 						<Badge
+							capitalize={capitalize}
 							lowercased={lowercased}
 							key={variant}
 							variant={variant}
@@ -56,6 +69,7 @@ export function DemoBadge() {
 				<Stack wrap className="mb-4">
 					{variants.map((variant) => (
 						<Badge
+							capitalize={capitalize}
 							lowercased={lowercased}
 							key={variant}
 							variant={variant}
@@ -68,6 +82,7 @@ export function DemoBadge() {
 				<Stack wrap>
 					{variants.map((variant) => (
 						<Badge
+							capitalize={capitalize}
 							lowercased={lowercased}
 							key={variant}
 							variant={variant}
@@ -81,28 +96,110 @@ export function DemoBadge() {
 			<DemoSection title="Sizes" asBadge="shield-check" separator>
 				<Stack className="mb-4">
 					{sizes.map((size) => (
-						<Badge key={size} variant="primary" size={size} label={`Size="${size}"`} />
+						<Badge
+							key={size}
+							variant="primary"
+							size={size}
+							label={`size="${size}"`}
+							capitalize={capitalize}
+						/>
 					))}
 				</Stack>
 				<Stack>
 					{sizes.map((size) => (
-						<Badge key={size} variant="outline" size={size} label={`Size="${size}"`} />
+						<Badge
+							key={size}
+							variant="outline"
+							size={size}
+							label={`size="${size}"`}
+							capitalize={capitalize}
+						/>
+					))}
+				</Stack>
+			</DemoSection>
+			<DemoSection
+				title="Colors"
+				asBadge="shield-check"
+				desc="Все доступные значения `color`, включая semantic и status colors"
+				separator
+			>
+				<Stack gap={2} wrap align="center">
+					{colors.map((color) => (
+						<Stack
+							key={color}
+							gap={2}
+							align="center"
+							className={cn(
+								'rounded-md border p-2',
+								needsContrast(null, color) && 'bg-primary text-white',
+							)}
+						>
+							<Badge
+								variant="primary"
+								color={color}
+								label={`${color} primary`}
+								icon="cog"
+								capitalize={capitalize}
+								lowercased={lowercased}
+							/>
+							<Badge
+								variant="secondary"
+								color={color}
+								label={`${color} secondary`}
+								icon="cog"
+								capitalize={capitalize}
+								lowercased={lowercased}
+							/>
+							<Badge
+								variant="outline"
+								color={color}
+								label={`${color} outline`}
+								capitalize={capitalize}
+								lowercased={lowercased}
+							/>
+						</Stack>
 					))}
 				</Stack>
 			</DemoSection>
 			<DemoSection title="With icon" asBadge="shield-check" separator>
 				<Stack gap={2} wrap align="center">
-					<Badge variant="primary" label="Save" icon="book-marked" />
-					<Badge variant="outline" label="Search" icon="search" />
-					<Badge variant="destructive" label="Delete" icon="trash" />
-					<Badge variant="secondary" label="Email" icon="email" />
+					<Badge
+						variant="primary"
+						label="save"
+						icon="book-marked"
+						capitalize={capitalize}
+					/>
+					<Badge variant="outline" label="search" icon="search" capitalize={capitalize} />
+					<Badge
+						variant="destructive"
+						label="delete"
+						icon="trash"
+						capitalize={capitalize}
+					/>
+					<Badge variant="secondary" label="email" icon="email" capitalize={capitalize} />
 				</Stack>
 			</DemoSection>
 			<DemoSection title="Closable (onClose)" asBadge="shield-check">
 				<Stack gap={2} wrap align="center">
-					<Badge variant="primary" label="Tag" onClose={() => {}} />
-					<Badge variant="outline" label="Filter" icon="search" onClose={() => {}} />
-					<Badge variant="secondary" label="Skill" onClose={() => {}} />
+					<Badge
+						variant="primary"
+						label="tag"
+						onClose={() => {}}
+						capitalize={capitalize}
+					/>
+					<Badge
+						variant="outline"
+						label="filter"
+						icon="search"
+						onClose={() => {}}
+						capitalize={capitalize}
+					/>
+					<Badge
+						variant="secondary"
+						label="skill"
+						onClose={() => {}}
+						capitalize={capitalize}
+					/>
 				</Stack>
 			</DemoSection>
 		</DemoRoot>

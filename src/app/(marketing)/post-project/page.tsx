@@ -1,4 +1,5 @@
-import { PostProjectPage } from '@/features'
+import { redirect } from 'next/navigation'
 
-export { postProjectMetadata as metadata } from '@/config'
-export default PostProjectPage
+export default function PostProjectPage() {
+	redirect('/account/projects/new')
+}

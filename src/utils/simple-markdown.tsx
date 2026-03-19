@@ -56,6 +56,7 @@ export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 		json: false,
 		container: false,
 		nolinks: false,
+		symbols: true,
 	})
 
 	let linkReplace = '<a href="$2" target="_blank" rel="external noreferrer noopener">$1</a>'
@@ -69,9 +70,15 @@ export function simpleMarkdown(str: any, params?: Partial<MarkdownParams>) {
 		str,
 	)
 	// replace symbols
-	md = reduce(pairs, (s, [from, to]) => replace(s, new RegExp(escapeRegExp(from), 'g'), to), md)
+	if (mod.symbols) {
+		md = reduce(
+			pairs,
+			(s, [from, to]) => replace(s, new RegExp(escapeRegExp(from), 'g'), to),
+			md,
+		)
+	}
 
-	// replace <span>
+	// replace `code`
 	md = md.replace(/(^|[^`])`([^`]+)`/gm, '$1<span class="__code">$2</span>')
 	// replace color modifications
 	// '!' - red, '#ff2020'
