@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { PendingContent } from '../account-pending'
 import {
+	applicationStatusColor,
 	canWithdrawApplication,
 	describeClient,
 	formatApplicationStatus,
@@ -8,8 +9,9 @@ import {
 	formatExperienceLevel,
 	formatProjectDeadline,
 	formatProjectStatus,
+	statusColor,
 } from './project-helpers'
-import { WithdrawApplicationButton } from './withdraw-application-button'
+import { WithdrawApplicationButton } from './project-withdraw-button'
 import type { Route } from 'next'
 import { getAccountContext } from '@/lib/account'
 import { listFreelancerApplications } from '@/lib/db/queries/projects'
@@ -18,20 +20,25 @@ import {
 	type ApplicationStatus,
 	type ApplicationsQueryInput,
 } from '@/lib/validations'
-import { Badge, Button, Card, Empty, Link, Stack, TS } from '@/ui'
+import { Badge, type BadgeColor, Button, Card, Empty, Link, Stack, TS } from '@/ui'
 import { pluralizeRuWithCount } from '@/utils'
 
 type PageProps = {
 	searchParams?: Promise<Record<string, string | string[] | undefined>>
 }
 
-const statusOptions: Array<{ label: string; value: ApplicationStatus | undefined }> = [
-	{ label: 'Все', value: undefined },
-	{ label: 'Подана', value: 'submitted' },
-	{ label: 'В шорт-листе', value: 'shortlisted' },
-	{ label: 'Принята', value: 'accepted' },
-	{ label: 'Отклонена', value: 'rejected' },
-	{ label: 'Отозвана', value: 'withdrawn' },
+type Options = {
+	label: string
+	value?: ApplicationStatus
+	color?: BadgeColor
+}
+const statusOptions: Array<Options> = [
+	{ label: 'Все' },
+	{ label: 'Подана', value: 'submitted', color: applicationStatusColor['submitted'] },
+	{ label: 'В шорт-листе', value: 'shortlisted', color: applicationStatusColor['shortlisted'] },
+	{ label: 'Принята', value: 'accepted', color: applicationStatusColor['accepted'] },
+	{ label: 'Отклонена', value: 'rejected', color: applicationStatusColor['rejected'] },
+	{ label: 'Отозвана', value: 'withdrawn', color: applicationStatusColor['withdrawn'] },
 ]
 
 export async function AccountApplications({ searchParams }: PageProps) {
@@ -74,6 +81,7 @@ export async function AccountApplications({ searchParams }: PageProps) {
 							asChild
 							variant={isActive ? 'secondary' : 'outline'}
 							size="sm"
+							color={option.color}
 						>
 							<Link href={buildApplicationsHref(filters, option.value)}>
 								{option.label}
@@ -86,7 +94,7 @@ export async function AccountApplications({ searchParams }: PageProps) {
 			<TS
 				variant="caption"
 				color="secondary"
-				content={`Показано ${history.items.length} из ${pluralizeRuWithCount(history.total, ['заявка', 'заявки', 'заявок'])}`}
+				content={`Показано ${history.items.length} из ${pluralizeRuWithCount(history.total, ['заявки', 'заявок', 'заявок'])}`}
 			/>
 
 			{history.items.length === 0 ? (
@@ -101,7 +109,13 @@ export async function AccountApplications({ searchParams }: PageProps) {
 			) : (
 				<Stack vertical gap={3} align="stretch">
 					{history.items.map((item) => (
-						<Card key={item.id} fullWidth className="max-w-none">
+						<Card
+							key={item.id}
+							fullWidth
+							className="max-w-none"
+							image="project"
+							imageAspect="none"
+						>
 							<Stack vertical gap={4} align="stretch">
 								<Stack
 									vertical
@@ -117,13 +131,22 @@ export async function AccountApplications({ searchParams }: PageProps) {
 											variant="caption"
 											color="secondary"
 											content={`${describeClient(item.project.client)} · ${item.project.category} · ${formatExperienceLevel(item.project.experienceLevel)}`}
+											className="capitalize"
 										/>
 									</Stack>
 									<Stack wrap justify="end">
-										<Badge variant="secondary" size="sm">
+										<Badge
+											variant="secondary"
+											size="sm"
+											color={applicationStatusColor[item.status]}
+										>
 											{formatApplicationStatus(item.status)}
 										</Badge>
-										<Badge variant="outline" size="sm">
+										<Badge
+											variant="outline"
+											size="sm"
+											color={statusColor[item.project.status]}
+										>
 											{formatProjectStatus(item.project.status)}
 										</Badge>
 									</Stack>
@@ -145,27 +168,27 @@ export async function AccountApplications({ searchParams }: PageProps) {
 								/>
 
 								<Stack wrap justify="space-between" className="gap-3">
-									<Stack wrap>
+									<Stack gap={2} wrap>
 										<TS
 											variant="caption"
 											color="secondary"
-											content={`Проект: ${formatBudget(item.project)}`}
+											content={`Проект: **${formatBudget(item.project)}**`}
 										/>
 										<TS
 											variant="caption"
 											color="secondary"
-											content={`Ваш бюджет: $${item.proposedPrice}`}
+											content={`Ваш бюджет: **${formatBudget({ budgetMin: item.proposedPrice })}**`}
 										/>
 										<TS
 											variant="caption"
 											color="secondary"
-											content={`Дедлайн проекта: ${formatProjectDeadline(item.project.deadline)}`}
+											content={`Дедлайн проекта: **${formatProjectDeadline(item.project.deadline)}**`}
 										/>
 										{item.proposedDeadline ? (
 											<TS
 												variant="caption"
 												color="secondary"
-												content={`Ваш срок: ${formatProjectDeadline(item.proposedDeadline)}`}
+												content={`Ваш срок: **${formatProjectDeadline(item.proposedDeadline)}**`}
 											/>
 										) : null}
 									</Stack>

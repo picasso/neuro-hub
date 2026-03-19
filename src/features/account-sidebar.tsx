@@ -22,7 +22,7 @@ const sidebarGroups: SidebarGroup[] = [
 			},
 			{ title: 'Проекты', href: '/projects', icon: 'folder-kanban' },
 			{ title: 'Фрилансеры', href: '/freelancers', icon: 'users' },
-			{ title: 'Разместить проект', href: '/account/pending', icon: 'briefcase-business' },
+			{ title: 'Создать проект', href: '/account/projects/new', icon: 'briefcase-business' },
 			{
 				title: 'API',
 				icon: 'blocks',

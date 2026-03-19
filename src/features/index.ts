@@ -3,7 +3,7 @@ export { HomePage } from './home/home-page'
 export { LoginPage } from './auth/login-page'
 export { SignupPage } from './onboarding/signup-page'
 export { HowItWorksPage } from './how-it-works'
-export { PostProjectPage } from './post-project-page'
+export { CreateProjectPage } from './projects/create-project-page'
 export { PlaygroundPage } from './playground/playground-page'
 
 // sections & components

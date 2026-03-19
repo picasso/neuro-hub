@@ -42,8 +42,9 @@ export const signupMetadata: Metadata = createMetadata({
 	noIndex: true,
 })
 
-export const postProjectMetadata: Metadata = createMetadata({
-	title: 'Разместить проект',
-	description: 'Разместите свой проект и найдите специалиста по генеративному ИИ',
-	path: '/post-project',
+export const createProjectMetadata: Metadata = createMetadata({
+	title: 'Создать проект',
+	description: 'Создайте проект и найдите специалиста по генеративному ИИ',
+	path: '/account/projects/new',
+	noIndex: true,
 })

@@ -4,6 +4,7 @@ import {
 	formatExperienceLevel,
 	formatProjectDeadline,
 } from './project-helpers'
+import type { Route } from 'next'
 import { Badge, Card, Link, Stack, TS } from '@/ui'
 
 type ProjectCardProps = {
@@ -41,7 +42,7 @@ export function ProjectCard({ item }: ProjectCardProps) {
 
 	return (
 		<Link
-			href={item.href as never}
+			href={item.href as Route}
 			hover="underline"
 			className="group block h-full no-underline hover:no-underline"
 		>
@@ -49,6 +50,7 @@ export function ProjectCard({ item }: ProjectCardProps) {
 				fullWidth
 				className="h-full gap-0 rounded-lg border-border/70 py-0 transition-all group-hover:-translate-y-1 group-hover:shadow-lg"
 				contentClassName="h-full p-4"
+				image="project"
 			>
 				<Stack vertical gap={4} align="stretch" className="h-full">
 					<Stack wrap justify="space-between" className="gap-2">

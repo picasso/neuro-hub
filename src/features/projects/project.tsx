@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { ProjectApplicationForm } from './project-application-form'
 import {
+	applicationStatusColor,
 	canWithdrawApplication,
 	describeClient,
 	formatApplicationStatus,
@@ -8,8 +9,9 @@ import {
 	formatExperienceLevel,
 	formatProjectDeadline,
 	formatProjectStatus,
+	statusColor,
 } from './project-helpers'
-import { WithdrawApplicationButton } from './withdraw-application-button'
+import { WithdrawApplicationButton } from './project-withdraw-button'
 import type { Route } from 'next'
 import { getSsrSafeSession } from '@/lib/auth/server'
 import { getPublicProjectById } from '@/lib/db/queries/projects'
@@ -39,17 +41,21 @@ export async function ProjectDetailPage(props: PageProps) {
 	return (
 		<PageShell preset="wide" spacing="lgb">
 			<Stack vertical gap={6} align="stretch">
-				<Card fullWidth>
+				<Card fullWidth image="project" imageAspect="none">
 					<div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
 						<Stack vertical gap={4} align="stretch">
 							<Stack wrap>
-								<Badge variant="secondary" size="sm">
+								<Badge
+									capitalize
+									variant="secondary"
+									color={statusColor[project.status]}
+								>
 									{formatProjectStatus(project.status)}
 								</Badge>
-								<Badge variant="outline" size="sm">
+								<Badge capitalize variant="outline">
 									{project.category}
 								</Badge>
-								<Badge variant="outline" size="sm">
+								<Badge capitalize variant="outline">
 									{formatExperienceLevel(project.experienceLevel)}
 								</Badge>
 							</Stack>
@@ -74,20 +80,31 @@ export async function ProjectDetailPage(props: PageProps) {
 						<Card
 							fullWidth
 							title="Заявка"
-							description="Подайте заявку или проверьте её текущий статус."
-							className="h-fit"
+							description={
+								project.viewerApplication
+									? 'Проверьте текущий статус своей заявки или отзовите её.'
+									: 'Подайте заявку, чтобы стать участником проекта.'
+							}
+							className="h-full"
 						>
-							<Stack vertical gap={4} align="stretch">
+							<Stack vertical align="stretch" className="h-full">
 								<TS variant="subtitle" content={formatBudget(project)} />
 								<TS
-									variant="caption"
+									variant="subtitle"
 									color="secondary"
-									content={`Дедлайн: ${formatProjectDeadline(project.deadline)}`}
+									content={`Дедлайн проекта: **${formatProjectDeadline(project.deadline)}**`}
 								/>
 
 								{project.viewerApplication ? (
-									<Stack vertical gap={3} align="stretch">
-										<Badge variant="secondary" size="sm">
+									<Stack vertical gap={3} align="stretch" className="h-full">
+										<Badge
+											variant="secondary"
+											color={
+												applicationStatusColor[
+													project.viewerApplication.status
+												]
+											}
+										>
 											Статус заявки:{' '}
 											{formatApplicationStatus(
 												project.viewerApplication.status,
@@ -103,6 +120,7 @@ export async function ProjectDetailPage(props: PageProps) {
 										) ? (
 											<WithdrawApplicationButton
 												applicationId={project.viewerApplication.id}
+												className="mt-auto"
 											/>
 										) : null}
 									</Stack>
@@ -119,10 +137,13 @@ export async function ProjectDetailPage(props: PageProps) {
 									<Button href={loginHref}>Войти, чтобы подать заявку</Button>
 								) : session.user.role !== 'freelancer' ? (
 									<Empty
+										error
 										outline
 										compact
 										fullWidth
 										align="start"
+										icon="nobody"
+										iconOptions={{ size: 60, accent: '#ef4444' }}
 										title="Подать заявку могут только фрилансеры"
 										helper="В текущем MVP заявки на проекты могут подавать только фрилансеры."
 									/>
@@ -144,6 +165,8 @@ export async function ProjectDetailPage(props: PageProps) {
 						>
 							{project.skills.length === 0 ? (
 								<Empty
+									dark
+									icon="missing-more"
 									outline
 									compact
 									fullWidth
@@ -170,9 +193,12 @@ export async function ProjectDetailPage(props: PageProps) {
 						>
 							{project.attachments.length === 0 ? (
 								<Empty
+									dark
 									outline
 									compact
 									fullWidth
+									icon="missing"
+									iconOptions={{ size: 60 }}
 									align="start"
 									title="Вложений пока нет"
 									helper="В текущем проекте заказчик не добавил файлов."
@@ -200,7 +226,7 @@ export async function ProjectDetailPage(props: PageProps) {
 						title="О заказчике"
 						description="Краткая информация о клиенте, опубликованная в профиле."
 					>
-						<Stack vertical gap={3} align="stretch">
+						<Stack vertical gap={3} align="stretch" className="h-full">
 							<TS clean variant="subtitle" content={describeClient(project.client)} />
 							{project.client.companyRole ? (
 								<TS
@@ -216,7 +242,7 @@ export async function ProjectDetailPage(props: PageProps) {
 									content={`Контакт: ${project.client.name}`}
 								/>
 							) : null}
-							<Button href="/projects" variant="outline">
+							<Button href="/projects" variant="outline" className="mt-auto">
 								Назад к проектам
 							</Button>
 						</Stack>

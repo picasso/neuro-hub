@@ -1,17 +1,19 @@
 import type { ProjectClientSummary } from '@/lib/db/queries/projects'
+import { type BadgeColor } from '@/ui'
 
 export function formatBudget({
 	budgetType,
 	budgetMin,
 	budgetMax,
 }: {
-	budgetType: string
+	budgetType?: string
 	budgetMin: number
-	budgetMax: number
+	budgetMax?: number
 }) {
-	const suffix = budgetType === 'hourly' ? '/hr' : ''
-	if (budgetMin === budgetMax) return `$${budgetMin}${suffix}`
-	return `$${budgetMin}-${budgetMax}${suffix}`
+	const currency = '₽'
+	const suffix = budgetType === 'hourly' ? '/час' : ''
+	if (!budgetMax || budgetMin === budgetMax) return `${currency}${budgetMin}${suffix}`
+	return `${currency}${budgetMin}-${budgetMax}${suffix}`
 }
 
 export function formatExperienceLevel(level: string) {
@@ -77,4 +79,20 @@ export function describeClient(client: ProjectClientSummary) {
 
 export function canWithdrawApplication(status: string) {
 	return status === 'submitted' || status === 'shortlisted'
+}
+
+export const applicationStatusColor: Record<string, BadgeColor> = {
+	submitted: 'secondary',
+	shortlisted: 'info',
+	accepted: 'success',
+	rejected: 'error',
+	withdrawn: 'warning',
+}
+
+export const statusColor: Record<string, BadgeColor> = {
+	draft: 'secondary',
+	published: 'info',
+	in_progress: 'warning',
+	completed: 'success',
+	cancelled: 'error',
 }

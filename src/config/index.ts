@@ -8,11 +8,11 @@ export {
 	ctaContent,
 } from './mocks/landing-content'
 export {
+	createProjectMetadata,
 	homeMetadata,
 	freelancersMetadata,
 	howItWorksMetadata,
 	loginMetadata,
-	postProjectMetadata,
 	projectsMetadata,
 	signupMetadata,
 } from './metadata'
