@@ -41,7 +41,7 @@ export function EmailVerificationStep() {
 				<Stack vertical gap={4}>
 					<Button
 						size="lg"
-						onClick={() => router.push('/account/dashboard' as never)}
+						onClick={() => router.push('/account/dashboard')}
 						fullWidth
 						label="Готово"
 					/>
