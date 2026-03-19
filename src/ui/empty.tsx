@@ -38,6 +38,8 @@ export type EmptyProps = EmptyShadcnProps.Root & {
 	iconOptions?: IconOptions
 	disabled?: boolean
 	error?: boolean
+	dark?: boolean
+	light?: boolean
 	outline?: boolean
 	fullWidth?: boolean
 	compact?: boolean
@@ -61,6 +63,8 @@ export function Empty({
 	iconOptions,
 	disabled,
 	error,
+	dark,
+	light,
 	outline,
 	fullWidth,
 	compact,
@@ -100,6 +104,9 @@ export function Empty({
 				fullWidth && 'w-full max-w-none',
 				compact && 'p-3 md:p-6 gap-1',
 				align === 'start' && 'items-start',
+				error && 'text-destructive/70 bg-destructive/5 border-destructive/30',
+				dark && 'bg-secondary/30 border-secondary-dark',
+				light && 'bg-surface border-border-dark',
 				disabled && 'opacity-50',
 				className,
 			)}
@@ -107,7 +114,7 @@ export function Empty({
 		>
 			<EmptyHeader
 				className={cn(
-					align === 'start' && 'items-start',
+					align === 'start' && 'items-start text-left',
 					fullWidth && 'w-full max-w-none',
 					mediaIcon ? 'gap-2' : 'gap-1',
 				)}
@@ -124,9 +131,13 @@ export function Empty({
 					>
 						<Icon
 							name={icon}
-							color={iconOptions?.color ?? (outline ? 'dimmed' : 'secondary')}
+							color={
+								iconOptions?.color ??
+								(error ? 'destructive' : outline ? 'dimmed' : 'secondary')
+							}
 							size={iconOptions?.size ?? 'sm'}
 							spinning={iconOptions?.spinning}
+							accent={iconOptions?.accent}
 							className={iconOptions?.tw}
 						/>
 					</EmptyMedia>
