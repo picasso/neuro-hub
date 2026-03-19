@@ -23,7 +23,24 @@ export function getKnexConfig(environment: string): Knex.Config {
 	return config
 }
 
-export function printPendingMigrations(title: string, migrations: string[]) {
+function getMigrationName(migration: unknown): string {
+	if (typeof migration === 'string') {
+		return migration
+	}
+
+	if (
+		typeof migration === 'object' &&
+		migration !== null &&
+		'name' in migration &&
+		typeof migration.name === 'string'
+	) {
+		return migration.name
+	}
+
+	return String(migration)
+}
+
+export function printPendingMigrations(title: string, migrations: unknown[]) {
 	printEmpty()
 	printSection(title)
 
@@ -34,6 +51,6 @@ export function printPendingMigrations(title: string, migrations: string[]) {
 
 	printWarning('Found ' + pluralize(migrations.length, 'pending migration', true) + '.')
 	migrations.forEach((migration) => {
-		printListItem(migration)
+		printListItem(getMigrationName(migration))
 	})
 }

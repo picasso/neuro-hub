@@ -2,14 +2,38 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="${SCRIPT_DIR}/../../.env.production.local"
+HAS_TEMP_DATABASE_URL=0
+
+cleanup() {
+  if [ "$HAS_TEMP_DATABASE_URL" -eq 1 ]; then
+    unset DATABASE_URL
+  fi
+}
+
+trap cleanup EXIT
+
 echo "🚀 Running migrations for Production database..."
 
 if [ -z "$DATABASE_URL" ]; then
-  echo "❌ DATABASE_URL environment variable is not set"
-  echo ""
-  echo "For Railway set:"
-  echo "  export DATABASE_URL=<railway_database_url>"
-  exit 1
+  if [ ! -f "$ENV_FILE" ]; then
+    echo "❌ DATABASE_URL environment variable is not set"
+    echo ""
+    echo "Also could not find $ENV_FILE"
+    exit 1
+  fi
+
+  RAILWAY_DATABASE_URL=$(sed -n 's/^RAILWAY_DATABASE_URL=//p' "$ENV_FILE")
+
+  if [ -z "$RAILWAY_DATABASE_URL" ]; then
+    echo "❌ RAILWAY_DATABASE_URL is not set in $ENV_FILE"
+    exit 1
+  fi
+
+  export DATABASE_URL="$RAILWAY_DATABASE_URL"
+  HAS_TEMP_DATABASE_URL=1
+  echo "✅ DATABASE_URL loaded from [.env.production.local] for this script session"
 fi
 
 echo "📊 Database: ${DATABASE_URL%%\?*}"
@@ -25,7 +49,7 @@ echo "✅ Connection successful"
 
 echo ""
 echo "2️⃣ Checking migration status..."
-yarn db:migrate:status
+KNEX_ENV=production yarn db:migrate:status
 
 echo ""
 echo "3️⃣ Creating backup before migration..."
@@ -64,9 +88,6 @@ echo "5️⃣ Running Knex migrations..."
 if NODE_ENV=production yarn db:migrate; then
   echo ""
   echo "✅ Migrations completed successfully!"
-  echo ""
-  echo "Check status:"
-  echo "  yarn db:migrate:status"
 else
   echo ""
   echo "❌ Migration error!"
