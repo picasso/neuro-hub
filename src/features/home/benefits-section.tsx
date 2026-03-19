@@ -35,7 +35,7 @@ function BenefitCard({ icon, title, description, iconColor }: BenefitCardProps) 
 }
 
 const freelancerIcons: IconName[] = ['groups', 'star', 'code', 'verified']
-const clientIcons: IconName[] = ['verified-user', 'visibility', 'thumb-up', 'search']
+const clientIcons: IconName[] = ['verified-user', 'visibility', 'thumbs-up', 'search']
 
 export function BenefitsSection() {
 	return (
