@@ -134,12 +134,30 @@ export const TextStyled = forwardRef<HTMLElement, TextStyledProps>(
 				)),
 			)
 		}
+		const mdFixed = {
+			...md,
+			...(forceSpan.includes(variant) || inline || inlineBlock ? { br: true } : {}),
+		}
 		return createElement(
 			tag,
 			{ ref, className: classes, ...props },
-			md === false ? value : simpleMarkdown(value, md ?? { br: inline || inlineBlock }),
+			md === false ? value : simpleMarkdown(value, mdFixed),
 		)
 	},
 )
+
+// NOTE: variants in which markdown should be rendered via <span>
+// even if `inline` or `inlineBlock` is not true - to avoid "<p> cannot be a descendant of <p>"
+const forceSpan: TextStyledVariant[] = [
+	'h1',
+	'h2',
+	'h3',
+	'h4',
+	'h5',
+	'lead',
+	'subtitle',
+	'body',
+	'caption',
+]
 
 export const TS = TextStyled
