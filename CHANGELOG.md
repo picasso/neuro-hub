@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.3] - 2026-03-19
+
+### Added
+- Freelancer project marketplace MVP with a public projects directory, project cards, a project details page, and application submission flow
+- Account project creation flow for clients with project validation, publishing, and skill selection
+- Projects and applications database layer with migrations, query helpers, and API endpoints for listing, creating, updating, deleting, applying, and withdrawing applications
+- Validation coverage for project directory, project payloads, attachments, and application payloads
+
+### Changed
+- Updated `DEVELOPMENT-PLAN.md` to mark completed work for Stage 4.1, 4.2, and the delivered UI parts of 4.3
+- Improved database migration scripts and CLI guidance for the new projects/applications schema
+- Refined shared UI wrappers and supporting primitives used by the marketplace flow, including `Badge`, `Card`, `Empty`, icons, and related playground demos
+
+### Fixed
+- Markdown text rendering inside paragraph contexts to avoid invalid nested `<p>` markup
+- Small account and UI follow-up issues discovered while integrating the marketplace and project creation flows
+
 ## [0.4.1] - 2026-03-17
 
 ### Added
