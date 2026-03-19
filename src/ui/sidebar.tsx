@@ -163,6 +163,7 @@ function renderItem(item: SidebarItem) {
 				color={item.iconOptions?.color ?? 'current'}
 				spinning={item.iconOptions?.spinning}
 				className={item.iconOptions?.tw}
+				accent={item.iconOptions?.accent}
 			/>
 			<span>{item.title}</span>
 		</>

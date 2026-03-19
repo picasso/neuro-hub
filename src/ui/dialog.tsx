@@ -196,6 +196,7 @@ export function Dialog<T = boolean, L = unknown>({
 									size={iconOptions?.size ?? (compactTitle ? 'sm' : 'md')}
 									color={iconOptions?.color}
 									spinning={iconOptions?.spinning}
+									accent={iconOptions?.accent}
 									className={iconOptions?.tw}
 								/>
 							)}

@@ -63,6 +63,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			size: iconOptions?.size,
 			spinning: iconOptions?.spinning,
 			className: iconOptions?.tw,
+			accent: iconOptions?.accent,
 		}
 
 		const inner = (
