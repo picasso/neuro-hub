@@ -134,12 +134,23 @@ export const updateProjectSchema = z
 
 export const createApplicationSchema = z
 	.object({
-		coverLetter: z.string().trim().min(50).max(3000),
-		proposedPrice: z.number().int().positive(),
+		// use .refine for min length so issues use code "custom" with our message (Zod 4 can emit
+		// default English "too_small" for .min() in some pipelines)
+		coverLetter: z
+			.string()
+			.trim()
+			.max(3000, { message: 'Сопроводительное письмо не должно превышать 3000 символов' })
+			.refine((value) => value.length >= 50, {
+				message: 'Сопроводительное письмо должно содержать не менее 50 символов',
+			}),
+		proposedPrice: z
+			.number({ error: () => ({ message: 'Укажите корректную сумму' }) })
+			.int({ message: 'Укажите целое число' })
+			.positive({ message: 'Укажите сумму больше 0' }),
 		proposedDeadline: z.coerce.date().optional(),
 	})
 	.refine((value) => !value.proposedDeadline || value.proposedDeadline.getTime() > Date.now(), {
-		message: 'Proposed deadline must be in the future',
+		message: 'Предлагаемый срок должен быть в будущем',
 		path: ['proposedDeadline'],
 	})
 

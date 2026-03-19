@@ -532,19 +532,36 @@ export async function createProjectApplicationForFreelancer({
 }) {
 	const project = await kysely
 		.selectFrom('projects')
-		.select(['id', 'client_id', 'status', 'deadline'])
+		.select(['id', 'client_id', 'status', 'deadline', 'budget_min', 'budget_max'])
 		.where('id', '=', projectId)
 		.executeTakeFirst()
 
 	if (!project) throw new NotFoundError('Project not found')
 	if (project.client_id === freelancerId) {
-		throw new ValidationError('You cannot apply to your own project')
+		throw new ValidationError('Нельзя подать заявку на собственный проект')
 	}
 	if (project.status !== 'published') {
-		throw new ValidationError('Applications are closed for this project')
+		throw new ValidationError('Приём заявок по этому проекту закрыт')
 	}
 	if (isProjectExpired(project.deadline)) {
-		throw new ValidationError('Applications are closed because the project deadline has passed')
+		throw new ValidationError('Приём заявок закрыт: истёк срок проекта')
+	}
+
+	if (input.proposedPrice < project.budget_min || input.proposedPrice > project.budget_max) {
+		throw new ValidationError(
+			'Сумма заявки должна быть в пределах бюджета, указанного в проекте',
+			{
+				proposedPrice: [
+					`Укажите сумму от ${project.budget_min} до ${project.budget_max} (как в карточке проекта)`,
+				],
+			},
+		)
+	}
+
+	if (input.proposedDeadline && input.proposedDeadline.getTime() > project.deadline.getTime()) {
+		throw new ValidationError('Предлагаемый срок не может быть позже дедлайна проекта', {
+			proposedDeadline: ['Выберите дату не позже дедлайна проекта'],
+		})
 	}
 
 	const existing = await kysely
@@ -555,7 +572,7 @@ export async function createProjectApplicationForFreelancer({
 		.executeTakeFirst()
 
 	if (existing) {
-		throw new ConflictError('Application already exists for this project')
+		throw new ConflictError('Заявка на этот проект уже подана')
 	}
 
 	try {
@@ -584,7 +601,7 @@ export async function createProjectApplicationForFreelancer({
 			.executeTakeFirstOrThrow()
 	} catch (error) {
 		if (isUniqueConstraintError(error)) {
-			throw new ConflictError('Application already exists for this project')
+			throw new ConflictError('Заявка на этот проект уже подана')
 		}
 
 		throw error

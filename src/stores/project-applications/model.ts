@@ -3,11 +3,32 @@ import { produce } from 'immer'
 import { forEach, isEmpty, set } from 'lodash'
 import { createAlertFx } from '@/alerts'
 import { genericDomain as domain } from '@/lib/logger'
+import {
+	buildUserFacingApiErrorMessageFromParsed,
+	parseApiResponseError,
+	pickFieldErrorsFromApiErrors,
+	PROJECT_APPLICATION_VALIDATION_FIELD_LABELS,
+} from '@/utils'
 
 export type ProjectApplicationForm = {
 	coverLetter: string
 	proposedPrice: string
 	proposedDeadline: string
+}
+
+const APPLICATION_FORM_FIELD_KEYS = ['coverLetter', 'proposedPrice', 'proposedDeadline'] as const
+
+type ProjectApplicationFormField = (typeof APPLICATION_FORM_FIELD_KEYS)[number]
+
+type ProjectApplicationRequestFailure = Error & {
+	fieldErrors?: Partial<Record<ProjectApplicationFormField, string>>
+}
+
+function projectApplicationRequestFailure(
+	message: string,
+	fieldErrors?: Partial<Record<ProjectApplicationFormField, string>>,
+): ProjectApplicationRequestFailure {
+	return Object.assign(new Error(message), { fieldErrors })
 }
 
 type SubmitProjectApplicationParams = {
@@ -38,6 +59,10 @@ export const $form = domain.createStore<ProjectApplicationForm>(
 	{ name: '$projectApplicationForm' },
 )
 
+export const $applicationErrors = domain.createStore<
+	Partial<Record<ProjectApplicationFormField, string>>
+>({}, { name: '$projectApplicationErrors' })
+
 $form.reset(resetProjectApplicationForm)
 $form.on(projectApplicationFormUpdated, (store, update) =>
 	isEmpty(update)
@@ -57,12 +82,14 @@ sample({
 export const submitProjectApplicationFx = domain.createEffect<
 	SubmitProjectApplicationParams,
 	{ id: string; status: string },
-	Error
+	ProjectApplicationRequestFailure
 >({
 	handler: async ({ projectId, form }) => {
 		const proposedPrice = Number(form.proposedPrice.trim())
 		if (!Number.isFinite(proposedPrice) || proposedPrice <= 0) {
-			throw new Error('Укажите корректный бюджет заявки')
+			throw projectApplicationRequestFailure('Укажите корректный бюджет заявки', {
+				proposedPrice: 'Введите сумму больше 0',
+			})
 		}
 
 		const res = await fetch(`/api/projects/${encodeURIComponent(projectId)}/applications`, {
@@ -77,7 +104,16 @@ export const submitProjectApplicationFx = domain.createEffect<
 
 		if (!res.ok) {
 			const json = await res.json().catch(() => null)
-			throw new Error(json?.error?.message || json?.error || 'Не удалось подать заявку')
+			const parsed = parseApiResponseError(json)
+			const message = buildUserFacingApiErrorMessageFromParsed(parsed, {
+				fallback: 'Не удалось подать заявку',
+				fieldLabels: PROJECT_APPLICATION_VALIDATION_FIELD_LABELS,
+			})
+			const fieldErrors = pickFieldErrorsFromApiErrors(
+				parsed?.errors,
+				APPLICATION_FORM_FIELD_KEYS,
+			) as Partial<Record<ProjectApplicationFormField, string>> | undefined
+			throw projectApplicationRequestFailure(message, fieldErrors)
 		}
 
 		const json = await res.json()
@@ -92,7 +128,7 @@ export const submitProjectApplicationFx = domain.createEffect<
 export const withdrawProjectApplicationFx = domain.createEffect<
 	WithdrawProjectApplicationParams,
 	{ id: string; status: string },
-	Error
+	ProjectApplicationRequestFailure
 >({
 	handler: async ({ applicationId }) => {
 		const res = await fetch(`/api/applications/${encodeURIComponent(applicationId)}`, {
@@ -101,7 +137,16 @@ export const withdrawProjectApplicationFx = domain.createEffect<
 
 		if (!res.ok) {
 			const json = await res.json().catch(() => null)
-			throw new Error(json?.error?.message || json?.error || 'Не удалось отозвать заявку')
+			const parsed = parseApiResponseError(json)
+			const message = buildUserFacingApiErrorMessageFromParsed(parsed, {
+				fallback: 'Не удалось отозвать заявку',
+				fieldLabels: PROJECT_APPLICATION_VALIDATION_FIELD_LABELS,
+			})
+			const fieldErrors = pickFieldErrorsFromApiErrors(
+				parsed?.errors,
+				APPLICATION_FORM_FIELD_KEYS,
+			) as Partial<Record<ProjectApplicationFormField, string>> | undefined
+			throw projectApplicationRequestFailure(message, fieldErrors)
 		}
 
 		const json = await res.json()
@@ -112,6 +157,23 @@ export const withdrawProjectApplicationFx = domain.createEffect<
 	},
 	name: 'withdrawProjectApplicationFx',
 })
+
+$applicationErrors.reset(resetProjectApplicationForm)
+
+$applicationErrors
+	.on(submitProjectApplicationFx, () => ({}))
+	.on(projectApplicationFormUpdated, (errors, patch) => {
+		const next = { ...errors }
+		for (const key of APPLICATION_FORM_FIELD_KEYS) {
+			if (key in patch) delete next[key]
+		}
+		return next
+	})
+	.on(submitProjectApplicationFx.failData, (_, error) => {
+		const requestError = error as ProjectApplicationRequestFailure
+		return requestError.fieldErrors ?? {}
+	})
+	.on(submitProjectApplicationFx.done, () => ({}))
 
 export const $pendingWithdrawByApplicationId = domain.createStore<PendingWithdrawMap>(
 	{},
