@@ -30,6 +30,7 @@
 		"db:import": "./scripts/db/import-data.sh",
 		"db:backup:railway": "./scripts/db/backup-railway.sh",
 		"db:check": "tsx scripts/db/check-db.ts",
+		"db:delete-applications": "tsx scripts/db/delete-applications.ts",
 		"db:delete-users": "tsx scripts/db/delete-users.ts",
 		"db:reset-email-verification": "tsx scripts/db/reset-email-verification.ts",
 		"db:drop-all": "tsx scripts/db/drop-all-tables.ts",

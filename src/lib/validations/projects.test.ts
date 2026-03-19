@@ -134,6 +134,15 @@ describe('projectAttachmentSchema', () => {
 })
 
 describe('createApplicationSchema', () => {
+	it('rejects a short cover letter with a Russian message', () => {
+		expect(() =>
+			createApplicationSchema.parse({
+				coverLetter: 'x'.repeat(49),
+				proposedPrice: 1200,
+			}),
+		).toThrow('Сопроводительное письмо должно содержать не менее 50 символов')
+	})
+
 	it('rejects a past proposed deadline', () => {
 		expect(() =>
 			createApplicationSchema.parse({
@@ -142,6 +151,6 @@ describe('createApplicationSchema', () => {
 				proposedPrice: 1200,
 				proposedDeadline: '2020-01-01',
 			}),
-		).toThrow('Proposed deadline must be in the future')
+		).toThrow('Предлагаемый срок должен быть в будущем')
 	})
 })

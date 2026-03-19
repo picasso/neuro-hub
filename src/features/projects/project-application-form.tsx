@@ -4,6 +4,7 @@ import { useUnit } from 'effector-react'
 import { useRouter } from 'next/navigation'
 import { type FormEvent, useEffect } from 'react'
 import {
+	$applicationErrors,
 	$form,
 	projectApplicationFormScopeChanged,
 	projectApplicationFormUpdated,
@@ -18,8 +19,17 @@ type ProjectApplicationFormProps = {
 
 export function ProjectApplicationForm({ projectId }: ProjectApplicationFormProps) {
 	const router = useRouter()
-	const [form, isSubmitting, scopeChanged, updateForm, resetForm, submitApplication] = useUnit([
+	const [
+		form,
+		applicationErrors,
+		isSubmitting,
+		scopeChanged,
+		updateForm,
+		resetForm,
+		submitApplication,
+	] = useUnit([
 		$form,
+		$applicationErrors,
 		submitProjectApplicationFx.pending,
 		projectApplicationFormScopeChanged,
 		projectApplicationFormUpdated,
@@ -52,6 +62,7 @@ export function ProjectApplicationForm({ projectId }: ProjectApplicationFormProp
 				<TextField
 					label="О заявке"
 					helper="Опишите релевантный опыт, подход к задаче и ключевые сроки."
+					error={applicationErrors.coverLetter}
 					multiline
 					name="coverLetter"
 					placeholder="Почему вам подходит этот проект"
@@ -70,6 +81,7 @@ export function ProjectApplicationForm({ projectId }: ProjectApplicationFormProp
 						placeholder="Например, 1500"
 						value={form.proposedPrice}
 						onChange={(event) => updateForm({ proposedPrice: event.target.value })}
+						error={applicationErrors.proposedPrice}
 						required
 					/>
 					<TextField
@@ -78,6 +90,7 @@ export function ProjectApplicationForm({ projectId }: ProjectApplicationFormProp
 						type="date"
 						value={form.proposedDeadline}
 						onChange={(event) => updateForm({ proposedDeadline: event.target.value })}
+						error={applicationErrors.proposedDeadline}
 					/>
 				</div>
 				<Stack wrap gap={3}>
