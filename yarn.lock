@@ -4022,43 +4022,43 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scalar/core@npm:0.4.3":
-  version: 0.4.3
-  resolution: "@scalar/core@npm:0.4.3"
+"@scalar/core@npm:0.4.4":
+  version: 0.4.4
+  resolution: "@scalar/core@npm:0.4.4"
   dependencies:
-    "@scalar/types": "npm:0.7.3"
-  checksum: 10c0/75f868fcf89b6d3c0be5ce3711eb650f5b793fc9cfe669c3eca4c9d9540f87a1d55457248c67e474aa2763fba0b83034665cb2a1e2f692f16fa4bc33e25ee6df
+    "@scalar/types": "npm:0.7.4"
+  checksum: 10c0/bd92eaed903b11052cf03a7a0cc8dd951900606368b6dbf9a10b6161e04bf589583300a565d6aab6ae098d5e595ff1bdecc6595300db5633bb568c319f3196d6
   languageName: node
   linkType: hard
 
-"@scalar/helpers@npm:0.4.1":
-  version: 0.4.1
-  resolution: "@scalar/helpers@npm:0.4.1"
-  checksum: 10c0/c2d9de0a8afb549d695c5e5e2a23b3bf5ea44cd61e2a21fd504cb2834704044948eb4a856c5ff5347c10696d908c4d75a66cef0a40e54dcde551aefb5fd65e20
+"@scalar/helpers@npm:0.4.2":
+  version: 0.4.2
+  resolution: "@scalar/helpers@npm:0.4.2"
+  checksum: 10c0/78c98e50bd63922dc1a212a60c5bfc23e26851c82113989fea5eece4cd67832347b65fc712ee2738545a96ad328b007f40f99eb4f8c4172008c13a34afa52d15
   languageName: node
   linkType: hard
 
-"@scalar/nextjs-api-reference@npm:^0.10.3":
-  version: 0.10.3
-  resolution: "@scalar/nextjs-api-reference@npm:0.10.3"
+"@scalar/nextjs-api-reference@npm:^0.10.4":
+  version: 0.10.4
+  resolution: "@scalar/nextjs-api-reference@npm:0.10.4"
   dependencies:
-    "@scalar/core": "npm:0.4.3"
+    "@scalar/core": "npm:0.4.4"
   peerDependencies:
     next: ^15.0.0 || ^16.0.0
     react: ^19.0.0
-  checksum: 10c0/bfe35264e97c58ac884185425802d38e8fc2bb4deba8cf28804bcb589fde550118652e59924fb3d72d4a7d647f9d94e0bd9cd816a1a9ef5f26408e93cbb83653
+  checksum: 10c0/3d6a77a10529640e257e018d9001e279879cd86c771e15d6acb2f899336b08457fd356aa923807cd856f44986cc312c4ec4c19a9a7996e5fb1335d3cc87c939b
   languageName: node
   linkType: hard
 
-"@scalar/types@npm:0.7.3":
-  version: 0.7.3
-  resolution: "@scalar/types@npm:0.7.3"
+"@scalar/types@npm:0.7.4":
+  version: 0.7.4
+  resolution: "@scalar/types@npm:0.7.4"
   dependencies:
-    "@scalar/helpers": "npm:0.4.1"
+    "@scalar/helpers": "npm:0.4.2"
     nanoid: "npm:^5.1.6"
     type-fest: "npm:^5.3.1"
     zod: "npm:^4.3.5"
-  checksum: 10c0/19fd23feebd772923e120b24b541bb633db13cd1705b3e50d35847b27d2f42ee8fcc279adf62053d018204d95300a0fbae3eec6a141dd3332aa4fcdf16b3d2af
+  checksum: 10c0/5378185fd5e18de1ddaf1429a0c88acc9cd5e43bd35aaa837d8491a9d7de5e48974c031472f23cd6fa066fc1c0416d86999371c014c4f7f5d1ed7073e28568c9
   languageName: node
   linkType: hard
 
@@ -10851,7 +10851,7 @@ __metadata:
     "@better-auth/cli": "npm:1.4.21"
     "@jest/test-sequencer": "npm:^30.2.0"
     "@react-email/components": "npm:^1.0.10"
-    "@scalar/nextjs-api-reference": "npm:^0.10.3"
+    "@scalar/nextjs-api-reference": "npm:^0.10.4"
     "@tailwindcss/postcss": "npm:^4.2.1"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^6.6.3"
