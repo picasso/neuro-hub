@@ -11,6 +11,8 @@ export type AnyDemoState = {
 	fullWidth: boolean
 	title: boolean
 	description: boolean
+	titleOver: boolean
+	descOver: boolean
 	flush: boolean
 	button: boolean
 	badge: boolean
@@ -18,9 +20,7 @@ export type AnyDemoState = {
 	image: boolean
 	buttonProps: boolean
 	footer: boolean
-	headerClassName: boolean
-	footerClassName: boolean
-	contentClassName: boolean
+	customClassName: boolean
 }
 
 const defaultState: AnyDemoState = {
@@ -29,6 +29,8 @@ const defaultState: AnyDemoState = {
 	fullWidth: false,
 	title: false,
 	description: false,
+	titleOver: false,
+	descOver: false,
 	flush: false,
 	button: false,
 	badge: false,
@@ -36,9 +38,7 @@ const defaultState: AnyDemoState = {
 	image: false,
 	buttonProps: false,
 	footer: false,
-	headerClassName: false,
-	footerClassName: false,
-	contentClassName: false,
+	customClassName: false,
 }
 
 export function DemoAnySettings() {
@@ -49,6 +49,8 @@ export function DemoAnySettings() {
 		fullWidth,
 		title,
 		description,
+		titleOver,
+		descOver,
 		flush,
 		footer,
 		button,
@@ -56,9 +58,7 @@ export function DemoAnySettings() {
 		badgeProps,
 		image,
 		buttonProps,
-		headerClassName,
-		footerClassName,
-		contentClassName,
+		customClassName,
 	} = useSettings<AnyDemoState>()
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,24 +109,22 @@ export function DemoAnySettings() {
 			<SettingToggle id="flush" label="Flush" checked={flush} />
 			<SettingToggle id="footer" label="Footer" checked={footer} />
 			<SettingToggle id="badge" label="Badge" checked={badge} />
-			<SettingToggle id="badgeProps" label="Badge props" checked={badgeProps} />
+			{badge && <SettingToggle id="badgeProps" label="Badge props" checked={badgeProps} />}
 			<SettingToggle id="button" label="Button" checked={button} />
-			<SettingToggle id="buttonProps" label="Button props" checked={buttonProps} />
+			{button && (
+				<SettingToggle id="buttonProps" label="Button props" checked={buttonProps} />
+			)}
 			<SettingToggle id="image" label="Image" checked={image} />
+			{image && (
+				<>
+					<SettingToggle id="titleOver" label="Title over" checked={titleOver} />
+					<SettingToggle id="descOver" label="Description over" checked={descOver} />
+				</>
+			)}
 			<SettingToggle
-				id="headerClassName"
-				label="Header class name"
-				checked={headerClassName}
-			/>
-			<SettingToggle
-				id="footerClassName"
-				label="Footer class name"
-				checked={footerClassName}
-			/>
-			<SettingToggle
-				id="contentClassName"
-				label="Content class name"
-				checked={contentClassName}
+				id="customClassName"
+				label="Custom class names"
+				checked={customClassName}
 			/>
 		</DemoRoot>
 	)

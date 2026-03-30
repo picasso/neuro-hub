@@ -149,10 +149,10 @@ export function Card({
 							</Badge>
 						</CardAction>
 					)}
-					{title && !titleOver && (
+					{title && !(titleOver && image) && (
 						<CardTitle className={isSmall ? 'text-sm' : 'text-base'}>{title}</CardTitle>
 					)}
-					{description && !descriptionOver && (
+					{description && !(descriptionOver && image) && (
 						<CardDescription className={isSmall ? 'text-xs' : 'text-sm'}>
 							{description}
 						</CardDescription>
