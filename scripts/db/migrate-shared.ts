@@ -37,6 +37,32 @@ function getMigrationName(migration: unknown): string {
 		return migration.name
 	}
 
+	if (
+		typeof migration === 'object' &&
+		migration !== null &&
+		'file' in migration &&
+		typeof migration.file === 'string'
+	) {
+		return migration.file
+	}
+
+	if (
+		typeof migration === 'object' &&
+		migration !== null &&
+		'path' in migration &&
+		typeof migration.path === 'string'
+	) {
+		return migration.path
+	}
+
+	if (typeof migration === 'object' && migration !== null) {
+		try {
+			return JSON.stringify(migration)
+		} catch {
+			return Object.prototype.toString.call(migration)
+		}
+	}
+
 	return String(migration)
 }
 
