@@ -20,9 +20,9 @@ export function DemoAny() {
 		badgeProps,
 		buttonProps,
 		image,
-		headerClassName,
-		footerClassName,
-		contentClassName,
+		customClassName,
+		titleOver,
+		descOver,
 	} = settings
 
 	return (
@@ -50,12 +50,12 @@ export function DemoAny() {
 					}
 					image={image ? imageUrl : undefined}
 					imageAspect={'3/2'}
-					titleOver={true}
-					descriptionOver={true}
+					titleOver={titleOver}
+					descriptionOver={descOver}
 					footer={footer ? 'Это скорее про ширину контейнера в layout API' : undefined}
-					headerClassName={headerClassName ? 'bg-primary text-white' : undefined}
-					footerClassName={footerClassName ? 'bg-primary text-white' : undefined}
-					contentClassName={contentClassName ? 'bg-primary text-white' : undefined}
+					headerClassName={customClassName ? 'bg-primary text-white' : undefined}
+					footerClassName={customClassName ? 'bg-primary text-white' : undefined}
+					contentClassName={customClassName ? 'bg-primary text-white' : undefined}
 				>
 					Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. The
 					card component supports a size prop that can be set to "sm" for a more compact

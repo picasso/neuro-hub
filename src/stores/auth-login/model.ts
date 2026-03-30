@@ -3,6 +3,7 @@
 import { combine, sample } from 'effector'
 import { createGate } from 'effector-react'
 import { produce } from 'immer'
+import { includes, toLower } from 'lodash'
 import type { LoginCredentials, LoginErrors } from './types'
 import { createAlert, createAlertFx, updateAlert } from '@/alerts'
 import { authClient } from '@/lib/auth/client'
@@ -102,7 +103,7 @@ type BetterAuthError = {
 export const signInFx = domain.createEffect<LoginCredentials, unknown, Error>({
 	handler: async ({ email, password, rememberMe, callbackURL }) => {
 		const timerId = setTimeout(() => {
-			createAlertFx({
+			createAlert({
 				id: loginAlertId,
 				severity: 'progress',
 				title: 'Авторизация...',
@@ -151,28 +152,33 @@ export const signInFx = domain.createEffect<LoginCredentials, unknown, Error>({
 				// some adapters return status at top level
 				err?.status ??
 				err?.statusCode
+			const message = err?.error?.message ?? err?.message
 
 			const isUnverified =
 				status === 403 ||
 				code === 'EMAIL_NOT_VERIFIED' ||
-				(code?.toLowerCase?.() ?? '').includes('verify') ||
-				(err?.error?.message?.toLowerCase?.() ?? '').includes('verify') ||
-				(err?.message?.toLowerCase?.() ?? '').includes('verify')
+				includes(toLower(code ?? message), 'verify')
 
 			if (isUnverified) {
 				createAlert({
 					severity: 'info',
 					title: 'Email не подтверждён',
-					message: 'Мы отправили письмо для верификации — подтвердите и повторите вход.',
+					message:
+						'Мы отправили `+письмо` для верификации — подтвердите и повторите вход.',
+					relaxed: true,
 				})
-				throw new Error('EMAIL_NOT_VERIFIED')
 			} else {
-				const message =
-					(err?.error?.message as string | undefined) ||
-					(err?.message as string | undefined) ||
-					'Не удалось войти'
-				createAlert('error', message)
-				throw new Error(message)
+				const isInvalid = includes(toLower(message), 'invalid')
+				createAlert({
+					severity: 'error',
+					title: 'Ошибка авторизации',
+					message: isInvalid
+						? 'Неверный `!email` или `!пароль` - *попробуйте ещё раз*.'
+						: (message ??
+							'*Что-то пошло не так:* не удалось войти, попробуйте ещё раз.'),
+					disableAutoClose: true,
+					relaxed: isInvalid,
+				})
 			}
 		}
 	},

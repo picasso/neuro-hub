@@ -16,6 +16,7 @@ export type AlertProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> & {
 	severity: Severity
 	variant?: AlertVariant
 	title?: ReactNode
+	relaxed?: boolean
 	desc?: string
 	icon?: IconName | false
 	iconOptions?: IconOptions
@@ -29,6 +30,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
 		severity = 'info',
 		className,
 		title,
+		relaxed,
 		desc,
 		icon,
 		iconOptions,
@@ -74,7 +76,9 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
 				/>
 			)}
 			{content && (
-				<ShadcnAlertDescription className="block w-full">{content}</ShadcnAlertDescription>
+				<ShadcnAlertDescription className={cn('block w-full', relaxed && 'pt-2')}>
+					{content}
+				</ShadcnAlertDescription>
 			)}
 		</ShadcnAlert>
 	)

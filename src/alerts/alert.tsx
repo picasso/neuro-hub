@@ -22,6 +22,7 @@ export function AlertComponent({ id }: AlertProps) {
 	const {
 		title,
 		message,
+		relaxed,
 		severity,
 		progress,
 		disableProgressCaption = false,
@@ -43,8 +44,8 @@ export function AlertComponent({ id }: AlertProps) {
 
 	const mergedMessage = templatedMessage(message)
 	const mergedTitle = title ? templatedMessage(title) : undefined
-	const titleContent = mergedTitle ? simpleMarkdown(mergedTitle, md || {}) : undefined
-	const messageContent = md === false ? mergedMessage : simpleMarkdown(mergedMessage, md || {})
+	const titleContent = md === false ? mergedTitle : simpleMarkdown(mergedTitle, md)
+	const messageContent = md === false ? mergedMessage : simpleMarkdown(mergedMessage, md)
 
 	const mergedIconOptions = {
 		...iconOptions,
@@ -62,6 +63,7 @@ export function AlertComponent({ id }: AlertProps) {
 			variant={variant}
 			severity={severity}
 			title={titleContent}
+			relaxed={relaxed}
 			icon={icon ?? (isProgress ? 'spinner' : undefined)}
 			iconOptions={mergedIconOptions}
 			onClose={disableClose ? undefined : onClose}

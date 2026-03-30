@@ -24,6 +24,7 @@ export type AlertComponentProps = {
 	severity: AlertSeverity
 	title?: TemplatedMessage
 	message?: ReactNode | TemplatedMessage
+	relaxed?: boolean
 	// 0..100 for determinate progress UI
 	progress?: number
 	disableProgressCaption?: boolean
@@ -231,6 +232,7 @@ export const createAlertFx = Object.assign(createFx, {
 	props: (alert: AlertParams) => alert,
 	removeFx,
 	remove: removeAlert,
+	update: updateAlert,
 	alertId: createAlertId,
 })
 
