@@ -32,19 +32,13 @@ import type {
 	ChatRealtimeEvent,
 } from '@/lib/chat/contracts'
 import { createAlertFx } from '@/alerts'
-import { createDomainWatched } from '@/lib/logger'
+import { chatDomain as domain } from '@/lib/logger'
 
 type MessagesMap = Record<string, ChatUiMessage[]>
 type CursorMap = Record<string, string | null>
 type BooleanMap = Record<string, boolean>
 type StringMap = Record<string, string | null>
 type ReadStateMap = Record<string, ChatReadState | null>
-
-const domain = createDomainWatched('chat', {
-	filter: {
-		gate: false,
-	},
-})
 
 function createChatLocalId() {
 	return `chat-local-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
@@ -443,6 +437,7 @@ export const $unreadConversationsCount = $conversations.map(
 	(conversations) => conversations.filter((conversation) => conversation.unreadCount > 0).length,
 )
 
+// sync active conversation id when gate props diverge from store
 sample({
 	clock: [ChatGate.open, ChatGate.state.updates],
 	source: {
@@ -455,12 +450,14 @@ sample({
 	target: activeConversationChanged,
 })
 
+// load conversation list on open or explicit refresh
 sample({
 	clock: [chatConversationsRefreshRequested, ChatGate.open],
 	fn: () => undefined,
 	target: loadChatConversationsFx,
 })
 
+// bootstrap messages + realtime when a conversation becomes active
 sample({
 	clock: activeConversationChanged,
 	filter: (conversationId) => !!conversationId,
@@ -470,6 +467,7 @@ sample({
 	target: [loadActiveChatMessagesFx, subscribeActiveConversationRealtimeFx],
 })
 
+// tear down realtime subscription when no conversation is active
 sample({
 	clock: activeConversationChanged,
 	filter: (conversationId) => !conversationId,
@@ -477,6 +475,7 @@ sample({
 	target: unsubscribeActiveConversationRealtimeFx,
 })
 
+// reload active thread + resubscribe realtime on manual refresh
 sample({
 	clock: chatActiveConversationReloadRequested,
 	source: $activeConversationId,
@@ -487,12 +486,14 @@ sample({
 	target: [loadActiveChatMessagesFx, subscribeActiveConversationRealtimeFx],
 })
 
+// refresh conversation list after active-thread reload request
 sample({
 	clock: chatActiveConversationReloadRequested,
 	fn: () => undefined,
 	target: loadChatConversationsFx,
 })
 
+// page older messages when cursor exists for active thread
 sample({
 	clock: chatHistoryLoadRequested,
 	source: {
@@ -507,6 +508,7 @@ sample({
 	target: loadOlderChatMessagesFx,
 })
 
+// turn composer submit into send payload with stable local id
 sample({
 	clock: chatMessageSubmitted,
 	source: $activeConversationId,
@@ -519,6 +521,7 @@ sample({
 	target: messageSendRequested,
 })
 
+// insert optimistic row before network send completes
 sample({
 	clock: messageSendRequested,
 	fn: ({ conversationId, text, localId }) => ({
@@ -533,11 +536,13 @@ sample({
 	target: optimisticMessageQueued,
 })
 
+// fire API send in parallel with optimistic UI
 sample({
 	clock: messageSendRequested,
 	target: sendChatMessageFx,
 })
 
+// replace optimistic bubble with server message on success
 sample({
 	clock: sendChatMessageFx.doneData,
 	fn: ({ conversationId, localId, message }) => ({
@@ -548,6 +553,7 @@ sample({
 	target: optimisticMessageConfirmed,
 })
 
+// bump conversation preview + unread rules after own send succeeds
 sample({
 	clock: sendChatMessageFx.doneData,
 	fn: ({ conversationId, message }) => ({
@@ -558,6 +564,7 @@ sample({
 	target: conversationMessagePatched,
 })
 
+// mark optimistic message failed when send effect errors
 sample({
 	clock: sendChatMessageFx.fail,
 	fn: ({ params }) => ({
@@ -567,6 +574,7 @@ sample({
 	target: optimisticMessageFailed,
 })
 
+// toast send message failure
 sample({
 	clock: sendChatMessageFx.failData,
 	fn: (error) =>
@@ -579,6 +587,7 @@ sample({
 	target: createAlertFx,
 })
 
+// toast conversation list load failure
 sample({
 	clock: loadChatConversationsFx.failData,
 	fn: (error) =>
@@ -591,6 +600,7 @@ sample({
 	target: createAlertFx,
 })
 
+// toast active thread history load failure
 sample({
 	clock: loadActiveChatMessagesFx.failData,
 	fn: (error) =>
@@ -603,6 +613,7 @@ sample({
 	target: createAlertFx,
 })
 
+// toast realtime subscription failure
 sample({
 	clock: subscribeActiveConversationRealtimeFx.failData,
 	fn: (error) =>
@@ -616,6 +627,7 @@ sample({
 	target: createAlertFx,
 })
 
+// merge incoming realtime message into conversation summaries
 sample({
 	clock: chatRealtimeEventReceived,
 	source: $activeConversationId,
@@ -629,6 +641,7 @@ sample({
 	target: conversationMessagePatched,
 })
 
+// track peer read cursor from realtime when not conflicting with pending local read
 sample({
 	clock: chatRealtimeEventReceived,
 	source: $pendingReadByConversationId,
@@ -643,6 +656,7 @@ sample({
 	target: peerReadStateTracked,
 })
 
+// queue read sync when latest visible message advances
 sample({
 	clock: [
 		loadActiveChatMessagesFx.doneData,
@@ -689,11 +703,13 @@ sample({
 	target: localReadSyncRequested,
 })
 
+// POST read cursor to server from local sync request
 sample({
 	clock: localReadSyncRequested,
 	target: markChatConversationReadFx,
 })
 
+// propagate server read state after mark-read succeeds
 sample({
 	clock: markChatConversationReadFx.doneData,
 	fn: ({ conversationId, readState }) => ({
@@ -704,6 +720,7 @@ sample({
 	target: conversationReadStateUpdated,
 })
 
+// reset chat stores and unsubscribe realtime when chat UI unmounts
 sample({
 	clock: ChatGate.close,
 	fn: () => undefined,

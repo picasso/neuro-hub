@@ -2,11 +2,10 @@
 
 import { combine, sample } from 'effector'
 import { createGate } from 'effector-react'
-import { produce } from 'immer'
-import { forEach, isEmpty, set } from 'lodash'
+import { isEmpty } from 'lodash'
 import type { FreelancerProfileDto, FreelancerProfileForm } from './types'
 import { createAlertFx } from '@/alerts'
-import { genericDomain as domain } from '@/lib/logger'
+import { freelancerProfileDomain as domain } from '@/lib/logger'
 
 // * * * Gate -------------------------------------------------------------------------------------]
 
@@ -33,15 +32,7 @@ export const $form = domain.createStore<FreelancerProfileForm>(
 )
 
 $form.reset(resetFreelancerProfile)
-$form.on(profileFormUpdated, (store, update) =>
-	isEmpty(update)
-		? store
-		: produce(store, (draft) => {
-				forEach(update, (value, key) => {
-					set(draft, key, value)
-				})
-			}),
-)
+$form.on(profileFormUpdated, (store, update) => (isEmpty(update) ? store : { ...store, ...update }))
 
 // * * * $profileId -------------------------------------------------------------------------------]
 
@@ -113,26 +104,26 @@ export const saveFreelancerProfileClicked = domain.createEvent('saveFreelancerPr
 
 // * * * connections and consequences -------------------------------------------------------------]
 
-// reset store when gate closes
+// discard profile draft when leaving the editor gate
 sample({
 	clock: FreelancerProfileGate.close,
 	target: resetFreelancerProfile,
 })
 
-// load profile when gate opens
+// fetch profile when gate mounts
 sample({
 	clock: FreelancerProfileGate.open,
 	target: loadFreelancerProfileFx,
 })
 
-// set profile id when profile loaded
+// store server id after load succeeds
 sample({
 	clock: loadFreelancerProfileFx.doneData,
 	fn: (dto) => dto.profileId,
 	target: $profileId,
 })
 
-// set form when profile loaded
+// hydrate form fields from loaded DTO
 sample({
 	clock: loadFreelancerProfileFx.doneData,
 	fn: (dto): FreelancerProfileForm => ({
@@ -144,7 +135,7 @@ sample({
 	target: $form,
 })
 
-// save profile when user clicks save button
+// PUT profile when save clicked with known id
 sample({
 	clock: saveFreelancerProfileClicked,
 	source: {
@@ -158,7 +149,7 @@ sample({
 
 const profileAlertId = createAlertFx.alertId('freelancer-profile')
 
-// show progress alert when save starts
+// show save progress toast
 sample({
 	clock: saveFreelancerProfileFx,
 	fn: () =>
@@ -173,14 +164,14 @@ sample({
 	target: createAlertFx,
 })
 
-// remove progress alert when save ends
+// dismiss save progress toast when effect settles
 sample({
 	clock: saveFreelancerProfileFx.finally,
 	fn: () => ({ id: profileAlertId }),
 	target: createAlertFx.removeFx,
 })
 
-// show success alert when save succeeded
+// toast successful save
 sample({
 	clock: saveFreelancerProfileFx.done,
 	fn: () =>
@@ -192,7 +183,7 @@ sample({
 	target: createAlertFx,
 })
 
-// show error alert when load or save failed
+// toast load or save failure
 sample({
 	clock: [loadFreelancerProfileFx.failData, saveFreelancerProfileFx.failData],
 	fn: (error) =>

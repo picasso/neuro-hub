@@ -18,6 +18,15 @@ export const debugStores = {
 	onboarding: true,
 	auth: true,
 	viewer: true,
+	accountContext: true,
+	accountSidebar: true,
+	createProject: true,
+	freelancerPortfolio: true,
+	projectApplications: true,
+	alerts: true,
+	modals: true,
+	chat: true,
+	freelancerProfile: true,
 }
 
 // * * * generic watched domain -------------------------------------------------------------------]
@@ -67,6 +76,60 @@ export const onboardingDomain = createDomainWatched(
 // * * * auth -------------------------------------------------------------------------------------]
 
 export const authDomain = createDomainWatched('auth', {}, debugStores.auth)
+
+export const alertsDomain = createDomainWatched('alerts', {}, debugStores.alerts)
+
+export const modalsDomain = createDomainWatched(
+	'modals',
+	{ filter: { gate: false } },
+	debugStores.modals,
+)
+
+const chatConfig: ConfigLogger = {
+	filter: {
+		gate: false,
+	},
+}
+
+export const chatDomain = createDomainWatched('chat', chatConfig, debugStores.chat)
+
+export const freelancerProfileDomain = createDomainWatched(
+	'freelancer-profile',
+	{ filter: { gate: false } },
+	debugStores.freelancerProfile,
+)
+
+// * * * account ----------------------------------------------------------------------------------]
+
+export const accountContextDomain = createDomainWatched(
+	'account-context',
+	{ filter: { gate: false } },
+	debugStores.accountContext,
+)
+
+export const accountSidebarDomain = createDomainWatched(
+	'account-sidebar',
+	{ filter: { gate: false } },
+	debugStores.accountSidebar,
+)
+
+export const createProjectDomain = createDomainWatched(
+	'create-project',
+	{ filter: { gate: false } },
+	debugStores.createProject,
+)
+
+export const freelancerPortfolioDomain = createDomainWatched(
+	'freelancer-portfolio',
+	{ filter: { gate: false } },
+	debugStores.freelancerPortfolio,
+)
+
+export const projectApplicationsDomain = createDomainWatched(
+	'project-applications',
+	{ filter: { gate: false } },
+	debugStores.projectApplications,
+)
 
 // * * * viewer -----------------------------------------------------------------------------------]
 

@@ -2,7 +2,6 @@
 
 import { combine, sample } from 'effector'
 import { createGate } from 'effector-react'
-import { produce } from 'immer'
 import { includes, toLower } from 'lodash'
 import type { LoginCredentials, LoginErrors } from './types'
 import { createAlert, createAlertFx, updateAlert } from '@/alerts'
@@ -33,29 +32,13 @@ export const $credentials = domain.createStore<LoginCredentials>(
 
 $credentials.reset(resetCredentials)
 
-$credentials.on(updatedEmail, (state, email) =>
-	produce(state, (draft) => {
-		draft.email = email
-	}),
-)
+$credentials.on(updatedEmail, (state, email) => ({ ...state, email }))
 
-$credentials.on(updatedPassword, (state, password) =>
-	produce(state, (draft) => {
-		draft.password = password
-	}),
-)
+$credentials.on(updatedPassword, (state, password) => ({ ...state, password }))
 
-$credentials.on(toggledRememberMe, (state) =>
-	produce(state, (draft) => {
-		draft.rememberMe = !draft.rememberMe
-	}),
-)
+$credentials.on(toggledRememberMe, (state) => ({ ...state, rememberMe: !state.rememberMe }))
 
-$credentials.on(setCallbackURL, (state, callbackURL) =>
-	produce(state, (draft) => {
-		draft.callbackURL = callbackURL
-	}),
-)
+$credentials.on(setCallbackURL, (state, callbackURL) => ({ ...state, callbackURL }))
 
 // * * * $errors ----------------------------------------------------------------------------------]
 
@@ -64,25 +47,27 @@ export const $errors = domain.createStore<LoginErrors>({}, { name: '$errors' })
 
 $errors.reset(resetErrors)
 
-// clear email error on change
+// drop email field error when user edits email
 sample({
 	clock: updatedEmail,
 	source: $errors,
-	fn: (errors) =>
-		produce(errors, (draft) => {
-			delete draft.email
-		}),
+	fn: (errors) => {
+		const next = { ...errors }
+		delete next.email
+		return next
+	},
 	target: $errors,
 })
 
-// clear password error on change
+// drop password field error when user edits password
 sample({
 	clock: updatedPassword,
 	source: $errors,
-	fn: (errors) =>
-		produce(errors, (draft) => {
-			delete draft.password
-		}),
+	fn: (errors) => {
+		const next = { ...errors }
+		delete next.password
+		return next
+	},
 	target: $errors,
 })
 
@@ -187,14 +172,14 @@ export const signInFx = domain.createEffect<LoginCredentials, unknown, Error>({
 
 export const submitLogin = domain.createEvent('submitLogin')
 
-// set callback url when gate opens
+// sync callback URL from gate open payload
 sample({
 	clock: LoginGate.open,
 	fn: ({ callbackURL }) => callbackURL,
 	target: setCallbackURL,
 })
 
-// trigger sign-in on submit
+// run sign-in with current credentials
 sample({
 	clock: submitLogin,
 	source: $credentials,
@@ -211,13 +196,13 @@ export const $canSubmit = combine($credentials, (c) => !!c.email && !!c.password
 
 export const resetLogin = domain.createEvent('resetLogin')
 
-// reset credentials + errors
+// reset credential and error stores together
 sample({
 	clock: resetLogin,
 	target: [resetCredentials, resetErrors],
 })
 
-// reset on gate close
+// reset login state when gate unmounts
 sample({
 	clock: LoginGate.close,
 	target: resetLogin,

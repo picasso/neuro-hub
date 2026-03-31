@@ -3,12 +3,12 @@
 import { upload } from '@vercel/blob/client'
 import { combine, sample } from 'effector'
 import { createGate } from 'effector-react'
-import { produce } from 'immer'
-import { forEach, isEmpty, set } from 'lodash'
+import { isEmpty } from 'lodash'
 import type { PortfolioForm, PortfolioItem, UploadResult } from './types'
 import { createAlertFx, updateAlert } from '@/alerts'
 import { config } from '@/config'
-import { genericDomain as domain } from '@/lib/logger'
+import { freelancerPortfolioDomain as domain } from '@/lib/logger'
+import { portfolioWorkCreated, portfolioWorkDeleted } from '@/stores/account-context/model'
 import { fileSize } from '@/utils'
 
 type PortfolioContext = {
@@ -57,15 +57,7 @@ export const $form = domain.createStore<PortfolioForm>(
 )
 
 $form.reset(resetForm)
-$form.on(portfolioFormUpdated, (store, update) =>
-	isEmpty(update)
-		? store
-		: produce(store, (draft) => {
-				forEach(update, (value, key) => {
-					set(draft, key, value)
-				})
-			}),
-)
+$form.on(portfolioFormUpdated, (form, update) => (isEmpty(update) ? form : { ...form, ...update }))
 
 // * * * $context ---------------------------------------------------------------------------------]
 
@@ -230,27 +222,28 @@ export const deletePortfolioItemFx = domain.createEffect<
 export const submitPortfolioItem = domain.createEvent<PortfolioContext>('submitPortfolioItem')
 export const deletePortfolioItem = domain.createEvent<string>('deletePortfolioItem')
 
-// * * * Wiring -----------------------------------------------------------------------------------]
+// * * * wiring -----------------------------------------------------------------------------------]
 
-// reset all stores when gate closes
+// reset portfolio slice when leaving the editor gate
 sample({
 	clock: FreelancerPortfolioGate.close,
 	target: [resetFreelancerPortfolio, resetForm],
 })
 
+// capture user/profile ids when gate opens
 sample({
 	clock: FreelancerPortfolioGate.open,
 	target: setFreelancerPortfolioContext,
 })
 
-// load portfolio when userId is set
+// fetch list after context is known
 sample({
 	clock: setFreelancerPortfolioContext,
 	fn: ({ profileId }) => ({ profileId }),
 	target: loadPortfolioFx,
 })
 
-// load portfolio on explicit refresh
+// refetch list on manual refresh with current profile id
 sample({
 	clock: refreshPortfolio,
 	source: $context,
@@ -261,7 +254,7 @@ sample({
 
 $portfolio.on(loadPortfolioFx.doneData, (_, items) => items)
 
-// clear derived image dimensions on file change
+// reset width/height hints when user picks a new file
 sample({
 	clock: portfolioFormUpdated,
 	filter: (update) => 'file' in update,
@@ -269,7 +262,7 @@ sample({
 	target: portfolioFormUpdated,
 })
 
-// Submit: upload -> create -> refresh
+// start blob upload when submit is valid for current context
 sample({
 	clock: submitPortfolioItem,
 	source: $form,
@@ -283,7 +276,7 @@ sample({
 	target: uploadPortfolioMediaFx,
 })
 
-// create portfolio item payload when upload completed
+// persist portfolio row after blob upload succeeds
 sample({
 	clock: uploadPortfolioMediaFx.doneData,
 	source: $form,
@@ -305,13 +298,19 @@ sample({
 	target: createPortfolioItemFx,
 })
 
-// reset form and refresh portfolio after successful create
+// clear form and reload list after successful create
 sample({
 	clock: createPortfolioItemFx.doneData,
 	target: [resetForm, refreshPortfolio],
 })
 
-// delete portfolio item by id using current context
+// bump account snapshot work count after create
+sample({
+	clock: createPortfolioItemFx.doneData,
+	target: portfolioWorkCreated,
+})
+
+// call delete API with current profile id + item id
 sample({
 	clock: deletePortfolioItem,
 	source: $context,
@@ -320,10 +319,16 @@ sample({
 	target: deletePortfolioItemFx,
 })
 
-// refresh portfolio after delete completes (success or failure)
+// sync list after delete attempt finishes
 sample({
 	clock: deletePortfolioItemFx.finally,
 	target: refreshPortfolio,
+})
+
+// decrement account snapshot work count after delete succeeds
+sample({
+	clock: deletePortfolioItemFx.doneData,
+	target: portfolioWorkDeleted,
 })
 
 // * * * UI helpers --------------------------------------------------------------------------------]
@@ -360,7 +365,7 @@ const syncCreateStageAlertFx = domain.createEffect<UploadFeedbackMode | null, vo
 	name: 'syncCreateStageAlertFx',
 })
 
-// show progress alert when upload starts
+// open upload progress toast when blob upload starts
 sample({
 	clock: uploadPortfolioMediaFx,
 	fn: ({ file }) => {
@@ -378,12 +383,14 @@ sample({
 	target: createAlertFx,
 })
 
+// track staged vs numeric progress mode for the active upload
 sample({
 	clock: uploadPortfolioMediaFx,
 	fn: ({ file }) => getUploadFeedbackMode(file.size),
 	target: uploadFeedbackModeChanged,
 })
 
+// seed progress at 0 for large files that show a percent bar
 sample({
 	clock: uploadPortfolioMediaFx,
 	filter: ({ file }) => shouldShowUploadProgress(file.size),
@@ -391,38 +398,42 @@ sample({
 	target: uploadProgressChanged,
 })
 
+// push percent updates into the open progress toast
 sample({
 	clock: uploadProgressChanged,
 	filter: (progress): progress is number => progress !== null,
 	target: syncUploadProgressFx,
 })
 
+// swap toast copy when moving from upload to persist stage
 sample({
 	clock: createPortfolioItemFx,
 	source: $uploadFeedbackMode,
 	target: syncCreateStageAlertFx,
 })
 
-// remove progress alert when upload/create finishes
+// clear percent state when upload or create leg ends
 sample({
 	clock: [uploadPortfolioMediaFx.fail, createPortfolioItemFx.finally],
 	fn: () => null,
 	target: uploadProgressChanged,
 })
 
+// reset feedback mode when upload or create leg ends
 sample({
 	clock: [uploadPortfolioMediaFx.fail, createPortfolioItemFx.finally],
 	fn: () => null,
 	target: uploadFeedbackModeChanged,
 })
 
+// dismiss portfolio progress toast after upload/create completes or fails
 sample({
 	clock: [uploadPortfolioMediaFx.fail, createPortfolioItemFx.finally],
 	fn: () => ({ id: uploadAlertId }),
 	target: createAlertFx.removeFx,
 })
 
-// show error alert when any portfolio effect failed
+// surface any portfolio effect failure via toast
 sample({
 	clock: [
 		uploadPortfolioMediaFx.failData,

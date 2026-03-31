@@ -6,11 +6,9 @@ import { produce, castDraft } from 'immer'
 import { forEach, isString, merge, set, uniqueId } from 'lodash'
 import { createElement, type FC, type ReactElement, type ReactNode } from 'react'
 import { toast, type ExternalToast as ToastProps, type ToasterProps } from 'sonner'
-import { createDomainWatched } from '@/lib/logger'
+import { alertsDomain as domain } from '@/lib/logger'
 import { type IconName, type IconOptions } from '@/ui'
 import { type MarkdownParams, type TemplatedMessage } from '@/utils'
-
-const domain = createDomainWatched('alerts')
 
 // * * * Alert types ------------------------------------------------------------------------------]
 
@@ -184,13 +182,13 @@ export const $options = domain
 
 // * * * connections ------------------------------------------------------------------------------]
 
-// set alert `$component` store when gate is open
+// store toast renderer component when alert gate opens
 sample({
 	clock: AlertGate.open,
 	target: $component,
 })
 
-// create alert when `addAlert` event triggered and gate is open
+// enqueue toast via effect when `addAlert` fires and gate is ready
 sample({
 	clock: addAlert,
 	filter: AlertGate.status,
