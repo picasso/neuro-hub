@@ -1,8 +1,9 @@
-import { useMemo, useState, type KeyboardEvent, type SyntheticEvent } from 'react'
-import type { ChatUiMessage } from './chat-model.helpers'
-import type { ChatRealtimeStatus } from './chat-realtime'
+import { useState, type KeyboardEvent, type SyntheticEvent } from 'react'
+import { formatChatDateTime, formatChatParticipantRole, type ChatUiMessage } from './helpers'
+import { ChatPanel, ChatPanelContent, ChatPanelFooter, ChatPanelHeader } from './panel'
+import type { ChatRealtimeStatus } from './realtime'
 import type { ChatConversationSummary } from '@/lib/chat/contracts'
-import { Badge, Avatar, Button, Empty, Stack, TextField, TS } from '@/ui'
+import { Avatar, Badge, Button, Empty, Stack, TextField, TS } from '@/ui'
 import { cn } from '@/utils'
 
 type ChatThreadProps = {
@@ -38,44 +39,52 @@ export function ChatThread({
 }: ChatThreadProps) {
 	if (!activeConversationId) {
 		return (
-			<div className="flex h-full min-h-96 items-center justify-center rounded-2xl border border-border bg-background p-4">
-				<Empty
-					fullWidth
-					outline
-					icon="message-circle-check"
-					title="Выберите диалог"
-					helper="Слева доступен список существующих чатов. Справа откроется активная переписка."
-				/>
-			</div>
+			<ChatPanel>
+				<ChatPanelContent className="p-4">
+					<Stack vertical justify="center" align="center" className="flex-1">
+						<Empty
+							fullWidth
+							outline
+							icon="message-circle-check"
+							title="Выберите диалог"
+							helper="Слева доступен список существующих чатов. Справа откроется активная переписка."
+						/>
+					</Stack>
+				</ChatPanelContent>
+			</ChatPanel>
 		)
 	}
 
 	if (!activeConversation && !isLoadingActiveMessages) {
 		return (
-			<div className="flex h-full min-h-96 items-center justify-center rounded-2xl border border-border bg-background p-4">
-				<Empty
-					fullWidth
-					outline
-					error
-					icon="message-circle-check"
-					title="Диалог недоступен"
-					helper="Проверьте URL или обновите список диалогов."
-				>
-					<Button
-						type="button"
-						variant="outline"
-						label="Обновить"
-						onClick={onReloadConversation}
-					/>
-				</Empty>
-			</div>
+			<ChatPanel>
+				<ChatPanelContent className="p-4">
+					<Stack vertical justify="center" align="center" className="flex-1">
+						<Empty
+							fullWidth
+							outline
+							error
+							icon="message-circle-check"
+							title="Диалог недоступен"
+							helper="Проверьте URL или обновите список диалогов."
+						>
+							<Button
+								type="button"
+								variant="outline"
+								label="Обновить"
+								onClick={onReloadConversation}
+							/>
+						</Empty>
+					</Stack>
+				</ChatPanelContent>
+			</ChatPanel>
 		)
 	}
 
 	return (
-		<div className="flex h-full min-h-96 flex-col rounded-2xl border border-border bg-background">
-			<div className="border-b border-border px-4 py-4">
-				<Stack justify="space-between" align="start" className="gap-3">
+		<ChatPanel>
+			<ChatPanelHeader>
+				<Stack justify="space-between" align="start" gap={3}>
 					<Stack gap={3} align="center" className="min-w-0">
 						<Avatar
 							name={activeConversation?.otherParticipant.name ?? 'Чат'}
@@ -94,7 +103,9 @@ export function ChatThread({
 								color="secondary"
 								content={
 									activeConversation
-										? formatParticipantRole(activeConversation)
+										? formatChatParticipantRole(
+												activeConversation.otherParticipant.role,
+											)
 										: 'Загрузка...'
 								}
 							/>
@@ -107,9 +118,9 @@ export function ChatThread({
 						label={realtimeStatusLabel[realtimeStatus]}
 					/>
 				</Stack>
-			</div>
+			</ChatPanelHeader>
 
-			<div className="flex flex-1 flex-col overflow-hidden">
+			<ChatPanelContent className="overflow-hidden">
 				<div className="flex-1 overflow-y-auto px-4 py-4">
 					<ChatMessageList
 						activeConversation={activeConversation}
@@ -124,15 +135,15 @@ export function ChatThread({
 					/>
 				</div>
 
-				<div className="border-t border-border px-4 py-4">
+				<ChatPanelFooter>
 					<ChatMessageComposer
 						disabled={!activeConversation || isLoadingActiveMessages}
 						isSendingMessage={isSendingMessage}
 						onSubmitMessage={onSubmitMessage}
 					/>
-				</div>
-			</div>
-		</div>
+				</ChatPanelFooter>
+			</ChatPanelContent>
+		</ChatPanel>
 	)
 }
 
@@ -161,7 +172,7 @@ function ChatMessageList({
 }: ChatMessageListProps) {
 	if (activeMessagesError && activeMessages.length === 0) {
 		return (
-			<div className="flex h-full items-center justify-center">
+			<Stack vertical justify="center" align="center" className="h-full">
 				<Empty
 					fullWidth
 					outline
@@ -177,28 +188,28 @@ function ChatMessageList({
 						onClick={onReloadConversation}
 					/>
 				</Empty>
-			</div>
+			</Stack>
 		)
 	}
 
 	if (isLoadingActiveMessages && !hasLoadedActiveMessages) {
 		return (
-			<div className="flex h-full items-center justify-center">
+			<Stack vertical justify="center" align="center" className="h-full">
 				<Stack vertical gap={2} align="center">
 					<TS clean variant="subtitle" content="Загружаем переписку..." />
 					<TS
 						variant="caption"
 						color="secondary"
-						content="История сообщений подтягивается с backend foundation"
+						content="История сообщений загружается из существующего backend"
 					/>
 				</Stack>
-			</div>
+			</Stack>
 		)
 	}
 
 	if (activeMessages.length === 0) {
 		return (
-			<div className="flex h-full items-center justify-center">
+			<Stack vertical justify="center" align="center" className="h-full">
 				<Empty
 					fullWidth
 					outline
@@ -206,7 +217,7 @@ function ChatMessageList({
 					title="Сообщений пока нет"
 					helper="Как только в этом диалоге появятся сообщения, они будут показаны здесь."
 				/>
-			</div>
+			</Stack>
 		)
 	}
 
@@ -265,11 +276,13 @@ function ChatMessageList({
 								>
 									<TS
 										variant="caption"
+										nowrap
 										className="shrink-0"
-										content={formatMessageTime(message.createdAt)}
+										content={formatChatDateTime(message.createdAt)}
 									/>
 									<TS
 										variant="caption"
+										nowrap
 										className="shrink-0 text-right"
 										content={messageStatusLabel[message.status]}
 									/>
@@ -296,7 +309,7 @@ function ChatMessageComposer({
 }: ChatMessageComposerProps) {
 	const [draft, setDraft] = useState('')
 
-	const canSubmit = useMemo(() => draft.trim().length > 0 && !disabled, [draft, disabled])
+	const canSubmit = draft.trim().length > 0 && !disabled
 
 	const onSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
 		event.preventDefault()
@@ -336,7 +349,7 @@ function ChatMessageComposer({
 					multiline
 					disabled={disabled || isSendingMessage}
 				/>
-				<Stack justify="space-between" align="center" className="gap-3">
+				<Stack justify="space-between" align="center" gap={3}>
 					<TS
 						variant="caption"
 						color="secondary"
@@ -355,23 +368,6 @@ function ChatMessageComposer({
 	)
 }
 
-function formatMessageTime(value: string) {
-	const date = new Date(value)
-
-	if (Number.isNaN(date.getTime())) {
-		return ''
-	}
-
-	return new Intl.DateTimeFormat('ru-RU', {
-		hour: '2-digit',
-		minute: '2-digit',
-	}).format(date)
-}
-
-function formatParticipantRole(conversation: ChatConversationSummary) {
-	return conversation.otherParticipant.role === 'customer' ? 'Заказчик' : 'Фрилансер'
-}
-
 const messageStatusLabel: Record<ChatUiMessage['status'], string> = {
 	sent: 'Отправлено',
 	sending: 'Отправляется...',
@@ -379,10 +375,10 @@ const messageStatusLabel: Record<ChatUiMessage['status'], string> = {
 }
 
 const realtimeStatusLabel: Record<ChatRealtimeStatus, string> = {
-	idle: 'Realtime idle',
+	idle: 'Ожидание соединения',
 	connecting: 'Подключение...',
-	connected: 'Realtime online',
-	error: 'Ошибка realtime',
+	connected: 'Соединение активно',
+	error: 'Ошибка соединения',
 }
 
 const realtimeStatusColor: Record<

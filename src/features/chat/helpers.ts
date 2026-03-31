@@ -239,3 +239,33 @@ export function shouldUseIncomingReadEventAsPeerUpdate(params: {
 }): boolean {
 	return params.event.readState.lastReadMessageId !== params.pendingReadMessageId
 }
+
+export function formatChatDateTime(
+	value: string,
+	options?: {
+		withDate?: boolean
+	},
+) {
+	const date = new Date(value)
+
+	if (Number.isNaN(date.getTime())) {
+		return ''
+	}
+
+	return new Intl.DateTimeFormat('ru-RU', {
+		...(options?.withDate
+			? {
+					day: '2-digit',
+					month: '2-digit',
+				}
+			: {}),
+		hour: '2-digit',
+		minute: '2-digit',
+	}).format(date)
+}
+
+export function formatChatParticipantRole(
+	role: ChatConversationSummary['otherParticipant']['role'],
+) {
+	return role === 'customer' ? 'Заказчик' : 'Фрилансер'
+}

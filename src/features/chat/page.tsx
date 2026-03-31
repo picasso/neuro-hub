@@ -22,8 +22,9 @@ import {
 	loadOlderChatMessagesFx,
 	sendChatMessageFx,
 	$activeNextCursor,
-} from './chat-model'
-import { ChatWorkspace } from './chat-workspace'
+} from './model'
+import { ChatWorkspace } from './workspace'
+import { PageShell } from '@/ui'
 
 export function ChatPage() {
 	const params = useParams<{ conversationId?: string }>()
@@ -74,25 +75,27 @@ export function ChatPage() {
 	])
 
 	return (
-		<ChatWorkspace
-			conversations={conversations}
-			activeConversationId={activeConversationId}
-			activeConversation={activeConversation}
-			activeMessages={activeMessages}
-			conversationsError={conversationsError}
-			activeMessagesError={activeMessagesError}
-			hasLoadedActiveMessages={hasLoadedActiveMessages}
-			hasOlderMessages={Boolean(activeNextCursor)}
-			isLoadingConversations={isLoadingConversations}
-			isLoadingActiveMessages={isLoadingActiveMessages}
-			isLoadingOlderMessages={isLoadingOlderMessages}
-			isSendingMessage={isSendingMessage}
-			realtimeStatus={realtimeStatus}
-			unreadConversationsCount={unreadConversationsCount}
-			onRefreshConversations={onRefreshConversations}
-			onReloadConversation={onReloadConversation}
-			onLoadOlderMessages={onLoadOlderMessages}
-			onSubmitMessage={onSubmitMessage}
-		/>
+		<PageShell preset="wide" spacing="md">
+			<ChatWorkspace
+				conversations={conversations}
+				activeConversationId={activeConversationId}
+				activeConversation={activeConversation}
+				activeMessages={activeMessages}
+				conversationsError={conversationsError}
+				activeMessagesError={activeMessagesError}
+				hasLoadedActiveMessages={hasLoadedActiveMessages}
+				hasOlderMessages={Boolean(activeNextCursor)}
+				isLoadingConversations={isLoadingConversations}
+				isLoadingActiveMessages={isLoadingActiveMessages}
+				isLoadingOlderMessages={isLoadingOlderMessages}
+				isSendingMessage={isSendingMessage}
+				realtimeStatus={realtimeStatus}
+				unreadConversationsCount={unreadConversationsCount}
+				onRefreshConversations={onRefreshConversations}
+				onReloadConversation={onReloadConversation}
+				onLoadOlderMessages={onLoadOlderMessages}
+				onSubmitMessage={onSubmitMessage}
+			/>
+		</PageShell>
 	)
 }

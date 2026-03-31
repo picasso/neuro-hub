@@ -1,12 +1,14 @@
 import {
 	appendChatMessage,
 	createOptimisticChatMessage,
+	formatChatDateTime,
+	formatChatParticipantRole,
 	getLatestReadableMessageId,
 	markOptimisticChatMessageFailed,
 	patchConversationReadState,
 	replaceOptimisticChatMessage,
 	shouldUseIncomingReadEventAsPeerUpdate,
-} from './chat-model.helpers'
+} from './helpers'
 import type { ChatConversationSummary, ChatMessage } from '@/lib/chat/contracts'
 
 const baseConversation: ChatConversationSummary = {
@@ -35,7 +37,7 @@ const sentMessage: ChatMessage = {
 	createdAt: '2026-03-30T10:02:00.000Z',
 }
 
-describe('chat-model.helpers', () => {
+describe('model-helpers', () => {
 	it('replaces optimistic message with persisted message without duplicates', () => {
 		const optimisticMessage = createOptimisticChatMessage({
 			conversationId: 'conversation-1',
@@ -138,5 +140,15 @@ describe('chat-model.helpers', () => {
 		})
 
 		expect(shouldUseEvent).toBe(false)
+	})
+
+	it('formats participant role labels', () => {
+		expect(formatChatParticipantRole('customer')).toBe('Заказчик')
+		expect(formatChatParticipantRole('freelancer')).toBe('Фрилансер')
+	})
+
+	it('returns empty string for invalid date formatting input', () => {
+		expect(formatChatDateTime('not-a-date')).toBe('')
+		expect(formatChatDateTime('not-a-date', { withDate: true })).toBe('')
 	})
 })

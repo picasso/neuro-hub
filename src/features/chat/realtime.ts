@@ -1,5 +1,5 @@
 import Ably from 'ably'
-import { requestChatAblyToken } from './chat-api'
+import { requestChatAblyToken } from './api'
 import {
 	CHAT_ABLY_CHANNEL_PREFIX,
 	type ChatConversationReadEvent,

@@ -1,7 +1,7 @@
-import { ChatConversationsList } from './chat-conversations-list'
-import { ChatThread } from './chat-thread'
-import type { ChatUiMessage } from './chat-model.helpers'
-import type { ChatRealtimeStatus } from './chat-realtime'
+import { ChatConversationsList } from './conversations-list'
+import { ChatThread } from './thread'
+import type { ChatUiMessage } from './helpers'
+import type { ChatRealtimeStatus } from './realtime'
 import type { ChatConversationSummary } from '@/lib/chat/contracts'
 import { Badge, Stack, TS } from '@/ui'
 
@@ -48,13 +48,13 @@ export function ChatWorkspace({
 }: ChatWorkspaceProps) {
 	return (
 		<Stack vertical gap={4} align="stretch">
-			<Stack justify="space-between" align="start" className="gap-3">
+			<Stack justify="space-between" align="start" gap={3}>
 				<Stack vertical gap={1} align="start">
 					<TS clean variant="h3" content="Чат" />
 					<TS
 						variant="body"
 						color="secondary"
-						content="Frontend phase MVP 1-на-1 чата поверх существующего backend foundation"
+						content="MVP 1-на-1 чата поверх существующего backend"
 					/>
 				</Stack>
 				{unreadConversationsCount > 0 ? (

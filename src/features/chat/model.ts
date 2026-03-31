@@ -6,7 +6,7 @@ import {
 	markChatConversationRead,
 	sendChatMessage,
 	type ChatRequestError,
-} from './chat-api'
+} from './api'
 import {
 	appendChatMessage,
 	appendOptimisticChatMessage,
@@ -19,12 +19,12 @@ import {
 	shouldUseIncomingReadEventAsPeerUpdate,
 	sortChatConversations,
 	type ChatUiMessage,
-} from './chat-model.helpers'
+} from './helpers'
 import {
 	clearActiveConversationRealtime,
 	setActiveConversationRealtime,
 	type ChatRealtimeStatus,
-} from './chat-realtime'
+} from './realtime'
 import type {
 	ChatConversationSummary,
 	ChatMessage,
