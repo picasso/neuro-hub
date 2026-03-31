@@ -222,3 +222,35 @@ Gzipped: ~11 KB
 - После логина если оказывается что емейл не подтвержден - мы переходим на страницу /login.
 - Это страница сейчас совершенно пустая. Логи происходит через модальное окно
 - нужно заполнить страницу каким-то полезным контентом... картинками? текстом?
+
+## Chat realtime unread для всего списка
+
+Проблема:
+- Текущий chat frontend переведён на shared `Ably` client как foundation, но backend по-прежнему выдаёт token только на один `conversationId`.
+- Этого хватает для realtime active thread, но не для полного realtime `unreadCount` по всему conversations list.
+- Без дополнительного server-side канала frontend не может узнать о новых сообщениях в других диалогах, пока не откроет их или не обновит список через API.
+
+Предпочтительное направление:
+- Добавить user-scoped realtime channel, например `chat:user:{userId}`.
+- Выдавать отдельный narrow subscribe access на этот user-scoped channel.
+- Публиковать туда summary events для списка диалогов, не только события активного conversation channel.
+
+Какие backend доработки нужны:
+1. Новый endpoint/token strategy для подписки не только на `chat:conversation:{conversationId}`, но и на user-scoped channel.
+2. Новый server-side event contract для summary updates, например:
+   - `conversation.updated`
+   - `conversation.unread_incremented`
+   - `conversation.read_synced`
+3. Publish в user-scoped channel после успешной записи сообщения в БД и после `mark read`.
+4. Payload для list updates должен содержать минимум:
+   - `conversationId`
+   - `lastMessage`
+   - `unreadCount`
+   - `updatedAt`
+5. Для read receipts стоит добавить `userId` в `conversation.read`, чтобы frontend мог различать local read sync и peer read update.
+
+Что это даст на frontend:
+- realtime обновление `unreadCount` по всему списку диалогов
+- realtime перестановку диалогов по `updatedAt`
+- более чистую модель с shared `Ably` client и несколькими управляемыми subscription scopes
+- основу для будущего inbox-style UX без polling

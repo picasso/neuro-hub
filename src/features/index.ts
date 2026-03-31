@@ -5,6 +5,7 @@ export { SignupPage } from './onboarding/signup-page'
 export { HowItWorksPage } from './how-it-works'
 export { CreateProjectPage } from './projects/create-project-page'
 export { PlaygroundPage } from './playground/playground-page'
+export { ChatPage } from './chat/chat-page'
 
 // sections & components
 export { BenefitsSection } from './home/benefits-section'

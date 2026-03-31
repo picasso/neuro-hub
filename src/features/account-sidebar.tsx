@@ -18,6 +18,7 @@ const sidebarGroups: SidebarGroup[] = [
 					{ title: 'Профиль', href: '/account/profile' },
 					{ title: 'Портфолио', href: '/account/portfolio' },
 					{ title: 'Заявки', href: '/account/applications' },
+					{ title: 'Сообщения', href: '/account/chat' },
 				],
 			},
 			{ title: 'Проекты', href: '/projects', icon: 'folder-kanban' },
