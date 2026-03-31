@@ -2,6 +2,8 @@ import type { ApiResponse } from '@/utils'
 import {
 	CHAT_API_ROUTES,
 	type ChatAblyTokenGrant,
+	type ChatContextType,
+	type ChatConversationOpenData,
 	type ChatConversationSummary,
 	type ChatMessage,
 	type ChatMessagePage,
@@ -35,6 +37,19 @@ export async function fetchChatConversations(): Promise<ChatApiSuccess<ChatConve
 	return requestChatApi<ChatConversationSummary[]>(
 		`${CHAT_API_ROUTES.conversations}?${searchParams.toString()}`,
 	)
+}
+
+export async function openChatConversation(params: {
+	contextType: ChatContextType
+	contextId: string
+	freelancerId: string
+}): Promise<ChatConversationOpenData> {
+	const result = await requestChatApi<ChatConversationOpenData>(CHAT_API_ROUTES.conversations, {
+		method: 'POST',
+		body: JSON.stringify(params),
+	})
+
+	return result.data
 }
 
 export async function fetchChatMessages(params: {
