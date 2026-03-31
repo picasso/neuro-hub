@@ -1,9 +1,11 @@
 'use client'
 
 import { sample } from 'effector'
-import { createGate, useGate } from 'effector-react'
+import { createGate, useGate, useUnit } from 'effector-react'
 import { useCallback } from 'react'
-import { genericDomain as domain } from '@/lib/logger'
+import type { AccountSnapshot } from '@/lib/account'
+import { accountSidebarDomain as domain } from '@/lib/logger'
+import { $accountContext } from '@/stores/account-context/model'
 import { type BreadcrumbProps, Sidebar, type SidebarGroup, type SidebarItemClick } from '@/ui'
 
 const sidebarGroups: SidebarGroup[] = [
@@ -18,17 +20,24 @@ const sidebarGroups: SidebarGroup[] = [
 				icon: 'user-plus',
 				items: [
 					{ title: 'Профиль', href: '/account/profile' },
-					{ title: 'Портфолио', href: '/account/portfolio' },
-					{ title: 'Заявки', href: '/account/applications' },
+					{ title: 'Портфолио', href: '/account/portfolio', context: 'freelancer' },
+					{ title: 'Заявки', href: '/account/applications', context: 'freelancer' },
+					{ title: 'Заявки', href: '/account/projects/applications', context: 'client' },
 					{ title: 'Сообщения', href: '/account/chat' },
 				],
 			},
 			{ title: 'Проекты', href: '/projects', icon: 'folder-kanban' },
 			{ title: 'Фрилансеры', href: '/freelancers', icon: 'users' },
-			{ title: 'Создать проект', href: '/account/projects/new', icon: 'briefcase-business' },
+			{
+				title: 'Создать проект',
+				href: '/account/projects/new',
+				icon: 'briefcase-business',
+				context: 'client',
+			},
 			{
 				title: 'API',
 				icon: 'blocks',
+				context: 'freelancer',
 				items: [
 					{ title: 'Swagger', href: '/api/docs' },
 					{ title: 'Reference', href: '/api/reference' },
@@ -46,14 +55,20 @@ const sidebarGroups: SidebarGroup[] = [
 	},
 ]
 
-export function AccountSidebar() {
+type AccountSidebarProps = {
+	context: AccountSnapshot
+}
+
+export function AccountSidebar({ context }: AccountSidebarProps) {
 	useGate(AccountSidebarGate)
+	const accountContext = useUnit($accountContext) ?? context
 
 	const onItemClick = useCallback((current: SidebarItemClick, parent?: SidebarItemClick) => {
 		updateBreadcrumb({ current, parent })
 	}, [])
 	return (
 		<Sidebar
+			context={accountContext.role}
 			collapsible="icon"
 			groups={sidebarGroups}
 			variant="sidebar"
@@ -83,6 +98,7 @@ $breadcrumb.on(updateBreadcrumb, (_, update) => {
 	return (parentPath ? [parentPath, currentPath] : [currentPath]) as BreadcrumbPath
 })
 
+// clear breadcrumb trail when sidebar gate opens
 sample({
 	clock: AccountSidebarGate.open,
 	target: resetBreadcrumb,

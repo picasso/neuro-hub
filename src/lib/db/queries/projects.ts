@@ -750,6 +750,35 @@ export async function listFreelancerApplications({
 	}
 }
 
+export async function countClientProjects({ clientId }: { clientId: string }): Promise<number> {
+	const result = await kysely
+		.selectFrom('projects')
+		.select((eb) => eb.fn.countAll().as('count'))
+		.where('client_id', '=', clientId)
+		.executeTakeFirstOrThrow()
+
+	return Number(result.count)
+}
+
+export async function countActiveClientProjectApplications({
+	clientId,
+}: {
+	clientId: string
+}): Promise<number> {
+	const eligibleApplicationStatuses = ['submitted', 'shortlisted', 'accepted'] as const
+	const eligibleProjectStatuses = ['published', 'in_progress'] as const
+	const result = await kysely
+		.selectFrom('projects as project')
+		.innerJoin('applications as application', 'application.project_id', 'project.id')
+		.select((eb) => eb.fn.countAll().as('count'))
+		.where('project.client_id', '=', clientId)
+		.where('project.status', 'in', eligibleProjectStatuses)
+		.where('application.status', 'in', eligibleApplicationStatuses)
+		.executeTakeFirstOrThrow()
+
+	return Number(result.count)
+}
+
 export async function listClientProjectApplications({
 	clientId,
 }: {

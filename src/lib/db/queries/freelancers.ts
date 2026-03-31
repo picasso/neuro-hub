@@ -453,6 +453,41 @@ export async function getOrCreateFreelancerProfileByUserId(
 	return existing ?? null
 }
 
+export async function countFreelancerPortfolioWorks({
+	freelancerId,
+}: {
+	freelancerId: string
+}): Promise<number> {
+	const result = await kysely
+		.selectFrom('portfolio_items as portfolio_item')
+		.innerJoin(
+			'freelancer_profiles as freelancer_profile',
+			'freelancer_profile.id',
+			'portfolio_item.freelancer_profile_id',
+		)
+		.select((eb) => eb.fn.countAll().as('count'))
+		.where('freelancer_profile.user_id', '=', freelancerId)
+		.executeTakeFirstOrThrow()
+
+	return Number(result.count)
+}
+
+export async function countActiveFreelancerApplications({
+	freelancerId,
+}: {
+	freelancerId: string
+}): Promise<number> {
+	const activeStatuses = ['submitted', 'shortlisted', 'accepted'] as const
+	const result = await kysely
+		.selectFrom('applications')
+		.select((eb) => eb.fn.countAll().as('count'))
+		.where('freelancer_id', '=', freelancerId)
+		.where('status', 'in', activeStatuses)
+		.executeTakeFirstOrThrow()
+
+	return Number(result.count)
+}
+
 function toSnippet(value: string | null, maxLength = 160) {
 	if (!value) return null
 	const normalized = value.replace(/\s+/g, ' ').trim()
