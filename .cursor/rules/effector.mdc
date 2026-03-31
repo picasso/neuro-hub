@@ -12,26 +12,29 @@ Reference guide for the Effector patterns used in this codebase. Keep this file 
 ## Core Rules
 
 - Do not use `store.getState()` for runtime orchestration. Use `sample()`, `attach()`, or other reactive composition instead.
-- Create a watched domain per feature with `createDomainWatched` from `@/lib/logger`.
+- Create a watched domain per feature in `src/lib/logger/watched.ts`, export it from `@/lib/logger`, and import it into model files as `...Domain as domain`.
 - Always name stores, events, and effects. Match the variable name to the unit name when possible.
 - Prefer many small stores over one large Redux-style state object.
 - Use `.map()` for simple derivations and `combine()` for derived state from multiple stores.
 - Use `.on()` only for direct store updates in response to events.
 - Use `sample()` for business logic, routing, transformations, side effects, and cross-store orchestration.
+- Put a short single-line comment directly above every `sample()` explaining what that `sample()` does.
 - Keep domain logic in model files, not in React components.
 - Use Immer only for complex nested updates or array/object mutations. For primitives and trivial changes, use direct updates.
 - Provide reset events and explicit cleanup flows for long-lived feature state.
 
 ## Logging And Domains
 
-Use `createDomainWatched` for feature domains so development logging stays consistent.
+Use `createDomainWatched` for feature domains so development logging stays consistent, but define those domains centrally in `src/lib/logger/watched.ts`.
 
 ```ts
-import { createDomainWatched } from '@/lib/logger'
-
-const profileDomain = createDomainWatched('profile', {
+// src/lib/logger/watched.ts
+export const profileDomain = createDomainWatched('profile', {
   filter: { gate: false },
 })
+
+// model.ts
+import { profileDomain as domain } from '@/lib/logger'
 ```
 
 Always name units for readable logs:
@@ -59,6 +62,7 @@ someEvent(value)
 ✅ **Good**
 
 ```ts
+// sync current value into the next step
 sample({
   clock: someEvent,
   source: $store,
@@ -142,6 +146,7 @@ export const loadProfileFx = domain.createEffect({
 
 export const $isLoading = loadProfileFx.pending
 
+// hydrate profile after successful load
 sample({
   clock: loadProfileFx.doneData,
   target: updatedProfile,
