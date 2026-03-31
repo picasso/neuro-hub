@@ -30,6 +30,7 @@ export {
 export { findChild, findParent } from './dom'
 export { fileSize } from './file'
 export { pluralizeRu, pluralizeRuWithCount } from './pluralize-ru'
+export { normalizeSearchParams } from './search-params'
 export {
 	AppError,
 	ConflictError,

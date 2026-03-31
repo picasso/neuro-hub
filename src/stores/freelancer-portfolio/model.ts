@@ -18,7 +18,7 @@ type PortfolioContext = {
 
 type UploadFeedbackMode = 'staged' | 'progress'
 
-export const FreelancerPortfolioGate = createGate({
+export const FreelancerPortfolioGate = createGate<PortfolioContext>({
 	domain,
 	name: 'FreelancerPortfolioGate',
 })
@@ -236,6 +236,11 @@ export const deletePortfolioItem = domain.createEvent<string>('deletePortfolioIt
 sample({
 	clock: FreelancerPortfolioGate.close,
 	target: [resetFreelancerPortfolio, resetForm],
+})
+
+sample({
+	clock: FreelancerPortfolioGate.open,
+	target: setFreelancerPortfolioContext,
 })
 
 // load portfolio when userId is set

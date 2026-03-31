@@ -1,9 +1,9 @@
 import { findIndex } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { PortfolioAlbum, type PortfolioAlbumProps } from './portfolio-album'
-import { type MediaItem } from './portfolio-item'
-import { PortfolioViewer, type PortfolioViewerProps } from './portfolio-viewer'
-import { useClickOutside } from '@/ui/hooks/use-click-outside'
+import { useClickOutside } from '../hooks/use-click-outside'
+import { MediaAlbum, type MediaAlbumProps } from './media-album'
+import { type MediaItem } from './media-item'
+import { MediaViewer, type MediaViewerProps } from './media-viewer'
 
 export type PortfolioSelection = {
 	id: MediaId
@@ -20,17 +20,17 @@ export type PortfolioSelectionActionsArgs = PortfolioSelection & {
 type MediaId = MediaItem['id']
 
 export type PortfolioProps = {
-	items: PortfolioAlbumProps['items']
+	items: MediaAlbumProps['items']
 	disabled?: boolean
 	allowSelection?: boolean
-	selectedActions?: PortfolioAlbumProps['selectedActions']
-	onAction?: PortfolioAlbumProps['onAction']
-	selectedId?: PortfolioAlbumProps['selectedId']
+	selectedActions?: MediaAlbumProps['selectedActions']
+	onAction?: MediaAlbumProps['onAction']
+	selectedId?: MediaAlbumProps['selectedId']
 	onSelect?: (selection: PortfolioSelection | null) => void
 	linkActionPreview?: boolean
-	fade?: PortfolioViewerProps['fade']
-	fadeFn?: PortfolioViewerProps['fadeFn']
-	debug?: PortfolioViewerProps['debug']
+	fade?: MediaViewerProps['fade']
+	fadeFn?: MediaViewerProps['fadeFn']
+	debug?: MediaViewerProps['debug']
 }
 
 export function Portfolio({
@@ -79,7 +79,7 @@ export function Portfolio({
 		[allowSelection, onSelect, proxySelectedId],
 	)
 
-	const onActionProxy = useCallback<NonNullable<PortfolioAlbumProps['onAction']>>(
+	const onActionProxy = useCallback<NonNullable<MediaAlbumProps['onAction']>>(
 		(id, action) => {
 			onAction?.(id, action)
 			if (linkActionPreview && action === 'preview') {
@@ -92,7 +92,7 @@ export function Portfolio({
 
 	return (
 		<>
-			<PortfolioAlbum
+			<MediaAlbum
 				ref={ref}
 				items={items}
 				selectedActions={selectedActions}
@@ -101,7 +101,7 @@ export function Portfolio({
 				onAction={onActionProxy}
 				disabled={disabled}
 			/>
-			<PortfolioViewer
+			<MediaViewer
 				items={items}
 				openIndex={openIndex}
 				onClose={() => setOpenIndex(null)}

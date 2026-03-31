@@ -12,12 +12,16 @@ import {
 	useEffect,
 	useState,
 } from 'react'
-import { type MediaKind, type MediaItem, MediaPlaceholder } from './portfolio-item'
+import { Dialog } from '../dialog'
+import { Icon, type IconName } from '../icon'
+import { IconButton } from '../icon-button'
+import { Link } from '../link'
+import { Stack } from '../stack'
+import { TS } from '../text-styled'
+import { type MediaKind, type MediaItem, MediaPlaceholder } from './media-item'
 import { viewerDomain as domain } from '@/lib/logger'
-import { Dialog, Icon, IconButton, Link, Stack, TS, type IconName } from '@/ui'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
-// const fadeTransition = `opacity ${500}ms ease-in-out`
 
 type DebugOptions = {
 	slow?: boolean
@@ -28,7 +32,7 @@ type DebugOptions = {
 type FadeDuration = '200' | '300' | '500' | '800' | '1000'
 type FadeFunction = 'ease-in-out' | 'ease-in' | 'ease-out' | 'linear'
 
-export type PortfolioViewerProps = {
+export type MediaViewerProps = {
 	items: MediaItem[]
 	openIndex: number | null
 	onClose: () => void
@@ -38,7 +42,7 @@ export type PortfolioViewerProps = {
 	fadeFn?: FadeFunction
 }
 
-export function PortfolioViewer({
+export function MediaViewer({
 	items,
 	openIndex,
 	onClose,
@@ -50,7 +54,7 @@ export function PortfolioViewer({
 		random: false,
 		delay: 0,
 	},
-}: PortfolioViewerProps) {
+}: MediaViewerProps) {
 	const [currentIndex, fadeOpacity, isTransitioning, loaderDirection] = useUnit([
 		$currentIndex,
 		$fadeOpacity,

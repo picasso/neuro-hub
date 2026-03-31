@@ -1,7 +1,7 @@
 import { PendingContent } from './account-pending'
 import { PortfolioEditor } from './account-portfolio-editor'
 import { getAccountContext } from '@/lib/account'
-import { TS } from '@/ui'
+import { Stack, TS } from '@/ui'
 
 export async function AccountPortfolio() {
 	const context = await getAccountContext()
@@ -10,7 +10,7 @@ export async function AccountPortfolio() {
 	const { session, profileId } = context
 
 	return (
-		<div className="w-full min-w-0 space-y-6">
+		<Stack vertical gap={6} align="stretch" className="w-full min-w-0">
 			<TS clean variant="h3" gutterBottom content="Портфолио" />
 			<TS
 				variant="body"
@@ -30,6 +30,6 @@ export async function AccountPortfolio() {
 					description="Редактирование портфолио клиента будет добавлено позже."
 				/>
 			)}
-		</div>
+		</Stack>
 	)
 }

@@ -35,9 +35,12 @@ export function FreelancerGridCard({ item }: FreelancerGridCardProps) {
 							size="lg"
 						/>
 						<Stack vertical gap={0} align="stretch" className="min-w-0 flex-1">
-							<div className="truncate text-sm font-semibold text-foreground">
-								{item.name || 'Freelancer'}
-							</div>
+							<TS
+								clean
+								variant="subtitle"
+								className="truncate font-semibold text-foreground"
+								content={item.name || 'Freelancer'}
+							/>
 							<TS
 								clean
 								variant="caption"

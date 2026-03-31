@@ -95,6 +95,14 @@ export { Stepper, type StepperProps, type StepperItem } from './stepper'
 export { Skeleton, type SkeletonProps } from './skeleton'
 export { Breadcrumb, type BreadcrumbProps } from './breadcrumb'
 export { Card, type CardProps } from './card'
+export {
+	Portfolio,
+	type PortfolioProps,
+	type PortfolioSelection,
+} from './portfolio/portfolio-client'
+export type { MediaItem } from './portfolio/media-item'
+export type { MediaAlbumProps as PortfolioAlbumProps } from './portfolio/media-album'
+
 export { type SemanticColor, type IconColor, type MaxW, type Shadow } from './types'
 export { needsContrast } from './utils'
 

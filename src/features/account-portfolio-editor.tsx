@@ -1,8 +1,7 @@
 'use client'
 
 import { useGate, useUnit } from 'effector-react'
-import { useEffect, useState } from 'react'
-import { Portfolio } from './portfolio/portfolio'
+import { useState } from 'react'
 import { config } from '@/config'
 import { confirmYes } from '@/modals/plugin'
 import {
@@ -15,16 +14,15 @@ import {
 	FreelancerPortfolioGate,
 	deletePortfolioItem,
 	portfolioFormUpdated,
-	setFreelancerPortfolioContext,
 	submitPortfolioItem,
 } from '@/stores/freelancer-portfolio'
-import { Badge, Card, Empty, FileUploader, Skeleton, Stack, TextField } from '@/ui'
+import { Badge, Card, Empty, FileUploader, Portfolio, Skeleton, Stack, TextField } from '@/ui'
 import { fileSize, pluralizeRuWithCount } from '@/utils'
 
 const fileLimit = fileSize(config.uploadMaxSize, 0, true)
 
 export function PortfolioEditor({ userId, profileId }: { userId: string; profileId: string }) {
-	useGate(FreelancerPortfolioGate)
+	useGate(FreelancerPortfolioGate, { userId, profileId })
 	const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
 
 	const [
@@ -35,7 +33,6 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 		isSaving,
 		uploadProgress,
 		onFormUpdated,
-		onSetUserId,
 		onSubmit,
 		onDelete,
 	] = useUnit([
@@ -46,7 +43,6 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 		$isSaving,
 		$uploadProgress,
 		portfolioFormUpdated,
-		setFreelancerPortfolioContext,
 		submitPortfolioItem,
 		deletePortfolioItem,
 	])
@@ -60,17 +56,9 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 				: isLoading
 					? 'Загружаем...'
 					: 'Добавить в портфолио'
-
-	useEffect(() => {
-		onSetUserId({ userId, profileId })
-	}, [onSetUserId, profileId, userId])
-
-	useEffect(() => {
-		if (!selectedItemId) return
-		if (!portfolio.some((item) => item.id === selectedItemId)) {
-			setSelectedItemId(null)
-		}
-	}, [portfolio, selectedItemId])
+	const activeSelectedItemId = portfolio.some((item) => item.id === selectedItemId)
+		? selectedItemId
+		: null
 
 	return (
 		<Stack vertical gap={6}>
@@ -164,7 +152,7 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 						align="start"
 						icon="collections-bookmark"
 						title="Портфолио пока пустое"
-						helper="После первой загрузки здесь появится галлерея с выбором работы, предпросмотром и возможностями модификации."
+						helper="После первой загрузки здесь появится галерея с выбором работы, предпросмотром и возможностями модификации."
 					/>
 				) : (
 					<Portfolio
@@ -173,7 +161,7 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 						allowSelection
 						linkActionPreview
 						selectedActions={['preview', 'delete']}
-						selectedId={selectedItemId}
+						selectedId={activeSelectedItemId}
 						onSelect={(selection) => setSelectedItemId(selection?.id ?? null)}
 						onAction={async (id, action) => {
 							if (action === 'delete') {

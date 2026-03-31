@@ -1,5 +1,3 @@
-'use client'
-
 import { filter } from 'lodash'
 import { faqContent } from '@/config'
 import { Accordion, PageContainer, TS, type AccordionOption } from '@/ui'

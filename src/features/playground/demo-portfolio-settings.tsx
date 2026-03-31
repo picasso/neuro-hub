@@ -1,10 +1,9 @@
 'use client'
 
 import { useEffect } from 'react'
-import { type PortfolioAlbumProps } from '../portfolio/portfolio-album'
 import { DemoLabel, DemoRoot, SettingSelect, SettingToggle } from './components-utils'
 import { useReset, useSettings, useUpdateSettings } from './settings-store'
-import { Button, Label, Separator, Slider, Stack } from '@/ui'
+import { Button, Label, Separator, Slider, Stack, type PortfolioAlbumProps } from '@/ui'
 
 // settings state ---------------------------------------------------------------------------------]
 

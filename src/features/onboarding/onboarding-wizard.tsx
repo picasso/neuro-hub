@@ -1,8 +1,7 @@
 'use client'
 
 import { useGate, useUnit } from 'effector-react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { ProgressStepper } from './progress-stepper'
 import { ClientProfileStep } from './steps/client-profile-step'
 import { CredentialsStep } from './steps/credentials-step'
@@ -11,14 +10,7 @@ import { FreelancerProfileStep } from './steps/freelancer-profile-step'
 import { RoleSelectionStep } from './steps/role-selection-step'
 import { SkillsSelectionStep } from './steps/skills-selection-step'
 import type { UserRole } from '@/lib/validations'
-import {
-	$currentStep,
-	$role,
-	OnboardingGate,
-	resetOnboarding,
-	setCurrentStep,
-	setRole,
-} from '@/stores/onboarding'
+import { $currentStep, $role, OnboardingGate, resetOnboarding } from '@/stores/onboarding'
 import { Badge, PageShell, Stack } from '@/ui'
 
 const wizardSteps = {
@@ -27,25 +19,14 @@ const wizardSteps = {
 }
 
 export function OnboardingWizard() {
-	useGate(OnboardingGate)
-	const router = useRouter()
 	const searchParams = useSearchParams()
-	const [currentStep, role] = useUnit([$currentStep, $role])
+	const roleFromQuery = getRoleFromQuery(searchParams.get('role'))
 
-	// handle query param role on mount
-	useEffect(() => {
-		const roleParam = searchParams.get('role')
-		// apply query param only if user is on step 1 and hasn't been applied yet
-		if (
-			roleParam &&
-			(roleParam === 'freelancer' || roleParam === 'client') &&
-			currentStep === 1
-		) {
-			setRole(roleParam as UserRole)
-			setCurrentStep(2)
-			router.replace('/signup', { scroll: false })
-		}
-	}, [searchParams, currentStep, router])
+	useGate(OnboardingGate, {
+		initialRole: roleFromQuery,
+	})
+
+	const [currentStep, role] = useUnit([$currentStep, $role])
 
 	const renderStep = () => {
 		switch (currentStep) {
@@ -92,4 +73,12 @@ export function OnboardingWizard() {
 			</div>
 		</PageShell>
 	)
+}
+
+function getRoleFromQuery(roleParam: string | null): UserRole | null {
+	if (roleParam === 'freelancer' || roleParam === 'client') {
+		return roleParam
+	}
+
+	return null
 }

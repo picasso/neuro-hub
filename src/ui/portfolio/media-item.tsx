@@ -2,15 +2,10 @@ import { includes, map } from 'lodash'
 import Image from 'next/image'
 import { type Photo, type RenderImageContext, type RenderImageProps } from 'react-photo-album'
 import 'react-photo-album/columns.css'
-import {
-	Icon,
-	IconButton,
-	Stack,
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-	type IconName,
-} from '@/ui'
+import { Icon, type IconName } from '../icon'
+import { IconButton } from '../icon-button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '../shadcn/tooltip'
+import { Stack } from '../stack'
 import { cn } from '@/utils'
 
 export type MediaKind = 'image' | 'video' | 'audio' | 'pdf' | 'unknown'

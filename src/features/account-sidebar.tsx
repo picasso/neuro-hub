@@ -1,6 +1,8 @@
 'use client'
 
-import { useCallback, useEffect } from 'react'
+import { sample } from 'effector'
+import { createGate, useGate } from 'effector-react'
+import { useCallback } from 'react'
 import { genericDomain as domain } from '@/lib/logger'
 import { type BreadcrumbProps, Sidebar, type SidebarGroup, type SidebarItemClick } from '@/ui'
 
@@ -45,10 +47,7 @@ const sidebarGroups: SidebarGroup[] = [
 ]
 
 export function AccountSidebar() {
-	// reset breadcrumb on mount
-	useEffect(() => {
-		resetBreadcrumb()
-	}, [])
+	useGate(AccountSidebarGate)
 
 	const onItemClick = useCallback((current: SidebarItemClick, parent?: SidebarItemClick) => {
 		updateBreadcrumb({ current, parent })
@@ -68,6 +67,10 @@ export function AccountSidebar() {
 type BreadcrumbPath = NonNullable<BreadcrumbProps['path']>
 type BreadcrumbUpdate = { current: SidebarItemClick; parent?: SidebarItemClick }
 
+const AccountSidebarGate = createGate({
+	domain,
+	name: 'AccountSidebarGate',
+})
 const resetBreadcrumb = domain.createEvent('resetBreadcrumb')
 const updateBreadcrumb = domain.createEvent<BreadcrumbUpdate>('updateBreadcrumb')
 export const $breadcrumb = domain.createStore<BreadcrumbPath>([], { name: '$breadcrumb' })
@@ -78,4 +81,9 @@ $breadcrumb.on(updateBreadcrumb, (_, update) => {
 	const currentPath = current.href ? [current.title, current.href] : current.title
 	const parentPath = parent?.href ? [parent.title, parent.href] : parent ? parent.title : null
 	return (parentPath ? [parentPath, currentPath] : [currentPath]) as BreadcrumbPath
+})
+
+sample({
+	clock: AccountSidebarGate.open,
+	target: resetBreadcrumb,
 })

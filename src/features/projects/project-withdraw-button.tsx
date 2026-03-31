@@ -30,8 +30,12 @@ export function WithdrawApplicationButton({
 	}
 
 	return (
-		<Button variant="outline" disabled={isPending} onClick={onClick} className={className}>
-			{isPending ? 'Отзываем заявку...' : 'Отозвать заявку'}
-		</Button>
+		<Button
+			variant="outline"
+			disabled={isPending}
+			onClick={onClick}
+			className={className}
+			label={isPending ? 'Отзываем заявку...' : 'Отозвать заявку'}
+		/>
 	)
 }

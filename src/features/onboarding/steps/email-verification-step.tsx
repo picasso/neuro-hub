@@ -10,32 +10,40 @@ export function EmailVerificationStep() {
 	const router = useRouter()
 
 	return (
-		<div>
-			<div className="mb-8 text-center">
-				<div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mx-auto mb-6">
+		<Stack vertical gap={8}>
+			<Stack vertical align="center" gap={6} className="text-center">
+				<Stack
+					justify="center"
+					align="center"
+					className="mx-auto size-20 rounded-full bg-primary"
+				>
 					<Icon name="email" size={40} color="contrast" />
-				</div>
+				</Stack>
 
 				<TS variant="h5" gutterBottom content="Подтвердите email" />
 				<TS
-					variant="body"
+					variant="subtitle"
 					color="secondary"
-					className="text-sm mb-4"
+					gutterBottom
 					content="Мы отправили письмо на адрес:"
 				/>
 				<TS
 					variant="body"
-					className="font-semibold mb-6"
+					strong
+					gutterBottom
 					content={credentials?.email || 'ваш email'}
 				/>
-			</div>
+			</Stack>
 
-			<div className="max-w-125 mx-auto">
+			<Stack vertical gap={8} className="mx-auto max-w-125">
 				<Alert severity="info" className="mb-8">
-					<TS variant="body" className="text-sm">
-						Проверьте почту и перейдите по ссылке в письме для подтверждения вашего
-						аккаунта. Если письмо не пришло, проверьте папку "Спам".
-					</TS>
+					<TS
+						variant="subtitle"
+						content={
+							'Проверьте почту и перейдите по ссылке в письме для подтверждения вашего' +
+							' аккаунта. Если письмо не пришло, проверьте папку "Спам".'
+						}
+					/>
 				</Alert>
 
 				<Stack vertical gap={4}>
@@ -53,7 +61,7 @@ export function EmailVerificationStep() {
 						label="Изменить email"
 					/>
 				</Stack>
-			</div>
-		</div>
+			</Stack>
+		</Stack>
 	)
 }

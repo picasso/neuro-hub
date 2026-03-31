@@ -9,10 +9,10 @@ import {
 	type MediaItem,
 	type MediaKind,
 	renderMediaItem,
-} from './portfolio-item'
-import { getMediaKind } from './portfolio-viewer'
+} from './media-item'
+import { getMediaKind } from './media-viewer'
 
-export type PortfolioAlbumProps = {
+export type MediaAlbumProps = {
 	ref?: RefObject<HTMLDivElement | null>
 	items: MediaItem[]
 	spacing?: number
@@ -24,7 +24,7 @@ export type PortfolioAlbumProps = {
 	onAction?: MediaActionFn
 }
 
-export function PortfolioAlbum({
+export function MediaAlbum({
 	ref,
 	items,
 	spacing = 6,
@@ -34,7 +34,7 @@ export function PortfolioAlbum({
 	onClick,
 	onAction,
 	disabled,
-}: PortfolioAlbumProps) {
+}: MediaAlbumProps) {
 	const photos = useMemo(
 		() =>
 			map(items, (item) => {

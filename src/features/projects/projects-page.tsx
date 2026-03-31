@@ -7,7 +7,7 @@ import {
 	type ProjectDirectorySort,
 } from '@/lib/validations'
 import { Badge, Button, Card, Empty, Input, Link, PageShell, Stack, TS } from '@/ui'
-import { pluralizeRuWithCount } from '@/utils'
+import { normalizeSearchParams, pluralizeRuWithCount } from '@/utils'
 
 type PageProps = {
 	searchParams?: Promise<Record<string, string | string[] | undefined>>
@@ -352,14 +352,6 @@ function buildProjectsHref(
 
 	const query = params.toString()
 	return (query ? `/projects?${query}` : '/projects') as Route
-}
-
-function normalizeSearchParams(raw: Record<string, string | string[] | undefined>) {
-	return Object.fromEntries(
-		Object.entries(raw)
-			.map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])
-			.filter(([, value]) => value !== undefined),
-	)
 }
 
 function toDateInputValue(value: Date | undefined) {

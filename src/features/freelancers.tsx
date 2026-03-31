@@ -8,7 +8,7 @@ import {
 	type FreelancerDirectorySort,
 } from '@/lib/validations'
 import { Badge, Breadcrumb, Button, Card, Empty, Input, Link, PageShell, Stack, TS } from '@/ui'
-import { pluralizeRuWithCount } from '@/utils'
+import { normalizeSearchParams, pluralizeRuWithCount } from '@/utils'
 
 type PageProps = {
 	searchParams?: Promise<Record<string, string | string[] | undefined>>
@@ -294,12 +294,4 @@ function buildDirectoryHref(
 
 	const query = params.toString()
 	return (query ? `/freelancers?${query}` : '/freelancers') as Route
-}
-
-function normalizeSearchParams(raw: Record<string, string | string[] | undefined>) {
-	return Object.fromEntries(
-		Object.entries(raw)
-			.map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])
-			.filter(([, value]) => value !== undefined),
-	)
 }

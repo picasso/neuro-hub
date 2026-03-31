@@ -26,7 +26,10 @@ import {
 
 // * * * Gate -------------------------------------------------------------------------------------]
 
-export const OnboardingGate = createGate({ domain, name: 'OnboardingGate' })
+export const OnboardingGate = createGate<{ initialRole: UserRole | null }>({
+	domain,
+	name: 'OnboardingGate',
+})
 
 // * * * $currentStep -----------------------------------------------------------------------------]
 
@@ -399,6 +402,18 @@ sample({
 sample({
 	clock: OnboardingGate.close,
 	target: resetOnboarding,
+})
+
+sample({
+	clock: OnboardingGate.open,
+	source: {
+		currentStep: $currentStep,
+		role: $role,
+	},
+	filter: ({ currentStep, role }, { initialRole }) =>
+		Boolean(initialRole) && currentStep === 1 && role === null,
+	fn: (_, { initialRole }) => initialRole!,
+	target: setRole,
 })
 
 // automatically move to step 2 when setRole is called

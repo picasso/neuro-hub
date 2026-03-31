@@ -1,4 +1,5 @@
 import { sample } from 'effector'
+import { createGate } from 'effector-react'
 import { produce } from 'immer'
 import { forEach, isEmpty, set } from 'lodash'
 import { createAlertFx } from '@/alerts'
@@ -42,6 +43,11 @@ type WithdrawProjectApplicationParams = {
 
 type PendingWithdrawMap = Record<string, boolean>
 
+export const ProjectApplicationFormGate = createGate<{ projectId: string }>({
+	domain,
+	name: 'ProjectApplicationFormGate',
+})
+
 export const projectApplicationFormScopeChanged = domain.createEvent<string>(
 	'projectApplicationFormScopeChanged',
 )
@@ -76,6 +82,17 @@ $form.on(projectApplicationFormUpdated, (store, update) =>
 
 sample({
 	clock: projectApplicationFormScopeChanged,
+	target: resetProjectApplicationForm,
+})
+
+sample({
+	clock: ProjectApplicationFormGate.open,
+	fn: ({ projectId }) => projectId,
+	target: projectApplicationFormScopeChanged,
+})
+
+sample({
+	clock: ProjectApplicationFormGate.close,
 	target: resetProjectApplicationForm,
 })
 

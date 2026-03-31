@@ -1,8 +1,7 @@
 'use client'
 
 import type { PublicFreelancerProfile } from '@/lib/db/queries/freelancers'
-import { Portfolio } from '@/features/portfolio/portfolio'
-import { Badge, Card, Empty, Stack, TS } from '@/ui'
+import { Badge, Card, Empty, Stack, TS, Portfolio } from '@/ui'
 import { pluralizeRuWithCount } from '@/utils'
 
 export function FreelancerPublic({ profile }: { profile: PublicFreelancerProfile }) {
