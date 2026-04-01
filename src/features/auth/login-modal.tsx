@@ -3,12 +3,11 @@
 import { useGate, useUnit } from 'effector-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type SyntheticEvent } from 'react'
 import type { ModalComponentProps } from '@/modals'
+import { defaultToasterOptions } from '@/alerts'
 import {
-	$canSubmit,
 	$credentials,
-	$isLoading,
 	LoginGate,
 	signInFx,
 	toggledRememberMe,
@@ -41,16 +40,18 @@ export function LoginModal({ open, onClose }: ModalComponentProps) {
 
 	useGate(LoginGate, { callbackURL: '/account/dashboard' })
 
-	const [credentials, isLoading, canSubmit] = useUnit([$credentials, $isLoading, $canSubmit])
+	const [credentials, isLoading] = useUnit([$credentials, signInFx.pending])
 	const [onUpdatedEmail, onUpdatedPassword, onToggleRemember, onSignIn] = useUnit([
 		updatedEmail,
 		updatedPassword,
 		toggledRememberMe,
 		signInFx,
 	])
+	const canSubmit = !!credentials.email && !!credentials.password && !isLoading
 	const [coverImage, setCoverImage] = useState(() => getNextLoginCover())
 	const [isCoverLoaded, setIsCoverLoaded] = useState(false)
 	const [showPassword, setShowPassword] = useState(false)
+	const formRef = useRef<HTMLFormElement>(null)
 
 	useEffect(() => {
 		if (!open) return
@@ -63,7 +64,7 @@ export function LoginModal({ open, onClose }: ModalComponentProps) {
 		router.push(href)
 	}
 
-	const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+	const onSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
 		event.preventDefault()
 		try {
 			await onSignIn(credentials)
@@ -80,6 +81,18 @@ export function LoginModal({ open, onClose }: ModalComponentProps) {
 			open={open}
 			onClose={onClose}
 			noPadding
+			disableEscClose
+			closeOnDark
+			withToaster
+			toasterOptions={defaultToasterOptions}
+			onOpenAutoFocus={(ev) => {
+				ev.preventDefault()
+				requestAnimationFrame(() => {
+					setTimeout(() => {
+						formRef.current?.focus()
+					}, 150)
+				})
+			}}
 			srTitle="Вход в аккаунт"
 			className="w-[calc(100vw-2rem)] border-muted-foreground lg:max-w-250 xl:max-w-300"
 		>
@@ -149,12 +162,17 @@ export function LoginModal({ open, onClose }: ModalComponentProps) {
 								/>
 							</Stack>
 
-							<form className="flex flex-col gap-5" onSubmit={onSubmit}>
+							<form
+								ref={formRef}
+								tabIndex={-1}
+								className="flex flex-col gap-5"
+								onSubmit={onSubmit}
+							>
 								<TextField
 									id="login-modal-email"
 									label="Email"
 									type="email"
-									autoComplete="email"
+									autoComplete="username"
 									placeholder="name@example.com"
 									value={credentials.email}
 									onChange={(event) => onUpdatedEmail(event.target.value)}

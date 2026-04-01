@@ -1,10 +1,12 @@
 'use client'
 
-import { combine, sample } from 'effector'
+import { sample } from 'effector'
 import { createGate } from 'effector-react'
+import { produce } from 'immer'
 import { includes, toLower } from 'lodash'
+import { delay } from 'patronum'
 import type { LoginCredentials, LoginErrors } from './types'
-import { createAlert, createAlertFx, updateAlert } from '@/alerts'
+import { createAlert, createAlertFx } from '@/alerts'
 import { authClient } from '@/lib/auth/client'
 import { authDomain as domain } from '@/lib/logger'
 
@@ -32,13 +34,26 @@ export const $credentials = domain.createStore<LoginCredentials>(
 
 $credentials.reset(resetCredentials)
 
-$credentials.on(updatedEmail, (state, email) => ({ ...state, email }))
-
-$credentials.on(updatedPassword, (state, password) => ({ ...state, password }))
-
-$credentials.on(toggledRememberMe, (state) => ({ ...state, rememberMe: !state.rememberMe }))
-
-$credentials.on(setCallbackURL, (state, callbackURL) => ({ ...state, callbackURL }))
+$credentials.on(updatedEmail, (state, email) =>
+	produce(state, (draft) => {
+		draft.email = email
+	}),
+)
+$credentials.on(updatedPassword, (state, password) =>
+	produce(state, (draft) => {
+		draft.password = password
+	}),
+)
+$credentials.on(toggledRememberMe, (state) =>
+	produce(state, (draft) => {
+		draft.rememberMe = !draft.rememberMe
+	}),
+)
+$credentials.on(setCallbackURL, (state, callbackURL) =>
+	produce(state, (draft) => {
+		draft.callbackURL = callbackURL
+	}),
+)
 
 // * * * $errors ----------------------------------------------------------------------------------]
 
@@ -71,7 +86,7 @@ sample({
 	target: $errors,
 })
 
-// * * * Effects ----------------------------------------------------------------------------------]
+// * * * signInFx ---------------------------------------------------------------------------------]
 
 const loginAlertId = createAlertFx.alertId('login')
 
@@ -85,87 +100,29 @@ type BetterAuthError = {
 	error?: { message?: string; code?: string; statusCode?: number; status?: number }
 }
 
+const thrownError = domain.createEvent<BetterAuthError>('thrownError')
 export const signInFx = domain.createEffect<LoginCredentials, unknown, Error>({
 	handler: async ({ email, password, rememberMe, callbackURL }) => {
-		const timerId = setTimeout(() => {
-			createAlert({
-				id: loginAlertId,
-				severity: 'progress',
-				title: 'Авторизация...',
-				message: 'Проверяем ваши данные',
-				disableClose: true,
-				disableAutoClose: true,
-				overlay: true,
-			})
-		}, 800)
+		createAlert({
+			id: loginAlertId,
+			severity: 'progress',
+			title: 'Авторизация...',
+			message: 'Проверяем ваши данные',
+			disableClose: true,
+			disableAutoClose: true,
+			overlay: true,
+		})
+		const result = await authClient.signIn.email({
+			email,
+			password,
+			rememberMe,
+			callbackURL,
+		})
 
-		try {
-			const result = await authClient.signIn.email({
-				email,
-				password,
-				rememberMe,
-				callbackURL,
-			})
-
-			clearTimeout(timerId)
-
-			if (!result.data) {
-				createAlertFx.remove(loginAlertId)
-				// bubble up the adapter error object into catch()
-				throw (result.error as BetterAuthError) ?? new Error('Sign-in failed')
-			} else {
-				// NOTE: no need to remove progress alert here, it will be removed by Next router
-				// it also gives a better user experience
-				updateAlert({
-					id: loginAlertId,
-					title: 'Доступ разрешен',
-					message: 'Авторизация прошла успешно',
-				})
-			}
-
-			return result.data
-		} catch (error) {
-			clearTimeout(timerId)
-			createAlertFx.remove(loginAlertId)
-
-			const err = error as BetterAuthError
-
-			const code = err?.code ?? err?.error?.code
-			const status =
-				err?.error?.statusCode ??
-				err?.error?.status ??
-				// some adapters return status at top level
-				err?.status ??
-				err?.statusCode
-			const message = err?.error?.message ?? err?.message
-
-			const isUnverified =
-				status === 403 ||
-				code === 'EMAIL_NOT_VERIFIED' ||
-				includes(toLower(code ?? message), 'verify')
-
-			if (isUnverified) {
-				createAlert({
-					severity: 'info',
-					title: 'Email не подтверждён',
-					message:
-						'Мы отправили `+письмо` для верификации — подтвердите и повторите вход.',
-					relaxed: true,
-				})
-			} else {
-				const isInvalid = includes(toLower(message), 'invalid')
-				createAlert({
-					severity: 'error',
-					title: 'Ошибка авторизации',
-					message: isInvalid
-						? 'Неверный `!email` или `!пароль` - *попробуйте ещё раз*.'
-						: (message ??
-							'*Что-то пошло не так:* не удалось войти, попробуйте ещё раз.'),
-					disableAutoClose: true,
-					relaxed: isInvalid,
-				})
-			}
+		if (!result.data) {
+			thrownError(result.error as BetterAuthError)
 		}
+		return result.data
 	},
 	name: 'signInFx',
 })
@@ -186,24 +143,73 @@ sample({
 	target: signInFx,
 })
 
-// * * * Computed stores --------------------------------------------------------------------------]
-
-export const $isLoading = signInFx.pending
-
-export const $canSubmit = combine($credentials, (c) => !!c.email && !!c.password)
-
-// * * * Reset all stores -------------------------------------------------------------------------]
-
-export const resetLogin = domain.createEvent('resetLogin')
-
-// reset credential and error stores together
+// update alert information if sign-in is successful and data is present
 sample({
-	clock: resetLogin,
-	target: [resetCredentials, resetErrors],
+	clock: signInFx.doneData,
+	filter: (data) => !!data,
+	fn: () =>
+		// NOTE: no need to remove progress alert here, it will be removed by Next router
+		// it also gives a better user experience
+		createAlertFx.patchProps({
+			id: loginAlertId,
+			title: 'Доступ разрешен',
+			message: 'Авторизация прошла успешно',
+		}),
+	target: createAlertFx.patch,
 })
 
-// reset login state when gate unmounts
+// dismiss login progress alert when error was thrown or effect fails
+sample({
+	clock: [signInFx.fail, thrownError],
+	fn: () => ({ id: loginAlertId }),
+	target: createAlertFx.removeFx,
+})
+
+// process sign-in failure and display appropriate alert
+sample({
+	clock: [delay(signInFx.failData, 800), delay(thrownError, 800)],
+	fn: (err: BetterAuthError) => {
+		const code = err?.code ?? err?.error?.code
+		const status =
+			err?.error?.statusCode ??
+			err?.error?.status ??
+			// some adapters return status at top level
+			err?.status ??
+			err?.statusCode
+		const message = err?.error?.message ?? err?.message
+
+		const isUnverified =
+			status === 403 ||
+			code === 'EMAIL_NOT_VERIFIED' ||
+			includes(toLower(code ?? message), 'verify')
+
+		if (isUnverified) {
+			return createAlertFx.props({
+				severity: 'info',
+				title: 'Email не подтверждён',
+				message: 'Мы отправили `+письмо` для верификации — подтвердите и повторите вход.',
+				relaxed: true,
+				toasterId: 'dialog-toaster',
+			})
+		} else {
+			const isInvalid = includes(toLower(message), 'invalid')
+			return createAlertFx.props({
+				severity: 'error',
+				title: 'Ошибка авторизации',
+				message: isInvalid
+					? 'Неверный `!email` или `!пароль` - *попробуйте ещё раз*.'
+					: (message ?? '*Что-то пошло не так:* не удалось войти, попробуйте ещё раз.'),
+				disableAutoClose: true,
+				relaxed: isInvalid,
+				toasterId: 'dialog-toaster',
+			})
+		}
+	},
+	target: createAlertFx,
+})
+
+// reset credentials and errors when gate unmounts
 sample({
 	clock: LoginGate.close,
-	target: resetLogin,
+	target: [resetCredentials, resetErrors],
 })

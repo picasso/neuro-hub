@@ -1,10 +1,7 @@
 export {
-	$canSubmit,
 	$credentials,
 	$errors,
-	$isLoading,
 	LoginGate,
-	resetLogin,
 	setCallbackURL,
 	signInFx,
 	submitLogin,
