@@ -164,19 +164,18 @@ export const $overlay = domain
 	.on(incrementOverlay, (count) => count + 1)
 	.on(decrementOverlay, (count) => Math.max(0, count - 1))
 
+export const defaultOptions: AlertOptions = {
+	visibleToasts: 3,
+	duration: 4000,
+	position: 'bottom-left',
+	gap: 10,
+	expand: true,
+	offset: { bottom: '80px', left: '16px' },
+	mobileOffset: { bottom: '16px', left: '16px' },
+}
+
 export const $options = domain
-	.createStore<AlertOptions>(
-		{
-			visibleToasts: 3,
-			duration: 4000,
-			position: 'bottom-left',
-			gap: 10,
-			expand: true,
-			offset: { bottom: '80px', left: '16px' },
-			mobileOffset: { bottom: '16px', left: '16px' },
-		},
-		{ name: '$options' },
-	)
+	.createStore<AlertOptions>(defaultOptions, { name: '$options' })
 	.on(updateOptions, (options, update) => merge({}, options, update))
 	.reset(resetOptions)
 

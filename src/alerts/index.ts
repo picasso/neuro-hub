@@ -8,4 +8,5 @@ export {
 	resetAlertOptions,
 	type Alert,
 	type AlertOptions,
+	defaultOptions as defaultToasterOptions,
 } from './model'
