@@ -10,7 +10,7 @@ import { type BreadcrumbProps, Sidebar, type SidebarGroup, type SidebarItemClick
 
 const sidebarGroups: SidebarGroup[] = [
 	{
-		title: 'Platform',
+		title: 'Платформа',
 		collapsible: true,
 		items: [
 			{ title: 'Обзор', href: '/account/dashboard', icon: 'layout-dashboard' },
@@ -19,15 +19,51 @@ const sidebarGroups: SidebarGroup[] = [
 				open: true,
 				icon: 'user-plus',
 				items: [
-					{ title: 'Профиль', href: '/account/profile' },
-					{ title: 'Портфолио', href: '/account/portfolio', context: 'freelancer' },
-					{ title: 'Заявки', href: '/account/applications', context: 'freelancer' },
-					{ title: 'Заявки', href: '/account/projects/applications', context: 'client' },
-					{ title: 'Сообщения', href: '/account/chat' },
+					{
+						title: 'Профиль',
+						href: '/account/profile',
+					},
+					{
+						title: 'Портфолио',
+						href: '/account/portfolio',
+						context: 'freelancer',
+						badge: '~works',
+					},
+					{
+						title: 'Заявки',
+						href: '/account/applications',
+						context: 'freelancer',
+						badge: '~applications',
+					},
+					{
+						title: 'Сообщения',
+						href: '/account/chat',
+						badge: 3,
+						badgeColor: 'success',
+						badgeVariant: 'primary',
+					},
 				],
 			},
-			{ title: 'Проекты', href: '/projects', icon: 'folder-kanban' },
-			{ title: 'Фрилансеры', href: '/freelancers', icon: 'users' },
+			{
+				title: 'Мои проекты',
+				icon: 'folder-kanban',
+				context: 'client',
+				items: [
+					{
+						title: 'Проекты',
+						href: '/account/projects',
+						context: 'client',
+						badge: '~projects',
+					},
+					{
+						title: 'Заявки',
+						href: '/account/projects/applications',
+						context: 'client',
+						badge: '~applications',
+					},
+				],
+			},
+			{ title: 'Избранные фрилансеры', href: '/account/pending', icon: 'users' },
 			{
 				title: 'Создать проект',
 				href: '/account/projects/new',
@@ -46,10 +82,10 @@ const sidebarGroups: SidebarGroup[] = [
 		],
 	},
 	{
-		title: 'Projects',
+		title: 'Интеграция',
 		items: [
-			{ title: 'AI Assistant', icon: 'bot', href: '/account/pending' },
-			{ title: 'Automation Hub', icon: 'workflow', href: '/account/pending' },
+			{ title: 'AI Assistant', icon: 'bot', href: '/account/pending', badge: 133 },
+			{ title: 'Automation Hub', icon: 'workflow', href: '/account/pending', badge: '5.4' },
 			{ title: 'Studio Space', icon: 'building', href: '/account/pending' },
 		],
 	},
@@ -69,6 +105,7 @@ export function AccountSidebar({ context }: AccountSidebarProps) {
 	return (
 		<Sidebar
 			context={accountContext.role}
+			badges={accountContext}
 			collapsible="icon"
 			groups={sidebarGroups}
 			variant="sidebar"
