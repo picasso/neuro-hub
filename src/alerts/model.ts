@@ -228,7 +228,9 @@ const removeFx = domain.createEffect<AlertExtra, void>({
 
 export const createAlertFx = Object.assign(createFx, {
 	props: (alert: AlertParams) => alert,
+	patchProps: (alert: AlertPatch) => alert,
 	removeFx,
+	patch: patchAlert,
 	remove: removeAlert,
 	update: updateAlert,
 	alertId: createAlertId,

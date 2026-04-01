@@ -2,7 +2,7 @@
 
 import { useGate, useUnit } from 'effector-react'
 import { useRouter } from 'next/navigation'
-import { type FormEvent } from 'react'
+import { type SyntheticEvent } from 'react'
 import {
 	$applicationErrors,
 	$form,
@@ -31,7 +31,7 @@ export function ProjectApplicationForm({ projectId }: ProjectApplicationFormProp
 			submitProjectApplicationFx,
 		])
 
-	async function onSubmit(event: FormEvent<HTMLFormElement>) {
+	async function onSubmit(event: SyntheticEvent<HTMLFormElement>) {
 		event.preventDefault()
 		await submitApplication({ projectId, form })
 		router.refresh()
