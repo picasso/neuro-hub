@@ -8,7 +8,7 @@ import type { PortfolioForm, PortfolioItem, UploadResult } from './types'
 import { createAlertFx, updateAlert } from '@/alerts'
 import { config } from '@/config'
 import { freelancerPortfolioDomain as domain } from '@/lib/logger'
-import { portfolioWorkCreated, portfolioWorkDeleted } from '@/stores/account-context/model'
+import { portfolioWorkCreated, portfolioWorkDeleted } from '@/stores'
 import { fileSize } from '@/utils'
 
 type PortfolioContext = {

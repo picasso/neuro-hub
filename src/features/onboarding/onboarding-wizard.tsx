@@ -10,7 +10,7 @@ import { FreelancerProfileStep } from './steps/freelancer-profile-step'
 import { RoleSelectionStep } from './steps/role-selection-step'
 import { SkillsSelectionStep } from './steps/skills-selection-step'
 import type { UserRole } from '@/lib/validations'
-import { $currentStep, $role, OnboardingGate, resetOnboarding } from '@/stores/onboarding'
+import { $currentStep, $role, OnboardingGate, resetOnboarding } from '@/stores'
 import { Badge, PageShell, Stack } from '@/ui'
 
 const wizardSteps = {

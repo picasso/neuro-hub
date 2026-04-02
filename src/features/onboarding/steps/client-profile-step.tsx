@@ -7,7 +7,7 @@ import {
 	prevStep,
 	updateProfileField,
 	validateAndContinue,
-} from '@/stores/onboarding'
+} from '@/stores'
 import { Button, Stack, TextField, TS } from '@/ui'
 
 export function ClientProfileStep() {

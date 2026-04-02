@@ -2,14 +2,14 @@
 
 import { useGate, useUnit } from 'effector-react'
 import {
-	$form,
-	$isBusy,
-	$isLoading,
-	$isSaving,
+	$freelancerProfileForm as $form,
+	$freelancerProfileIsBusy as $isBusy,
+	$freelancerProfileIsLoading as $isLoading,
+	$freelancerProfileIsSaving as $isSaving,
 	FreelancerProfileGate,
 	profileFormUpdated,
 	saveFreelancerProfileClicked,
-} from '@/stores/freelancer-profile'
+} from '@/stores'
 import { Button, Stack, TextField, TS } from '@/ui'
 
 export function FreelancerProfileEditor() {

@@ -4,7 +4,7 @@ import { useGate, useUnit } from 'effector-react'
 import { $breadcrumb, AccountSidebar } from './account-sidebar'
 import type { AccountSnapshot } from '@/lib/account'
 import type { PropsWithChildren } from 'react'
-import { AccountContextGate } from '@/stores/account-context/model'
+import { AccountContextGate } from '@/stores'
 import { Breadcrumb, Separator, SidebarInset, SidebarTrigger, Stack } from '@/ui'
 
 type AccountLayoutProps = PropsWithChildren<{

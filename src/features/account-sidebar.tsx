@@ -5,7 +5,7 @@ import { createGate, useGate, useUnit } from 'effector-react'
 import { useCallback } from 'react'
 import type { AccountSnapshot } from '@/lib/account'
 import { accountSidebarDomain as domain } from '@/lib/logger'
-import { $accountContext } from '@/stores/account-context/model'
+import { $accountContext } from '@/stores'
 import { type BreadcrumbProps, Sidebar, type SidebarGroup, type SidebarItemClick } from '@/ui'
 
 const sidebarGroups: SidebarGroup[] = [

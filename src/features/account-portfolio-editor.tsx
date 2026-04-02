@@ -6,16 +6,16 @@ import { config } from '@/config'
 import { confirmYes } from '@/modals/plugin'
 import {
 	$portfolio,
-	$form,
-	$isBusy,
-	$isLoading,
-	$isSaving,
-	$uploadProgress,
+	$freelancerPortfolioForm as $form,
+	$freelancerPortfolioIsBusy as $isBusy,
+	$freelancerPortfolioIsLoading as $isLoading,
+	$freelancerPortfolioIsSaving as $isSaving,
+	$freelancerPortfolioUploadProgress as $uploadProgress,
 	FreelancerPortfolioGate,
 	deletePortfolioItem,
 	portfolioFormUpdated,
 	submitPortfolioItem,
-} from '@/stores/freelancer-portfolio'
+} from '@/stores'
 import { Badge, Card, Empty, FileUploader, Portfolio, Skeleton, Stack, TextField } from '@/ui'
 import { fileSize, pluralizeRuWithCount } from '@/utils'
 

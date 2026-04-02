@@ -2,7 +2,7 @@
 
 import { useUnit } from 'effector-react'
 import { useRouter } from 'next/navigation'
-import { $credentials, setCurrentStep } from '@/stores/onboarding'
+import { $onboardingCredentials as $credentials, setCurrentStep } from '@/stores'
 import { Alert, Button, Icon, Stack, TS } from '@/ui'
 
 export function EmailVerificationStep() {

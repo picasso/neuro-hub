@@ -7,13 +7,13 @@ import { useEffect, useRef, useState, type SyntheticEvent } from 'react'
 import type { ModalComponentProps } from '@/modals'
 import { defaultToasterOptions } from '@/alerts'
 import {
-	$credentials,
+	$authLoginCredentials as $credentials,
 	LoginGate,
 	signInFx,
 	toggledRememberMe,
 	updatedEmail,
 	updatedPassword,
-} from '@/stores/auth-login'
+} from '@/stores'
 import { Button, Checkbox, Dialog, IconButton, Stack, TextField, TS } from '@/ui'
 
 const loginCoverImages = [

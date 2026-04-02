@@ -3,13 +3,13 @@
 import { useUnit } from 'effector-react'
 import { useState } from 'react'
 import {
-	$credentials,
+	$onboardingCredentials as $credentials,
 	$credentialsErrors,
 	prevStep,
 	registerUserFx,
 	submitRegistration,
 	updateCredentialField,
-} from '@/stores/onboarding'
+} from '@/stores'
 import { Button, Stack, TextField, TS } from '@/ui'
 
 export function CredentialsStep() {

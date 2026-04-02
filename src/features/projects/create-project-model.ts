@@ -8,7 +8,7 @@ import type {
 } from '@/lib/validations'
 import { createAlertFx } from '@/alerts'
 import { createProjectDomain as domain } from '@/lib/logger'
-import { projectCreated } from '@/stores/account-context/model'
+import { projectCreated } from '@/stores'
 
 type CreateProjectStatus = Extract<CreateProjectInput['status'], 'draft' | 'published'>
 

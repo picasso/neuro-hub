@@ -1,7 +1,7 @@
 'use client'
 
 import { useUnit } from 'effector-react'
-import { $currentStep } from '@/stores/onboarding'
+import { $currentStep } from '@/stores'
 import { Stepper, TS } from '@/ui'
 
 type ProgressStepperProps = {

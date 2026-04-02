@@ -2,10 +2,7 @@
 
 import { useUnit } from 'effector-react'
 import { useRouter } from 'next/navigation'
-import {
-	$pendingWithdrawByApplicationId,
-	withdrawProjectApplicationFx,
-} from '@/stores/project-applications/model'
+import { $pendingWithdrawByApplicationId, withdrawProjectApplicationFx } from '@/stores'
 import { Button } from '@/ui'
 
 type WithdrawApplicationButtonProps = {

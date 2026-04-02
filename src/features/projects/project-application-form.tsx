@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation'
 import { type SyntheticEvent } from 'react'
 import {
 	$applicationErrors,
-	$form,
+	$projectApplicationForm as $form,
 	ProjectApplicationFormGate,
 	projectApplicationFormUpdated,
 	resetProjectApplicationForm,
 	submitProjectApplicationFx,
-} from '@/stores/project-applications/model'
+} from '@/stores'
 import { Button, Stack, TextField, TS } from '@/ui'
 
 type ProjectApplicationFormProps = {

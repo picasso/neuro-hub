@@ -3,7 +3,7 @@ import { createGate } from 'effector-react'
 import { isEmpty } from 'lodash'
 import { createAlertFx } from '@/alerts'
 import { projectApplicationsDomain as domain } from '@/lib/logger'
-import { applicationSubmitted, applicationWithdrawn } from '@/stores/account-context/model'
+import { applicationSubmitted, applicationWithdrawn } from '@/stores'
 import {
 	buildUserFacingApiErrorMessageFromParsed,
 	parseApiResponseError,
