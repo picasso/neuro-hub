@@ -134,6 +134,14 @@ Lodash is an accepted default for non-trivial data manipulation in this codebase
 - Avoid default imports like `import _ from 'lodash'`.
 - Native methods are fine when they are clearly simpler, but do not contort code just to avoid Lodash.
 
+## 5. Shared Providers
+
+The app already provides shared UI providers at the application level.
+
+- Do not add local `TooltipProvider` inside leaf UI components.
+- Assume a global `TooltipProvider` already exists unless the component is rendered in a truly isolated environment outside the app tree.
+- In Playground demos, rely on the existing app-level provider setup instead of wrapping each component with its own `TooltipProvider`.
+
 ## Review Checklist
 
 - Keep business logic and orchestration out of React components.
@@ -141,4 +149,5 @@ Lodash is an accepted default for non-trivial data manipulation in this codebase
 - Route user-facing feedback through `@/alerts`.
 - Prefer shared wrappers from `@/ui`.
 - Extract repeated transformations or validations into helpers.
+- Avoid local provider duplication when the app already mounts a global provider.
 - See `react-nextjs.mdc`, `code-style.mdc`, `use-client.mdc`, and `effector.mdc` for the base rules this guide intentionally does not repeat.
