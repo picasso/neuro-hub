@@ -18,7 +18,7 @@ import { Textarea } from './shadcn/textarea'
 
 type BaseProps = Pick<
 	FieldWrapperProps,
-	'label' | 'helper' | 'error' | 'required' | 'className'
+	'label' | 'labelClassName' | 'helper' | 'helperClassName' | 'error' | 'required' | 'className'
 > & {
 	startIcon?: IconProps['name']
 	endIcon?: IconProps['name']
@@ -49,6 +49,8 @@ function InputVariant({
 	onEndClick,
 	onClearClick,
 	className,
+	labelClassName,
+	helperClassName,
 	multiline: _,
 	ref,
 	...mainInputProps
@@ -110,6 +112,8 @@ function InputVariant({
 			disabled={disabled}
 			required={required}
 			className={className}
+			labelClassName={labelClassName}
+			helperClassName={helperClassName}
 		>
 			{control}
 		</FieldWrapper>
@@ -126,6 +130,8 @@ function TextareaVariant({
 	startIcon,
 	endIcon,
 	className,
+	labelClassName,
+	helperClassName,
 	multiline: _,
 	onEndClick: __,
 	ref,
@@ -165,6 +171,8 @@ function TextareaVariant({
 			disabled={disabled}
 			required={required}
 			className={className}
+			labelClassName={labelClassName}
+			helperClassName={helperClassName}
 		>
 			{control}
 		</FieldWrapper>

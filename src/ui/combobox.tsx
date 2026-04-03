@@ -150,6 +150,7 @@ export function Combobox<Value = ComboOption, Multiple extends boolean | undefin
 	disabled = false,
 	required,
 	labelClassName,
+	helperClassName,
 	...comboboxProps
 }: ComboboxProps<Value, Multiple>) {
 	const inner = multiple ? (
@@ -208,6 +209,7 @@ export function Combobox<Value = ComboOption, Multiple extends boolean | undefin
 			required={required}
 			disabled={disabled}
 			labelClassName={labelClassName}
+			helperClassName={helperClassName}
 		>
 			<ComboboxRoot
 				multiple={multiple}

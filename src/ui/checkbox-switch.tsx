@@ -9,7 +9,13 @@ import { Switch as ShadcnSwitch } from './shadcn/switch'
 
 export type CheckboxProps = Pick<
 	FieldWrapperProps,
-	'horizontalClassName' | 'label' | 'labelClassName' | 'helper' | 'error' | 'required'
+	| 'horizontalClassName'
+	| 'label'
+	| 'labelClassName'
+	| 'helper'
+	| 'helperClassName'
+	| 'error'
+	| 'required'
 > & {
 	checked?: boolean
 	onCheckedChange?: (checked: boolean) => void
@@ -17,7 +23,13 @@ export type CheckboxProps = Pick<
 
 export type SwitchProps = Pick<
 	FieldWrapperProps,
-	'horizontalClassName' | 'label' | 'labelClassName' | 'helper' | 'error' | 'required'
+	| 'horizontalClassName'
+	| 'label'
+	| 'labelClassName'
+	| 'helper'
+	| 'helperClassName'
+	| 'error'
+	| 'required'
 > & {
 	checked?: boolean
 	onCheckedChange?: (checked: boolean) => void
@@ -36,6 +48,7 @@ export function Checkbox({
 	disabled,
 	horizontalClassName,
 	labelClassName,
+	helperClassName,
 	...props
 }: CheckboxProps) {
 	const generatedId = useId()
@@ -52,6 +65,7 @@ export function Checkbox({
 			required={required}
 			horizontalClassName={horizontalClassName}
 			labelClassName={labelClassName}
+			helperClassName={helperClassName}
 		>
 			<ShadcnCheckbox
 				id={id}
@@ -79,6 +93,7 @@ export function Switch({
 	disabled,
 	horizontalClassName,
 	labelClassName,
+	helperClassName,
 	...props
 }: SwitchProps) {
 	const generatedId = useId()
@@ -95,6 +110,7 @@ export function Switch({
 			required={required}
 			horizontalClassName={horizontalClassName}
 			labelClassName={labelClassName}
+			helperClassName={helperClassName}
 		>
 			<ShadcnSwitch
 				id={id}
