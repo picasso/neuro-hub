@@ -126,6 +126,27 @@ import { Button, Icon, Stack, TS } from '@/ui'
 </Stack>
 ```
 
+### Stack-first layout
+
+Use `Stack` as the default primitive for generic layout containers.
+
+- If a block exists to express `flex`, `gap`, alignment, justification, row/column direction, or simple wrapping, use `Stack`.
+- Do not use raw `div` for generic layout when `Stack` can express the same structure.
+- Raw `div` is acceptable only when it has a clear non-layout purpose such as:
+  - overflow or truncation wrapper
+  - sticky / absolute / relative positioning layer
+  - shape-specific styling that `Stack` does not express cleanly
+  - semantic/container shell where a wrapper component is not appropriate
+
+### Visual semantics over utility semantics
+
+Prefer component-level meaning over decoding utility classes from raw markup.
+
+- `Stack` should communicate “this is a layout block”.
+- `TS` should communicate “this is text content”.
+- `Button`, `Empty`, `Card`, and similar wrappers should communicate approved UI surfaces.
+- Avoid making reviewers infer structure purely from class strings like `flex`, `items-center`, `gap-2`.
+
 ## 4. Lodash Preference
 
 Lodash is an accepted default for non-trivial data manipulation in this codebase.
