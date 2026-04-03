@@ -196,7 +196,7 @@ export const componentDemos: ComponentDemo[] = [
 		id: 'tabs',
 		name: 'Tabs',
 		group: 'layout',
-		description: 'Tabs — variant, bordered, icons, disabled tab',
+		description: 'Tabs — variant, size, bordered, icons and disabled tab',
 		ready: true,
 		demo: <DemoTabs />,
 		settings: <DemoTabsSettings />,

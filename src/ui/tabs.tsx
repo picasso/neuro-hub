@@ -19,11 +19,16 @@ export type TabItem = {
 
 type TabsContentProps = ComponentProps<typeof TabsContent>
 type TabsListProps = ComponentProps<typeof TabsList>
+type TabsSize = 'default' | 'sm' | 'xs'
 export type TabsProps = ComponentProps<typeof TabsRoot> & {
 	variant?: TabsListProps['variant']
+	size?: TabsSize
 	bordered?: boolean
+	fullWidth?: boolean
+	fillContainer?: boolean
 	items?: TabItem[]
 	triggerClassName?: string
+	listClassName?: string
 	contentClassName?: string
 }
 
@@ -32,37 +37,64 @@ export type TabsProps = ComponentProps<typeof TabsRoot> & {
 export function Tabs({
 	items,
 	bordered,
+	fullWidth,
+	fillContainer,
 	variant,
+	size = 'default',
 	className,
 	triggerClassName,
+	listClassName,
 	contentClassName,
 	...tabsProps
 }: TabsProps) {
+	const sizeClassName = size === 'sm' ? 'text-sm' : size === 'xs' ? 'text-xs' : undefined
 	return (
 		<TabsRoot
 			defaultValue={items?.[0]?.value}
 			className={cn(bordered && 'rounded-lg border', className)}
 			{...tabsProps}
 		>
-			<TabsList variant={variant}>
+			<TabsList
+				variant={variant}
+				className={cn(
+					size === 'xs' && 'h-8!',
+					fullWidth && 'w-full',
+					fillContainer && 'w-full justify-start',
+					listClassName,
+				)}
+			>
 				{map(items, ({ value, title, icon, disabled }) => (
 					<TabsTrigger
 						key={value}
 						value={value}
-						className={triggerClassName}
+						className={cn(
+							size === 'xs' && 'px-1.5 py-0.5',
+							fillContainer && 'flex-none',
+							triggerClassName,
+						)}
 						disabled={disabled}
 					>
 						{icon ? (
-							<Stack>
-								<Icon name={icon} color="dimmed" />
-								<TS clean variant="body">
-									{title ?? value}
-								</TS>
+							<Stack gap={size === 'xs' ? 1 : 2}>
+								<Icon
+									name={icon}
+									color="dimmed"
+									size={size === 'xs' ? 'xs' : 'sm'}
+								/>
+								<TS
+									clean
+									variant="body"
+									className={sizeClassName}
+									content={title ?? value}
+								/>
 							</Stack>
 						) : (
-							<TS clean variant="body">
-								{title ?? value}
-							</TS>
+							<TS
+								clean
+								variant="body"
+								className={sizeClassName}
+								content={title ?? value}
+							/>
 						)}
 					</TabsTrigger>
 				))}

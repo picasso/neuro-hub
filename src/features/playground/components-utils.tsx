@@ -95,9 +95,18 @@ type SettingToggleProps = {
 	label: string
 	checked: boolean
 	helper?: string
+	helperClassName?: string
+	disabled?: boolean
 }
 
-export function SettingToggle({ id, label, checked, helper }: SettingToggleProps) {
+export function SettingToggle({
+	id,
+	label,
+	checked,
+	helper,
+	helperClassName,
+	disabled,
+}: SettingToggleProps) {
 	const [_, toggle] = useUpdateSettings<never>()
 	return (
 		<Switch
@@ -107,8 +116,9 @@ export function SettingToggle({ id, label, checked, helper }: SettingToggleProps
 			onCheckedChange={() => toggle(id as never)}
 			horizontalClassName="flex-row-reverse justify-between"
 			labelClassName="text-xs"
-			helperClassName="text-xs -mt-1!"
+			helperClassName={cn('text-xs -mt-1!', helperClassName)}
 			helper={helper}
+			disabled={disabled}
 		/>
 	)
 }
