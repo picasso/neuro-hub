@@ -5,7 +5,7 @@ import { DemoRoot, SettingSelect, SettingToggle } from './components-utils'
 import { useReset, useSettings } from './settings-store'
 import { type CardProps, Separator, type MaxW } from '@/ui'
 
-export type AnyDemoState = {
+export type CardDemoState = {
 	size: NonNullable<CardProps['size']>
 	maxW: MaxW
 	fullWidth: boolean
@@ -23,7 +23,7 @@ export type AnyDemoState = {
 	customClassName: boolean
 }
 
-const defaultState: AnyDemoState = {
+const defaultState: CardDemoState = {
 	size: 'sm',
 	maxW: 'lg',
 	fullWidth: false,
@@ -41,8 +41,8 @@ const defaultState: AnyDemoState = {
 	customClassName: false,
 }
 
-export function DemoAnySettings() {
-	const reset = useReset<AnyDemoState>(defaultState)
+export function DemoCardSettings() {
+	const reset = useReset<CardDemoState>(defaultState)
 	const {
 		size,
 		maxW,
@@ -59,7 +59,7 @@ export function DemoAnySettings() {
 		image,
 		buttonProps,
 		customClassName,
-	} = useSettings<AnyDemoState>()
+	} = useSettings<CardDemoState>()
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => reset(), [])

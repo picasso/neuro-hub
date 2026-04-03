@@ -2,12 +2,12 @@
 
 import { map } from 'lodash'
 import { DemoRoot, DemoSection } from './components-utils'
-import { type AnyDemoState } from './demo-aaa-settings'
+import { type CardDemoState } from './demo-card-settings'
 import { useSettings } from './settings-store'
 import { Card, type CardProps, Stack } from '@/ui'
 
-export function DemoAny() {
-	const settings = useSettings<AnyDemoState>()
+export function DemoCard() {
+	const settings = useSettings<CardDemoState>()
 	const {
 		size,
 		maxW,

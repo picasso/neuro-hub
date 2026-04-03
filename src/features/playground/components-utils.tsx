@@ -62,15 +62,17 @@ type DemoLabelProps = {
 	content: string
 	size?: 'xs' | 'sm' | 'md'
 	className?: string
+	nowrap?: boolean
 }
 
-export function DemoLabel({ content, size = 'sm', className }: DemoLabelProps) {
+export function DemoLabel({ content, size = 'sm', className, nowrap }: DemoLabelProps) {
 	return (
 		<TS
 			variant="caption"
 			color="secondary"
 			content={content}
 			inline
+			nowrap={nowrap}
 			className={cn(widthClasses[size], className)}
 		/>
 	)
@@ -92,9 +94,10 @@ type SettingToggleProps = {
 	id: string
 	label: string
 	checked: boolean
+	helper?: string
 }
 
-export function SettingToggle({ id, label, checked }: SettingToggleProps) {
+export function SettingToggle({ id, label, checked, helper }: SettingToggleProps) {
 	const [_, toggle] = useUpdateSettings<never>()
 	return (
 		<Switch
@@ -104,6 +107,8 @@ export function SettingToggle({ id, label, checked }: SettingToggleProps) {
 			onCheckedChange={() => toggle(id as never)}
 			horizontalClassName="flex-row-reverse justify-between"
 			labelClassName="text-xs"
+			helperClassName="text-xs -mt-1!"
+			helper={helper}
 		/>
 	)
 }

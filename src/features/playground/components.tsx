@@ -1,6 +1,4 @@
 import { type ReactNode } from 'react'
-import { DemoAny } from './demo-aaa'
-import { DemoAnySettings } from './demo-aaa-settings'
 import { DemoAlert } from './demo-alert'
 import { DemoAlertSettings } from './demo-alert-settings'
 import { DemoAvatar } from './demo-avatar'
@@ -9,10 +7,16 @@ import { DemoBadge } from './demo-badge'
 import { DemoBadgeSettings } from './demo-badge-settings'
 import { DemoButtons } from './demo-buttons'
 import { DemoButtonsSettings } from './demo-buttons-settings'
+import { DemoCard } from './demo-card'
+import { DemoCardSettings } from './demo-card-settings'
+import { DemoChat } from './demo-chat'
+import { DemoChatSettings } from './demo-chat-settings'
 import { DemoCheckboxes } from './demo-checkboxes'
 import { DemoCheckboxesSettings } from './demo-checkboxes-settings'
 import { DemoDialog } from './demo-dialog'
 import { DemoDialogSettings } from './demo-dialog-settings'
+import { DemoEmpty } from './demo-empty'
+import { DemoEmptySettings } from './demo-empty-settings'
 import { DemoIconButtons } from './demo-icon-buttons'
 import { DemoIconButtonsSettings } from './demo-icon-buttons-settings'
 import { DemoIcons } from './demo-icons'
@@ -23,6 +27,10 @@ import { PortfolioDemo } from './demo-portfolio'
 import { DemoPortfolioSettings } from './demo-portfolio-settings'
 import { DemoSelects } from './demo-selects'
 import { DemoSelectsSettings } from './demo-selects-settings'
+import { DemoSkeleton } from './demo-skeleton'
+import { DemoSkeletonSettings } from './demo-skeleton-settings'
+import { DemoTabs } from './demo-tabs'
+import { DemoTabsSettings } from './demo-tabs-settings'
 import { DemoTypography } from './demo-typography'
 import { DemoTypographySettings } from './demo-typography-settings'
 import { DemoUploader } from './demo-uploader'
@@ -148,13 +156,50 @@ export const componentDemos: ComponentDemo[] = [
 		settings: <DemoAlertSettings />,
 	},
 	{
-		id: 'tabs',
-		name: 'Tabs, Cards and more',
-		group: 'layout',
-		description: 'Tabs, Cards & more',
+		id: 'empty',
+		name: 'Empty',
+		group: 'feedback',
+		description: 'Empty state — outline, error, surfaces, mediaIcon, helper, actions',
 		ready: true,
-		demo: <DemoAny />,
-		settings: <DemoAnySettings />,
+		demo: <DemoEmpty />,
+		settings: <DemoEmptySettings />,
+	},
+	{
+		id: 'skeleton',
+		name: 'Skeleton',
+		group: 'feedback',
+		description: 'Skeleton — shape presets, maxW, clean, single blocks, filler',
+		ready: true,
+		demo: <DemoSkeleton />,
+		settings: <DemoSkeletonSettings />,
+	},
+	{
+		id: 'chat-ui',
+		name: 'Chat UI',
+		group: 'layout',
+		description:
+			'Autonomous chat kit — Message, Messages, Chat, Chats, Status, Composer, Container',
+		ready: true,
+		demo: <DemoChat />,
+		settings: <DemoChatSettings />,
+	},
+	{
+		id: 'cards',
+		name: 'Cards and more',
+		group: 'layout',
+		description: 'Cards for different entities and layouts',
+		ready: true,
+		demo: <DemoCard />,
+		settings: <DemoCardSettings />,
+	},
+	{
+		id: 'tabs',
+		name: 'Tabs',
+		group: 'layout',
+		description: 'Tabs — variant, bordered, icons, disabled tab',
+		ready: true,
+		demo: <DemoTabs />,
+		settings: <DemoTabsSettings />,
 	},
 	{
 		id: 'portfolio',
