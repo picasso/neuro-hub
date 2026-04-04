@@ -14,6 +14,8 @@ export type SkeletonProps = ShadcnSkeletonProps & {
 	clean?: boolean
 	filler?: string
 	maxW?: MaxW
+	slot?: string
+	itemClassName?: string
 }
 
 export function Skeleton({
@@ -21,6 +23,8 @@ export function Skeleton({
 	maxW = 'none',
 	clean,
 	filler,
+	slot,
+	itemClassName,
 	...props
 }: SkeletonProps) {
 	if (shape === 'none') return <ShadcnSkeleton {...props} />
@@ -33,11 +37,21 @@ export function Skeleton({
 				isArray(skItem) ? (
 					<div key={itemIndex} className={skItem[0]}>
 						{map(skItem.slice(1), (item, index) => (
-							<ShadcnSkeleton key={index} className={item} {...rest} />
+							<ShadcnSkeleton
+								key={index}
+								className={cn(item, itemClassName)}
+								data-slot={slot}
+								{...rest}
+							/>
 						))}
 					</div>
 				) : (
-					<ShadcnSkeleton key={itemIndex} className={skItem} {...rest} />
+					<ShadcnSkeleton
+						key={itemIndex}
+						className={cn(skItem, itemClassName)}
+						data-slot={slot}
+						{...rest}
+					/>
 				),
 			)}
 			{filler && <div className={filler} />}
@@ -75,7 +89,15 @@ const shapes: Record<Shape, Array<string | string[]>> = {
 		['flex gap-4 w-full', 'h-4 flex-1', 'h-4 w-24', 'h-4 w-20'],
 		['flex gap-4 w-full', 'h-4 flex-1', 'h-4 w-24', 'h-4 w-20'],
 	],
-	avatar: ['size-10 shrink-0 rounded-full', ['grid gap-2 flex-1', 'h-4 w-full', 'h-4 w-3/4']],
+	avatar: [
+		'size-10 shrink-0 rounded-full',
+		[
+			'grid gap-2 flex-1 relative',
+			'h-4 w-2/5',
+			'h-3 w-3/4 opacity-60',
+			'h-3 w-3 absolute right-0 top-0 rounded-full',
+		],
+	],
 	chat: [
 		'h-8 w-40 rounded-lg rounded-bl-none opacity-40',
 		'h-4 w-32 rounded-lg rounded-br-none self-end',
