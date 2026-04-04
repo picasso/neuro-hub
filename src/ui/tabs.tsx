@@ -58,8 +58,8 @@ export function Tabs({
 				variant={variant}
 				className={cn(
 					size === 'xs' && 'h-8!',
-					fullWidth && 'w-full',
-					fillContainer && 'w-full justify-start',
+					fullWidth && 'w-full rounded-bl-none rounded-br-none',
+					fillContainer && 'w-full justify-start rounded-bl-none rounded-br-none',
 					listClassName,
 				)}
 			>
