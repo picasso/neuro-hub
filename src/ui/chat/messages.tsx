@@ -1,0 +1,72 @@
+'use client'
+
+import { isString, map } from 'lodash'
+import { type ReactNode } from 'react'
+import { Empty } from '../empty'
+import { Skeleton } from '../skeleton'
+import { Stack } from '../stack'
+import { Message, type MessageProps } from './message'
+import { cn } from '@/utils'
+
+export type MessageItem = { id: string } & MessageProps
+
+export type MessagesProps = {
+	items?: MessageItem[]
+	theme?: MessageProps['theme']
+	loading?: boolean
+	error?: string | true | null
+	empty?: ReactNode
+	className?: string
+}
+
+export function Messages({ items = [], theme, loading, error, className, empty }: MessagesProps) {
+	if (loading) {
+		return (
+			<div className="m-4">
+				<Skeleton shape="chat" slot="chat-message" itemClassName="w-full max-w-[28rem]" />
+			</div>
+		)
+	}
+
+	if (error) {
+		return (
+			<div className="m-4">
+				<Empty
+					error
+					outline
+					mediaIcon
+					icon="construction"
+					title="Что-то пошло не так!"
+					desc={isString(error) ? error : 'Произошла ошибка при загрузке сообщений'}
+					className={cn('mx-auto my-8', className)}
+					compact
+				/>
+			</div>
+		)
+	}
+
+	if (items.length === 0 && empty) {
+		return (
+			<div className="m-4">
+				<Empty
+					outline
+					dark
+					mediaIcon
+					title="Пока никаких сообщений нет"
+					desc="Добавьте первое сообщение, чтобы начать общение..."
+					icon="message-circle-check"
+					className={cn('mx-auto my-8', className)}
+					compact
+				/>
+			</div>
+		)
+	}
+
+	return (
+		<Stack vertical gap={2} align="stretch" data-theme={theme} className={className}>
+			{map(items, ({ id, ...msg }) => (
+				<Message key={id} data-message={id} theme={theme} {...msg} />
+			))}
+		</Stack>
+	)
+}

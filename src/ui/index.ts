@@ -95,6 +95,13 @@ export { Stepper, type StepperProps, type StepperItem } from './stepper'
 export { Skeleton, type SkeletonProps } from './skeleton'
 export { Breadcrumb, type BreadcrumbProps } from './breadcrumb'
 export { Card, type CardProps } from './card'
+export { Chat, type ChatProps } from './chat/chat'
+export { Chats, type ChatItem, type ChatsProps } from './chat/chats'
+export { ChatComposer, type ChatComposerProps } from './chat/composer'
+export { ChatContainer, type ChatContainerProps } from './chat/container'
+export { Message, type MessageProps } from './chat/message'
+export { Messages, type MessageItem, type MessagesProps } from './chat/messages'
+export { Status as ChatStatus, type StatusProps as ChatStatusProps } from './chat/status'
 export {
 	Portfolio,
 	type PortfolioProps,
