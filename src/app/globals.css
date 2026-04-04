@@ -53,12 +53,26 @@
 	/* Custom: border */
 	--color-border-dark: var(--border-dark);
 
+	/* Chart colors */
 	--color-chart-1: var(--chart-1);
 	--color-chart-2: var(--chart-2);
 	--color-chart-3: var(--chart-3);
 	--color-chart-4: var(--chart-4);
 	--color-chart-5: var(--chart-5);
 
+	/* Chat colors */
+	--color-chat-1: var(--chat-1);
+	--color-chat-1-border: var(--chat-1-border);
+	--color-chat-2: var(--chat-2);
+	--color-chat-2-border: var(--chat-2-border);
+	--color-chat-3: var(--chat-3);
+	--color-chat-3-border: var(--chat-3-border);
+	--color-chat-4: var(--chat-4);
+	--color-chat-4-border: var(--chat-4-border);
+	--color-chat-5: var(--chat-5);
+	--color-chat-5-border: var(--chat-5-border);
+
+	/* Sidebar colors */
 	--color-sidebar: var(--sidebar);
 	--color-sidebar-foreground: var(--sidebar-foreground);
 	--color-sidebar-primary: var(--sidebar-primary);
@@ -126,6 +140,18 @@
 	--chart-3: #f59e0b;
 	--chart-4: #06b6d4;
 	--chart-5: #ec4899;
+
+	/* Chat colors */
+	--chat-1: #e0ffc7;
+	--chat-1-border: color-mix(in srgb, var(--chat-1), black 8%);
+	--chat-2: #d6f5ff;
+	--chat-2-border: color-mix(in srgb, var(--chat-2), black 8%);
+	--chat-3: #f5e2ff;
+	--chat-3-border: color-mix(in srgb, var(--chat-3), black 8%);
+	--chat-4: #fff4d7;
+	--chat-4-border: color-mix(in srgb, var(--chat-4), black 8%);
+	--chat-5: #95fff9;
+	--chat-5-border: color-mix(in srgb, var(--chat-5), black 8%);
 
 	/* Sidebar */
 	--sidebar: #f7f7f4;
