@@ -101,11 +101,12 @@ export function Empty({
 				'gap-1.5',
 				outline && 'border border-dashed',
 				helperMd !== false && 'markdown-root',
+				!fullWidth && 'max-w-xl',
 				fullWidth && 'w-full max-w-none',
 				compact && 'p-3 md:p-6 gap-1',
 				align === 'start' && 'items-start',
-				error && 'text-destructive/70 bg-destructive/5 border-destructive/30',
-				dark && 'bg-secondary/30 border-secondary-dark',
+				error && 'text-destructive/80 bg-red-100 border-red-300',
+				dark && 'bg-secondary/30 border-border-dark',
 				light && 'bg-surface border-border-dark',
 				disabled && 'opacity-50',
 				className,
@@ -114,18 +115,24 @@ export function Empty({
 		>
 			<EmptyHeader
 				className={cn(
-					align === 'start' && 'items-start text-left',
+					align === 'start' && 'items-start text-left max-w-none w-full',
 					fullWidth && 'w-full max-w-none',
 					mediaIcon ? 'gap-2' : 'gap-1',
+					compact && 'gap-0',
 				)}
 			>
 				{icon && (
 					<EmptyMedia
 						variant={mediaIcon ? 'icon' : 'default'}
 						className={cn(
+							!!mediaIcon && 'bg-accent rounded-full',
+							!!mediaIcon && dark && 'bg-accent-dark/70',
+							!!mediaIcon && light && 'bg-accent/70',
+							!!mediaIcon && error && 'bg-red-200/70',
 							iconOptions?.size && `w-auto h-auto`,
-							mediaIcon === 'start' && 'self-center rounded-full p-6',
+							mediaIcon === 'start' && 'self-start rounded-full p-6',
 							mediaIcon === 'center' && 'self-center rounded-full p-6',
+							!!mediaIcon && compact && 'p-2',
 							mediaClassName,
 						)}
 					>
@@ -146,7 +153,7 @@ export function Empty({
 					<EmptyTitle className="text-md font-semibold tracking-wide">{title}</EmptyTitle>
 				)}
 				{desc && (
-					<EmptyDescription className="text-dimmed/90">
+					<EmptyDescription className={cn('text-dimmed/90', error && 'text-red-900/60')}>
 						{descNode}
 						{!descNode &&
 							(descMd === false ? descText : simpleMarkdown(descText, descMd))}
@@ -170,8 +177,9 @@ export function Empty({
 					variant="caption"
 					content={helperMd === false ? helperText : simpleMarkdown(helperText, helperMd)}
 					className={cn(
-						'pt-2 text-dimmed',
+						'pt-2 text-dimmed/70',
 						align === 'start' && 'text-left',
+						error && 'text-red-900/40',
 						helperClassName,
 					)}
 				/>
