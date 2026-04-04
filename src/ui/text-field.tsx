@@ -29,9 +29,9 @@ type BaseProps = Pick<
 
 type HTMLInputProps = Omit<ComponentPropsWithRef<'input'>, 'required' | 'ref'>
 type HTMLTextareaProps = Omit<ComponentPropsWithRef<'textarea'>, 'required' | 'ref'>
-type InputVariantProps = BaseProps &
+export type InputVariantProps = BaseProps &
 	HTMLInputProps & { multiline?: false; ref?: Ref<HTMLInputElement> }
-type TextareaVariantProps = BaseProps &
+export type TextareaVariantProps = BaseProps &
 	HTMLTextareaProps & { multiline: true; ref?: Ref<HTMLTextAreaElement> }
 
 export type TextFieldProps = InputVariantProps | TextareaVariantProps
