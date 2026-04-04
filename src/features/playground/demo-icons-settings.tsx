@@ -112,6 +112,7 @@ const libraryIcons: IconName[] = [
 	'briefcase-business',
 	'building',
 	'check',
+	'check-check',
 	'chevron-down',
 	'chevron-left',
 	'chevron-right',
@@ -138,7 +139,9 @@ const libraryIcons: IconName[] = [
 	'loader-circle',
 	'loader-pinwheel',
 	'log-in',
+	'log-out',
 	'mail',
+	'message-circle-check',
 	'more-horizontal',
 	'percent',
 	'plus',
@@ -165,9 +168,20 @@ const libraryIcons: IconName[] = [
 	'cog',
 	'file-sliders',
 	'construction',
+	'weight-tilde',
+	'chart-area',
 ]
 
-const customIconNames: IconName[] = ['spinner', 'linked-in', 'telegram', 'x-twitter']
+const customIconNames: IconName[] = [
+	'spinner',
+	'linked-in',
+	'telegram',
+	'x-twitter',
+	'api',
+	'missing',
+	'missing-more',
+	'nobody',
+]
 
 const sizePresets = ['xs', 'sm', 'md', 'lg', 'xl'] as const
 const colorOptions = [

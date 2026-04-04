@@ -13,6 +13,7 @@ import {
 	BriefcaseBusiness,
 	Building2,
 	Check,
+	CheckCheck,
 	ChevronDown,
 	ChevronLeft,
 	ChevronRight,
@@ -89,6 +90,7 @@ const lucideIcons = {
 	BriefcaseBusiness,
 	Building2,
 	Check,
+	CheckCheck,
 	ChevronDown,
 	ChevronLeft,
 	ChevronRight,
@@ -219,6 +221,9 @@ const aliases = {
 
 	'git-hub': 'github',
 	'check-circle': 'circle-check',
+
+	// chat status icons (lucide naming)
+	ellipsis: 'more-horizontal',
 } as const
 
 type AliasName = keyof typeof aliases

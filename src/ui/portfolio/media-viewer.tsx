@@ -165,7 +165,7 @@ export function MediaViewer({
 		>
 			<Stack justify="space-between" gap={4} className="p-4 border-b border-border">
 				<Stack gap={4}>
-					<Icon name={`media-${kind}` as IconName} size={40} color="secondary" />
+					<Icon name={mediaKindIcons[kind]} size={40} color="secondary" />
 					<TS
 						clean
 						variant="h3"
@@ -516,6 +516,14 @@ function getViewerDialogStyle({ width, height }: { width: number; height: number
 
 function getViewerDisplayWidth({ width, height }: { width: number; height: number }) {
 	return `min(${width}px, calc((100vh - 300px) * ${width} / ${height}), calc(95vw - 4rem), calc(100vw - 6rem))`
+}
+
+const mediaKindIcons: Record<MediaKind, IconName> = {
+	image: 'media-image',
+	video: 'media-video',
+	audio: 'media-audio',
+	pdf: 'media-pdf',
+	unknown: 'do-not-disturb',
 }
 
 function getViewerSize({

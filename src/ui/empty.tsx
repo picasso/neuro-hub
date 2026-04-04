@@ -2,8 +2,7 @@
 
 import { has, isPlainObject, isString } from 'lodash'
 import { type ReactNode, type ComponentProps } from 'react'
-import { type IconName } from './assets'
-import { Icon, type IconOptions } from './icon'
+import { Icon, type IconName, type IconOptions } from './icon'
 import {
 	Empty as EmptyRoot,
 	EmptyContent,

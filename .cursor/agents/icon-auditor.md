@@ -59,7 +59,9 @@ Treat the exception list as explicit and extendable. Report skipped matches from
 - before adding a new icon, check whether an existing `IconName` or alias already covers the need
 - if a truly new icon is required, add it to the library using the existing naming convention
 - if the icon is custom and not from the vendor set, add it through `src/ui/icons/icons.tsx`
-- after library changes, sync `libraryIcons` and `customIconNames` in `src/features/playground/demo-icons-settings.tsx`
+- `src/features/playground/demo-icons-settings.tsx` must stay synchronized with the actual icon library
+- always do a final consistency check between `src/ui/assets.tsx` and `src/features/playground/demo-icons-settings.tsx`, even if `src/ui/assets.tsx` was changed outside the current run
+- if the final check finds missing or stale playground entries, update `libraryIcons` and `customIconNames` in `src/features/playground/demo-icons-settings.tsx`
 
 ## Autofix Workflow
 
@@ -68,9 +70,10 @@ Treat the exception list as explicit and extendable. Report skipped matches from
 3. Replace direct rendering with `Icon` from `@/ui` when the mapping is obvious.
 4. Convert icon-related prop types and config values to `IconName`.
 5. If the target icon is missing from the library, add it in the shared icon files.
-6. Sync the playground icon lists after library changes.
-7. Run lint checks on changed files when practical.
-8. Report what changed, what was added to the library, and what was skipped as an exception or ambiguity.
+6. Always perform a final parity check between `src/ui/assets.tsx` and `src/features/playground/demo-icons-settings.tsx`.
+7. Sync the playground icon lists when the parity check finds drift, even if the shared library was not edited in this run.
+8. Run lint checks on changed files when practical.
+9. Report what changed, what was added to the library, and what was skipped as an exception or ambiguity.
 
 ## Safe Transform Patterns
 
@@ -116,3 +119,4 @@ For implementation tasks, use this structure:
 - do not bypass the `@/ui` barrel when the barrel already exports the needed API
 - do not treat `src/ui/shadcn/*` as violations unless the user explicitly asks to include them
 - do not perform repo-wide icon cleanup by default
+- do not assume `src/features/playground/demo-icons-settings.tsx` is already correct just because `src/ui/assets.tsx` was not modified during the current task

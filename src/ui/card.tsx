@@ -210,12 +210,20 @@ const imageStubs = {
 		color2: '#22c55e',
 		accent: '#e90ee9',
 	},
-}
+} satisfies Record<
+	'portfolio' | 'person' | 'project',
+	{
+		name: IconName
+		forceSize: number
+		color: string
+		color2: string
+		accent: string
+	}
+>
 
 function renderImage(image: string, title: CardProps['title'], imageAspect: ImageAspect) {
-	if (imageStubs[image as never]) {
-		const { color, color2, name, forceSize, accent } =
-			imageStubs[image as keyof typeof imageStubs]
+	if (isImageStub(image)) {
+		const { color, color2, name, forceSize, accent } = imageStubs[image]
 		return (
 			<div
 				className={cn(
@@ -225,7 +233,7 @@ function renderImage(image: string, title: CardProps['title'], imageAspect: Imag
 				)}
 				style={{ background: `linear-gradient(135deg, ${color} 0%, ${color2} 100%)` }}
 			>
-				<Icon name={name as IconName} size={forceSize} color="contrast" accent={accent} />
+				<Icon name={name} size={forceSize} color="contrast" accent={accent} />
 			</div>
 		)
 	}
@@ -238,6 +246,10 @@ function renderImage(image: string, title: CardProps['title'], imageAspect: Imag
 			className="object-cover transition-transform duration-300 group-hover:scale-[1.1]"
 		/>
 	)
+}
+
+function isImageStub(image: string): image is keyof typeof imageStubs {
+	return image in imageStubs
 }
 
 const imageAspectClasses = {
