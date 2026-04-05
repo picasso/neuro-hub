@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { createAlert } from '@/alerts'
-import { openChatConversation } from '@/features'
+import { openChatConversation } from '@/stores/chat/api'
 import { Button } from '@/ui'
 
 type ProjectStartConversationButtonProps = {

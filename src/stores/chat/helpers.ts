@@ -44,19 +44,6 @@ export function createOptimisticChatMessage(params: {
 	}
 }
 
-export function mergeChatMessages(
-	currentMessages: ChatUiMessage[],
-	nextMessages: ChatMessage[],
-): ChatUiMessage[] {
-	const messageMap = new Map(currentMessages.map((message) => [message.id, message]))
-
-	for (const message of nextMessages) {
-		messageMap.set(message.id, toChatUiMessage(message))
-	}
-
-	return sortChatMessages(Array.from(messageMap.values()))
-}
-
 export function appendChatMessage(
 	currentMessages: ChatUiMessage[],
 	nextMessage: ChatMessage,
@@ -129,24 +116,6 @@ export function sortChatConversations(
 
 		return right.id.localeCompare(left.id)
 	})
-}
-
-export function upsertChatConversation(
-	conversations: ChatConversationSummary[],
-	nextConversation: ChatConversationSummary,
-): ChatConversationSummary[] {
-	const existingConversationIndex = conversations.findIndex(
-		(conversation) => conversation.id === nextConversation.id,
-	)
-
-	if (existingConversationIndex === -1) {
-		return sortChatConversations([...conversations, nextConversation])
-	}
-
-	const nextConversations = [...conversations]
-	nextConversations.splice(existingConversationIndex, 1, nextConversation)
-
-	return sortChatConversations(nextConversations)
 }
 
 export function patchConversationWithMessage(
@@ -238,34 +207,4 @@ export function shouldUseIncomingReadEventAsPeerUpdate(params: {
 	pendingReadMessageId?: string | null
 }): boolean {
 	return params.event.readState.lastReadMessageId !== params.pendingReadMessageId
-}
-
-export function formatChatDateTime(
-	value: string,
-	options?: {
-		withDate?: boolean
-	},
-) {
-	const date = new Date(value)
-
-	if (Number.isNaN(date.getTime())) {
-		return ''
-	}
-
-	return new Intl.DateTimeFormat('ru-RU', {
-		...(options?.withDate
-			? {
-					day: '2-digit',
-					month: '2-digit',
-				}
-			: {}),
-		hour: '2-digit',
-		minute: '2-digit',
-	}).format(date)
-}
-
-export function formatChatParticipantRole(
-	role: ChatConversationSummary['otherParticipant']['role'],
-) {
-	return role === 'customer' ? 'Заказчик' : 'Фрилансер'
 }

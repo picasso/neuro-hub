@@ -433,6 +433,13 @@ export const $hasLoadedActiveMessages = combine(
 		(activeConversationId ? loadedByConversationId[activeConversationId] : false) ?? false,
 )
 
+export const $activePeerReadState = combine(
+	$peerReadStateByConversationId,
+	$activeConversationId,
+	(peerReadStateByConversationId, activeConversationId) =>
+		(activeConversationId ? peerReadStateByConversationId[activeConversationId] : null) ?? null,
+)
+
 export const $unreadConversationsCount = $conversations.map(
 	(conversations) => conversations.filter((conversation) => conversation.unreadCount > 0).length,
 )
@@ -457,7 +464,7 @@ sample({
 	target: loadChatConversationsFx,
 })
 
-// bootstrap messages + realtime when a conversation becomes active
+// bootstrap messages and realtime when a conversation becomes active
 sample({
 	clock: activeConversationChanged,
 	filter: (conversationId) => !!conversationId,
@@ -475,7 +482,7 @@ sample({
 	target: unsubscribeActiveConversationRealtimeFx,
 })
 
-// reload active thread + resubscribe realtime on manual refresh
+// reload active thread and resubscribe realtime on manual refresh
 sample({
 	clock: chatActiveConversationReloadRequested,
 	source: $activeConversationId,
@@ -493,7 +500,7 @@ sample({
 	target: loadChatConversationsFx,
 })
 
-// page older messages when cursor exists for active thread
+// keep deferred history loading seam when a cursor exists
 sample({
 	clock: chatHistoryLoadRequested,
 	source: {
@@ -553,7 +560,7 @@ sample({
 	target: optimisticMessageConfirmed,
 })
 
-// bump conversation preview + unread rules after own send succeeds
+// bump conversation preview and unread rules after own send succeeds
 sample({
 	clock: sendChatMessageFx.doneData,
 	fn: ({ conversationId, message }) => ({
@@ -703,7 +710,7 @@ sample({
 	target: localReadSyncRequested,
 })
 
-// POST read cursor to server from local sync request
+// post read cursor to server from local sync request
 sample({
 	clock: localReadSyncRequested,
 	target: markChatConversationReadFx,

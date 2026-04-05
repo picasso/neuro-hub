@@ -1,12 +1,15 @@
 'use client'
 
 import { useGate, useUnit } from 'effector-react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
+import { toChatConversationRoute, toChatListItems, toChatMessageItems } from './adapters'
+import { ChatConversationPage } from './chat-conversation-page'
+import { ChatListPage } from './chat-list-page'
 import {
 	$activeConversation,
-	$activeConversationId,
 	$activeMessages,
 	$activeMessagesError,
+	$activePeerReadState,
 	$conversations,
 	$conversationsError,
 	$hasLoadedActiveMessages,
@@ -14,19 +17,16 @@ import {
 	$unreadConversationsCount,
 	chatActiveConversationReloadRequested,
 	chatConversationsRefreshRequested,
-	chatHistoryLoadRequested,
 	chatMessageSubmitted,
 	ChatGate,
 	loadActiveChatMessagesFx,
 	loadChatConversationsFx,
-	loadOlderChatMessagesFx,
 	sendChatMessageFx,
-	$activeNextCursor,
-} from './model'
-import { ChatWorkspace } from './workspace'
+} from '@/stores'
 import { PageShell } from '@/ui'
 
 export function ChatPage() {
+	const router = useRouter()
 	const params = useParams<{ conversationId?: string }>()
 	const conversationId = typeof params.conversationId === 'string' ? params.conversationId : null
 
@@ -36,66 +36,74 @@ export function ChatPage() {
 
 	const [
 		conversations,
-		activeConversationId,
 		activeConversation,
 		activeMessages,
+		activePeerReadState,
 		conversationsError,
 		activeMessagesError,
-		activeNextCursor,
 		hasLoadedActiveMessages,
 		realtimeStatus,
 		unreadConversationsCount,
 		isLoadingConversations,
 		isLoadingActiveMessages,
-		isLoadingOlderMessages,
 		isSendingMessage,
 		onRefreshConversations,
 		onReloadConversation,
-		onLoadOlderMessages,
 		onSubmitMessage,
 	] = useUnit([
 		$conversations,
-		$activeConversationId,
 		$activeConversation,
 		$activeMessages,
+		$activePeerReadState,
 		$conversationsError,
 		$activeMessagesError,
-		$activeNextCursor,
 		$hasLoadedActiveMessages,
 		$realtimeStatus,
 		$unreadConversationsCount,
 		loadChatConversationsFx.pending,
 		loadActiveChatMessagesFx.pending,
-		loadOlderChatMessagesFx.pending,
 		sendChatMessageFx.pending,
 		chatConversationsRefreshRequested,
 		chatActiveConversationReloadRequested,
-		chatHistoryLoadRequested,
 		chatMessageSubmitted,
 	])
 
+	const chatItems = toChatListItems(conversations)
+	const messageItems = activeConversation
+		? toChatMessageItems({
+				messages: activeMessages,
+				peerId: activeConversation.otherParticipant.id,
+				peerReadState: activePeerReadState,
+			})
+		: []
+
 	return (
 		<PageShell preset="wide" spacing="md">
-			<ChatWorkspace
-				conversations={conversations}
-				activeConversationId={activeConversationId}
-				activeConversation={activeConversation}
-				activeMessages={activeMessages}
-				conversationsError={conversationsError}
-				activeMessagesError={activeMessagesError}
-				hasLoadedActiveMessages={hasLoadedActiveMessages}
-				hasOlderMessages={Boolean(activeNextCursor)}
-				isLoadingConversations={isLoadingConversations}
-				isLoadingActiveMessages={isLoadingActiveMessages}
-				isLoadingOlderMessages={isLoadingOlderMessages}
-				isSendingMessage={isSendingMessage}
-				realtimeStatus={realtimeStatus}
-				unreadConversationsCount={unreadConversationsCount}
-				onRefreshConversations={onRefreshConversations}
-				onReloadConversation={onReloadConversation}
-				onLoadOlderMessages={onLoadOlderMessages}
-				onSubmitMessage={onSubmitMessage}
-			/>
+			{conversationId ? (
+				<ChatConversationPage
+					activeConversation={activeConversation}
+					activeMessages={messageItems}
+					activeMessagesError={activeMessagesError}
+					hasLoadedActiveMessages={hasLoadedActiveMessages}
+					isLoadingConversations={isLoadingConversations}
+					isLoadingActiveMessages={isLoadingActiveMessages}
+					isSendingMessage={isSendingMessage}
+					realtimeStatus={realtimeStatus}
+					onReloadConversation={onReloadConversation}
+					onSubmitMessage={onSubmitMessage}
+				/>
+			) : (
+				<ChatListPage
+					items={chatItems}
+					error={conversationsError}
+					isLoading={isLoadingConversations}
+					unreadConversationsCount={unreadConversationsCount}
+					onRefresh={onRefreshConversations}
+					onSelect={(nextConversationId) => {
+						router.push(toChatConversationRoute(nextConversationId))
+					}}
+				/>
+			)}
 		</PageShell>
 	)
 }

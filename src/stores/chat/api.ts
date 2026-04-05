@@ -13,7 +13,7 @@ import {
 const CHAT_CONVERSATIONS_PAGE_SIZE = 50
 const CHAT_MESSAGES_PAGE_SIZE = 30
 
-type ChatRequestError = Error & {
+export type ChatRequestError = Error & {
 	code?: string
 	statusCode?: number
 }
@@ -176,5 +176,3 @@ function mapChatErrorMessage(code?: string, fallbackMessage?: string): string {
 			return fallbackMessage ?? 'Не удалось выполнить действие в чате'
 	}
 }
-
-export type { ChatRequestError }

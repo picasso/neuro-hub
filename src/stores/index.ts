@@ -12,6 +12,34 @@ export {
 	projectCreated,
 	resetContext,
 } from './account-context/model'
+export { openChatConversation } from './chat/api'
+export {
+	$activeConversation,
+	$activeConversationId,
+	$activeMessages,
+	$activeMessagesError,
+	$activeNextCursor,
+	$activePeerReadState,
+	$conversations,
+	$conversationsError,
+	$hasLoadedActiveMessages,
+	$realtimeStatus,
+	$unreadConversationsCount,
+	chatActiveConversationReloadRequested,
+	chatConversationsRefreshRequested,
+	chatHistoryLoadRequested,
+	chatMessageSubmitted,
+	ChatGate,
+	loadActiveChatMessagesFx,
+	loadChatConversationsFx,
+	loadOlderChatMessagesFx,
+	markChatConversationReadFx,
+	sendChatMessageFx,
+	subscribeActiveConversationRealtimeFx,
+	unsubscribeActiveConversationRealtimeFx,
+} from './chat/model'
+export type { ChatUiMessage, ChatUiMessageStatus } from './chat/helpers'
+export type { ChatRealtimeStatus } from './chat/realtime'
 export {
 	$credentials as $authLoginCredentials,
 	$errors as $authLoginErrors,
