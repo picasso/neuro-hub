@@ -29,6 +29,7 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
 
 	return (
 		<AvatarRoot
+			key={`${src ?? 'fallback'}:${name}`}
 			ref={ref}
 			size={shadcnSize}
 			className={cn(
@@ -39,7 +40,7 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
 				className,
 			)}
 			// extra visual padding for sm size initials
-			style={{ outlineColor: size === 'sm' ? bgColor : undefined }}
+			style={{ outlineColor: size === 'sm' && !src ? bgColor : undefined }}
 		>
 			{src && <AvatarImage src={src} alt={alt ?? name} />}
 			<AvatarFallback
