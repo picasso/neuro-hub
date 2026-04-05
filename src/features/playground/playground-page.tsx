@@ -117,8 +117,13 @@ export function PlaygroundPage() {
 					)}
 				</div>
 				{/* Side panel — component-specific settings */}
-				<div className="hidden w-65 shrink-0 border-l bg-surface md:block">
-					<Stack vertical gap={4} align="stretch" className="overflow-y-auto px-4 pb-4">
+				<div className="hidden h-full w-65 shrink-0 border-l bg-surface md:block">
+					<Stack
+						vertical
+						gap={4}
+						align="stretch"
+						className="h-full min-h-0 overflow-auto px-4 pb-4"
+					>
 						<Stack vertical gap={0} align="stretch">
 							<TS
 								clean
@@ -133,7 +138,9 @@ export function PlaygroundPage() {
 							/>
 						</Stack>
 						<Separator />
-						<SettingsRenderer component={selected} />
+						<div className="pb-2">
+							<SettingsRenderer component={selected} />
+						</div>
 					</Stack>
 				</div>
 			</Stack>

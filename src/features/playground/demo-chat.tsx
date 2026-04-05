@@ -1,7 +1,7 @@
 'use client'
 
 import dayjs from 'dayjs'
-import { random } from 'lodash'
+import { indexOf, random } from 'lodash'
 import { useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type ChatDemoState } from './demo-chat-settings'
@@ -11,6 +11,7 @@ import {
 	type ChatsProps,
 	ChatComposer,
 	ChatContainer,
+	ChatToolbar,
 	Message,
 	Messages,
 	type MessagesProps,
@@ -36,10 +37,19 @@ export function DemoChat() {
 		background,
 		bordered,
 		withTail,
+		toolbar,
+		toolbarBack,
+		toolbarTitle,
+		toolbarDesc,
+		toolbarReload,
+		toolbarStatus,
 	} = useSettings<ChatDemoState>()
 	const [draft, setDraft] = useState('')
 	const [activeChatId, setActiveChatId] = useState<string | null>(null)
+	const [status, setStatus] = useState<(typeof statusMock)[number]>('connecting')
 
+	const reload = toolbarReload ? () => setStatus((prev) => reloadMock(prev)) : undefined
+	const activeChat = chatRows.find(({ id }) => id === activeChatId)
 	const messageTabs = messagesItems({
 		theme: messageTheme,
 		stickyHeader,
@@ -49,6 +59,12 @@ export function DemoChat() {
 		padding,
 		background,
 		bordered,
+		toolbar,
+		toolbarBack,
+		title: toolbarTitle,
+		desc: toolbarDesc,
+		reload,
+		status: toolbarStatus ? status : undefined,
 	})
 
 	const chatTabs = chatItems({
@@ -61,6 +77,14 @@ export function DemoChat() {
 		bordered,
 		onSelect: setActiveChatId,
 		activeId: activeChatId,
+		toolbar,
+		toolbarBack,
+		title: toolbarTitle,
+		desc: toolbarDesc,
+		reload,
+		status: toolbarStatus ? status : undefined,
+		avatarName: activeChat?.name,
+		avatarSrc: activeChat?.avatar,
 	})
 
 	return (
@@ -225,7 +249,7 @@ const chatRows = [
 		avatar: 'https://avatars.githubusercontent.com/u/399395',
 		name: 'Димон Отстань от меня',
 		lastMessage:
-			'Очень длинный последний текст сообщения, который должен аккуратно обрезаться с многоточием в списке',
+			'The main chat page was moved to the right layers, but the conversation-open flow is still exposed as an imperative API through @/features and then executed directly inside a React component. That leaves request/orchestration/error-routing logic in UI code and weakens the intended',
 		updatedAt: mockTime('weeks'),
 		unreadCount: 200,
 	},
@@ -236,7 +260,7 @@ const chatRows = [
 		updatedAt: mockTime('today'),
 		unreadCount: 0,
 	},
-]
+] as NonNullable<ChatsProps['items']>
 
 type Options = Pick<
 	ChatContainerProps,
@@ -251,47 +275,32 @@ type Options = Pick<
 	theme?: ChatDemoState['messageTheme']
 	onSelect?: ChatsProps['onSelect']
 	activeId?: ChatsProps['activeId']
+	avatarName?: string
+	avatarSrc?: string
+	toolbar?: boolean
+	toolbarBack?: boolean
+	title?: boolean
+	desc?: boolean
+	reload?: () => void
+	status?: (typeof statusMock)[number] | null
 }
 
-// const chatContent = (props: Partial<ChatsProps>) => {
-// 	return (
-// 		<div className="overflow-hidden">
-// 			<Chats {...props} />
-// 		</div>
-// 	)
-// }
-
-// const chatItems: TabItem[] = [
-// 	{
-// 		value: 'list',
-// 		title: 'List',
-// 		icon: 'collections',
-// 		content: chatContent({ items: chatRows, activeId: 'a' }),
-// 	},
-// 	{
-// 		value: 'loading',
-// 		title: 'Loading',
-// 		icon: 'loader-pinwheel',
-// 		content: chatContent({ loading: true }),
-// 	},
-// 	{
-// 		value: 'error',
-// 		title: 'Error',
-// 		icon: 'circle-alert',
-// 		content: chatContent({ error: true }),
-// 	},
-// 	{
-// 		value: 'empty',
-// 		title: 'Empty',
-// 		icon: 'code',
-// 		content: chatContent({}),
-// 	},
-// ]
-
 const messageContent = (options: Options, props: Partial<MessagesProps>) => {
+	const title = `Messages${options.stickyHeader ? ' sticky' : ''} header`
+	const header = options.toolbar ? (
+		<ChatToolbar
+			back={options.toolbarBack}
+			title={options.title ? title : undefined}
+			desc={options.desc ? 'Описание диалога для проверки обрезки и выравнивания' : undefined}
+			onReload={options.reload}
+			status={options.status}
+		/>
+	) : (
+		title
+	)
 	return (
 		<ChatContainer
-			header={`Messages${options.stickyHeader ? ' sticky' : ''} header`}
+			header={header}
 			footer={`Messages${options.stickyFooter ? ' sticky' : ''} footer`}
 			{...options}
 			className="m-4"
@@ -330,9 +339,22 @@ const messagesItems = (options: Options) =>
 	] as TabItem[]
 
 const chatContent = (options: Options, props: Partial<ChatsProps>) => {
+	const title = `Chats${options.stickyHeader ? ' sticky' : ''} header`
+	const header = options.toolbar ? (
+		<ChatToolbar
+			back={options.toolbarBack}
+			avatar={options.title}
+			avatarSrc={options?.avatarSrc}
+			title={options.title ? options?.avatarName : undefined}
+			onReload={options.reload}
+			status={options.status}
+		/>
+	) : (
+		title
+	)
 	return (
 		<ChatContainer
-			header={`Chats${options.stickyHeader ? ' sticky' : ''} header`}
+			header={header}
 			footer={`Chats${options.stickyFooter ? ' sticky' : ''} footer`}
 			{...options}
 			className="m-4"
@@ -369,3 +391,9 @@ const chatItems = (options: Options) =>
 			content: chatContent(options, { empty: true }),
 		},
 	] as TabItem[]
+
+const statusMock = ['idle', 'connecting', 'connected', 'error'] as const
+const reloadMock = (prev: (typeof statusMock)[number]) => {
+	const index = indexOf(statusMock, prev)
+	return statusMock[(index + 1) % statusMock.length]
+}

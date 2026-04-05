@@ -18,6 +18,12 @@ export type ChatDemoState = {
 	limitHeight: 'md' | 'lg' | 'xl' | '2xl' | 'none'
 	messageTheme: 'green' | 'blue' | 'purple' | 'yellow' | 'cyan'
 	withTail: boolean
+	toolbar: boolean
+	toolbarBack: boolean
+	toolbarTitle: boolean
+	toolbarDesc: boolean
+	toolbarReload: boolean
+	toolbarStatus: boolean
 }
 
 const defaultState: ChatDemoState = {
@@ -33,6 +39,12 @@ const defaultState: ChatDemoState = {
 	limitHeight: 'md',
 	messageTheme: 'green',
 	withTail: true,
+	toolbar: false,
+	toolbarBack: false,
+	toolbarTitle: true,
+	toolbarDesc: false,
+	toolbarReload: false,
+	toolbarStatus: true,
 }
 
 export function DemoChatSettings() {
@@ -50,6 +62,12 @@ export function DemoChatSettings() {
 		composerDisabled,
 		composerSubmitting,
 		showComposerCounter,
+		toolbar,
+		toolbarBack,
+		toolbarTitle,
+		toolbarDesc,
+		toolbarReload,
+		toolbarStatus,
 	} = useSettings<ChatDemoState>()
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,6 +126,13 @@ export function DemoChatSettings() {
 				label="Composer character counter"
 				checked={showComposerCounter}
 			/>
+			<Separator />
+			<SettingToggle id="toolbar" label="Toolbar" checked={toolbar} />
+			<SettingToggle id="toolbarBack" label="Toolbar back" checked={toolbarBack} />
+			<SettingToggle id="toolbarTitle" label="Toolbar title" checked={toolbarTitle} />
+			<SettingToggle id="toolbarDesc" label="Toolbar desc" checked={toolbarDesc} />
+			<SettingToggle id="toolbarReload" label="Toolbar reload" checked={toolbarReload} />
+			<SettingToggle id="toolbarStatus" label="Toolbar status" checked={toolbarStatus} />
 		</DemoRoot>
 	)
 }
