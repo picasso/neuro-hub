@@ -2,6 +2,7 @@ import { Avatar } from '../avatar'
 import { Badge } from '../badge'
 import { Stack } from '../stack'
 import { TS } from '../text-styled'
+import { smartTime } from './smart-time'
 import { cn } from '@/utils'
 
 export type ChatProps = {
@@ -58,7 +59,7 @@ export function Chat({
 						<TS
 							variant="caption"
 							color="secondary"
-							content={updatedAt}
+							content={smartTime(updatedAt)}
 							nowrap
 							className="shrink-0 text-[11px] tabular-nums opacity-80"
 						/>

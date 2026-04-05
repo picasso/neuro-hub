@@ -1,5 +1,4 @@
 import { isString, map } from 'lodash'
-import { type ReactNode } from 'react'
 import { Empty } from '../empty'
 import { IconButton } from '../icon-button'
 import { Skeleton } from '../skeleton'
@@ -17,7 +16,7 @@ export type ChatsProps = {
 	onRefresh?: () => void
 	onSelect?: (id: string) => void
 	className?: string
-	empty?: ReactNode
+	empty?: boolean
 }
 
 export function Chats({
@@ -65,7 +64,7 @@ export function Chats({
 					dark
 					mediaIcon
 					title="Пока никаких чатов нет"
-					desc="Добавьте первый чат, чтобы начать общение..."
+					desc="Когда появятся обсуждения по проектам, они отобразятся здесь."
 					icon="message-circle-check"
 					className={cn('mx-auto my-8', className)}
 					compact

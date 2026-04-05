@@ -1,7 +1,6 @@
 'use client'
 
 import { isString, map } from 'lodash'
-import { type ReactNode } from 'react'
 import { Empty } from '../empty'
 import { Skeleton } from '../skeleton'
 import { Stack } from '../stack'
@@ -15,7 +14,7 @@ export type MessagesProps = {
 	theme?: MessageProps['theme']
 	loading?: boolean
 	error?: string | true | null
-	empty?: ReactNode
+	empty?: boolean
 	className?: string
 }
 
@@ -45,7 +44,9 @@ export function Messages({ items = [], theme, loading, error, className, empty }
 		)
 	}
 
-	if (items.length === 0 && empty) {
+	if (items.length === 0) {
+		if (!empty) return null
+
 		return (
 			<div className="m-4">
 				<Empty

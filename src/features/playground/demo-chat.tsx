@@ -1,5 +1,7 @@
 'use client'
 
+import dayjs from 'dayjs'
+import { random } from 'lodash'
 import { useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type ChatDemoState } from './demo-chat-settings'
@@ -33,6 +35,7 @@ export function DemoChat() {
 		padding,
 		background,
 		bordered,
+		withTail,
 	} = useSettings<ChatDemoState>()
 	const [draft, setDraft] = useState('')
 	const [activeChatId, setActiveChatId] = useState<string | null>(null)
@@ -68,28 +71,36 @@ export function DemoChat() {
 				separator
 			>
 				<Stack vertical gap={4} align="stretch" className="max-w-lg">
-					<Message {...messageMocks.in} theme={messageTheme} />
-					<Message {...messageMocks.out} delivery="sent" theme={messageTheme} />
+					<Message {...messageMocks.in} theme={messageTheme} withTail={withTail} />
+					<Message
+						{...messageMocks.out}
+						delivery="sent"
+						theme={messageTheme}
+						withTail={withTail}
+					/>
 					<Message
 						{...messageMocks.out}
 						text="Отправка…"
 						delivery="sending"
-						timestamp="14:04"
+						timestamp={mockTime('today')}
 						theme={messageTheme}
+						withTail={withTail}
 					/>
 					<Message
 						{...messageMocks.out}
 						text="Ошибка сети"
 						delivery="failed"
-						timestamp="14:05"
+						timestamp={mockTime('weeks')}
 						theme={messageTheme}
+						withTail={withTail}
 					/>
 					<Message
 						{...messageMocks.out}
 						text="Прочитано"
 						read
-						timestamp="14:06"
+						timestamp={mockTime('old')}
 						theme={messageTheme}
+						withTail={withTail}
 					/>
 				</Stack>
 			</DemoSection>
@@ -158,16 +169,27 @@ export function DemoChat() {
 	)
 }
 
+const mockTime = (
+	when: 'today' | 'yesterday' | 'recent' | 'weeks' | 'old' | 'random' = 'random',
+) => {
+	if (when === 'today') return dayjs().utc().toISOString()
+	if (when === 'yesterday') return dayjs().subtract(1, 'day').utc().toISOString()
+	if (when === 'recent') return dayjs().subtract(random(2, 6), 'days').utc().toISOString()
+	if (when === 'weeks') return dayjs().subtract(random(7, 100), 'days').utc().toISOString()
+	if (when === 'old') return dayjs().subtract(random(340, 400), 'days').utc().toISOString()
+	return dayjs().subtract(random(0, 14), 'days').utc().toISOString()
+}
+
 const messageMocks = {
 	in: {
 		direction: 'in' as const,
 		text: 'Привет! Это входящее сообщение с нейтральной bubble.',
-		timestamp: '14:02',
+		timestamp: mockTime('recent'),
 	},
 	out: {
 		direction: 'out' as const,
 		text: 'Исходящее: pale primary, время + статус справа.',
-		timestamp: '14:03',
+		timestamp: mockTime('yesterday'),
 	},
 }
 
@@ -177,7 +199,7 @@ const containerScrollMessages = Array.from({ length: 28 }, (_, i) => {
 		id: `scroll-${i}`,
 		direction,
 		text: `Сообщение ${i + 1}. Небольшой текст для проверки прокрутки области треда.`,
-		timestamp: `${String(9 + Math.floor(i / 5)).padStart(2, '0')}:${String((i * 7) % 60).padStart(2, '0')}`,
+		timestamp: mockTime(),
 		...(direction === 'out' ? { delivery: 'sent' as const } : {}),
 	}
 })
@@ -187,7 +209,7 @@ const chatRows = [
 		id: 'a',
 		name: 'Команда NeuroGig',
 		lastMessage: 'Короткий превью-текст',
-		updatedAt: '12:40',
+		updatedAt: mockTime('yesterday'),
 		unreadCount: 3,
 	},
 	{
@@ -195,7 +217,7 @@ const chatRows = [
 		name: 'Длинное имя чата для проверки обрезки и выравнивания',
 		lastMessage:
 			'Очень длинный последний текст сообщения, который должен аккуратно обрезаться с многоточием в списке',
-		updatedAt: 'Вчера',
+		updatedAt: mockTime('recent'),
 		unreadCount: 0,
 	},
 	{
@@ -204,14 +226,14 @@ const chatRows = [
 		name: 'Димон Отстань от меня',
 		lastMessage:
 			'Очень длинный последний текст сообщения, который должен аккуратно обрезаться с многоточием в списке',
-		updatedAt: 'Вчера',
+		updatedAt: mockTime('weeks'),
 		unreadCount: 200,
 	},
 	{
 		id: 'd',
 		name: 'Без непрочитанных',
 		lastMessage: 'Ок',
-		updatedAt: 'Пн',
+		updatedAt: mockTime('today'),
 		unreadCount: 0,
 	},
 ]

@@ -17,6 +17,7 @@ export type ChatDemoState = {
 	limitWidth: 'md' | 'lg' | 'xl' | '2xl' | 'full'
 	limitHeight: 'md' | 'lg' | 'xl' | '2xl' | 'none'
 	messageTheme: 'green' | 'blue' | 'purple' | 'yellow' | 'cyan'
+	withTail: boolean
 }
 
 const defaultState: ChatDemoState = {
@@ -31,6 +32,7 @@ const defaultState: ChatDemoState = {
 	limitWidth: 'md',
 	limitHeight: 'md',
 	messageTheme: 'green',
+	withTail: true,
 }
 
 export function DemoChatSettings() {
@@ -44,6 +46,7 @@ export function DemoChatSettings() {
 		padding,
 		background,
 		bordered,
+		withTail,
 		composerDisabled,
 		composerSubmitting,
 		showComposerCounter,
@@ -86,6 +89,7 @@ export function DemoChatSettings() {
 				options={['default', 'muted', 'transparent']}
 			/>
 			<SettingToggle id="bordered" label="Bordered" checked={bordered} />
+			<SettingToggle id="withTail" label="With tail" checked={withTail} />
 			<SettingToggle id="stickyHeader" label="Sticky header" checked={stickyHeader} />
 			<SettingToggle id="stickyFooter" label="Sticky footer" checked={stickyFooter} />
 			<Separator />
