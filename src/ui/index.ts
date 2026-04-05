@@ -102,6 +102,7 @@ export { ChatContainer, type ChatContainerProps } from './chat/container'
 export { Message, type MessageProps } from './chat/message'
 export { Messages, type MessageItem, type MessagesProps } from './chat/messages'
 export { Status as ChatStatus, type StatusProps as ChatStatusProps } from './chat/status'
+export { ChatToolbar, type ChatToolbarProps } from './chat/toolbar'
 export {
 	Portfolio,
 	type PortfolioProps,
@@ -109,6 +110,7 @@ export {
 } from './portfolio/portfolio-client'
 export type { MediaItem } from './portfolio/media-item'
 export type { MediaAlbumProps as PortfolioAlbumProps } from './portfolio/media-album'
+export { Tooltip, type TooltipProps } from './tooltip'
 
 export { type SemanticColor, type IconColor, type MaxW, type Shadow } from './types'
 export { needsContrast } from './utils'
@@ -162,7 +164,12 @@ export { Progress } from './shadcn/progress'
 export { Slider } from './shadcn/slider'
 export { Toggle } from './shadcn/toggle'
 export { ToggleGroup, ToggleGroupItem } from './shadcn/toggle-group'
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './shadcn/tooltip'
+export {
+	Tooltip as TooltipRoot,
+	TooltipTrigger,
+	TooltipContent,
+	TooltipProvider,
+} from './shadcn/tooltip'
 export { Input } from './shadcn/input'
 export { Textarea } from './shadcn/textarea'
 export {

@@ -4,8 +4,8 @@ import { type Photo, type RenderImageContext, type RenderImageProps } from 'reac
 import 'react-photo-album/columns.css'
 import { Icon, type IconName } from '../icon'
 import { IconButton } from '../icon-button'
-import { Tooltip, TooltipContent, TooltipTrigger } from '../shadcn/tooltip'
 import { Stack } from '../stack'
+import { Tooltip } from '../tooltip'
 import { cn } from '@/utils'
 
 export type MediaKind = 'image' | 'video' | 'audio' | 'pdf' | 'unknown'
@@ -162,13 +162,10 @@ export function MediaPlaceholder({
 			}}
 		>
 			{children ?? (
-				<Tooltip>
-					<TooltipTrigger asChild>
-						<span>
-							<Icon name={name} size={forceSize} color="contrast" />
-						</span>
-					</TooltipTrigger>
-					<TooltipContent>{title ?? alt}</TooltipContent>
+				<Tooltip content={title ?? alt}>
+					<span>
+						<Icon name={name} size={forceSize} color="contrast" />
+					</span>
 				</Tooltip>
 			)}
 		</div>

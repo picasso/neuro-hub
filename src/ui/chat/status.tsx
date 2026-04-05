@@ -1,5 +1,5 @@
 import { Icon, type IconName } from '../icon'
-import { Tooltip, TooltipContent, TooltipTrigger } from '../shadcn/tooltip'
+import { Tooltip } from '../tooltip'
 import { cn } from '@/utils'
 
 export type DeliveryStatus = 'sent' | 'sending' | 'failed' | 'loading' | 'read'
@@ -39,11 +39,8 @@ export function Status({ status, tooltip, className }: StatusProps) {
 	)
 
 	return tooltip ? (
-		<Tooltip delayDuration={300}>
-			<TooltipTrigger asChild>{glyph}</TooltipTrigger>
-			<TooltipContent side="top" className="max-w-xs">
-				{tooltip}
-			</TooltipContent>
+		<Tooltip delayDuration={300} content={tooltip} side="right" className="max-w-xs">
+			{glyph}
 		</Tooltip>
 	) : (
 		glyph
