@@ -1,6 +1,5 @@
 import { isString, map } from 'lodash'
 import { Empty } from '../empty'
-import { IconButton } from '../icon-button'
 import { Skeleton } from '../skeleton'
 import { Stack } from '../stack'
 import { Chat, type ChatProps } from './chat'
@@ -13,7 +12,6 @@ export type ChatsProps = {
 	activeId?: string | null
 	loading?: boolean
 	error?: string | true | null
-	onRefresh?: () => void
 	onSelect?: (id: string) => void
 	className?: string
 	empty?: boolean
@@ -24,7 +22,6 @@ export function Chats({
 	activeId = null,
 	loading,
 	error,
-	onRefresh,
 	onSelect,
 	className,
 	empty,
@@ -75,26 +72,9 @@ export function Chats({
 
 	return (
 		<Stack vertical align="stretch" className={cn('min-h-0', className)}>
-			{onRefresh && (
-				<Stack
-					direction="row"
-					justify="flex-end"
-					className="border-b border-border/40 px-2 py-1"
-				>
-					<IconButton
-						icon="rotate-ccw"
-						variant="ghost"
-						size="sm"
-						aria-label="Refresh list"
-						onClick={onRefresh}
-					/>
-				</Stack>
-			)}
-			<Stack vertical gap={0} align="stretch" className="min-h-0">
-				{map(items, (row) => (
-					<Chat key={row.id} {...row} active={row.id === activeId} onSelect={onSelect} />
-				))}
-			</Stack>
+			{map(items, (row) => (
+				<Chat key={row.id} {...row} active={row.id === activeId} onSelect={onSelect} />
+			))}
 		</Stack>
 	)
 }

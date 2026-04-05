@@ -38,14 +38,13 @@ export function Chat({
 			onClick={() => onSelect?.(id)}
 			className={cn(
 				'w-full min-w-0 border-b border-border/60 px-3 py-2.5 text-left transition-colors',
-				'rounded-lg',
-				'hover:bg-accent/50',
+				'hover:bg-accent/50 hover:rounded-md',
 				active && 'bg-primary/10 hover:bg-primary/15',
 				className,
 			)}
 			aria-current={active ? 'true' : undefined}
 		>
-			<Stack direction="row" gap={3} align="center" className="w-full min-w-0">
+			<Stack gap={3} align="center" className="w-full min-w-0">
 				<Avatar name={name} src={avatar} size="md" className="shrink-0" />
 				<Stack vertical gap={0.5} align="stretch" className="min-w-0 flex-1">
 					<Stack direction="row" gap={2} align="center" className="min-w-0">

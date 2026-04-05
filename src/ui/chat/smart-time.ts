@@ -30,3 +30,8 @@ export function smartTime(timestamp: string, now = new Date()) {
 
 	return date.format('DD.MM.YY')
 }
+
+export function fullTime(timestamp: string) {
+	const date = dayjs(timestamp).locale('ru')
+	return !date.isValid() ? null : date.format('DD.MM.YY HH:mm')
+}

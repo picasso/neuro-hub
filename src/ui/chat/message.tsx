@@ -1,6 +1,7 @@
 import { Stack } from '../stack'
 import { TS } from '../text-styled'
-import { smartTime } from './smart-time'
+import { Tooltip } from '../tooltip'
+import { fullTime, smartTime } from './smart-time'
 import { Status } from './status'
 import { cn } from '@/utils'
 
@@ -75,12 +76,14 @@ export function Message({
 						justify="flex-end"
 						className="relative z-2 mt-1"
 					>
-						<TS
-							variant="caption"
-							color="secondary"
-							content={smartTime(timestamp)}
-							className="text-[11px] tabular-nums opacity-80"
-						/>
+						<Tooltip content={fullTime(timestamp)} side="left">
+							<TS
+								variant="caption"
+								color="secondary"
+								content={smartTime(timestamp)}
+								className="text-[11px] tabular-nums opacity-80"
+							/>
+						</Tooltip>
 						{isOut && <Status status={read ? 'read' : (delivery ?? 'sent')} />}
 					</Stack>
 				</div>

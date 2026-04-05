@@ -48,7 +48,7 @@ export function ChatContainer({
 				limitWidth === '2xl' && '**:data-[slot=chat-message]:max-w-[min(100%,28rem)]',
 			)}
 		>
-			<div className={cn('flex h-full min-h-0 flex-col overflow-auto')}>
+			<div className="flex flex-1 min-h-0 flex-col overflow-auto rounded-md">
 				{header && (
 					<div
 						className={cn(
@@ -62,7 +62,7 @@ export function ChatContainer({
 					</div>
 				)}
 				<div className={cn('flex-1', backgroundClass[background], paddingClass[padding])}>
-					{children}
+					<div className="min-h-full">{children}</div>
 				</div>
 				{footer && (
 					<div
