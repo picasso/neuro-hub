@@ -17,7 +17,7 @@ export function AccountLayout({ children, context }: AccountLayoutProps) {
 	return (
 		<div className="flex w-full overflow-auto rounded-2xl border bg-background">
 			<AccountSidebar context={context} />
-			<SidebarInset className="bg-surface">
+			<SidebarInset className="bg-surfac min-w-0">
 				<Stack
 					vertical
 					gap={0}
