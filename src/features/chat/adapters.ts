@@ -1,13 +1,17 @@
 import type { ChatConversationSummary, ChatReadState } from '@/lib/chat/contracts'
 import type { ChatUiMessage } from '@/stores'
-import type { ChatItem, MessageItem } from '@/ui'
+import type { ChatUIProps } from '@/ui'
 import type { Route } from 'next'
 
-export function toChatConversationRoute(conversationId: string): Route {
+export function toAccountConversationRoute(conversationId: string) {
 	return `/account/chat/${conversationId}` as Route
 }
 
-export function toChatListItems(conversations: ChatConversationSummary[]): ChatItem[] {
+export function toAccountChatsRoute() {
+	return `/account/chat` as Route
+}
+
+export function toChatListItems(conversations: ChatConversationSummary[]): ChatUIProps.Item[] {
 	return conversations.map((conversation) => ({
 		id: conversation.id,
 		name: conversation.otherParticipant.name,
@@ -22,7 +26,7 @@ export function toChatMessageItems(params: {
 	messages: ChatUiMessage[]
 	peerId: string
 	peerReadState: ChatReadState | null
-}): MessageItem[] {
+}): ChatUIProps.MessageItem[] {
 	const { messages, peerId, peerReadState } = params
 	const lastPeerReadIndex = peerReadState
 		? messages.findIndex((message) => message.id === peerReadState.lastReadMessageId)

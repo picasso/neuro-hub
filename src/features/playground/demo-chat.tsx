@@ -6,22 +6,7 @@ import { useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type ChatDemoState } from './demo-chat-settings'
 import { useSettings } from './settings-store'
-import {
-	Chats,
-	type ChatsProps,
-	ChatComposer,
-	ChatContainer,
-	ChatToolbar,
-	Message,
-	Messages,
-	type MessagesProps,
-	Stack,
-	ChatStatus,
-	type TabItem,
-	Tabs,
-	TS,
-	type ChatContainerProps,
-} from '@/ui'
+import { ChatUI, type ChatUIProps, Stack, type TabItem, Tabs, TS } from '@/ui'
 
 export function DemoChat() {
 	const {
@@ -95,14 +80,14 @@ export function DemoChat() {
 				separator
 			>
 				<Stack vertical gap={4} align="stretch" className="max-w-lg">
-					<Message {...messageMocks.in} theme={messageTheme} withTail={withTail} />
-					<Message
+					<ChatUI.Message {...messageMocks.in} theme={messageTheme} withTail={withTail} />
+					<ChatUI.Message
 						{...messageMocks.out}
 						delivery="sent"
 						theme={messageTheme}
 						withTail={withTail}
 					/>
-					<Message
+					<ChatUI.Message
 						{...messageMocks.out}
 						text="Отправка…"
 						delivery="sending"
@@ -110,7 +95,7 @@ export function DemoChat() {
 						theme={messageTheme}
 						withTail={withTail}
 					/>
-					<Message
+					<ChatUI.Message
 						{...messageMocks.out}
 						text="Ошибка сети"
 						delivery="failed"
@@ -118,9 +103,9 @@ export function DemoChat() {
 						theme={messageTheme}
 						withTail={withTail}
 					/>
-					<Message
+					<ChatUI.Message
 						{...messageMocks.out}
-						text="Прочитано"
+						text={draft || 'Прочитано'}
 						read
 						timestamp={mockTime('old')}
 						theme={messageTheme}
@@ -136,23 +121,23 @@ export function DemoChat() {
 			>
 				<Stack direction="row" gap={3} align="center" wrap>
 					<Stack vertical gap={1} align="center">
-						<ChatStatus status="loading" />
+						<ChatUI.Status status="loading" />
 						<TS variant="caption" color="secondary" content="loading" />
 					</Stack>
 					<Stack vertical gap={1} align="center">
-						<ChatStatus status="sending" />
+						<ChatUI.Status status="sending" />
 						<TS variant="caption" color="secondary" content="sending" />
 					</Stack>
 					<Stack vertical gap={1} align="center">
-						<ChatStatus status="failed" />
+						<ChatUI.Status status="failed" />
 						<TS variant="caption" color="secondary" content="failed" />
 					</Stack>
 					<Stack vertical gap={1} align="center">
-						<ChatStatus status="sent" />
+						<ChatUI.Status status="sent" />
 						<TS variant="caption" color="secondary" content="sent" />
 					</Stack>
 					<Stack vertical gap={1} align="center">
-						<ChatStatus status="read" tooltip="Your message has been read" />
+						<ChatUI.Status status="read" tooltip="Your message has been read" />
 						<TS variant="caption" color="secondary" content="read + tooltip" />
 					</Stack>
 				</Stack>
@@ -178,11 +163,9 @@ export function DemoChat() {
 				desc="Счётчик символов — опционально (настройка справа)."
 				separator
 			>
-				<ChatComposer
+				<ChatUI.Composer
 					placeholder="Введите какой-нибудь текст…"
-					value={draft}
-					onChange={setDraft}
-					onSubmit={() => setDraft('')}
+					onSubmit={setDraft}
 					disabled={composerDisabled}
 					isSubmitting={composerSubmitting}
 					maxLength={2000}
@@ -260,10 +243,10 @@ const chatRows = [
 		updatedAt: mockTime('today'),
 		unreadCount: 0,
 	},
-] as NonNullable<ChatsProps['items']>
+] as NonNullable<ChatUIProps.Chats['items']>
 
 type Options = Pick<
-	ChatContainerProps,
+	ChatUIProps.Container,
 	| 'limitWidth'
 	| 'limitHeight'
 	| 'stickyHeader'
@@ -273,8 +256,8 @@ type Options = Pick<
 	| 'bordered'
 > & {
 	theme?: ChatDemoState['messageTheme']
-	onSelect?: ChatsProps['onSelect']
-	activeId?: ChatsProps['activeId']
+	onSelect?: ChatUIProps.Chats['onSelect']
+	activeId?: ChatUIProps.Chats['activeId']
 	avatarName?: string
 	avatarSrc?: string
 	toolbar?: boolean
@@ -285,10 +268,10 @@ type Options = Pick<
 	status?: (typeof statusMock)[number] | null
 }
 
-const messageContent = (options: Options, props: Partial<MessagesProps>) => {
+const messageContent = (options: Options, props: Partial<ChatUIProps.Messages>) => {
 	const title = `Messages${options.stickyHeader ? ' sticky' : ''} header`
 	const header = options.toolbar ? (
-		<ChatToolbar
+		<ChatUI.Toolbar
 			back={options.toolbarBack}
 			title={options.title ? title : undefined}
 			desc={options.desc ? 'Описание диалога для проверки обрезки и выравнивания' : undefined}
@@ -299,14 +282,14 @@ const messageContent = (options: Options, props: Partial<MessagesProps>) => {
 		title
 	)
 	return (
-		<ChatContainer
+		<ChatUI.Container
 			header={header}
 			footer={`Messages${options.stickyFooter ? ' sticky' : ''} footer`}
 			{...options}
 			className="m-4"
 		>
-			<Messages theme={options.theme} {...props} />
-		</ChatContainer>
+			<ChatUI.Messages theme={options.theme} {...props} />
+		</ChatUI.Container>
 	)
 }
 
@@ -338,10 +321,10 @@ const messagesItems = (options: Options) =>
 		},
 	] as TabItem[]
 
-const chatContent = (options: Options, props: Partial<ChatsProps>) => {
+const chatContent = (options: Options, props: Partial<ChatUIProps.Chats>) => {
 	const title = `Chats${options.stickyHeader ? ' sticky' : ''} header`
 	const header = options.toolbar ? (
-		<ChatToolbar
+		<ChatUI.Toolbar
 			back={options.toolbarBack}
 			avatar={options.title}
 			avatarSrc={options?.avatarSrc}
@@ -353,14 +336,14 @@ const chatContent = (options: Options, props: Partial<ChatsProps>) => {
 		title
 	)
 	return (
-		<ChatContainer
+		<ChatUI.Container
 			header={header}
 			footer={`Chats${options.stickyFooter ? ' sticky' : ''} footer`}
 			{...options}
 			className="m-4"
 		>
-			<Chats {...props} onSelect={options.onSelect} activeId={options.activeId} />
-		</ChatContainer>
+			<ChatUI.Chats {...props} onSelect={options.onSelect} activeId={options.activeId} />
+		</ChatUI.Container>
 	)
 }
 

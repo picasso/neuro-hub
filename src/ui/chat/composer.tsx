@@ -1,4 +1,4 @@
-import { type ComponentPropsWithoutRef, type ReactNode } from 'react'
+import { useCallback, useState, type ComponentPropsWithoutRef, type ReactNode } from 'react'
 import { Button } from '../button'
 import { Stack } from '../stack'
 import { TextField, type TextareaVariantProps } from '../text-field'
@@ -6,10 +6,8 @@ import { TS } from '../text-styled'
 import { cn } from '@/utils'
 
 export type ChatComposerProps = {
-	value: string
 	label?: string
-	onChange: (value: string) => void
-	onSubmit: () => void
+	onSubmit: (value: string) => void
 	disabled?: boolean
 	isSubmitting?: boolean
 	maxLength?: number
@@ -20,10 +18,10 @@ export type ChatComposerProps = {
 	className?: string
 }
 
+type OnSubmit = NonNullable<ComponentPropsWithoutRef<'form'>['onSubmit']>
+
 export function ChatComposer({
-	value,
 	label,
-	onChange,
 	onSubmit,
 	disabled,
 	isSubmitting,
@@ -34,19 +32,25 @@ export function ChatComposer({
 	counter: withCounter,
 	className,
 }: ChatComposerProps) {
-	const onFormSubmit: NonNullable<ComponentPropsWithoutRef<'form'>['onSubmit']> = (e) => {
-		e.preventDefault()
-		if (disabled || isSubmitting) {
-			return
-		}
-		onSubmit()
-	}
+	const [draft, setDraft] = useState('')
+
+	const onFormSubmit = useCallback<OnSubmit>(
+		(e) => {
+			e.preventDefault()
+			if (!draft.trim() || disabled || isSubmitting) {
+				return
+			}
+			onSubmit(draft)
+			setDraft('')
+		},
+		[disabled, draft, isSubmitting, onSubmit],
+	)
 
 	const counter = withCounter ? (
 		<TS
 			variant="caption"
 			color="dimmed"
-			content={`${value.length} / ${maxLength ?? 2000}`}
+			content={`${draft.length} / ${maxLength ?? 2000}`}
 			className="-mt-0.5 text-[11px] text-dimmed/50"
 		/>
 	) : undefined
@@ -58,11 +62,11 @@ export function ChatComposer({
 					light
 					multiline
 					label={label}
-					value={value}
+					value={draft}
 					placeholder={placeholder}
 					maxLength={maxLength}
 					disabled={disabled || isSubmitting}
-					onChange={(e) => onChange(e.target.value)}
+					onChange={(e) => setDraft(e.target.value)}
 					rows={rows}
 				/>
 				<Stack direction="row" gap={2} align="center" justify="space-between" wrap>
@@ -76,7 +80,7 @@ export function ChatComposer({
 						size="xs"
 						leftIcon={isSubmitting ? 'loader-circle' : 'send'}
 						iconOptions={{ size: 'xs', spinning: isSubmitting }}
-						disabled={disabled || isSubmitting || !value.trim()}
+						disabled={disabled || isSubmitting || !draft.trim()}
 						label={isSubmitting ? 'Sending…' : 'Send'}
 						className="bg-background"
 					/>
