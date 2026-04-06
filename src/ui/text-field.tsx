@@ -13,6 +13,7 @@ import {
 	InputGroupTextarea,
 } from './shadcn/input-group'
 import { Textarea } from './shadcn/textarea'
+import { cn } from '@/utils'
 
 // types ------------------------------------------------------------------------------------------]
 
@@ -23,6 +24,8 @@ type BaseProps = Pick<
 	startIcon?: IconProps['name']
 	endIcon?: IconProps['name']
 	showClear?: boolean
+	light?: boolean
+	dark?: boolean
 	onEndClick?: () => void
 	onClearClick?: () => void
 }
@@ -46,6 +49,8 @@ function InputVariant({
 	startIcon,
 	endIcon,
 	showClear,
+	light,
+	dark,
 	onEndClick,
 	onClearClick,
 	className,
@@ -111,7 +116,11 @@ function InputVariant({
 			helper={helper}
 			disabled={disabled}
 			required={required}
-			className={className}
+			className={cn(
+				light && '**:data-[slot=input]:bg-surface',
+				dark && '**:data-[slot=input]:bg-accent',
+				className,
+			)}
 			labelClassName={labelClassName}
 			helperClassName={helperClassName}
 		>
@@ -129,6 +138,8 @@ function TextareaVariant({
 	required,
 	startIcon,
 	endIcon,
+	light,
+	dark,
 	className,
 	labelClassName,
 	helperClassName,
@@ -170,7 +181,11 @@ function TextareaVariant({
 			helper={helper}
 			disabled={disabled}
 			required={required}
-			className={className}
+			className={cn(
+				light && '**:data-[slot=textarea]:bg-surface',
+				dark && '**:data-[slot=textarea]:bg-accent',
+				className,
+			)}
 			labelClassName={labelClassName}
 			helperClassName={helperClassName}
 		>

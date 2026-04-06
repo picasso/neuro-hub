@@ -2,7 +2,8 @@ import { Avatar } from '../avatar'
 import { Badge } from '../badge'
 import { Stack } from '../stack'
 import { TS } from '../text-styled'
-import { smartTime } from './smart-time'
+import { Tooltip } from '../tooltip'
+import { fullTime, smartTime } from './smart-time'
 import { cn } from '@/utils'
 
 export type ChatProps = {
@@ -55,13 +56,15 @@ export function Chat({
 								className="block truncate font-medium"
 							/>
 						</div>
-						<TS
-							variant="caption"
-							color="secondary"
-							content={smartTime(updatedAt)}
-							nowrap
-							className="shrink-0 text-[11px] tabular-nums opacity-80"
-						/>
+						<Tooltip content={fullTime(updatedAt)} side="left">
+							<TS
+								variant="caption"
+								color="secondary"
+								content={smartTime(updatedAt)}
+								nowrap
+								className="shrink-0 text-[11px] tabular-nums opacity-80"
+							/>
+						</Tooltip>
 					</Stack>
 					<Stack
 						direction="row"

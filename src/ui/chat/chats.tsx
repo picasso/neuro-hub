@@ -62,7 +62,7 @@ export function Chats({
 					mediaIcon
 					title="Пока никаких чатов нет"
 					desc="Когда появятся обсуждения по проектам, они отобразятся здесь."
-					icon="message-circle-check"
+					icon="messages-square"
 					className={cn('mx-auto my-8', className)}
 					compact
 				/>

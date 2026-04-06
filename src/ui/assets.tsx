@@ -68,6 +68,9 @@ import {
 	Cog,
 	MessageCircleCheck,
 	ChartArea,
+	Send,
+	MessageSquare,
+	MessagesSquare,
 } from 'lucide-react'
 import { type ComponentType, type SVGProps } from 'react'
 import { customIcons } from './icons/icons'
@@ -145,6 +148,9 @@ const lucideIcons = {
 	Cog,
 	MessageCircleCheck,
 	ChartArea,
+	Send,
+	MessageSquare,
+	MessagesSquare,
 }
 
 // type generation --------------------------------------------------------------------------------]

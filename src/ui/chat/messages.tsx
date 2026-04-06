@@ -1,7 +1,7 @@
 'use client'
 
-import { isString, map } from 'lodash'
-import { Empty } from '../empty'
+import { isPlainObject, isString, map } from 'lodash'
+import { Empty, type EmptyProps } from '../empty'
 import { Skeleton } from '../skeleton'
 import { Stack } from '../stack'
 import { Message, type MessageProps } from './message'
@@ -14,7 +14,7 @@ export type MessagesProps = {
 	theme?: MessageProps['theme']
 	loading?: boolean
 	error?: string | true | null
-	empty?: boolean
+	empty?: boolean | Pick<EmptyProps, 'title' | 'desc' | 'children'>
 	className?: string
 }
 
@@ -44,21 +44,30 @@ export function Messages({ items = [], theme, loading, error, className, empty }
 		)
 	}
 
-	if (items.length === 0) {
-		if (!empty) return null
-
+	if (items.length === 0 && empty) {
+		const { title, desc, children } = (
+			isPlainObject(empty)
+				? empty
+				: {
+						title: 'Пока никаких сообщений нет',
+						desc: 'Добавьте первое сообщение, чтобы начать общение...',
+						children: undefined,
+					}
+		) as Exclude<NonNullable<MessagesProps['empty']>, boolean>
 		return (
 			<div className="m-4">
 				<Empty
 					outline
 					dark
 					mediaIcon
-					title="Пока никаких сообщений нет"
-					desc="Добавьте первое сообщение, чтобы начать общение..."
-					icon="message-circle-check"
+					title={title}
+					desc={desc}
+					icon="messages-square"
 					className={cn('mx-auto my-8', className)}
 					compact
-				/>
+				>
+					{children}
+				</Empty>
 			</div>
 		)
 	}

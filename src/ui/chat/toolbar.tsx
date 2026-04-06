@@ -26,8 +26,8 @@ export type ChatToolbarProps = {
 
 export function ChatToolbar({
 	back,
-	backHref = '/account/chat',
-	backLabel = '',
+	backHref,
+	backLabel,
 	title,
 	desc,
 	avatar,
@@ -57,7 +57,12 @@ export function ChatToolbar({
 						className="shrink-0 hover:bg-accent-dark"
 					/>
 				)}
-				<Stack vertical gap={0} align="center" className="min-w-0 flex-1">
+				<Stack
+					vertical
+					gap={0}
+					align="center"
+					className={cn('min-w-0 flex-1', !avatar && 'ml-0 lg:ml-3')}
+				>
 					{avatar && title && (
 						<Stack gap={3} justify="center">
 							<Avatar src={avatarSrc} bordered={!!avatarSrc} name={title} size="sm" />
@@ -83,7 +88,7 @@ export function ChatToolbar({
 						<TS
 							clean
 							variant="subtitle"
-							className="w-full truncate font-bold leading-tight"
+							className="w-full truncate font-bold leading-relaxed"
 							content={title}
 						/>
 					)}

@@ -30,7 +30,7 @@ export function ChatComposer({
 	maxLength,
 	placeholder,
 	actions,
-	rows = 4,
+	rows = 2,
 	counter: withCounter,
 	className,
 }: ChatComposerProps) {
@@ -43,20 +43,19 @@ export function ChatComposer({
 	}
 
 	const counter = withCounter ? (
-		<TS variant="caption" color="dimmed" content={`${value.length} / ${maxLength ?? 2000}`} />
+		<TS
+			variant="caption"
+			color="dimmed"
+			content={`${value.length} / ${maxLength ?? 2000}`}
+			className="-mt-0.5 text-[11px] text-dimmed/50"
+		/>
 	) : undefined
 
 	return (
-		<form
-			onSubmit={onFormSubmit}
-			className={cn(
-				'p-3',
-				// 'border-t border-border/60 bg-background p-3',
-				className,
-			)}
-		>
+		<form onSubmit={onFormSubmit} className={cn('p-1', className)}>
 			<Stack vertical gap={3} align="stretch">
 				<TextField
+					light
 					multiline
 					label={label}
 					value={value}
@@ -73,10 +72,13 @@ export function ChatComposer({
 					</Stack>
 					<Button
 						type="submit"
-						variant="default"
-						size="sm"
+						variant="outline"
+						size="xs"
+						leftIcon={isSubmitting ? 'loader-circle' : 'send'}
+						iconOptions={{ size: 'xs', spinning: isSubmitting }}
 						disabled={disabled || isSubmitting || !value.trim()}
 						label={isSubmitting ? 'Sending…' : 'Send'}
+						className="bg-background"
 					/>
 				</Stack>
 			</Stack>

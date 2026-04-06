@@ -37,7 +37,7 @@ export function ChatContainer({
 	return (
 		<div
 			className={cn(
-				'flex min-h-0 min-w-0 flex-1 flex-col',
+				'flex min-h-0 min-w-0 flex-1 flex-col w-full',
 				bordered && 'border rounded-md',
 				limitWidthClassName[limitWidth],
 				limitHeightClassName[limitHeight],
