@@ -59,7 +59,8 @@ export function assert<T>(ok: T, message = 'failed'): asserts ok {
 	}
 }
 
-// sleeps for the specified number of milliseconds.
+// sleeps for the specified number of milliseconds; negative ms becomes 0.
 export async function sleep(ms: number) {
-	return new Promise((resolve) => setTimeout(resolve, ms))
+	const delayMs = Math.max(0, ms)
+	return new Promise((resolve) => setTimeout(resolve, delayMs))
 }
