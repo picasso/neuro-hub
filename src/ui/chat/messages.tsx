@@ -68,14 +68,17 @@ export function Messages({
 		const scrollContainer = scrollContainerRef?.current ?? null
 
 		requestAnimationFrame(() => {
+			if (scrollContainer) {
+				scrollContainer.scrollTo({
+					top: scrollContainer.scrollHeight,
+					behavior: 'smooth',
+				})
+				return
+			}
+
 			endRef.current?.scrollIntoView({
 				behavior: 'smooth',
 				block: 'end',
-			})
-
-			scrollContainer?.scrollTo({
-				top: scrollContainer.scrollHeight,
-				behavior: 'smooth',
 			})
 		})
 	}, [scrollContainerRef, scrollToMessageId])
@@ -141,7 +144,6 @@ export function Messages({
 					data-message={id}
 					theme={theme}
 					animateIn={enteringMessageIds.has(id)}
-					delayAnimateIn={id === scrollToMessageId}
 					{...msg}
 				/>
 			))}

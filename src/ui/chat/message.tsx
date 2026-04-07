@@ -19,7 +19,6 @@ export type MessageProps = {
 	theme?: 'green' | 'blue' | 'purple' | 'yellow' | 'cyan'
 	withTail?: boolean
 	animateIn?: boolean
-	delayAnimateIn?: boolean
 	className?: string
 }
 
@@ -36,7 +35,6 @@ export function Message({
 	theme = 'green',
 	withTail = true,
 	animateIn,
-	delayAnimateIn,
 	className,
 }: MessageProps) {
 	const isOut = direction === 'out'
@@ -60,8 +58,6 @@ export function Message({
 					className={cn(
 						'relative isolate w-full rounded-lg border px-3 pb-1.5 pt-2 text-foreground shadow-xs',
 						animateIn && animateInClassName,
-						animateIn && delayAnimateIn && delayedAnimateInClassName,
-						animateIn && animateInDirectionClassName[direction],
 						bubbleClasses,
 						isOut ? 'rounded-br-none' : 'rounded-bl-none',
 						withTail && tailClasses,
@@ -135,14 +131,8 @@ const tailShadowDirection: Record<'in' | 'out', string> = {
 }
 
 const animateInClassName =
-	'motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:duration-900'
-
-const delayedAnimateInClassName = '' // 'motion-safe:delay-200'
-
-const animateInDirectionClassName: Record<'in' | 'out', string> = {
-	in: 'motion-safe:slide-in-from-left-3 motion-safe:origin-bottom-left',
-	out: 'motion-safe:slide-in-from-right-3 motion-safe:origin-bottom-right',
-}
+	'motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-1' +
+	' motion-safe:duration-800 motion-safe:ease-out'
 
 const inBubbleClassName = 'bg-card border-accent-dark'
 const inTailClassName = 'before:bg-card before:border-accent-dark'
