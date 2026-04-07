@@ -32,6 +32,7 @@ describe('chat adapters', () => {
 		expect(items[0]).toMatchObject({
 			id: conversation.id,
 			name: conversation.otherParticipant.name,
+			lastMessageText: conversation.lastMessage?.text,
 			updatedAt: conversation.lastMessage?.createdAt,
 			unreadCount: conversation.unreadCount,
 		})
@@ -62,7 +63,6 @@ describe('chat adapters', () => {
 				text: 'Ещё сообщение',
 				createdAt: '2026-03-30T10:02:00.000Z',
 				status: 'sending',
-				localId: 'local-3',
 			},
 		]
 		const peerReadState: ChatReadState = {
@@ -80,18 +80,18 @@ describe('chat adapters', () => {
 		expect(items[0]).toMatchObject({
 			id: 'message-1',
 			direction: 'out',
-			timestamp: '2026-03-30T10:00:00.000Z',
+			createdAt: '2026-03-30T10:00:00.000Z',
 			read: true,
 		})
 		expect(items[1]).toMatchObject({
 			id: 'message-2',
 			direction: 'in',
-			timestamp: '2026-03-30T10:01:00.000Z',
+			createdAt: '2026-03-30T10:01:00.000Z',
 		})
 		expect(items[2]).toMatchObject({
-			id: 'local-3',
+			id: 'message-3',
 			direction: 'out',
-			delivery: 'sending',
+			status: 'sending',
 			read: false,
 		})
 	})

@@ -50,6 +50,11 @@ export type ChatMessage = {
 	createdAt: string
 }
 
+export type ChatSendMessagePayload = {
+	messageId: string
+	text: string
+}
+
 export type ChatMessagePreview = Pick<ChatMessage, 'id' | 'senderId' | 'text' | 'createdAt'>
 
 export type ChatConversationSummary = {

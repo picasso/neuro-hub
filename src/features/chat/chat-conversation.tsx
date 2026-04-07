@@ -1,4 +1,5 @@
 import { useUnit } from 'effector-react'
+import { findLast } from 'lodash'
 import { formatChatParticipantRole, toChatMessageItems, toAccountChatsRoute } from './adapters'
 import { CHAT_MESSAGE_MAX_LENGTH } from '@/lib/chat/contracts'
 import {
@@ -45,6 +46,7 @@ export function ChatConversation() {
 	const isInitialLoading =
 		(loading.messages && !active.hasLoaded) || (loading.chats && !active.conversation)
 	const hasError = Boolean(active.error && activeMessagesUI.length === 0)
+	const lastSubmittedMessageId = findLast(activeMessagesUI, { direction: 'out' })?.id
 
 	return (
 		<ChatUI.Container
@@ -88,6 +90,7 @@ export function ChatConversation() {
 				items={activeMessagesUI}
 				loading={isInitialLoading}
 				error={hasError ? active.error : null}
+				scrollToMessageId={lastSubmittedMessageId}
 				className="p-1"
 				empty={
 					isInitialLoading

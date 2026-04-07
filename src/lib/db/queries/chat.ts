@@ -295,7 +295,7 @@ export async function listMessagesForUser(params: {
 export async function sendMessageInConversation(params: {
 	userId: string
 	conversationId: string
-	input: ChatSendMessageInput
+	input: Omit<ChatSendMessageInput, 'messageId'> & { messageId?: string }
 }): Promise<ChatMessage> {
 	const { userId, conversationId, input } = params
 
@@ -309,6 +309,7 @@ export async function sendMessageInConversation(params: {
 		const inserted = await trx
 			.insertInto('messages')
 			.values({
+				id: input.messageId,
 				conversation_id: conversationId,
 				sender_id: userId,
 				text: input.text,

@@ -1,3 +1,5 @@
+import { produce } from 'immer'
+import { forEachRight } from 'lodash'
 import type {
 	ChatConversationReadEvent,
 	ChatConversationSummary,
@@ -8,7 +10,6 @@ export type ChatUiMessageStatus = 'sent' | 'sending' | 'failed'
 
 export type ChatUiMessage = ChatMessage & {
 	status: ChatUiMessageStatus
-	localId?: string
 }
 
 type ConversationMessagePatchOptions = {
@@ -18,27 +19,25 @@ type ConversationMessagePatchOptions = {
 export function toChatUiMessage(
 	message: ChatMessage,
 	status: ChatUiMessageStatus = 'sent',
+	overrides: Omit<Partial<ChatUiMessage>, 'status'> = {},
 ): ChatUiMessage {
 	return {
 		...message,
 		status,
+		...overrides,
 	}
 }
 
 export function createOptimisticChatMessage(params: {
+	id: string
 	conversationId: string
 	text: string
 	senderId: string
-	localId: string
 }): ChatUiMessage {
 	const createdAt = new Date().toISOString()
 
 	return {
-		id: params.localId,
-		localId: params.localId,
-		conversationId: params.conversationId,
-		senderId: params.senderId,
-		text: params.text,
+		...params,
 		createdAt,
 		status: 'sending',
 	}
@@ -67,29 +66,23 @@ export function appendOptimisticChatMessage(
 export function replaceOptimisticChatMessage(
 	currentMessages: ChatUiMessage[],
 	params: {
-		localId: string
 		message: ChatMessage
 	},
 ): ChatUiMessage[] {
-	const replacedMessage = toChatUiMessage(params.message)
-	const nextMessages = currentMessages.filter((message) => message.id !== params.message.id)
-	const optimisticIndex = nextMessages.findIndex((message) => message.localId === params.localId)
-
-	if (optimisticIndex === -1) {
-		return appendChatMessage(nextMessages, params.message)
-	}
-
-	nextMessages.splice(optimisticIndex, 1, replacedMessage)
-	return sortChatMessages(nextMessages)
+	return appendChatMessage(currentMessages, params.message)
 }
 
 export function markOptimisticChatMessageFailed(
 	currentMessages: ChatUiMessage[],
-	localId: string,
+	messageId: string,
 ): ChatUiMessage[] {
-	return currentMessages.map((message) =>
-		message.localId === localId ? { ...message, status: 'failed' } : message,
-	)
+	return produce(currentMessages, (draft) => {
+		const optimisticMessage = draft.find((message) => message.id === messageId)
+
+		if (optimisticMessage) {
+			optimisticMessage.status = 'failed'
+		}
+	})
 }
 
 export function sortChatMessages(messages: ChatUiMessage[]): ChatUiMessage[] {
@@ -183,9 +176,14 @@ export function getLatestReadableMessageId(params: {
 		return null
 	}
 
-	const latestMessage = [...messages]
-		.reverse()
-		.find((message) => message.senderId === conversation.otherParticipant.id)
+	let latestMessage: ChatUiMessage | undefined
+
+	forEachRight(messages, (message) => {
+		if (message.senderId === conversation.otherParticipant.id) {
+			latestMessage = message
+			return false
+		}
+	})
 
 	if (!latestMessage) {
 		return null

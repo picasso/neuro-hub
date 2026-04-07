@@ -15,8 +15,8 @@ export function toChatListItems(conversations: ChatConversationSummary[]): ChatU
 	return conversations.map((conversation) => ({
 		id: conversation.id,
 		name: conversation.otherParticipant.name,
-		avatar: conversation.otherParticipant.image ?? undefined,
-		lastMessage: conversation.lastMessage?.text ?? 'Сообщений пока нет',
+		image: conversation.otherParticipant.image ?? undefined,
+		lastMessageText: conversation.lastMessage?.text ?? 'Сообщений пока нет',
 		updatedAt: conversation.lastMessage?.createdAt ?? conversation.updatedAt,
 		unreadCount: conversation.unreadCount,
 	}))
@@ -41,11 +41,11 @@ export function toChatMessageItems(params: {
 			index <= lastPeerReadIndex
 
 		return {
-			id: message.localId ?? message.id,
+			id: message.id,
 			direction: isIncoming ? 'in' : 'out',
 			text: message.text,
-			timestamp: message.createdAt,
-			delivery: message.status,
+			createdAt: message.createdAt,
+			status: message.status,
 			read: isRead,
 		}
 	})

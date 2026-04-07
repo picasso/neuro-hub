@@ -30,6 +30,7 @@ import type {
 	ChatMessage,
 	ChatReadState,
 	ChatRealtimeEvent,
+	ChatSendMessagePayload,
 } from '@/lib/chat/contracts'
 import { createAlertFx } from '@/alerts'
 import { chatDomain as domain } from '@/lib/logger'
@@ -40,8 +41,8 @@ type BooleanMap = Record<string, boolean>
 type StringMap = Record<string, string | null>
 type ReadStateMap = Record<string, ChatReadState | null>
 
-function createChatLocalId() {
-	return `chat-local-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+function createChatMessageId() {
+	return crypto.randomUUID()
 }
 
 export const ChatGate = createGate<{ conversationId?: string | null }>({
@@ -54,7 +55,7 @@ const activeConversationChanged = domain.createEvent<string | null>('activeConve
 const messageSendRequested = domain.createEvent<{
 	conversationId: string
 	text: string
-	localId: string
+	messageId: string
 }>('messageSendRequested')
 const optimisticMessageQueued = domain.createEvent<{
 	conversationId: string
@@ -62,12 +63,11 @@ const optimisticMessageQueued = domain.createEvent<{
 }>('optimisticMessageQueued')
 const optimisticMessageConfirmed = domain.createEvent<{
 	conversationId: string
-	localId: string
 	message: ChatMessage
 }>('optimisticMessageConfirmed')
 const optimisticMessageFailed = domain.createEvent<{
 	conversationId: string
-	localId: string
+	messageId: string
 }>('optimisticMessageFailed')
 const conversationReadStateUpdated = domain.createEvent<{
 	conversationId: string
@@ -133,14 +133,13 @@ export const loadOlderChatMessagesFx = domain.createEffect<
 })
 
 export const sendChatMessageFx = domain.createEffect<
-	{ conversationId: string; text: string; localId: string },
-	{ conversationId: string; localId: string; message: ChatMessage },
+	{ conversationId: string; input: ChatSendMessagePayload },
+	{ conversationId: string; message: ChatMessage },
 	ChatRequestError
 >({
-	handler: async ({ conversationId, text, localId }) => ({
+	handler: async ({ conversationId, input }) => ({
 		conversationId,
-		localId,
-		message: await sendChatMessage({ conversationId, text }),
+		message: await sendChatMessage({ conversationId, input }),
 	}),
 	name: 'sendChatMessageFx',
 })
@@ -294,24 +293,20 @@ $messagesByConversationId
 			message,
 		),
 	}))
-	.on(
-		optimisticMessageConfirmed,
-		(messagesByConversationId, { conversationId, localId, message }) => ({
-			...messagesByConversationId,
-			[conversationId]: replaceOptimisticChatMessage(
-				messagesByConversationId[conversationId] ?? [],
-				{
-					localId,
-					message,
-				},
-			),
-		}),
-	)
-	.on(optimisticMessageFailed, (messagesByConversationId, { conversationId, localId }) => ({
+	.on(optimisticMessageConfirmed, (messagesByConversationId, { conversationId, message }) => ({
+		...messagesByConversationId,
+		[conversationId]: replaceOptimisticChatMessage(
+			messagesByConversationId[conversationId] ?? [],
+			{
+				message,
+			},
+		),
+	}))
+	.on(optimisticMessageFailed, (messagesByConversationId, { conversationId, messageId }) => ({
 		...messagesByConversationId,
 		[conversationId]: markOptimisticChatMessageFailed(
 			messagesByConversationId[conversationId] ?? [],
-			localId,
+			messageId,
 		),
 	}))
 	.on(chatRealtimeEventReceived, (messagesByConversationId, event) => {
@@ -515,7 +510,7 @@ sample({
 	target: loadOlderChatMessagesFx,
 })
 
-// turn composer submit into send payload with stable local id
+// turn composer submit into send payload with stable message id
 sample({
 	clock: chatMessageSubmitted,
 	source: $activeConversationId,
@@ -523,7 +518,7 @@ sample({
 	fn: (conversationId, text) => ({
 		conversationId: conversationId as string,
 		text: text.trim(),
-		localId: createChatLocalId(),
+		messageId: createChatMessageId(),
 	}),
 	target: messageSendRequested,
 })
@@ -531,13 +526,13 @@ sample({
 // insert optimistic row before network send completes
 sample({
 	clock: messageSendRequested,
-	fn: ({ conversationId, text, localId }) => ({
+	fn: ({ conversationId, text, messageId }) => ({
 		conversationId,
 		message: createOptimisticChatMessage({
+			id: messageId,
 			conversationId,
 			text,
 			senderId: 'self',
-			localId,
 		}),
 	}),
 	target: optimisticMessageQueued,
@@ -546,15 +541,21 @@ sample({
 // fire API send in parallel with optimistic UI
 sample({
 	clock: messageSendRequested,
+	fn: ({ conversationId, text, messageId }) => ({
+		conversationId,
+		input: {
+			messageId,
+			text,
+		},
+	}),
 	target: sendChatMessageFx,
 })
 
 // replace optimistic bubble with server message on success
 sample({
 	clock: sendChatMessageFx.doneData,
-	fn: ({ conversationId, localId, message }) => ({
+	fn: ({ conversationId, message }) => ({
 		conversationId,
-		localId,
 		message,
 	}),
 	target: optimisticMessageConfirmed,
@@ -576,7 +577,7 @@ sample({
 	clock: sendChatMessageFx.fail,
 	fn: ({ params }) => ({
 		conversationId: params.conversationId,
-		localId: params.localId,
+		messageId: params.input.messageId,
 	}),
 	target: optimisticMessageFailed,
 })
@@ -733,6 +734,8 @@ sample({
 	fn: () => undefined,
 	target: [resetChatFlow, unsubscribeActiveConversationRealtimeFx],
 })
+
+// helpers ----------------------------------------------------------------------------------------]
 
 function mergeOlderMessages(currentMessages: ChatUiMessage[], olderMessages: ChatMessage[]) {
 	return olderMessages.reduce(

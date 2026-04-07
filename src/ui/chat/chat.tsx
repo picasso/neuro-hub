@@ -9,8 +9,8 @@ import { cn } from '@/utils'
 export type ChatProps = {
 	id: string
 	name: string
-	avatar?: string
-	lastMessage?: string
+	image?: string
+	lastMessageText?: string
 	updatedAt: string
 	unreadCount?: number
 	onSelect?: (id: string) => void
@@ -22,8 +22,8 @@ export type ChatProps = {
 export function Chat({
 	id,
 	name,
-	avatar,
-	lastMessage,
+	image,
+	lastMessageText,
 	updatedAt,
 	unreadCount = 0,
 	onSelect,
@@ -46,7 +46,7 @@ export function Chat({
 			aria-current={active ? 'true' : undefined}
 		>
 			<Stack gap={3} align="center" className="w-full min-w-0">
-				<Avatar name={name} src={avatar} size="md" className="shrink-0" />
+				<Avatar name={name} src={image} size="md" className="shrink-0" />
 				<Stack vertical gap={0.5} align="stretch" className="min-w-0 flex-1">
 					<Stack direction="row" gap={2} align="center" className="min-w-0">
 						<div className="min-w-0 flex-1 overflow-hidden">
@@ -76,7 +76,7 @@ export function Chat({
 						<TS
 							variant="subtitle"
 							color="secondary"
-							content={lastMessage ?? ''}
+							content={lastMessageText ?? ''}
 							className="min-h-4.5 min-w-0 flex-1 truncate text-[13px] leading-tight opacity-90"
 						/>
 						{hasUnread && (

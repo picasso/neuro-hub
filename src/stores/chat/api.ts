@@ -8,6 +8,7 @@ import {
 	type ChatMessage,
 	type ChatMessagePage,
 	type ChatReadState,
+	type ChatSendMessagePayload,
 } from '@/lib/chat/contracts'
 
 const CHAT_CONVERSATIONS_PAGE_SIZE = 50
@@ -75,7 +76,7 @@ export async function fetchChatMessages(params: {
 
 export async function sendChatMessage(params: {
 	conversationId: string
-	text: string
+	input: ChatSendMessagePayload
 }): Promise<ChatMessage> {
 	const path = CHAT_API_ROUTES.conversationMessages.replace(
 		':conversationId',
@@ -84,7 +85,7 @@ export async function sendChatMessage(params: {
 
 	const result = await requestChatApi<ChatMessage>(path, {
 		method: 'POST',
-		body: JSON.stringify({ text: params.text }),
+		body: JSON.stringify(params.input),
 	})
 
 	return result.data

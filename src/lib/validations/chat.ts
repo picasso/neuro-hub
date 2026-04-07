@@ -32,6 +32,7 @@ export const chatMessageTextSchema = z
 	.max(CHAT_MESSAGE_MAX_LENGTH, `Message must not exceed ${CHAT_MESSAGE_MAX_LENGTH} characters`)
 
 export const chatSendMessageSchema = z.object({
+	messageId: uuidSchema,
 	text: chatMessageTextSchema,
 })
 

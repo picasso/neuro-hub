@@ -1,10 +1,12 @@
 'use client'
 
 import { isPlainObject, isString, map } from 'lodash'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { Empty, type EmptyProps } from '../empty'
 import { Skeleton } from '../skeleton'
 import { Stack } from '../stack'
 import { Message, type MessageProps } from './message'
+import { useChatScrollContext } from './scroll-context'
 import { cn } from '@/utils'
 
 export type MessageItem = { id: string } & MessageProps
@@ -15,10 +17,69 @@ export type MessagesProps = {
 	loading?: boolean
 	error?: string | true | null
 	empty?: boolean | Pick<EmptyProps, 'title' | 'desc' | 'children'>
+	scrollToMessageId?: string
 	className?: string
 }
 
-export function Messages({ items = [], theme, loading, error, className, empty }: MessagesProps) {
+export function Messages({
+	items = [],
+	theme,
+	loading,
+	error,
+	className,
+	empty,
+	scrollToMessageId,
+}: MessagesProps) {
+	const endRef = useRef<HTMLDivElement | null>(null)
+	const hasHydratedRef = useRef(false)
+	const hasMountedRef = useRef(false)
+	const seenMessageIdsRef = useRef(new Set<string>())
+	const lastScrolledMessageIdRef = useRef<string | null>(null)
+	const scrollContainerRef = useChatScrollContext()
+	const enteringMessageIds = useMemo(
+		() =>
+			hasHydratedRef.current
+				? new Set(
+						items
+							.map(({ id }) => id)
+							.filter((id) => !seenMessageIdsRef.current.has(id)),
+					)
+				: new Set<string>(),
+		[items],
+	)
+
+	useEffect(() => {
+		hasHydratedRef.current = true
+		seenMessageIdsRef.current = new Set(items.map(({ id }) => id))
+	}, [items])
+
+	useLayoutEffect(() => {
+		if (!hasMountedRef.current) {
+			hasMountedRef.current = true
+			lastScrolledMessageIdRef.current = scrollToMessageId ?? null
+			return
+		}
+
+		if (!scrollToMessageId || scrollToMessageId === lastScrolledMessageIdRef.current) {
+			return
+		}
+
+		lastScrolledMessageIdRef.current = scrollToMessageId
+		const scrollContainer = scrollContainerRef?.current ?? null
+
+		requestAnimationFrame(() => {
+			endRef.current?.scrollIntoView({
+				behavior: 'smooth',
+				block: 'end',
+			})
+
+			scrollContainer?.scrollTo({
+				top: scrollContainer.scrollHeight,
+				behavior: 'smooth',
+			})
+		})
+	}, [scrollContainerRef, scrollToMessageId])
+
 	if (loading) {
 		return (
 			<div className="m-4">
@@ -75,8 +136,16 @@ export function Messages({ items = [], theme, loading, error, className, empty }
 	return (
 		<Stack vertical gap={2} align="stretch" data-theme={theme} className={className}>
 			{map(items, ({ id, ...msg }) => (
-				<Message key={id} data-message={id} theme={theme} {...msg} />
+				<Message
+					key={id}
+					data-message={id}
+					theme={theme}
+					animateIn={enteringMessageIds.has(id)}
+					delayAnimateIn={id === scrollToMessageId}
+					{...msg}
+				/>
 			))}
+			<div ref={endRef} aria-hidden className="h-px w-full shrink-0" />
 		</Stack>
 	)
 }

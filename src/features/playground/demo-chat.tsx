@@ -69,7 +69,7 @@ export function DemoChat() {
 		reload,
 		status: toolbarStatus ? status : undefined,
 		avatarName: activeChat?.name,
-		avatarSrc: activeChat?.avatar,
+		avatarSrc: activeChat?.image,
 	})
 
 	return (
@@ -83,23 +83,23 @@ export function DemoChat() {
 					<ChatUI.Message {...messageMocks.in} theme={messageTheme} withTail={withTail} />
 					<ChatUI.Message
 						{...messageMocks.out}
-						delivery="sent"
+						status="sent"
 						theme={messageTheme}
 						withTail={withTail}
 					/>
 					<ChatUI.Message
 						{...messageMocks.out}
 						text="Отправка…"
-						delivery="sending"
-						timestamp={mockTime('today')}
+						status="sending"
+						createdAt={mockTime('today')}
 						theme={messageTheme}
 						withTail={withTail}
 					/>
 					<ChatUI.Message
 						{...messageMocks.out}
 						text="Ошибка сети"
-						delivery="failed"
-						timestamp={mockTime('weeks')}
+						status="failed"
+						createdAt={mockTime('weeks')}
 						theme={messageTheme}
 						withTail={withTail}
 					/>
@@ -107,7 +107,7 @@ export function DemoChat() {
 						{...messageMocks.out}
 						text={draft || 'Прочитано'}
 						read
-						timestamp={mockTime('old')}
+						createdAt={mockTime('old')}
 						theme={messageTheme}
 						withTail={withTail}
 					/>
@@ -191,12 +191,12 @@ const messageMocks = {
 	in: {
 		direction: 'in' as const,
 		text: 'Привет! Это входящее сообщение с нейтральной bubble.',
-		timestamp: mockTime('recent'),
+		createdAt: mockTime('recent'),
 	},
 	out: {
 		direction: 'out' as const,
 		text: 'Исходящее: pale primary, время + статус справа.',
-		timestamp: mockTime('yesterday'),
+		createdAt: mockTime('yesterday'),
 	},
 }
 
@@ -206,8 +206,8 @@ const containerScrollMessages = Array.from({ length: 28 }, (_, i) => {
 		id: `scroll-${i}`,
 		direction,
 		text: `Сообщение ${i + 1}. Небольшой текст для проверки прокрутки области треда.`,
-		timestamp: mockTime(),
-		...(direction === 'out' ? { delivery: 'sent' as const } : {}),
+		createdAt: mockTime(),
+		...(direction === 'out' ? { status: 'sent' as const } : {}),
 	}
 })
 
@@ -215,23 +215,23 @@ const chatRows = [
 	{
 		id: 'a',
 		name: 'Команда NeuroGig',
-		lastMessage: 'Короткий превью-текст',
+		lastMessageText: 'Короткий превью-текст',
 		updatedAt: mockTime('yesterday'),
 		unreadCount: 3,
 	},
 	{
 		id: 'b',
 		name: 'Длинное имя чата для проверки обрезки и выравнивания',
-		lastMessage:
+		lastMessageText:
 			'Очень длинный последний текст сообщения, который должен аккуратно обрезаться с многоточием в списке',
 		updatedAt: mockTime('recent'),
 		unreadCount: 0,
 	},
 	{
 		id: 'c',
-		avatar: 'https://avatars.githubusercontent.com/u/399395',
+		image: 'https://avatars.githubusercontent.com/u/399395',
 		name: 'Димон Отстань от меня',
-		lastMessage:
+		lastMessageText:
 			'The main chat page was moved to the right layers, but the conversation-open flow is still exposed as an imperative API through @/features and then executed directly inside a React component. That leaves request/orchestration/error-routing logic in UI code and weakens the intended',
 		updatedAt: mockTime('weeks'),
 		unreadCount: 200,
@@ -239,7 +239,7 @@ const chatRows = [
 	{
 		id: 'd',
 		name: 'Без непрочитанных',
-		lastMessage: 'Ок',
+		lastMessageText: 'Ок',
 		updatedAt: mockTime('today'),
 		unreadCount: 0,
 	},

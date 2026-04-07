@@ -8,31 +8,35 @@ import { cn } from '@/utils'
 export type MessageProps = {
 	direction: 'in' | 'out'
 	text: string
-	timestamp: string
+	createdAt: string
 	author?: string
 	read?: boolean
 	reaction?: unknown
 	link?: unknown
 	file?: unknown
 	// outgoing only: pipeline state for first slice demos
-	delivery?: 'sending' | 'sent' | 'failed'
+	status?: 'sending' | 'sent' | 'failed'
 	theme?: 'green' | 'blue' | 'purple' | 'yellow' | 'cyan'
 	withTail?: boolean
+	animateIn?: boolean
+	delayAnimateIn?: boolean
 	className?: string
 }
 
 export function Message({
 	direction,
 	text,
-	timestamp,
+	createdAt,
 	author: _author,
 	reaction: _reaction,
 	link: _link,
 	file: _file,
 	read,
-	delivery,
+	status,
 	theme = 'green',
 	withTail = true,
+	animateIn,
+	delayAnimateIn,
 	className,
 }: MessageProps) {
 	const isOut = direction === 'out'
@@ -55,6 +59,9 @@ export function Message({
 				<div
 					className={cn(
 						'relative isolate w-full rounded-lg border px-3 pb-1.5 pt-2 text-foreground shadow-xs',
+						animateIn && animateInClassName,
+						animateIn && delayAnimateIn && delayedAnimateInClassName,
+						animateIn && animateInDirectionClassName[direction],
 						bubbleClasses,
 						isOut ? 'rounded-br-none' : 'rounded-bl-none',
 						withTail && tailClasses,
@@ -76,15 +83,15 @@ export function Message({
 						justify="flex-end"
 						className="relative z-2 mt-1"
 					>
-						<Tooltip content={fullTime(timestamp)} side="left">
+						<Tooltip content={fullTime(createdAt)} side="left">
 							<TS
 								variant="caption"
 								color="secondary"
-								content={smartTime(timestamp)}
+								content={smartTime(createdAt)}
 								className="text-[11px] tabular-nums opacity-80"
 							/>
 						</Tooltip>
-						{isOut && <Status status={read ? 'read' : (delivery ?? 'sent')} />}
+						{isOut && <Status status={read ? 'read' : (status ?? 'sent')} />}
 					</Stack>
 				</div>
 			</Stack>
@@ -125,6 +132,16 @@ const tailShadowClassName =
 const tailShadowDirection: Record<'in' | 'out', string> = {
 	in: 'after:left-[2px] after:transform-[rotate(45deg)]',
 	out: 'after:right-[2px] after:transform-[rotate(-45deg)]',
+}
+
+const animateInClassName =
+	'motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:duration-900'
+
+const delayedAnimateInClassName = '' // 'motion-safe:delay-200'
+
+const animateInDirectionClassName: Record<'in' | 'out', string> = {
+	in: 'motion-safe:slide-in-from-left-3 motion-safe:origin-bottom-left',
+	out: 'motion-safe:slide-in-from-right-3 motion-safe:origin-bottom-right',
 }
 
 const inBubbleClassName = 'bg-card border-accent-dark'

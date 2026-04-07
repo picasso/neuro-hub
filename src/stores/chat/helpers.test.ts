@@ -38,14 +38,13 @@ const sentMessage: ChatMessage = {
 describe('chat store helpers', () => {
 	it('replaces optimistic message with persisted message without duplicates', () => {
 		const optimisticMessage = createOptimisticChatMessage({
+			id: 'message-100',
 			conversationId: 'conversation-1',
 			text: 'Hello world',
 			senderId: 'self',
-			localId: 'local-1',
 		})
 
 		const nextMessages = replaceOptimisticChatMessage([optimisticMessage], {
-			localId: 'local-1',
 			message: {
 				id: 'message-100',
 				conversationId: 'conversation-1',
@@ -64,15 +63,38 @@ describe('chat store helpers', () => {
 
 	it('marks optimistic message as failed', () => {
 		const optimisticMessage = createOptimisticChatMessage({
+			id: 'message-local-2',
 			conversationId: 'conversation-1',
 			text: 'Hello world',
 			senderId: 'self',
-			localId: 'local-2',
 		})
 
-		const nextMessages = markOptimisticChatMessageFailed([optimisticMessage], 'local-2')
+		const nextMessages = markOptimisticChatMessageFailed([optimisticMessage], 'message-local-2')
 
 		expect(nextMessages[0]?.status).toBe('failed')
+	})
+
+	it('reconciles optimistic and persisted message by canonical id', () => {
+		const optimisticMessage = createOptimisticChatMessage({
+			id: 'message-200',
+			conversationId: 'conversation-1',
+			text: 'Canonical id message',
+			senderId: 'self',
+		})
+
+		const nextMessages = appendChatMessage([optimisticMessage], {
+			id: 'message-200',
+			conversationId: 'conversation-1',
+			senderId: 'user-self',
+			text: 'Canonical id message',
+			createdAt: '2026-03-30T10:06:00.000Z',
+		})
+
+		expect(nextMessages).toHaveLength(1)
+		expect(nextMessages[0]).toMatchObject({
+			id: 'message-200',
+			status: 'sent',
+		})
 	})
 
 	it('appends persisted message only once', () => {
