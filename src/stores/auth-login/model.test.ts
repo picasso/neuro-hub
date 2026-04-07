@@ -1,13 +1,25 @@
-import { allSettled, fork } from 'effector'
+import { allSettled, createEffect, createEvent, fork } from 'effector'
+import { describe, expect, it, vi } from 'vitest'
 import { $credentials, LoginGate } from './model'
 
-jest.mock('@/alerts', () => {
-	const createAlert = jest.fn()
-	const createAlertFx = Object.assign(jest.fn(), {
+vi.mock('@/alerts', () => {
+	const createAlert = vi.fn()
+	const patch = createEvent()
+	const removeFx = createEffect({
+		handler: () => undefined,
+	})
+	const createFx = createEffect({
+		async handler() {
+			return undefined
+		},
+	})
+	const createAlertFx = Object.assign(createFx, {
 		alertId: (key?: string) => `alert-${key ?? 'test'}`,
-		remove: jest.fn(),
-		removeFx: jest.fn(),
+		remove: vi.fn(),
+		removeFx,
 		props: <T>(alert: T) => alert,
+		patchProps: <T>(alert: T) => alert,
+		patch,
 	})
 
 	return {
@@ -16,10 +28,10 @@ jest.mock('@/alerts', () => {
 	}
 })
 
-jest.mock('@/lib/auth/client', () => {
+vi.mock('@/lib/auth/client', () => {
 	return {
 		authClient: {
-			signIn: { email: jest.fn() },
+			signIn: { email: vi.fn() },
 		},
 	}
 })

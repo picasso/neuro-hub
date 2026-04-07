@@ -43,7 +43,7 @@ Target scale: 50,000 daily active users, 2,000+ transactions per day.
 - **Package Manager**: Yarn 4.x (via Corepack)
 - **Linting**: ESLint 9+ with TypeScript
 - **Formatting**: Prettier 3+
-- **Testing**: Jest 29+ with Testing Library
+- **Testing**: Vitest with Testing Library
 - **Local database**: PostgreSQL via Docker Compose
 
 ### Key Dependencies

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { decodeChatMessageCursor, encodeChatMessageCursor } from './cursor'
 
 describe('chat message cursor helpers', () => {

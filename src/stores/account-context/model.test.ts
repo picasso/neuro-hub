@@ -1,4 +1,5 @@
 import { allSettled, fork } from 'effector'
+import { describe, expect, it } from 'vitest'
 import {
 	$accountContext,
 	AccountContextGate,

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { formatChatParticipantRole, toChatListItems, toChatMessageItems } from './adapters'
 import type { ChatConversationSummary, ChatReadState } from '@/lib/chat/contracts'
 import type { ChatUiMessage } from '@/stores'

@@ -156,7 +156,7 @@ Details: [.cursor/rules/security.mdc](.cursor/rules/security.mdc)
 
 ## Testing
 
-- **Jest** + Testing Library
+- **Vitest** + Testing Library
 - Test files: `*.test.ts`, `*.test.tsx`
 - AAA pattern, mocks for external deps
 - Coverage: aim 80% unit, all API endpoints covered

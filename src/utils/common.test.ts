@@ -1,3 +1,4 @@
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { assert, dayjs, formatDistance, sleep } from './common'
 
 describe('common utilities', () => {
@@ -56,6 +57,10 @@ describe('common utilities', () => {
 	})
 
 	describe('assert', () => {
+		afterEach(() => {
+			vi.unstubAllEnvs()
+		})
+
 		it('should not throw when condition is truthy', () => {
 			expect(() => assert(true, 'This should not fail')).not.toThrow()
 		})
@@ -69,19 +74,18 @@ describe('common utilities', () => {
 		})
 
 		it('should log assertion failure to console in non-test environment', () => {
-			const envRestore = jest.replaceProperty(process.env, 'NODE_ENV', 'development')
-			const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => undefined)
+			vi.stubEnv('NODE_ENV', 'development')
+			const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
 			expect(() => assert(false, 'This should log')).toThrow('This should log')
 
 			expect(consoleSpy).toHaveBeenCalledWith('ASSERTION: This should log')
 			consoleSpy.mockRestore()
-			envRestore.restore()
 		})
 
 		it('should call dev.info when dev is defined', () => {
-			const envRestore = jest.replaceProperty(process.env, 'NODE_ENV', 'development')
-			const mockDev = { info: jest.fn() }
+			vi.stubEnv('NODE_ENV', 'development')
+			const mockDev = { info: vi.fn() }
 			;(globalThis as { dev?: { info: (msg: string, detail: string) => void } }).dev = mockDev
 
 			expect(() => assert(false, 'dev test')).toThrow('dev test')
@@ -89,7 +93,6 @@ describe('common utilities', () => {
 			expect(mockDev.info).toHaveBeenCalledWith('{!assertion}', 'dev test')
 
 			delete (globalThis as { dev?: { info: (msg: string, detail: string) => void } }).dev
-			envRestore.restore()
 		})
 	})
 
