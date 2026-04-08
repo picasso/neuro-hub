@@ -55,7 +55,7 @@
 		"effector-react": "^23.3.0",
 		"htmlparser2": "^10.1.0",
 		"immer": "^11.1.4",
-		"knex": "3.1.0",
+		"knex": "3.2.9",
 		"kysely": "^0.28.12",
 		"lodash": "^4.17.23",
 		"lucide-react": "^0.577.0",
