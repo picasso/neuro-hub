@@ -41,7 +41,7 @@ export function ChatContainer({
 		<ChatScrollContext.Provider value={scrollContainerRef}>
 			<div
 				className={cn(
-					'flex min-h-0 min-w-0 flex-1 flex-col w-full',
+					'flex min-h-0 min-w-0 flex-col w-full',
 					bordered && 'border rounded-md',
 					limitWidthClassName[limitWidth],
 					limitHeightClassName[limitHeight],
@@ -69,6 +69,9 @@ export function ChatContainer({
 						</div>
 					)}
 					<div
+						// don't add `min-h-0` here: it overrides the default `min-height: auto`
+						// and lets this flex item shrink to the remaining height
+						// even when its content is taller
 						className={cn('flex-1', backgroundClass[background], paddingClass[padding])}
 					>
 						<div className="min-h-full">{children}</div>
@@ -106,7 +109,9 @@ const limitHeightClassName: Record<NonNullable<ChatContainerProps['limitHeight']
 	lg: 'h-120',
 	xl: 'h-160',
 	'2xl': 'h-200',
-	none: 'h-auto',
+	// `h-auto` breaks flex-1 height distribution in Safari
+	// `min-h-0` keeps overflow/clipping sane
+	none: 'min-h-0',
 }
 
 const paddingClass: Record<NonNullable<ChatContainerProps['padding']>, string> = {
