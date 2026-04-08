@@ -83,10 +83,7 @@ export async function proxy(request: NextRequest) {
 			)
 		}
 
-		response.headers.set('Access-Control-Allow-Origin', '*')
-		response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-		response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-		response.headers.set('Access-Control-Max-Age', '86400')
+		applySameOriginCorsHeaders(response, request)
 
 		response.headers.set(
 			'Content-Security-Policy',
@@ -154,4 +151,18 @@ function matchesPath(pathname: string, path: string) {
 	}
 
 	return pathname === path || pathname.startsWith(`${path}/`)
+}
+
+function applySameOriginCorsHeaders(response: NextResponse, request: NextRequest) {
+	const origin = request.headers.get('origin')
+	if (!origin || origin !== request.nextUrl.origin) {
+		return
+	}
+
+	response.headers.set('Access-Control-Allow-Origin', origin)
+	response.headers.set('Access-Control-Allow-Credentials', 'true')
+	response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+	response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+	response.headers.set('Access-Control-Max-Age', '86400')
+	response.headers.set('Vary', 'Origin')
 }
