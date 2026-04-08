@@ -1,4 +1,12 @@
-import { useCallback, useState, type ComponentPropsWithoutRef, type ReactNode } from 'react'
+import {
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+	type ComponentPropsWithoutRef,
+	type KeyboardEventHandler,
+	type ReactNode,
+} from 'react'
 import { Button } from '../button'
 import { Stack } from '../stack'
 import { TextField, type TextareaVariantProps } from '../text-field'
@@ -19,6 +27,7 @@ export type ChatComposerProps = {
 }
 
 type OnSubmit = NonNullable<ComponentPropsWithoutRef<'form'>['onSubmit']>
+type OnKeyDown = NonNullable<KeyboardEventHandler<HTMLTextAreaElement>>
 
 export function ChatComposer({
 	label,
@@ -33,17 +42,46 @@ export function ChatComposer({
 	className,
 }: ChatComposerProps) {
 	const [draft, setDraft] = useState('')
+	const draftRef = useRef<HTMLTextAreaElement>(null)
+	const shouldRestoreFocusRef = useRef(false)
+
+	useEffect(() => {
+		if (isSubmitting || disabled || !shouldRestoreFocusRef.current) {
+			return
+		}
+
+		shouldRestoreFocusRef.current = false
+		draftRef.current?.focus()
+	}, [disabled, isSubmitting])
+
+	const submitDraft = useCallback(() => {
+		if (!draft.trim() || disabled || isSubmitting) {
+			return
+		}
+
+		shouldRestoreFocusRef.current = true
+		onSubmit(draft)
+		setDraft('')
+	}, [disabled, draft, isSubmitting, onSubmit])
 
 	const onFormSubmit = useCallback<OnSubmit>(
 		(e) => {
 			e.preventDefault()
-			if (!draft.trim() || disabled || isSubmitting) {
+			submitDraft()
+		},
+		[submitDraft],
+	)
+
+	const onDraftKeyDown = useCallback<OnKeyDown>(
+		(event) => {
+			if (event.key !== 'Enter' || event.shiftKey) {
 				return
 			}
-			onSubmit(draft)
-			setDraft('')
+
+			event.preventDefault()
+			submitDraft()
 		},
-		[disabled, draft, isSubmitting, onSubmit],
+		[submitDraft],
 	)
 
 	const counter = withCounter ? (
@@ -62,11 +100,13 @@ export function ChatComposer({
 					light
 					multiline
 					label={label}
+					ref={draftRef}
 					value={draft}
 					placeholder={placeholder}
 					maxLength={maxLength}
 					disabled={disabled || isSubmitting}
 					onChange={(e) => setDraft(e.target.value)}
+					onKeyDown={onDraftKeyDown}
 					rows={rows}
 				/>
 				<Stack direction="row" gap={2} align="center" justify="space-between" wrap>

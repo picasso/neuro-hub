@@ -87,6 +87,7 @@ export function ChatConversation() {
 			}
 		>
 			<ChatUI.Messages
+				theme="green"
 				items={activeMessagesUI}
 				loading={isInitialLoading}
 				error={hasError ? active.error : null}
@@ -95,18 +96,20 @@ export function ChatConversation() {
 				empty={
 					isInitialLoading
 						? undefined
-						: {
-								title: 'Cообщения не доступны',
-								desc: 'Проверьте ссылку или вернитесь к списку обсуждений',
-								children: (
-									<Button
-										href={toAccountChatsRoute()}
-										type="button"
-										variant="outline"
-										label="Вернуться к списку"
-									/>
-								),
-							}
+						: realtimeStatus === 'error'
+							? {
+									title: 'Cообщения не доступны',
+									desc: 'Проверьте ссылку или вернитесь к списку обсуждений',
+									children: (
+										<Button
+											href={toAccountChatsRoute()}
+											type="button"
+											variant="outline"
+											label="Вернуться к списку"
+										/>
+									),
+								}
+							: true
 				}
 			/>
 		</ChatUI.Container>
