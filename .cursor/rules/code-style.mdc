@@ -20,6 +20,8 @@ Follow these rules when you write code:
 - Implement accessibility features on elements. For example, a tag should have a tabindex=“0”, aria-label, on:click, and on:keydown, and similar attributes.
 - Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements.
 - Only Single-Line comments, comments start with lowercase
+- Do not use JSDoc or block comments (`/** */`, `/* */`) in app code unless they are strictly required by an external tool, generated code, or library typing contract
+- Avoid deprecated React event aliases such as `FormEvent`; prefer handler types from `ComponentPropsWithoutRef<'form'>['onSubmit']` or explicit event types like `SyntheticEvent<HTMLFormElement>`
 
 ## Formatting (enforced by ESLint + Prettier)
 

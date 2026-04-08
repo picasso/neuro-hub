@@ -7,7 +7,8 @@ import type {
 	ProjectExperienceLevel,
 } from '@/lib/validations'
 import { createAlertFx } from '@/alerts'
-import { createDomainWatched } from '@/lib/logger'
+import { createProjectDomain as domain } from '@/lib/logger'
+import { projectCreated } from '@/stores'
 
 type CreateProjectStatus = Extract<CreateProjectInput['status'], 'draft' | 'published'>
 
@@ -45,8 +46,6 @@ type CreateProjectFailure = Error & {
 	statusCode?: number
 	fieldErrors?: CreateProjectErrors
 }
-
-const domain = createDomainWatched('create-project')
 
 const initialForm: CreateProjectForm = {
 	title: '',
@@ -235,27 +234,32 @@ export const $isBusy = combine($isLoadingSkills, $isSubmitting, (isLoading, isSu
 	return isLoading || isSubmitting
 })
 
+// fetch skill options when create-project surface opens
 sample({
 	clock: CreateProjectGate.open,
 	target: loadSkillsFx,
 })
 
+// discard draft state when leaving create-project flow
 sample({
 	clock: CreateProjectGate.close,
 	target: resetCreateProjectFlow,
 })
 
+// refetch skills after user-triggered retry
 sample({
 	clock: createProjectSkillsReloadRequested,
 	target: loadSkillsFx,
 })
 
+// POST current form to create project
 sample({
 	clock: createProjectSubmitted,
 	source: $form,
 	target: submitCreateProjectFx,
 })
 
+// show blocking progress toast while create request runs
 sample({
 	clock: submitCreateProjectFx,
 	fn: () =>
@@ -270,12 +274,14 @@ sample({
 	target: createAlertFx,
 })
 
+// dismiss progress toast when create effect finishes (success or fail)
 sample({
 	clock: submitCreateProjectFx.finally,
 	fn: () => ({ id: createProjectAlertId }),
 	target: createAlertFx.removeFx,
 })
 
+// toast success before navigation to the new project
 sample({
 	clock: submitCreateProjectFx.done,
 	fn: () =>
@@ -287,6 +293,13 @@ sample({
 	target: createAlertFx,
 })
 
+// notify account context store to increment project count
+sample({
+	clock: submitCreateProjectFx.doneData,
+	target: projectCreated,
+})
+
+// toast skills fetch failure
 sample({
 	clock: loadSkillsFx.failData,
 	fn: (error) =>
@@ -299,6 +312,7 @@ sample({
 	target: createAlertFx,
 })
 
+// toast create-project API or validation failure
 sample({
 	clock: submitCreateProjectFx.failData,
 	fn: (error) =>

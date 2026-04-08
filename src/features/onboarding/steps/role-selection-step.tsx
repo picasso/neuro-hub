@@ -3,7 +3,7 @@
 import { useUnit } from 'effector-react'
 import { map } from 'lodash'
 import type { UserRole } from '@/lib/validations'
-import { $role, setRole } from '@/stores/onboarding'
+import { $role, setRole } from '@/stores'
 import { Icon, TS, type IconName, Card } from '@/ui'
 import { cn } from '@/utils'
 

@@ -1,8 +1,9 @@
 import { sample } from 'effector'
-import { produce } from 'immer'
-import { forEach, isEmpty, set } from 'lodash'
+import { createGate } from 'effector-react'
+import { isEmpty } from 'lodash'
 import { createAlertFx } from '@/alerts'
-import { genericDomain as domain } from '@/lib/logger'
+import { projectApplicationsDomain as domain } from '@/lib/logger'
+import { applicationSubmitted, applicationWithdrawn } from '@/stores'
 import {
 	buildUserFacingApiErrorMessageFromParsed,
 	parseApiResponseError,
@@ -42,6 +43,11 @@ type WithdrawProjectApplicationParams = {
 
 type PendingWithdrawMap = Record<string, boolean>
 
+export const ProjectApplicationFormGate = createGate<{ projectId: string }>({
+	domain,
+	name: 'ProjectApplicationFormGate',
+})
+
 export const projectApplicationFormScopeChanged = domain.createEvent<string>(
 	'projectApplicationFormScopeChanged',
 )
@@ -64,18 +70,26 @@ export const $applicationErrors = domain.createStore<
 >({}, { name: '$projectApplicationErrors' })
 
 $form.reset(resetProjectApplicationForm)
-$form.on(projectApplicationFormUpdated, (store, update) =>
-	isEmpty(update)
-		? store
-		: produce(store, (draft) => {
-				forEach(update, (value, key) => {
-					set(draft, key, value)
-				})
-			}),
+$form.on(projectApplicationFormUpdated, (form, update) =>
+	isEmpty(update) ? form : { ...form, ...update },
 )
 
+// clear form when user switches project tab/scope
 sample({
 	clock: projectApplicationFormScopeChanged,
+	target: resetProjectApplicationForm,
+})
+
+// set scope event from gate open payload
+sample({
+	clock: ProjectApplicationFormGate.open,
+	fn: ({ projectId }) => projectId,
+	target: projectApplicationFormScopeChanged,
+})
+
+// discard draft when leaving application form gate
+sample({
+	clock: ProjectApplicationFormGate.close,
 	target: resetProjectApplicationForm,
 })
 
@@ -198,6 +212,7 @@ $pendingWithdrawByApplicationId
 const submitAlertId = createAlertFx.alertId('project-application-submit')
 const withdrawAlertId = createAlertFx.alertId('project-application-withdraw')
 
+// show blocking toast while submit effect runs
 sample({
 	clock: submitProjectApplicationFx,
 	fn: () =>
@@ -212,6 +227,7 @@ sample({
 	target: createAlertFx,
 })
 
+// show blocking toast while withdraw effect runs
 sample({
 	clock: withdrawProjectApplicationFx,
 	fn: () =>
@@ -226,18 +242,21 @@ sample({
 	target: createAlertFx,
 })
 
+// dismiss submit progress toast when effect settles
 sample({
 	clock: submitProjectApplicationFx.finally,
 	fn: () => ({ id: submitAlertId }),
 	target: createAlertFx.removeFx,
 })
 
+// dismiss withdraw progress toast when effect settles
 sample({
 	clock: withdrawProjectApplicationFx.finally,
 	fn: () => ({ id: withdrawAlertId }),
 	target: createAlertFx.removeFx,
 })
 
+// toast successful application submit
 sample({
 	clock: submitProjectApplicationFx.done,
 	fn: () =>
@@ -249,6 +268,13 @@ sample({
 	target: createAlertFx,
 })
 
+// bump account applications count after submit succeeds
+sample({
+	clock: submitProjectApplicationFx.doneData,
+	target: applicationSubmitted,
+})
+
+// toast successful withdrawal
 sample({
 	clock: withdrawProjectApplicationFx.done,
 	fn: () =>
@@ -260,6 +286,13 @@ sample({
 	target: createAlertFx,
 })
 
+// decrement account applications count after withdraw succeeds
+sample({
+	clock: withdrawProjectApplicationFx.doneData,
+	target: applicationWithdrawn,
+})
+
+// toast submit or withdraw API failure
 sample({
 	clock: [submitProjectApplicationFx.failData, withdrawProjectApplicationFx.failData],
 	fn: (error) =>
@@ -272,6 +305,7 @@ sample({
 	target: createAlertFx,
 })
 
+// reset form fields after successful submit
 sample({
 	clock: submitProjectApplicationFx.done,
 	target: resetProjectApplicationForm,

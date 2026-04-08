@@ -1,4 +1,5 @@
 import knex from 'knex'
+import { formatDatabaseConnectionError } from '../../src/lib/db/connection-error'
 import {
 	pluralize,
 	printEmpty,
@@ -7,6 +8,7 @@ import {
 	printListItem,
 	printSection,
 	printSuccess,
+	printDimText,
 } from '../utils/cli-utils'
 import { getEnvironment, getKnexConfig, printPendingMigrations } from './migrate-shared'
 
@@ -54,8 +56,18 @@ async function main() {
 		printEmpty()
 		process.exit(0)
 	} catch (error) {
+		const formattedError = formatDatabaseConnectionError(error)
+
 		printEmpty()
-		printError('Migration failed: ' + String(error))
+		printError('Migration failed: ' + formattedError.message)
+
+		if (formattedError.hints.length > 0) {
+			printEmpty()
+			formattedError.hints.forEach((hint) => {
+				printDimText('   ' + hint)
+			})
+		}
+
 		printEmpty()
 		process.exit(1)
 	} finally {

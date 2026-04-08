@@ -120,6 +120,10 @@ export function printText(text: string): void {
 	console.log(text)
 }
 
+export function printDimText(text: string): void {
+	console.log(chalk.blue.dim(text))
+}
+
 export function printUsage(lines: string[]): void {
 	console.log(chalk.cyan.dim('Usage:'))
 	lines.forEach((line) => {

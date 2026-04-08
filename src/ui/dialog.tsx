@@ -83,11 +83,13 @@ export type DialogProps<T = unknown, L = unknown> = ComponentProps<typeof Shadcn
 	actions?: DialogAction[] | null
 	actionsPosition?: 'start' | 'end' | 'center'
 	linkedData?: Record<string, L>
+	disableEscClose?: boolean
 
 	// appearance
 	size?: DialogSize
 	showFooterClose?: boolean
 	footerClassName?: string
+	closeOnDark?: boolean
 
 	// these props already exist in ShadcnDialogContent:
 	// overlay?: boolean
@@ -115,8 +117,10 @@ export function Dialog<T = boolean, L = unknown>({
 	trigger,
 	footer,
 	footerClassName,
+	closeOnDark,
 	actions: dialogActions,
 	linkedData,
+	disableEscClose,
 	labels,
 	actionsPosition = 'end',
 	size = 'md',
@@ -290,9 +294,11 @@ export function Dialog<T = boolean, L = unknown>({
 				showCloseButton={showCloseButton}
 				noPadding={noPadding}
 				animation={animation}
+				onEscapeKeyDown={disableEscClose ? preventKeyDown : undefined}
 				className={cn(
 					sizeClasses[size],
 					compactTitle && '**:data-[slot=dialog-close]:top-3',
+					closeOnDark && '**:data-[slot=dialog-close]:text-white',
 					className,
 				)}
 				{...(desc ? {} : { 'aria-describedby': undefined })}
@@ -356,3 +362,7 @@ const defaultActions = [
 
 type DefaultActions = (typeof defaultActions)[number]['id']
 type ActionLabels = (Record<string, string> | DefaultActions)[]
+
+export function preventKeyDown(event: KeyboardEvent) {
+	event.preventDefault()
+}

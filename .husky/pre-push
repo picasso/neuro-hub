@@ -17,6 +17,6 @@ corepack yarn format:check || exit 1
 
 # Run tests
 echo "🧪 Running tests..."
-corepack yarn test --passWithNoTests || exit 1
+corepack yarn test || exit 1
 
 echo "✅ All pre-push checks passed!"

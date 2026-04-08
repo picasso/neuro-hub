@@ -120,6 +120,42 @@ export type ListFreelancerApplicationsResult = {
 	hasMore: boolean
 }
 
+export type ClientProjectApplicationListItem = {
+	id: string
+	status: string
+	coverLetter: string
+	proposedPrice: number
+	proposedDeadline: Date | null
+	createdAt: Date | null
+	updatedAt: Date | null
+	freelancer: {
+		userId: string
+		name: string | null
+		avatarUrl: string | null
+	}
+}
+
+export type ClientProjectApplicationsGroup = {
+	project: {
+		id: string
+		href: string
+		title: string
+		category: string
+		experienceLevel: string
+		budgetType: string
+		budgetMin: number
+		budgetMax: number
+		deadline: Date
+		status: string
+		skills: ProjectSkillSummary[]
+	}
+	applications: ClientProjectApplicationListItem[]
+}
+
+export type ListClientProjectApplicationsResult = {
+	items: ClientProjectApplicationsGroup[]
+}
+
 export async function listPublicProjects(
 	input: ProjectDirectoryQueryInput,
 ): Promise<ListPublicProjectsResult> {
@@ -711,6 +747,147 @@ export async function listFreelancerApplications({
 		pageSize,
 		total,
 		hasMore: offset + rows.length < total,
+	}
+}
+
+export async function countClientProjects({ clientId }: { clientId: string }): Promise<number> {
+	const result = await kysely
+		.selectFrom('projects')
+		.select((eb) => eb.fn.countAll().as('count'))
+		.where('client_id', '=', clientId)
+		.executeTakeFirstOrThrow()
+
+	return Number(result.count)
+}
+
+export async function countActiveClientProjectApplications({
+	clientId,
+}: {
+	clientId: string
+}): Promise<number> {
+	const eligibleApplicationStatuses = ['submitted', 'shortlisted', 'accepted'] as const
+	const eligibleProjectStatuses = ['published', 'in_progress'] as const
+	const result = await kysely
+		.selectFrom('projects as project')
+		.innerJoin('applications as application', 'application.project_id', 'project.id')
+		.select((eb) => eb.fn.countAll().as('count'))
+		.where('project.client_id', '=', clientId)
+		.where('project.status', 'in', eligibleProjectStatuses)
+		.where('application.status', 'in', eligibleApplicationStatuses)
+		.executeTakeFirstOrThrow()
+
+	return Number(result.count)
+}
+
+export async function listClientProjectApplications({
+	clientId,
+}: {
+	clientId: string
+}): Promise<ListClientProjectApplicationsResult> {
+	const eligibleApplicationStatuses = ['submitted', 'shortlisted', 'accepted'] as const
+	const eligibleProjectStatuses = ['published', 'in_progress'] as const
+	const rows = await kysely
+		.selectFrom('projects as project')
+		.innerJoin('applications as application', 'application.project_id', 'project.id')
+		.leftJoin(
+			'user_profiles as freelancer_profile',
+			'freelancer_profile.user_id',
+			'application.freelancer_id',
+		)
+		.select([
+			'project.id as projectId',
+			'project.title as title',
+			'project.category as category',
+			'project.experience_level as experienceLevel',
+			'project.budget_type as budgetType',
+			'project.budget_min as budgetMin',
+			'project.budget_max as budgetMax',
+			'project.deadline as deadline',
+			'project.status as projectStatus',
+			'application.id as applicationId',
+			'application.status as applicationStatus',
+			'application.cover_letter as coverLetter',
+			'application.proposed_price as proposedPrice',
+			'application.proposed_deadline as proposedDeadline',
+			'application.created_at as createdAt',
+			'application.updated_at as updatedAt',
+			'application.freelancer_id as freelancerId',
+			'freelancer_profile.name as freelancerName',
+			'freelancer_profile.avatar_url as freelancerAvatarUrl',
+		])
+		.where('project.client_id', '=', clientId)
+		.where('project.status', 'in', eligibleProjectStatuses)
+		.where('application.status', 'in', eligibleApplicationStatuses)
+		.orderBy('project.created_at', 'desc')
+		.orderBy('application.created_at', 'desc')
+		.execute()
+
+	if (rows.length === 0) {
+		return {
+			items: [],
+		}
+	}
+
+	const projectIds = rows.map((row) => row.projectId)
+	const skillsByProjectId = await getSkillsByProjectIds(projectIds)
+	const itemsByProjectId = new Map<string, ClientProjectApplicationsGroup>()
+
+	for (const row of rows) {
+		const existingProject = itemsByProjectId.get(row.projectId)
+
+		if (existingProject) {
+			existingProject.applications.push({
+				id: row.applicationId,
+				status: row.applicationStatus,
+				coverLetter: row.coverLetter,
+				proposedPrice: row.proposedPrice,
+				proposedDeadline: row.proposedDeadline,
+				createdAt: row.createdAt,
+				updatedAt: row.updatedAt,
+				freelancer: {
+					userId: row.freelancerId,
+					name: row.freelancerName,
+					avatarUrl: row.freelancerAvatarUrl,
+				},
+			})
+			continue
+		}
+
+		itemsByProjectId.set(row.projectId, {
+			project: {
+				id: row.projectId,
+				href: `/projects/${row.projectId}`,
+				title: row.title,
+				category: row.category,
+				experienceLevel: row.experienceLevel,
+				budgetType: row.budgetType,
+				budgetMin: row.budgetMin,
+				budgetMax: row.budgetMax,
+				deadline: row.deadline,
+				status: row.projectStatus,
+				skills: skillsByProjectId.get(row.projectId) ?? [],
+			},
+			applications: [
+				{
+					id: row.applicationId,
+					status: row.applicationStatus,
+					coverLetter: row.coverLetter,
+					proposedPrice: row.proposedPrice,
+					proposedDeadline: row.proposedDeadline,
+					createdAt: row.createdAt,
+					updatedAt: row.updatedAt,
+					freelancer: {
+						userId: row.freelancerId,
+						name: row.freelancerName,
+						avatarUrl: row.freelancerAvatarUrl,
+					},
+				},
+			],
+		})
+	}
+
+	return {
+		items: Array.from(itemsByProjectId.values()),
 	}
 }
 

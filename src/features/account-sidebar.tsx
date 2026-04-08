@@ -1,12 +1,16 @@
 'use client'
 
-import { useCallback, useEffect } from 'react'
-import { genericDomain as domain } from '@/lib/logger'
+import { sample } from 'effector'
+import { createGate, useGate, useUnit } from 'effector-react'
+import { useCallback } from 'react'
+import type { AccountSnapshot } from '@/lib/account'
+import { accountSidebarDomain as domain } from '@/lib/logger'
+import { $accountContext } from '@/stores'
 import { type BreadcrumbProps, Sidebar, type SidebarGroup, type SidebarItemClick } from '@/ui'
 
 const sidebarGroups: SidebarGroup[] = [
 	{
-		title: 'Platform',
+		title: 'Платформа',
 		collapsible: true,
 		items: [
 			{ title: 'Обзор', href: '/account/dashboard', icon: 'layout-dashboard' },
@@ -15,17 +19,61 @@ const sidebarGroups: SidebarGroup[] = [
 				open: true,
 				icon: 'user-plus',
 				items: [
-					{ title: 'Профиль', href: '/account/profile' },
-					{ title: 'Портфолио', href: '/account/portfolio' },
-					{ title: 'Заявки', href: '/account/applications' },
+					{
+						title: 'Профиль',
+						href: '/account/profile',
+					},
+					{
+						title: 'Портфолио',
+						href: '/account/portfolio',
+						context: 'freelancer',
+						badge: '~works',
+					},
+					{
+						title: 'Заявки',
+						href: '/account/applications',
+						context: 'freelancer',
+						badge: '~applications',
+					},
+					{
+						title: 'Сообщения',
+						href: '/account/chat',
+						badge: '~messages',
+						badgeColor: 'success',
+						badgeVariant: 'primary',
+					},
 				],
 			},
-			{ title: 'Проекты', href: '/projects', icon: 'folder-kanban' },
-			{ title: 'Фрилансеры', href: '/freelancers', icon: 'users' },
-			{ title: 'Создать проект', href: '/account/projects/new', icon: 'briefcase-business' },
+			{
+				title: 'Мои проекты',
+				icon: 'folder-kanban',
+				context: 'client',
+				items: [
+					{
+						title: 'Проекты',
+						href: '/account/projects',
+						context: 'client',
+						badge: '~projects',
+					},
+					{
+						title: 'Заявки',
+						href: '/account/projects/applications',
+						context: 'client',
+						badge: '~applications',
+					},
+				],
+			},
+			{ title: 'Избранные фрилансеры', href: '/account/pending', icon: 'users' },
+			{
+				title: 'Создать проект',
+				href: '/account/projects/new',
+				icon: 'briefcase-business',
+				context: 'client',
+			},
 			{
 				title: 'API',
 				icon: 'blocks',
+				context: 'freelancer',
 				items: [
 					{ title: 'Swagger', href: '/api/docs' },
 					{ title: 'Reference', href: '/api/reference' },
@@ -34,26 +82,30 @@ const sidebarGroups: SidebarGroup[] = [
 		],
 	},
 	{
-		title: 'Projects',
+		title: 'Интеграция',
 		items: [
-			{ title: 'AI Assistant', icon: 'bot', href: '/account/pending' },
-			{ title: 'Automation Hub', icon: 'workflow', href: '/account/pending' },
+			{ title: 'AI Assistant', icon: 'bot', href: '/account/pending', badge: 133 },
+			{ title: 'Automation Hub', icon: 'workflow', href: '/account/pending', badge: '5.4' },
 			{ title: 'Studio Space', icon: 'building', href: '/account/pending' },
 		],
 	},
 ]
 
-export function AccountSidebar() {
-	// reset breadcrumb on mount
-	useEffect(() => {
-		resetBreadcrumb()
-	}, [])
+type AccountSidebarProps = {
+	context: AccountSnapshot
+}
+
+export function AccountSidebar({ context }: AccountSidebarProps) {
+	useGate(AccountSidebarGate)
+	const accountContext = useUnit($accountContext) ?? context
 
 	const onItemClick = useCallback((current: SidebarItemClick, parent?: SidebarItemClick) => {
 		updateBreadcrumb({ current, parent })
 	}, [])
 	return (
 		<Sidebar
+			context={accountContext.role}
+			badges={accountContext}
 			collapsible="icon"
 			groups={sidebarGroups}
 			variant="sidebar"
@@ -67,6 +119,10 @@ export function AccountSidebar() {
 type BreadcrumbPath = NonNullable<BreadcrumbProps['path']>
 type BreadcrumbUpdate = { current: SidebarItemClick; parent?: SidebarItemClick }
 
+const AccountSidebarGate = createGate({
+	domain,
+	name: 'AccountSidebarGate',
+})
 const resetBreadcrumb = domain.createEvent('resetBreadcrumb')
 const updateBreadcrumb = domain.createEvent<BreadcrumbUpdate>('updateBreadcrumb')
 export const $breadcrumb = domain.createStore<BreadcrumbPath>([], { name: '$breadcrumb' })
@@ -77,4 +133,10 @@ $breadcrumb.on(updateBreadcrumb, (_, update) => {
 	const currentPath = current.href ? [current.title, current.href] : current.title
 	const parentPath = parent?.href ? [parent.title, parent.href] : parent ? parent.title : null
 	return (parentPath ? [parentPath, currentPath] : [currentPath]) as BreadcrumbPath
+})
+
+// clear breadcrumb trail when sidebar gate opens
+sample({
+	clock: AccountSidebarGate.open,
+	target: resetBreadcrumb,
 })

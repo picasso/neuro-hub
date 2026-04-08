@@ -19,6 +19,14 @@ const sizePresets: Record<IconSize, number> = {
 	xl: 32,
 }
 
+const sizePresetClasses: Record<IconSize, string> = {
+	xs: 'size-3.5',
+	sm: 'size-4',
+	md: 'size-5',
+	lg: 'size-6',
+	xl: 'size-8',
+}
+
 // icon component
 
 export type IconProps = React.ComponentProps<ReturnType<typeof getIcon>> & {
@@ -26,6 +34,9 @@ export type IconProps = React.ComponentProps<ReturnType<typeof getIcon>> & {
 	size?: IconSize | number
 	color?: IconColor
 	spinning?: boolean
+	pinging?: boolean
+	pulsing?: boolean
+	bouncing?: boolean
 	accent?: string
 }
 
@@ -33,12 +44,26 @@ export type IconOptions = {
 	color?: IconProps['color']
 	size?: IconProps['size']
 	spinning?: IconProps['spinning']
+	pinging?: IconProps['pinging']
+	pulsing?: IconProps['pulsing']
+	bouncing?: IconProps['bouncing']
 	tw?: IconProps['className']
 	accent?: IconProps['accent']
 }
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
-	{ name, size = 'md', color = 'secondary', spinning, className, accent, ...props },
+	{
+		name,
+		size = 'md',
+		color = 'secondary',
+		spinning,
+		pinging,
+		pulsing,
+		bouncing,
+		className,
+		accent,
+		...props
+	},
 	ref,
 ) {
 	const IconComponent = getIcon(name)
@@ -51,8 +76,12 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
 			height={sizeValue}
 			className={cn(
 				'shrink-0',
+				!isNumber(size) && sizePresetClasses[size],
 				color && iconColorClasses[color],
 				spinning && 'animate-spin',
+				pinging && 'animate-ping',
+				pulsing && 'animate-pulse',
+				bouncing && 'animate-bounce',
 				className,
 			)}
 			style={isNumber(size) ? { width: sizeValue, height: sizeValue } : undefined}

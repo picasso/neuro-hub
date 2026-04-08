@@ -7,14 +7,14 @@ import type { UserSkillInput } from '@/lib/validations'
 import {
 	$allSkills,
 	$selectedSkills,
+	type Skill,
 	addSkill,
 	loadSkillsFx,
 	nextStep,
 	prevStep,
 	removeSkill,
 	updateSkillLevel,
-	type Skill,
-} from '@/stores/onboarding'
+} from '@/stores'
 import { Badge, Button, Checkbox, Select, Stack, TextField, TS } from '@/ui'
 
 type ProficiencyLevel = UserSkillInput['proficiencyLevel']

@@ -19,9 +19,8 @@ export function QuickAccess({ recent, current, onSelect }: QuickAccessProps) {
 					size="sm"
 					onClick={() => onSelect(component)}
 					className="text-xs"
-				>
-					{component.name}
-				</Button>
+					label={component.name}
+				/>
 			))}
 		</Stack>
 	)

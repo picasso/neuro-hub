@@ -126,6 +126,27 @@ import { Button, Icon, Stack, TS } from '@/ui'
 </Stack>
 ```
 
+### Stack-first layout
+
+Use `Stack` as the default primitive for generic layout containers.
+
+- If a block exists to express `flex`, `gap`, alignment, justification, row/column direction, or simple wrapping, use `Stack`.
+- Do not use raw `div` for generic layout when `Stack` can express the same structure.
+- Raw `div` is acceptable only when it has a clear non-layout purpose such as:
+  - overflow or truncation wrapper
+  - sticky / absolute / relative positioning layer
+  - shape-specific styling that `Stack` does not express cleanly
+  - semantic/container shell where a wrapper component is not appropriate
+
+### Visual semantics over utility semantics
+
+Prefer component-level meaning over decoding utility classes from raw markup.
+
+- `Stack` should communicate “this is a layout block”.
+- `TS` should communicate “this is text content”.
+- `Button`, `Empty`, `Card`, and similar wrappers should communicate approved UI surfaces.
+- Avoid making reviewers infer structure purely from class strings like `flex`, `items-center`, `gap-2`.
+
 ## 4. Lodash Preference
 
 Lodash is an accepted default for non-trivial data manipulation in this codebase.
@@ -134,6 +155,14 @@ Lodash is an accepted default for non-trivial data manipulation in this codebase
 - Avoid default imports like `import _ from 'lodash'`.
 - Native methods are fine when they are clearly simpler, but do not contort code just to avoid Lodash.
 
+## 5. Shared Providers
+
+The app already provides shared UI providers at the application level.
+
+- Do not add local `TooltipProvider` inside leaf UI components.
+- Assume a global `TooltipProvider` already exists unless the component is rendered in a truly isolated environment outside the app tree.
+- In Playground demos, rely on the existing app-level provider setup instead of wrapping each component with its own `TooltipProvider`.
+
 ## Review Checklist
 
 - Keep business logic and orchestration out of React components.
@@ -141,4 +170,5 @@ Lodash is an accepted default for non-trivial data manipulation in this codebase
 - Route user-facing feedback through `@/alerts`.
 - Prefer shared wrappers from `@/ui`.
 - Extract repeated transformations or validations into helpers.
+- Avoid local provider duplication when the app already mounts a global provider.
 - See `react-nextjs.mdc`, `code-style.mdc`, `use-client.mdc`, and `effector.mdc` for the base rules this guide intentionally does not repeat.

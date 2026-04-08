@@ -6,11 +6,9 @@ import { produce, castDraft } from 'immer'
 import { forEach, isString, merge, set, uniqueId } from 'lodash'
 import { createElement, type FC, type ReactElement, type ReactNode } from 'react'
 import { toast, type ExternalToast as ToastProps, type ToasterProps } from 'sonner'
-import { createDomainWatched } from '@/lib/logger'
+import { alertsDomain as domain } from '@/lib/logger'
 import { type IconName, type IconOptions } from '@/ui'
 import { type MarkdownParams, type TemplatedMessage } from '@/utils'
-
-const domain = createDomainWatched('alerts')
 
 // * * * Alert types ------------------------------------------------------------------------------]
 
@@ -166,31 +164,30 @@ export const $overlay = domain
 	.on(incrementOverlay, (count) => count + 1)
 	.on(decrementOverlay, (count) => Math.max(0, count - 1))
 
+export const defaultOptions: AlertOptions = {
+	visibleToasts: 3,
+	duration: 4000,
+	position: 'bottom-left',
+	gap: 10,
+	expand: true,
+	offset: { bottom: '80px', left: '16px' },
+	mobileOffset: { bottom: '16px', left: '16px' },
+}
+
 export const $options = domain
-	.createStore<AlertOptions>(
-		{
-			visibleToasts: 3,
-			duration: 4000,
-			position: 'bottom-left',
-			gap: 10,
-			expand: true,
-			offset: { bottom: '80px', left: '16px' },
-			mobileOffset: { bottom: '16px', left: '16px' },
-		},
-		{ name: '$options' },
-	)
+	.createStore<AlertOptions>(defaultOptions, { name: '$options' })
 	.on(updateOptions, (options, update) => merge({}, options, update))
 	.reset(resetOptions)
 
 // * * * connections ------------------------------------------------------------------------------]
 
-// set alert `$component` store when gate is open
+// store toast renderer component when alert gate opens
 sample({
 	clock: AlertGate.open,
 	target: $component,
 })
 
-// create alert when `addAlert` event triggered and gate is open
+// enqueue toast via effect when `addAlert` fires and gate is ready
 sample({
 	clock: addAlert,
 	filter: AlertGate.status,
@@ -230,7 +227,9 @@ const removeFx = domain.createEffect<AlertExtra, void>({
 
 export const createAlertFx = Object.assign(createFx, {
 	props: (alert: AlertParams) => alert,
+	patchProps: (alert: AlertPatch) => alert,
 	removeFx,
+	patch: patchAlert,
 	remove: removeAlert,
 	update: updateAlert,
 	alertId: createAlertId,

@@ -1,5 +1,6 @@
 export { AccountDashboard } from './account-dashboard'
 export { AccountApplications } from './projects/project-account-applications'
+export { ProjectApplications } from './projects/project-applications'
 export { AccountProfile } from './account-profile'
 export { AccountPortfolio } from './account-portfolio'
 export { AccountPending } from './account-pending'

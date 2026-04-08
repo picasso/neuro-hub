@@ -119,6 +119,9 @@ New shadcn installs: add the component to `ui/shadcn/`, then re-export it from `
 
 **Only top-level barrels.** `index.ts` files exist only at `features/index.ts`, `features/server.ts`, and `ui/index.ts`. Subfolders never have their own `index.ts`.
 
+- Nested `index.ts` files are forbidden in all subfolders, including grouped UI areas such as `src/ui/chat/index.ts`
+- When a subfolder needs local grouping, use a named grouping file instead of `index.ts`
+
 Barrel files export only the public API:
 
 - Self-contained page/section components

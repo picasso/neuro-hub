@@ -7,7 +7,7 @@ import {
 	prevStep,
 	updateProfileField,
 	validateAndContinue,
-} from '@/stores/onboarding'
+} from '@/stores'
 import { Button, ComboboxSimple, Stack, TextField, TS } from '@/ui'
 
 const specializationOptions = [

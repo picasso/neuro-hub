@@ -3,6 +3,7 @@
 import { XIcon } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 import { type ComponentProps } from 'react'
+import { Toaster, type ToasterProps } from 'sonner'
 import { cn } from '@/utils'
 
 export type DialogAnimation = 'zoom' | 'fade' | 'slide-up' | 'slide-down' | 'none'
@@ -53,7 +54,7 @@ function DialogOverlay({ className, ...props }: ComponentProps<typeof DialogPrim
 		<DialogPrimitive.Overlay
 			data-slot="dialog-overlay"
 			className={cn(
-				'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50 backdrop-blur-sm',
+				'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50 backdrop-blur-xs',
 				className,
 			)}
 			{...props}
@@ -66,37 +67,70 @@ function DialogContent({
 	children,
 	showCloseButton = true,
 	overlay = true,
+	withToaster,
+	toasterOptions,
 	noPadding = false,
 	animation = 'zoom',
 	...props
 }: ComponentProps<typeof DialogPrimitive.Content> & {
 	showCloseButton?: boolean
 	overlay?: boolean
+	withToaster?: boolean
+	toasterOptions?: ToasterProps
 	noPadding?: boolean
 	animation?: DialogAnimation
 }) {
+	const bodyClassName = cn(
+		'bg-background z-50 grid w-full max-w-[calc(100%-2rem)] overflow-hidden rounded-lg border shadow-lg duration-200 outline-none sm:max-w-lg',
+		!noPadding && 'py-6 px-5 gap-4',
+		animationClasses[animation],
+		className,
+	)
+	const mainClassName = 'fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'
+	const bodyNode = (
+		<>
+			{children}
+			{showCloseButton ? (
+				<DialogPrimitive.Close
+					data-slot="dialog-close"
+					className="focus:ring-ring p-0.5 absolute top-4 right-5 rounded-full border-0 bg-transparent opacity-70 transition hover:opacity-100 hover:bg-foreground/10 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+				>
+					<XIcon />
+					<span className="sr-only">Close</span>
+				</DialogPrimitive.Close>
+			) : null}
+		</>
+	)
+
 	return (
 		<DialogPortal data-slot="dialog-portal">
 			{overlay && <DialogOverlay />}
 			<DialogPrimitive.Content
 				data-slot="dialog-content"
 				className={cn(
-					'bg-background fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-lg border shadow-lg duration-200 outline-none sm:max-w-lg',
-					!noPadding && 'py-6 px-5 gap-4',
-					animationClasses[animation],
-					className,
+					withToaster
+						? 'fixed inset-0 z-50 pointer-events-none outline-none'
+						: mainClassName,
+					!withToaster && bodyClassName,
 				)}
 				{...props}
 			>
-				{children}
-				{showCloseButton && (
-					<DialogPrimitive.Close
-						data-slot="dialog-close"
-						className="focus:ring-ring p-0.5 absolute top-4 right-5 rounded-full border-0 bg-transparent opacity-70 transition hover:opacity-100 hover:bg-foreground/10 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-					>
-						<XIcon />
-						<span className="sr-only">Close</span>
-					</DialogPrimitive.Close>
+				{withToaster ? (
+					<>
+						<Toaster
+							id="dialog-toaster"
+							{...(toasterOptions ?? {
+								position: 'bottom-left',
+								gap: 10,
+								expand: true,
+							})}
+						/>
+						<div className={cn(mainClassName, 'pointer-events-auto', bodyClassName)}>
+							{bodyNode}
+						</div>
+					</>
+				) : (
+					bodyNode
 				)}
 			</DialogPrimitive.Content>
 		</DialogPortal>

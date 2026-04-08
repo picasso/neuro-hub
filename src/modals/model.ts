@@ -1,10 +1,11 @@
-import { attach, createDomain, sample } from 'effector'
+import { attach, sample } from 'effector'
 import { type Draft, produce } from 'immer'
 import { get, has, isFunction, isString, merge } from 'lodash'
 import { createElement } from 'react'
+import { modalsDomain as domain } from '@/lib/logger'
 import { type DialogProps } from '@/ui/dialog'
 
-export const domain = createDomain('rule-them-all')
+export { domain }
 export const wrongModalId = '-wrong-id-'
 
 // common types -----------------------------------------------------------------------------------]
@@ -114,6 +115,7 @@ function mergeProps(modal?: ModalComponent, props?: ModalProps, override?: Props
 	return [modal, props] as const
 }
 
+// resolve active modal from registry + optional override into `setModal`
 sample({
 	clock: gotModal,
 	source: $modals,
@@ -167,7 +169,7 @@ const closedFx = domain.createEffect((data: ClosedAttachedParams) => {
 	else resolver?.(defaultMap(resolve))
 })
 
-// reset modal after closing
+// clear active modal state after close effect finishes
 sample({
 	clock: closedFx,
 	target: resetModal,

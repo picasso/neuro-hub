@@ -26,7 +26,10 @@ import {
 
 // * * * Gate -------------------------------------------------------------------------------------]
 
-export const OnboardingGate = createGate({ domain, name: 'OnboardingGate' })
+export const OnboardingGate = createGate<{ initialRole: UserRole | null }>({
+	domain,
+	name: 'OnboardingGate',
+})
 
 // * * * $currentStep -----------------------------------------------------------------------------]
 
@@ -131,14 +134,15 @@ export const $credentialsErrors = domain.createStore<CredentialsErrors>(
 
 $credentialsErrors.reset(resetCredentialsErrors)
 
-// clear errors when field is updated
+// clear credential field error when that field is edited
 sample({
 	clock: updateCredentialField,
 	source: $credentialsErrors,
-	fn: (errors, { field }) =>
-		produce(errors, (draft) => {
-			delete draft[field as keyof CredentialsErrors]
-		}),
+	fn: (errors, { field }) => {
+		const next = { ...errors }
+		delete next[field as keyof CredentialsErrors]
+		return next
+	},
 	target: $credentialsErrors,
 })
 
@@ -154,14 +158,15 @@ export const $profileErrors = domain.createStore<ProfileErrors>(
 
 $profileErrors.reset(resetProfileErrors)
 
-// clear errors when field is updated
+// clear profile field error when that field is edited
 sample({
 	clock: updateProfileField,
 	source: $profileErrors,
-	fn: (errors, { field }) =>
-		produce(errors, (draft) => {
-			delete draft[field as keyof ProfileErrors]
-		}),
+	fn: (errors, { field }) => {
+		const next = { ...errors }
+		delete next[field as keyof ProfileErrors]
+		return next
+	},
 	target: $profileErrors,
 })
 
@@ -377,7 +382,7 @@ export const $canGoPrev = $currentStep.map((step) => step > 1)
 
 export const resetOnboarding = domain.createEvent('resetOnboarding')
 
-// reset all stores when `resetOnboarding` is called
+// fan out full onboarding reset to every slice store
 sample({
 	clock: resetOnboarding,
 	target: [
@@ -395,20 +400,33 @@ sample({
 
 // * * * connections and consequences -------------------------------------------------------------]
 
-// reset onboarding when gate closes
+// tear down onboarding when user leaves the flow
 sample({
 	clock: OnboardingGate.close,
 	target: resetOnboarding,
 })
 
-// automatically move to step 2 when setRole is called
+// apply `initialRole` from gate when still at step 1 with no role
+sample({
+	clock: OnboardingGate.open,
+	source: {
+		currentStep: $currentStep,
+		role: $role,
+	},
+	filter: ({ currentStep, role }, { initialRole }) =>
+		Boolean(initialRole) && currentStep === 1 && role === null,
+	fn: (_, { initialRole }) => initialRole!,
+	target: setRole,
+})
+
+// move to profile step after role is chosen
 sample({
 	clock: setRole,
 	fn: () => 2 as OnboardingStep,
 	target: setCurrentStep,
 })
 
-// initialize profile data when role is set
+// seed empty profile object matching selected role
 sample({
 	clock: setRole,
 	fn: (role): ProfileData => {
@@ -428,7 +446,7 @@ sample({
 	target: setProfileData,
 })
 
-// increment step when `nextStep` is called
+// advance one step on nextStep while below final step
 sample({
 	clock: nextStep,
 	source: $currentStep,
@@ -437,7 +455,7 @@ sample({
 	target: setCurrentStep,
 })
 
-// auto-skip step 3 (skills) for client role
+// skip freelancer skills step for clients when current step is 3
 sample({
 	clock: $currentStep,
 	source: $role,
@@ -446,7 +464,7 @@ sample({
 	target: setCurrentStep,
 })
 
-// decrement step when `prevStep` is called
+// go back one step on prevStep when not on first step
 sample({
 	clock: prevStep,
 	source: $currentStep,
@@ -455,7 +473,7 @@ sample({
 	target: setCurrentStep,
 })
 
-// clear error when any store updates
+// clear global error when user edits any onboarding field
 sample({
 	clock: [
 		setRole,
@@ -470,7 +488,7 @@ sample({
 	target: resetError,
 })
 
-// validate credentials and set errors when validation fails
+// populate credential field errors when inline validation fails
 sample({
 	clock: validateCredentialsAndContinue,
 	source: $credentials,
@@ -493,7 +511,7 @@ sample({
 	target: $credentialsErrors,
 })
 
-// validate credentials and continue to next step when `validateCredentialsAndContinue` is called
+// advance past credentials step when schema validates
 sample({
 	clock: validateCredentialsAndContinue,
 	source: $credentials,
@@ -505,7 +523,7 @@ sample({
 	target: nextStep,
 })
 
-// validate profile and continue to next step when `validateAndContinue` is called
+// populate profile field errors when inline validation fails
 sample({
 	clock: validateAndContinue,
 	source: $profileData,
@@ -528,7 +546,7 @@ sample({
 	target: $profileErrors,
 })
 
-// go to next step if validation succeeded
+// advance past profile step when schema validates
 sample({
 	clock: validateAndContinue,
 	source: $profileData,
@@ -540,14 +558,14 @@ sample({
 	target: nextStep,
 })
 
-// set error when `registerUserFx` fails
+// mirror registration error into global onboarding error store
 sample({
 	clock: registerUserFx.failData,
 	fn: (error) => error.message,
 	target: $error,
 })
 
-// set error when `loadSkillsFx` fails
+// mirror skills load error into global onboarding error store
 sample({
 	clock: loadSkillsFx.failData,
 	fn: (error) => error.message,
@@ -556,14 +574,14 @@ sample({
 
 // * * * Alert notifications for effects ----------------------------------------------------------]
 
-// remove progress alert when registration finishes
+// dismiss registration progress toast when effect settles
 sample({
 	clock: registerUserFx.finally,
 	fn: () => ({ id: onboardingId }),
 	target: createAlertFx.removeFx,
 })
 
-// show error alert when registration fails
+// toast registration failure details
 sample({
 	clock: registerUserFx.failData,
 	fn: (error) =>
@@ -576,14 +594,14 @@ sample({
 	target: createAlertFx,
 })
 
-// remove progress alert when loading skills finishes
+// dismiss skills progress toast when effect settles
 sample({
 	clock: loadSkillsFx.finally,
 	fn: () => ({ id: skillsId }),
 	target: createAlertFx.removeFx,
 })
 
-// show error alert when loading skills fails
+// toast skills load failure
 sample({
 	clock: loadSkillsFx.failData,
 	fn: (error) =>
@@ -598,7 +616,7 @@ sample({
 
 // * * * Automatic effects triggering based on `$currentStep` -------------------------------------]
 
-// trigger `loadSkillsFx` when step 3 is reached (freelancer only, load once)
+// lazy-load skills once when freelancer reaches skills step
 sample({
 	clock: $currentStep,
 	source: {
@@ -612,7 +630,7 @@ sample({
 	target: loadSkillsFx,
 })
 
-// validate credentials and show errors when `submitRegistration` is called with invalid data
+// show credential errors on submit when schema still invalid
 sample({
 	clock: submitRegistration,
 	source: $credentials,
@@ -635,7 +653,7 @@ sample({
 	target: $credentialsErrors,
 })
 
-// trigger registration when submitRegistration is called (from credentials step)
+// call sign-up effect when credentials, profile, and skills prerequisites pass
 sample({
 	clock: submitRegistration,
 	source: {
@@ -668,7 +686,7 @@ sample({
 	target: registerUserFx,
 })
 
-// go to step 5 (email verification) when registration succeeds
+// jump to post-registration / verification step after sign-up succeeds
 sample({
 	clock: registerUserFx.doneData,
 	fn: () => 5 as OnboardingStep,

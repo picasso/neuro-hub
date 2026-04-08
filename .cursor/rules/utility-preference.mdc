@@ -1,0 +1,16 @@
+---
+description: Prefer existing utilities and Lodash before custom helpers
+alwaysApply: true
+---
+
+# Utility Preference
+
+- Before adding a new generic helper, first check existing helpers in `@/utils`, configured libraries already used in the project, and named exports from `lodash`.
+- If `lodash` already provides a clear equivalent such as `capitalize`, `map`, `groupBy`, `uniqBy`, `get`, `set`, `pick`, `omit`, `debounce`, or `throttle`, prefer it over writing a custom generic helper.
+- If the project already uses a configured library for the problem space, prefer that library over a new handcrafted utility.
+- For dates and time formatting, prefer the shared `dayjs` setup from `@/utils` before adding manual `Intl` formatting code or a second date helper.
+- Write a custom helper only when at least one of these is true:
+  - no existing utility or configured library covers the case well
+  - the logic is domain-specific rather than generic
+  - the native expression is clearly simpler than introducing a library helper
+- Treat “new generic helper despite an existing Lodash or `@/utils` equivalent” as a review smell and reconsider the implementation before continuing.

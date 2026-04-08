@@ -52,6 +52,25 @@ export interface Applications {
 	updated_at: Generated<Timestamp | null>
 }
 
+export interface ConversationMembers {
+	conversation_id: string
+	created_at: Generated<Timestamp | null>
+	id: Generated<string>
+	role: string
+	user_id: string
+}
+
+export interface Conversations {
+	context_id: string
+	context_type: string
+	created_at: Generated<Timestamp | null>
+	created_by: string
+	customer_id: string
+	freelancer_id: string
+	id: Generated<string>
+	updated_at: Generated<Timestamp | null>
+}
+
 export interface FreelancerProfiles {
 	availability: string | null
 	created_at: Generated<Timestamp | null>
@@ -73,6 +92,25 @@ export interface KnexMigrations {
 export interface KnexMigrationsLock {
 	index: Generated<number>
 	is_locked: number | null
+}
+
+export interface MessageReads {
+	conversation_id: string
+	created_at: Generated<Timestamp | null>
+	id: Generated<string>
+	last_read_message_created_at: Timestamp
+	last_read_message_id: string
+	read_at: Timestamp
+	updated_at: Generated<Timestamp | null>
+	user_id: string
+}
+
+export interface Messages {
+	conversation_id: string
+	created_at: Generated<Timestamp | null>
+	id: Generated<string>
+	sender_id: string
+	text: string
 }
 
 export interface PortfolioItems {
@@ -187,9 +225,13 @@ export interface Verifications {
 export interface DB {
 	accounts: Accounts
 	applications: Applications
+	conversation_members: ConversationMembers
+	conversations: Conversations
 	freelancer_profiles: FreelancerProfiles
 	knex_migrations: KnexMigrations
 	knex_migrations_lock: KnexMigrationsLock
+	message_reads: MessageReads
+	messages: Messages
 	portfolio_items: PortfolioItems
 	project_attachments: ProjectAttachments
 	project_skills: ProjectSkills

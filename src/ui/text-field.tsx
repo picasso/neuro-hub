@@ -1,6 +1,6 @@
 'use client'
 
-import { type InputHTMLAttributes, type TextareaHTMLAttributes } from 'react'
+import { type ComponentPropsWithRef, type Ref } from 'react'
 import { FieldWrapper, type FieldWrapperProps } from './field'
 import { Icon, type IconProps } from './icon'
 import { IconButton } from './icon-button'
@@ -13,24 +13,29 @@ import {
 	InputGroupTextarea,
 } from './shadcn/input-group'
 import { Textarea } from './shadcn/textarea'
+import { cn } from '@/utils'
 
 // types ------------------------------------------------------------------------------------------]
 
 type BaseProps = Pick<
 	FieldWrapperProps,
-	'label' | 'helper' | 'error' | 'required' | 'className'
+	'label' | 'labelClassName' | 'helper' | 'helperClassName' | 'error' | 'required' | 'className'
 > & {
 	startIcon?: IconProps['name']
 	endIcon?: IconProps['name']
 	showClear?: boolean
+	light?: boolean
+	dark?: boolean
 	onEndClick?: () => void
 	onClearClick?: () => void
 }
 
-type HTMLInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'required'>
-type InputVariantProps = BaseProps & HTMLInputProps & { multiline?: false }
-type HTMLTextareaProps = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'required'>
-type TextareaVariantProps = BaseProps & HTMLTextareaProps & { multiline: true }
+type HTMLInputProps = Omit<ComponentPropsWithRef<'input'>, 'required' | 'ref'>
+type HTMLTextareaProps = Omit<ComponentPropsWithRef<'textarea'>, 'required' | 'ref'>
+export type InputVariantProps = BaseProps &
+	HTMLInputProps & { multiline?: false; ref?: Ref<HTMLInputElement> }
+export type TextareaVariantProps = BaseProps &
+	HTMLTextareaProps & { multiline: true; ref?: Ref<HTMLTextAreaElement> }
 
 export type TextFieldProps = InputVariantProps | TextareaVariantProps
 
@@ -44,11 +49,15 @@ function InputVariant({
 	startIcon,
 	endIcon,
 	showClear,
+	light,
+	dark,
 	onEndClick,
 	onClearClick,
 	className,
+	labelClassName,
+	helperClassName,
 	multiline: _,
-
+	ref,
 	...mainInputProps
 }: InputVariantProps) {
 	const { disabled, value } = mainInputProps
@@ -77,19 +86,19 @@ function InputVariant({
 		iconButton && leftIcon ? (
 			<ButtonGroup>
 				<InputGroup className="flex-1" {...wrapperData}>
-					<InputGroupInput {...elementData} {...inputProps} />
+					<InputGroupInput ref={ref} {...elementData} {...inputProps} />
 					<InputGroupAddon align="inline-start">{leftIcon}</InputGroupAddon>
 				</InputGroup>
 				{iconButton}
 			</ButtonGroup>
 		) : iconButton ? (
 			<ButtonGroup>
-				<Input {...wrapperData} {...elementData} {...inputProps} />
+				<Input ref={ref} {...wrapperData} {...elementData} {...inputProps} />
 				{iconButton}
 			</ButtonGroup>
 		) : leftIcon || rightIcon || clearIcon ? (
 			<InputGroup {...wrapperData}>
-				<InputGroupInput {...elementData} {...inputProps} />
+				<InputGroupInput ref={ref} {...elementData} {...inputProps} />
 				{leftIcon && <InputGroupAddon align="inline-start">{leftIcon}</InputGroupAddon>}
 				{rightIcon && <InputGroupAddon align="inline-end">{rightIcon}</InputGroupAddon>}
 				{clearIcon && value && (
@@ -97,7 +106,7 @@ function InputVariant({
 				)}
 			</InputGroup>
 		) : (
-			<Input {...wrapperData} {...elementData} {...inputProps} />
+			<Input ref={ref} {...wrapperData} {...elementData} {...inputProps} />
 		)
 
 	return (
@@ -107,7 +116,13 @@ function InputVariant({
 			helper={helper}
 			disabled={disabled}
 			required={required}
-			className={className}
+			className={cn(
+				light && '**:data-[slot=input]:bg-surface',
+				dark && '**:data-[slot=input]:bg-accent',
+				className,
+			)}
+			labelClassName={labelClassName}
+			helperClassName={helperClassName}
 		>
 			{control}
 		</FieldWrapper>
@@ -123,9 +138,14 @@ function TextareaVariant({
 	required,
 	startIcon,
 	endIcon,
+	light,
+	dark,
 	className,
+	labelClassName,
+	helperClassName,
 	multiline: _,
 	onEndClick: __,
+	ref,
 	...textareaProps
 }: TextareaVariantProps) {
 	const { disabled } = textareaProps
@@ -133,7 +153,12 @@ function TextareaVariant({
 	const control =
 		startIcon || endIcon ? (
 			<InputGroup>
-				<InputGroupTextarea aria-invalid={!!error} required={required} {...textareaProps} />
+				<InputGroupTextarea
+					ref={ref}
+					aria-invalid={!!error}
+					required={required}
+					{...textareaProps}
+				/>
 				{startIcon && (
 					<InputGroupAddon align="inline-start">
 						<Icon name={startIcon} size="sm" />
@@ -146,7 +171,7 @@ function TextareaVariant({
 				)}
 			</InputGroup>
 		) : (
-			<Textarea aria-invalid={!!error} required={required} {...textareaProps} />
+			<Textarea ref={ref} aria-invalid={!!error} required={required} {...textareaProps} />
 		)
 
 	return (
@@ -156,7 +181,13 @@ function TextareaVariant({
 			helper={helper}
 			disabled={disabled}
 			required={required}
-			className={className}
+			className={cn(
+				light && '**:data-[slot=textarea]:bg-surface',
+				dark && '**:data-[slot=textarea]:bg-accent',
+				className,
+			)}
+			labelClassName={labelClassName}
+			helperClassName={helperClassName}
 		>
 			{control}
 		</FieldWrapper>

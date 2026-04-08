@@ -21,7 +21,7 @@ import {
 	type ApplicationsQueryInput,
 } from '@/lib/validations'
 import { Badge, type BadgeColor, Button, Card, Empty, Link, Stack, TS } from '@/ui'
-import { pluralizeRuWithCount } from '@/utils'
+import { normalizeSearchParams, pluralizeRuWithCount } from '@/utils'
 
 type PageProps = {
 	searchParams?: Promise<Record<string, string | string[] | undefined>>
@@ -167,7 +167,7 @@ export async function AccountApplications({ searchParams }: PageProps) {
 									content={item.coverLetter}
 								/>
 
-								<Stack wrap justify="space-between" className="gap-3">
+								<Stack wrap gap={3} justify="space-between">
 									<Stack gap={2} wrap>
 										<TS
 											variant="caption"
@@ -246,12 +246,4 @@ function buildApplicationsHref(
 
 	const query = params.toString()
 	return (query ? `/account/applications?${query}` : '/account/applications') as Route
-}
-
-function normalizeSearchParams(raw: Record<string, string | string[] | undefined>) {
-	return Object.fromEntries(
-		Object.entries(raw)
-			.map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])
-			.filter(([, value]) => value !== undefined),
-	)
 }

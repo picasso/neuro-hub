@@ -1,5 +1,3 @@
-'use client'
-
 import { map } from 'lodash'
 import { benefitsContent } from '@/config'
 import { Card, Icon, PageContainer, Stack, TS, type IconName } from '@/ui'

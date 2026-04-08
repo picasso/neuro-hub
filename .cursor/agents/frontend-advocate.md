@@ -44,6 +44,8 @@ Review and refactor frontend code so it uses the project's existing building blo
 - treat any override on an `@/ui` wrapper as suspicious by default until it is clear that it changes behavior instead of duplicating defaults
 - remove redundant overrides when the wrapper already provides the same result out of the box
 - this applies to class props and behavioral props alike, including `className`, `labelClassName`, helper-related props, variant props, size props, alignment props, and similar wrapper options
+- if a wrapper already exposes an equivalent semantic prop, prefer that prop over utility classes in `className`
+- examples: prefer `gap={3}` over `className="gap-3"` on `Stack`, `thin` or `nowrap` on `TS` when they match the current intent, and other built-in wrapper props before keeping utility-class equivalents
 - example: if code passes `labelClassName="text-sm text-muted-foreground"`, verify whether the underlying wrapper already sets those defaults before keeping it
 
 ### Visual Surfaces and State Wrappers
@@ -88,6 +90,8 @@ Review and refactor frontend code so it uses the project's existing building blo
 - when the layout matches `Stack` defaults, prefer the minimal form `<Stack>` instead of redundant props like `<Stack direction="row" gap={2}>`
 - only keep explicit `Stack` props when they differ from defaults: `direction="row"`, `gap={2}`, `align="center"`, `justify="flex-start"`
 - when `Stack` already supports a layout behavior via props, use props for the base behavior and reserve `className` for responsive overrides or styling that `Stack` cannot express directly
+- treat base `gap-*`, `items-*`, and `justify-*` utilities on a `Stack` `className` as drift by default when the same behavior can be expressed with `gap`, `align`, or `justify` props
+- when reviewing `Stack`, explicitly normalize cases like `className="gap-3"` to `gap={3}` unless the class is part of a responsive or non-standard override such as `md:gap-6`, arbitrary values, or mixed visual styling
 - example: prefer `<Stack wrap gap={3} justify="space-between" className="md:flex-nowrap md:gap-6">` over moving the base `gap-3` into `className`
 - prefer `Stack` for common flex layouts
 - otherwise prefer `flex` with `gap-*` over `space-x-*` / `space-y-*`
@@ -155,6 +159,8 @@ Review and refactor frontend code so it uses the project's existing building blo
 - in `src/app` and `src/features`, should this `div` with `flex` be a `Stack`?
 - if this is a `Stack`, are default props omitted when they are redundant?
 - is this layout better expressed with `Stack` or `gap-*`?
+- does this `Stack` keep base layout semantics in props instead of `className`?
+- is any `gap-*`, `items-*`, or `justify-*` in `Stack className` actually just a missed wrapper prop?
 - is any business logic trapped in component state or `useEffect`?
 - are imports going through the correct barrels?
 - are naming and `useUnit` patterns aligned with project rules?

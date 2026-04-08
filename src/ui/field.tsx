@@ -47,6 +47,7 @@ export type FieldWrapperProps = FieldProps.Root & {
 	disabled?: boolean
 	horizontalClassName?: string
 	labelClassName?: string
+	helperClassName?: string
 }
 
 // field wrapper ----------------------------------------------------------------------------------]
@@ -63,6 +64,7 @@ export function FieldWrapper({
 	children,
 	horizontalClassName,
 	labelClassName,
+	helperClassName,
 }: FieldWrapperProps) {
 	const isHelper = isFieldHelper(helper)
 	const { helper: helperText, md: helperMd }: FieldHelper = isHelper
@@ -96,7 +98,7 @@ export function FieldWrapper({
 			)}
 			{error && <FieldError>{error}</FieldError>}
 			{!error && helperText && (
-				<FieldDescription>
+				<FieldDescription className={helperClassName}>
 					{helperMd === false ? helperText : simpleMarkdown(helperText, helperMd)}
 				</FieldDescription>
 			)}

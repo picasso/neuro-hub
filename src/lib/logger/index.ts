@@ -13,9 +13,18 @@ export {
 } from './debug-effector'
 
 export {
+	accountContextDomain,
+	accountSidebarDomain,
+	alertsDomain,
 	authDomain,
+	chatDomain,
+	createProjectDomain,
+	freelancerPortfolioDomain,
+	freelancerProfileDomain,
 	genericDomain,
 	genericMuteDomain,
+	modalsDomain,
 	viewerDomain,
 	onboardingDomain,
+	projectApplicationsDomain,
 } from './watched'

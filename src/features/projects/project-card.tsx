@@ -53,7 +53,7 @@ export function ProjectCard({ item }: ProjectCardProps) {
 				image="project"
 			>
 				<Stack vertical gap={4} align="stretch" className="h-full">
-					<Stack wrap justify="space-between" className="gap-2">
+					<Stack wrap gap={2} justify="space-between">
 						<Badge variant="secondary" size="xs">
 							{formatExperienceLevel(item.experienceLevel)}
 						</Badge>

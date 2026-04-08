@@ -14,8 +14,8 @@
 - `yarn type-check` - TypeScript check (tsc --noEmit)
 
 ## Testing
-- `yarn test` - run Jest
-- `yarn test:watch` - Jest watch mode
+- `yarn test` - run Vitest (single run)
+- `yarn test:watch` - Vitest watch mode
 
 ## Database (local)
 - `yarn db:auth:migrate` - Better Auth tables

@@ -1,8 +1,7 @@
 'use client'
 
 import { useGate, useUnit } from 'effector-react'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { redirect } from 'next/navigation'
 import {
 	$createdProjectId,
 	$errors,
@@ -49,8 +48,6 @@ const statusOptions = [
 
 export function CreateProjectPage() {
 	useGate(CreateProjectGate)
-
-	const router = useRouter()
 	const [
 		form,
 		errors,
@@ -79,11 +76,9 @@ export function CreateProjectPage() {
 		createProjectSkillsReloadRequested,
 	])
 
-	useEffect(() => {
-		if (!createdProjectId) return
-
-		router.push(`/projects/${createdProjectId}` as Route)
-	}, [createdProjectId, router])
+	if (createdProjectId) {
+		redirect(`/projects/${createdProjectId}` as Route)
+	}
 
 	return (
 		<PageShell preset="content">

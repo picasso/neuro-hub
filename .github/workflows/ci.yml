@@ -39,7 +39,7 @@ jobs:
         run: yarn format:check
 
       - name: Run tests
-        run: yarn test --ci --coverage --maxWorkers=2
+        run: yarn test --coverage --maxWorkers=2
 
       - name: Build
         run: yarn build

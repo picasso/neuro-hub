@@ -1,16 +1,16 @@
 'use client'
 
-import { useUnit } from 'effector-react'
+import { useGate, useUnit } from 'effector-react'
 import { useRouter } from 'next/navigation'
-import { type FormEvent, useEffect } from 'react'
+import { type SyntheticEvent } from 'react'
 import {
 	$applicationErrors,
-	$form,
-	projectApplicationFormScopeChanged,
+	$projectApplicationForm as $form,
+	ProjectApplicationFormGate,
 	projectApplicationFormUpdated,
 	resetProjectApplicationForm,
 	submitProjectApplicationFx,
-} from '@/stores/project-applications/model'
+} from '@/stores'
 import { Button, Stack, TextField, TS } from '@/ui'
 
 type ProjectApplicationFormProps = {
@@ -18,34 +18,20 @@ type ProjectApplicationFormProps = {
 }
 
 export function ProjectApplicationForm({ projectId }: ProjectApplicationFormProps) {
+	useGate(ProjectApplicationFormGate, { projectId })
+
 	const router = useRouter()
-	const [
-		form,
-		applicationErrors,
-		isSubmitting,
-		scopeChanged,
-		updateForm,
-		resetForm,
-		submitApplication,
-	] = useUnit([
-		$form,
-		$applicationErrors,
-		submitProjectApplicationFx.pending,
-		projectApplicationFormScopeChanged,
-		projectApplicationFormUpdated,
-		resetProjectApplicationForm,
-		submitProjectApplicationFx,
-	])
+	const [form, applicationErrors, isSubmitting, updateForm, resetForm, submitApplication] =
+		useUnit([
+			$form,
+			$applicationErrors,
+			submitProjectApplicationFx.pending,
+			projectApplicationFormUpdated,
+			resetProjectApplicationForm,
+			submitProjectApplicationFx,
+		])
 
-	useEffect(() => {
-		scopeChanged(projectId)
-
-		return () => {
-			resetForm()
-		}
-	}, [projectId, resetForm, scopeChanged])
-
-	async function onSubmit(event: FormEvent<HTMLFormElement>) {
+	async function onSubmit(event: SyntheticEvent<HTMLFormElement>) {
 		event.preventDefault()
 		await submitApplication({ projectId, form })
 		router.refresh()
@@ -94,17 +80,18 @@ export function ProjectApplicationForm({ projectId }: ProjectApplicationFormProp
 					/>
 				</div>
 				<Stack wrap gap={3}>
-					<Button type="submit" disabled={isSubmitting}>
-						{isSubmitting ? 'Отправляем заявку...' : 'Подать заявку'}
-					</Button>
+					<Button
+						type="submit"
+						disabled={isSubmitting}
+						label={isSubmitting ? 'Отправляем заявку...' : 'Подать заявку'}
+					/>
 					<Button
 						type="button"
 						variant="outline"
 						disabled={isSubmitting}
 						onClick={() => resetForm()}
-					>
-						Очистить
-					</Button>
+						label="Очистить"
+					/>
 				</Stack>
 			</Stack>
 		</form>

@@ -1,5 +1,3 @@
-'use client'
-
 import { map } from 'lodash'
 import { showcaseContent } from '@/config'
 import { Avatar, PageContainer, Stack, TS, type IconName, Icon, Card } from '@/ui'

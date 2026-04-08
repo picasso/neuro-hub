@@ -55,6 +55,7 @@ export function Select({
 	alignWithTrigger,
 	compact,
 	labelClassName,
+	helperClassName,
 	horizontalClassName,
 	triggerClassName,
 	...selectProps
@@ -67,6 +68,7 @@ export function Select({
 			required={required}
 			disabled={disabled}
 			labelClassName={cn(compact && 'text-xs', labelClassName)}
+			helperClassName={cn(compact && 'text-xs', helperClassName)}
 			horizontalClassName={cn(compact && 'text-xs', horizontalClassName)}
 			horizontal={horizontal}
 			htmlFor={htmlFor}

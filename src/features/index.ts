@@ -4,7 +4,9 @@ export { LoginPage } from './auth/login-page'
 export { SignupPage } from './onboarding/signup-page'
 export { HowItWorksPage } from './how-it-works'
 export { CreateProjectPage } from './projects/create-project-page'
-export { PlaygroundPage } from './playground/playground-page'
+// NOTE: `PlaygroundPage` is intentionally not exported here for not to break the barrel export rule
+// export { PlaygroundPage } from './playground/playground-page'
+export { ChatPage } from './chat/page'
 
 // sections & components
 export { BenefitsSection } from './home/benefits-section'

@@ -1,7 +1,5 @@
-'use client'
-
 import { heroContent } from '@/config'
-import { Button, PageContainer, TS } from '@/ui'
+import { Button, PageContainer, Stack, TS } from '@/ui'
 
 export function HeroSection() {
 	return (
@@ -33,7 +31,7 @@ export function HeroSection() {
 						content={heroContent.description}
 					/>
 
-					<div className="mb-6 flex flex-col justify-center gap-4 sm:flex-row">
+					<Stack vertical gap={4} justify="center" className="mb-6 sm:flex-row">
 						<Button
 							inverse
 							href="/signup?role=freelancer"
@@ -52,7 +50,7 @@ export function HeroSection() {
 							label={heroContent.ctaClient}
 							className="shadow-lg shadow-black/10"
 						/>
-					</div>
+					</Stack>
 
 					<Button
 						inverse

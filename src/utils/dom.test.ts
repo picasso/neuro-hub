@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest'
 import { findChild, findParent } from './dom'
 
 describe('DOM Utilities', () => {

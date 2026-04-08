@@ -463,6 +463,24 @@ src/app/playground/
 
 **Дата решения:** 2026-03-17
 
+### 20. Chat peer read hydration: preserve realtime state on null thread response
+
+**Решение:** Если thread API при `loadActiveChatMessagesFx.doneData` возвращает `peerReadState: null`, но в клиентском store уже есть более свежее значение peer read из realtime, сохранять существующее store-значение вместо жёсткого сброса в `null`.
+
+**Обоснование:**
+- Realtime peer-read может прийти раньше, чем thread API завершит гидрацию.
+- `null` в thread response не всегда означает, что peer-read реально отсутствует; это может быть просто отсутствие свежей hydrated записи в момент ответа.
+- Для UX read ticks лучше сохранить последнее известное realtime-состояние, чем визуально убирать их после reload треда.
+
+**Практические правила:**
+- `loadActiveChatMessagesFx.doneData` и `loadOlderChatMessagesFx.doneData` должны использовать одинаковую стратегию merge для `peerReadState`.
+- `null` из API не должен затирать существующий realtime peer-read без явного подтверждения более нового server state.
+- Realtime остаётся приоритетным источником для live peer-read внутри активного треда.
+
+**Компромисс:** Клиент временно предпочитает UX-стабильность строгому сбросу локального состояния. Если позже понадобится жёсткая server authority, это должно быть отдельным осознанным решением с обновлением thread API semantics.
+
+**Дата решения:** 2026-04-08
+
 ## Технологический стек MVP
 
 ### Frontend

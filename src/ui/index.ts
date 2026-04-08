@@ -95,6 +95,17 @@ export { Stepper, type StepperProps, type StepperItem } from './stepper'
 export { Skeleton, type SkeletonProps } from './skeleton'
 export { Breadcrumb, type BreadcrumbProps } from './breadcrumb'
 export { Card, type CardProps } from './card'
+export { ChatUI } from './chat/export'
+export type * as ChatUIProps from '@/ui/chat/export'
+export {
+	Portfolio,
+	type PortfolioProps,
+	type PortfolioSelection,
+} from './portfolio/portfolio-client'
+export type { MediaItem } from './portfolio/media-item'
+export type { MediaAlbumProps as PortfolioAlbumProps } from './portfolio/media-album'
+export { Tooltip, type TooltipProps } from './tooltip'
+
 export { type SemanticColor, type IconColor, type MaxW, type Shadow } from './types'
 export { needsContrast } from './utils'
 
@@ -147,7 +158,12 @@ export { Progress } from './shadcn/progress'
 export { Slider } from './shadcn/slider'
 export { Toggle } from './shadcn/toggle'
 export { ToggleGroup, ToggleGroupItem } from './shadcn/toggle-group'
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './shadcn/tooltip'
+export {
+	Tooltip as TooltipRoot,
+	TooltipTrigger,
+	TooltipContent,
+	TooltipProvider,
+} from './shadcn/tooltip'
 export { Input } from './shadcn/input'
 export { Textarea } from './shadcn/textarea'
 export {

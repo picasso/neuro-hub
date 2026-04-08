@@ -13,6 +13,7 @@ import {
 	BriefcaseBusiness,
 	Building2,
 	Check,
+	CheckCheck,
 	ChevronDown,
 	ChevronLeft,
 	ChevronRight,
@@ -67,6 +68,9 @@ import {
 	Cog,
 	MessageCircleCheck,
 	ChartArea,
+	Send,
+	MessageSquare,
+	MessagesSquare,
 } from 'lucide-react'
 import { type ComponentType, type SVGProps } from 'react'
 import { customIcons } from './icons/icons'
@@ -89,6 +93,7 @@ const lucideIcons = {
 	BriefcaseBusiness,
 	Building2,
 	Check,
+	CheckCheck,
 	ChevronDown,
 	ChevronLeft,
 	ChevronRight,
@@ -143,6 +148,9 @@ const lucideIcons = {
 	Cog,
 	MessageCircleCheck,
 	ChartArea,
+	Send,
+	MessageSquare,
+	MessagesSquare,
 }
 
 // type generation --------------------------------------------------------------------------------]
@@ -219,6 +227,9 @@ const aliases = {
 
 	'git-hub': 'github',
 	'check-circle': 'circle-check',
+
+	// chat status icons (lucide naming)
+	ellipsis: 'more-horizontal',
 } as const
 
 type AliasName = keyof typeof aliases
