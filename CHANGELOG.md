@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2026-04-08
+
+### Added
+- End-to-end chat foundation with database schema, query helpers, service layer, validations, and REST API routes for conversations, messages, read state, and Ably token access
+- Realtime chat state management with Effector stores for conversations, messages, unread counters, and synchronization helpers
+- New chat UI primitives and feature screens for conversation lists, message threads, composers, toolbars, and account chat pages
+- Project-to-chat integration, including starting conversations from project applications and an account applications view
+- Vitest-based test setup and focused coverage for chat adapters, validations, store helpers, cursor utilities, and account context behavior
+
+### Changed
+- Refined account layout and sidebar behavior to support the new chat and applications flows
+- Improved shared UI wrappers, playground demos, icons, skeletons, tabs, cards, and portfolio-related components used by the new chat experience
+- Updated internal plans, architecture notes, and project rules to reflect the delivered chat foundation and related frontend conventions
+
+### Fixed
+- Realtime unread and read-state synchronization issues in chat flows
+- Message rendering and scrolling behavior, including Safari-specific styling follow-ups
+- Sleep utility handling for negative millisecond values
+
 ## [0.4.3] - 2026-03-19
 
 ### Added
@@ -217,6 +236,7 @@ All notable changes to this project will be documented in this file.
 - Comprehensive project documentation
 
 [0.4.1]: https://github.com/picasso/neuro-hub/compare/v0.4.0...v0.4.1
+[0.5.0]: https://github.com/picasso/neuro-hub/compare/v0.4.3...v0.5.0
 [0.4.0]: https://github.com/picasso/neuro-hub/compare/v0.3.4...v0.4.0
 [0.3.4]: https://github.com/picasso/neuro-hub/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/picasso/neuro-hub/compare/v0.2.5...v0.3.3
