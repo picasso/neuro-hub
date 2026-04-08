@@ -237,8 +237,7 @@ export async function listMessagesForUser(params: {
 	input: ChatMessageListQueryInput
 }): Promise<ChatMessagePage> {
 	const { userId, conversationId, input } = params
-
-	await requireConversationMembership({
+	const membership = await requireConversationMembership({
 		userId,
 		conversationId,
 	})
@@ -286,9 +285,16 @@ export async function listMessagesForUser(params: {
 				})
 			: null
 
+	const peerReadState = await getPeerReadStateForMembership({
+		userId,
+		conversationId,
+		membership,
+	})
+
 	return {
 		items,
 		nextCursor,
+		peerReadState,
 	}
 }
 
@@ -435,6 +441,56 @@ export async function markConversationReadForUser(params: {
 
 export async function ensureConversationAccess(params: { userId: string; conversationId: string }) {
 	await requireConversationMembership(params)
+}
+
+export async function loadConversationSummaryForUser(params: {
+	userId: string
+	conversationId: string
+}): Promise<ChatConversationSummary | null> {
+	const [summary] = await loadConversationSummariesByIds({
+		userId: params.userId,
+		conversationIds: [params.conversationId],
+	})
+
+	return summary ?? null
+}
+
+export async function listConversationMemberUserIds(conversationId: string): Promise<string[]> {
+	const rows = await kysely
+		.selectFrom('conversation_members')
+		.select('user_id as userId')
+		.where('conversation_id', '=', conversationId)
+		.execute()
+
+	return rows.map((row) => row.userId)
+}
+
+async function getPeerReadStateForMembership(params: {
+	userId: string
+	conversationId: string
+	membership: ConversationMembership
+}): Promise<ChatReadState | null> {
+	const peerUserId =
+		params.membership.customerId === params.userId
+			? params.membership.freelancerId
+			: params.membership.customerId
+
+	const row = await kysely
+		.selectFrom('message_reads')
+		.select(['last_read_message_id as lastReadMessageId', 'read_at as readAt'])
+		.where('conversation_id', '=', params.conversationId)
+		.where('user_id', '=', peerUserId)
+		.executeTakeFirst()
+
+	if (!row) {
+		return null
+	}
+
+	return {
+		conversationId: params.conversationId,
+		lastReadMessageId: row.lastReadMessageId,
+		readAt: row.readAt.toISOString(),
+	}
 }
 
 async function loadConversationSummariesByIds(params: {
@@ -608,6 +664,11 @@ async function assertCanOpenProjectConversation(params: ProjectEligibility) {
 function buildUnreadCountsSubquery(userId: string) {
 	return kysely
 		.selectFrom('messages as message')
+		.innerJoin('conversation_members as member', (join) =>
+			join
+				.onRef('member.conversation_id', '=', 'message.conversation_id')
+				.on('member.user_id', '=', userId),
+		)
 		.leftJoin('message_reads as read_state', (join) =>
 			join
 				.onRef('read_state.conversation_id', '=', 'message.conversation_id')
@@ -632,6 +693,16 @@ function buildUnreadCountsSubquery(userId: string) {
 		)
 		.groupBy('message.conversation_id')
 		.as('unread_counts')
+}
+
+export async function countUnreadChatMessagesForUser(userId: string): Promise<number> {
+	const unreadCounts = buildUnreadCountsSubquery(userId)
+	const row = await kysely
+		.selectFrom(unreadCounts)
+		.select((eb) => eb.fn.sum<number>('unreadCount').as('count'))
+		.executeTakeFirst()
+
+	return Number(row?.count ?? 0)
 }
 
 function buildLastMessagesSubquery() {

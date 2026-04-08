@@ -2,34 +2,44 @@ import Ably from 'ably'
 import { requestChatAblyToken } from './api'
 import {
 	CHAT_ABLY_CHANNEL_PREFIX,
-	type ChatConversationReadEvent,
+	type ChatAblyTokenGrant,
+	type ChatConversationSummaryEvent,
 	type ChatMessageCreatedEvent,
-	type ChatRealtimeEvent,
+	type ChatPeerMessageReadEvent,
 } from '@/lib/chat/contracts'
 
 export type ChatRealtimeStatus = 'idle' | 'connecting' | 'connected' | 'error'
 
 type ChatRealtimeParams = {
-	conversationId: string
-	onEvent: (event: ChatRealtimeEvent) => void
+	conversationId: string | null
+	onConversationEvent: (event: ChatMessageCreatedEvent | ChatPeerMessageReadEvent) => void
+	onInboxSummary: (event: ChatConversationSummaryEvent) => void
 	onStatusChange: (status: ChatRealtimeStatus) => void
 }
 
-type ActiveRealtimeSubscription = {
+type ActiveInboxSubscription = {
+	channel: Ably.RealtimeChannel
+	channelName: string
+	onSummary: (message: { data?: unknown }) => void
+}
+
+type ActiveConversationSubscription = {
 	channel: Ably.RealtimeChannel
 	channelName: string
 	conversationId: string
 	onConnected: () => void
 	onFailed: () => void
 	onMessageCreated: (message: { data?: unknown }) => void
-	onConversationRead: (message: { data?: unknown }) => void
+	onPeerMessageRead: (message: { data?: unknown }) => void
 }
 
 let sharedRealtimeClient: Ably.Realtime | null = null
 let requestedConversationIdForAuth: string | null = null
-let authorizedConversationId: string | null = null
+let authorizedAuthConversationKey: string | null = null
+let lastIssuedChatGrant: ChatAblyTokenGrant | null = null
 let desiredRealtimeParams: ChatRealtimeParams | null = null
-let activeRealtimeSubscription: ActiveRealtimeSubscription | null = null
+let activeInboxSubscription: ActiveInboxSubscription | null = null
+let activeConversationSubscription: ActiveConversationSubscription | null = null
 let activeRealtimeTransitionId = 0
 let realtimeTransitionChain: Promise<void> = Promise.resolve()
 let realtimeStatusHandler: ChatRealtimeParams['onStatusChange'] | null = null
@@ -44,11 +54,8 @@ function getSharedRealtimeClient() {
 		closeOnUnload: true,
 		authCallback: async (_, callback) => {
 			try {
-				if (!requestedConversationIdForAuth) {
-					throw new Error('Missing conversation id for chat realtime auth')
-				}
-
 				const tokenGrant = await requestChatAblyToken(requestedConversationIdForAuth)
+				lastIssuedChatGrant = tokenGrant
 				callback(null, tokenGrant.tokenRequest)
 			} catch (error) {
 				callback(
@@ -66,11 +73,12 @@ function getSharedRealtimeClient() {
 
 async function ensureRealtimeCapability(
 	client: Ably.Realtime,
-	conversationId: string,
+	conversationId: string | null,
 ): Promise<void> {
 	requestedConversationIdForAuth = conversationId
+	const nextKey = conversationId ?? '__inbox_only__'
 
-	if (authorizedConversationId === conversationId) {
+	if (authorizedAuthConversationKey === nextKey) {
 		return
 	}
 
@@ -78,7 +86,17 @@ async function ensureRealtimeCapability(
 		await client.auth.authorize()
 	}
 
-	authorizedConversationId = conversationId
+	authorizedAuthConversationKey = nextKey
+}
+
+function requireLastInboxChannelName(): string {
+	const inboxChannelName = lastIssuedChatGrant?.inboxChannelName
+
+	if (!inboxChannelName) {
+		throw new Error('Missing inbox channel name from chat Ably grant')
+	}
+
+	return inboxChannelName
 }
 
 async function ensureRealtimeConnectionReady(client: Ably.Realtime): Promise<void> {
@@ -144,56 +162,47 @@ function isMessageCreatedEvent(value: unknown): value is ChatMessageCreatedEvent
 	)
 }
 
-function isConversationReadEvent(value: unknown): value is ChatConversationReadEvent {
+function isPeerMessageReadEvent(value: unknown): value is ChatPeerMessageReadEvent {
 	if (!value || typeof value !== 'object') {
 		return false
 	}
 
-	const event = value as Partial<ChatConversationReadEvent>
+	const event = value as Partial<ChatPeerMessageReadEvent>
 
 	return (
-		event.type === 'conversation.read' &&
+		event.type === 'peer.message.read' &&
 		typeof event.conversationId === 'string' &&
+		typeof event.readerId === 'string' &&
 		!!event.readState
 	)
 }
 
-function createRealtimeSubscription(
-	client: Ably.Realtime,
-	params: ChatRealtimeParams,
-	reportStatus: (status: ChatRealtimeStatus) => void,
-): ActiveRealtimeSubscription {
-	const channelName = getConversationChannelName(params.conversationId)
-	const channel = client.channels.get(channelName)
+function isConversationSummaryEvent(value: unknown): value is ChatConversationSummaryEvent {
+	if (!value || typeof value !== 'object') {
+		return false
+	}
 
-	const subscription: ActiveRealtimeSubscription = {
+	const event = value as Partial<ChatConversationSummaryEvent>
+
+	return (
+		event.type === 'conversation.summary' &&
+		!!event.summary &&
+		typeof event.totalUnreadMessages === 'number'
+	)
+}
+
+function createInboxSubscription(
+	client: Ably.Realtime,
+	inboxChannelName: string,
+): ActiveInboxSubscription {
+	const channel = client.channels.get(inboxChannelName)
+
+	const subscription: ActiveInboxSubscription = {
 		channel,
-		channelName,
-		conversationId: params.conversationId,
-		onConnected: () => {
-			if (
-				activeRealtimeSubscription === subscription &&
-				desiredRealtimeParams?.conversationId === subscription.conversationId
-			) {
-				reportStatus('connected')
-			}
-		},
-		onFailed: () => {
-			if (
-				activeRealtimeSubscription === subscription &&
-				desiredRealtimeParams?.conversationId === subscription.conversationId
-			) {
-				reportStatus('error')
-			}
-		},
-		onMessageCreated: (message) => {
-			if (isMessageCreatedEvent(message.data)) {
-				params.onEvent(message.data)
-			}
-		},
-		onConversationRead: (message) => {
-			if (isConversationReadEvent(message.data)) {
-				params.onEvent(message.data)
+		channelName: inboxChannelName,
+		onSummary: (message) => {
+			if (isConversationSummaryEvent(message.data)) {
+				desiredRealtimeParams?.onInboxSummary(message.data)
 			}
 		},
 	}
@@ -201,16 +210,82 @@ function createRealtimeSubscription(
 	return subscription
 }
 
-async function teardownRealtimeSubscription(
+function createConversationSubscription(
 	client: Ably.Realtime,
-	subscription: ActiveRealtimeSubscription | null,
+	conversationId: string,
+	reportStatus: (status: ChatRealtimeStatus) => void,
+): ActiveConversationSubscription {
+	const channelName = getConversationChannelName(conversationId)
+	const channel = client.channels.get(channelName)
+
+	const subscription: ActiveConversationSubscription = {
+		channel,
+		channelName,
+		conversationId,
+		onConnected: () => {
+			if (
+				activeConversationSubscription === subscription &&
+				desiredRealtimeParams?.conversationId === subscription.conversationId
+			) {
+				reportStatus('connected')
+			}
+		},
+		onFailed: () => {
+			if (
+				activeConversationSubscription === subscription &&
+				desiredRealtimeParams?.conversationId === subscription.conversationId
+			) {
+				reportStatus('error')
+			}
+		},
+		onMessageCreated: (message) => {
+			if (isMessageCreatedEvent(message.data)) {
+				desiredRealtimeParams?.onConversationEvent(message.data)
+			}
+		},
+		onPeerMessageRead: (message) => {
+			if (isPeerMessageReadEvent(message.data)) {
+				desiredRealtimeParams?.onConversationEvent(message.data)
+			}
+		},
+	}
+
+	return subscription
+}
+
+async function teardownInboxSubscription(
+	client: Ably.Realtime,
+	subscription: ActiveInboxSubscription | null,
+) {
+	if (!subscription) {
+		return
+	}
+
+	subscription.channel.unsubscribe('conversation.summary', subscription.onSummary)
+
+	try {
+		await subscription.channel.detach()
+	} catch {
+		// ignore stale detach races
+	} finally {
+		client.channels.release(subscription.channelName)
+	}
+
+	if (activeInboxSubscription === subscription) {
+		activeInboxSubscription = null
+	}
+}
+
+async function teardownConversationSubscription(
+	client: Ably.Realtime,
+	subscription: ActiveConversationSubscription | null,
 ) {
 	if (!subscription) {
 		return
 	}
 
 	subscription.channel.unsubscribe('message.created', subscription.onMessageCreated)
-	subscription.channel.unsubscribe('conversation.read', subscription.onConversationRead)
+	subscription.channel.unsubscribe('peer.message.read', subscription.onPeerMessageRead)
 	client.connection.off('connected', subscription.onConnected)
 	client.connection.off('failed', subscription.onFailed)
 	client.connection.off('disconnected', subscription.onFailed)
@@ -224,46 +299,79 @@ async function teardownRealtimeSubscription(
 		client.channels.release(subscription.channelName)
 	}
 
-	if (activeRealtimeSubscription === subscription) {
-		activeRealtimeSubscription = null
+	if (activeConversationSubscription === subscription) {
+		activeConversationSubscription = null
 	}
 }
 
 async function setupDesiredRealtime(params: ChatRealtimeParams) {
 	const client = getSharedRealtimeClient()
 	const reportStatus = createTransitionStatusReporter(activeRealtimeTransitionId)
-	const nextSubscription = createRealtimeSubscription(client, params, reportStatus)
-
-	activeRealtimeSubscription = nextSubscription
-	client.connection.on('connected', nextSubscription.onConnected)
-	client.connection.on('failed', nextSubscription.onFailed)
-	client.connection.on('disconnected', nextSubscription.onFailed)
-	client.connection.on('suspended', nextSubscription.onFailed)
 
 	try {
 		await ensureRealtimeCapability(client, params.conversationId)
 		await ensureRealtimeConnectionReady(client)
 
-		if (desiredRealtimeParams?.conversationId !== params.conversationId) {
-			await teardownRealtimeSubscription(client, nextSubscription)
+		if (desiredRealtimeParams !== params) {
 			return
 		}
 
-		await nextSubscription.channel.attach()
+		const inboxChannelName = requireLastInboxChannelName()
+		const inboxSubscription = createInboxSubscription(client, inboxChannelName)
 
-		if (desiredRealtimeParams?.conversationId !== params.conversationId) {
-			await teardownRealtimeSubscription(client, nextSubscription)
+		activeInboxSubscription = inboxSubscription
+
+		if (desiredRealtimeParams !== params) {
+			await teardownInboxSubscription(client, inboxSubscription)
+			return
+		}
+
+		await inboxSubscription.channel.attach()
+
+		if (desiredRealtimeParams !== params) {
+			await teardownInboxSubscription(client, inboxSubscription)
+			return
+		}
+
+		await inboxSubscription.channel.subscribe(
+			'conversation.summary',
+			inboxSubscription.onSummary,
+		)
+
+		if (!params.conversationId) {
+			if (client.connection.state === 'connected') {
+				reportStatus('connected')
+			}
+			return
+		}
+
+		const nextConversationSubscription = createConversationSubscription(
+			client,
+			params.conversationId,
+			reportStatus,
+		)
+
+		activeConversationSubscription = nextConversationSubscription
+		client.connection.on('connected', nextConversationSubscription.onConnected)
+		client.connection.on('failed', nextConversationSubscription.onFailed)
+		client.connection.on('disconnected', nextConversationSubscription.onFailed)
+		client.connection.on('suspended', nextConversationSubscription.onFailed)
+
+		await nextConversationSubscription.channel.attach()
+
+		if (desiredRealtimeParams !== params) {
+			await teardownConversationSubscription(client, nextConversationSubscription)
 			return
 		}
 
 		await Promise.all([
-			nextSubscription.channel.subscribe(
+			nextConversationSubscription.channel.subscribe(
 				'message.created',
-				nextSubscription.onMessageCreated,
+				nextConversationSubscription.onMessageCreated,
 			),
-			nextSubscription.channel.subscribe(
-				'conversation.read',
-				nextSubscription.onConversationRead,
+			nextConversationSubscription.channel.subscribe(
+				'peer.message.read',
+				nextConversationSubscription.onPeerMessageRead,
 			),
 		])
 
@@ -271,9 +379,10 @@ async function setupDesiredRealtime(params: ChatRealtimeParams) {
 			reportStatus('connected')
 		}
 	} catch (error) {
-		await teardownRealtimeSubscription(client, nextSubscription)
+		await teardownInboxSubscription(client, activeInboxSubscription)
+		await teardownConversationSubscription(client, activeConversationSubscription)
 
-		if (desiredRealtimeParams?.conversationId !== params.conversationId) {
+		if (desiredRealtimeParams !== params) {
 			return
 		}
 
@@ -284,29 +393,34 @@ async function setupDesiredRealtime(params: ChatRealtimeParams) {
 
 async function syncRealtimeToDesiredState(reportStatus: (status: ChatRealtimeStatus) => void) {
 	const client = getSharedRealtimeClient()
-	const desiredConversationId = desiredRealtimeParams?.conversationId ?? null
-	const activeConversationId = activeRealtimeSubscription?.conversationId ?? null
 
-	if (desiredConversationId === activeConversationId) {
-		if (!desiredConversationId) {
-			reportStatus('idle')
-		} else if (client.connection.state === 'connected') {
+	if (!desiredRealtimeParams) {
+		await teardownConversationSubscription(client, activeConversationSubscription)
+		await teardownInboxSubscription(client, activeInboxSubscription)
+		authorizedAuthConversationKey = null
+		reportStatus('idle')
+		return
+	}
+
+	const desiredConversationId = desiredRealtimeParams.conversationId
+	const activeConversationId = activeConversationSubscription?.conversationId ?? null
+
+	// subscription callbacks dispatch through desiredRealtimeParams, so matching scopes can reuse them
+	if (desiredConversationId === activeConversationId && activeInboxSubscription) {
+		if (client.connection.state === 'connected') {
 			reportStatus('connected')
 		}
 		return
 	}
 
-	await teardownRealtimeSubscription(client, activeRealtimeSubscription)
-
-	if (!desiredRealtimeParams) {
-		reportStatus('idle')
-		return
-	}
+	await teardownConversationSubscription(client, activeConversationSubscription)
+	await teardownInboxSubscription(client, activeInboxSubscription)
+	authorizedAuthConversationKey = null
 
 	await setupDesiredRealtime(desiredRealtimeParams)
 }
 
-export async function setActiveConversationRealtime(params: ChatRealtimeParams): Promise<void> {
+export async function setChatRealtimeSubscription(params: ChatRealtimeParams): Promise<void> {
 	realtimeStatusHandler = params.onStatusChange
 	const transitionId = ++activeRealtimeTransitionId
 	const reportStatus = createTransitionStatusReporter(transitionId)
@@ -315,7 +429,7 @@ export async function setActiveConversationRealtime(params: ChatRealtimeParams):
 	await enqueueRealtimeTransition(() => syncRealtimeToDesiredState(reportStatus))
 }
 
-export async function clearActiveConversationRealtime(): Promise<void> {
+export async function clearChatRealtimeSubscription(): Promise<void> {
 	const transitionId = ++activeRealtimeTransitionId
 	const reportStatus = createTransitionStatusReporter(transitionId)
 	desiredRealtimeParams = null

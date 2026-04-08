@@ -46,7 +46,7 @@ export function ChatConversation() {
 	const isInitialLoading =
 		(loading.messages && !active.hasLoaded) || (loading.chats && !active.conversation)
 	const hasError = Boolean(active.error && activeMessagesUI.length === 0)
-	const lastSubmittedMessageId = findLast(activeMessagesUI, { direction: 'out' })?.id
+	const lastMessageId = findLast(activeMessagesUI)?.id
 
 	return (
 		<ChatUI.Container
@@ -90,7 +90,7 @@ export function ChatConversation() {
 				items={activeMessagesUI}
 				loading={isInitialLoading}
 				error={hasError ? active.error : null}
-				scrollToMessageId={lastSubmittedMessageId}
+				scrollToMessageId={lastMessageId}
 				className="p-1"
 				empty={
 					isInitialLoading

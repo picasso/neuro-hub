@@ -1,9 +1,9 @@
 import { produce } from 'immer'
 import { forEachRight } from 'lodash'
 import type {
-	ChatConversationReadEvent,
 	ChatConversationSummary,
 	ChatMessage,
+	ChatPeerMessageReadEvent,
 } from '@/lib/chat/contracts'
 
 export type ChatUiMessageStatus = 'sent' | 'sending' | 'failed'
@@ -111,6 +111,22 @@ export function sortChatConversations(
 	})
 }
 
+export function mergeConversationSummary(
+	conversations: ChatConversationSummary[],
+	summary: ChatConversationSummary,
+): ChatConversationSummary[] {
+	const index = conversations.findIndex((conversation) => conversation.id === summary.id)
+
+	if (index === -1) {
+		return sortChatConversations([...conversations, summary])
+	}
+
+	const next = [...conversations]
+	next[index] = summary
+
+	return sortChatConversations(next)
+}
+
 export function patchConversationWithMessage(
 	conversations: ChatConversationSummary[],
 	params: {
@@ -200,8 +216,8 @@ export function getLatestReadableMessageId(params: {
 	return latestMessage.id
 }
 
-export function shouldUseIncomingReadEventAsPeerUpdate(params: {
-	event: ChatConversationReadEvent
+export function shouldUsePeerMessageReadAsPeerUpdate(params: {
+	event: ChatPeerMessageReadEvent
 	pendingReadMessageId?: string | null
 }): boolean {
 	return params.event.readState.lastReadMessageId !== params.pendingReadMessageId

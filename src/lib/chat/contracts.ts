@@ -2,7 +2,11 @@ import type { ApiErrorResponse, ApiSuccessResponse } from '@/utils/api-response'
 export const CHAT_CONTEXT_TYPES = ['project'] as const
 export const CHAT_PARTICIPANT_ROLES = ['customer', 'freelancer'] as const
 export const CHAT_ABLY_CAPABILITY_MODES = ['subscribe'] as const
-export const CHAT_ABLY_EVENT_NAMES = ['message.created', 'conversation.read'] as const
+export const CHAT_ABLY_EVENT_NAMES = [
+	'message.created',
+	'peer.message.read',
+	'conversation.summary',
+] as const
 export const CHAT_ERROR_CODES = [
 	'CHAT_CONTEXT_UNSUPPORTED',
 	'CHAT_PROJECT_NOT_FOUND',
@@ -21,6 +25,8 @@ export const CHAT_ERROR_CODES = [
 export const CHAT_MESSAGE_MAX_LENGTH = 4000
 export const CHAT_ABLY_CHANNEL_PREFIX = 'chat:conversation:'
 export const CHAT_ABLY_CHANNEL_PATTERN = 'chat:conversation:{conversationId}'
+export const CHAT_ABLY_USER_CHANNEL_PREFIX = 'chat:user:'
+export const CHAT_ABLY_USER_CHANNEL_PATTERN = 'chat:user:{userId}'
 
 export const CHAT_API_ROUTES = {
 	conversations: '/api/v1/chat/conversations',
@@ -78,6 +84,7 @@ export type ChatConversationOpenData = {
 export type ChatMessagePage = {
 	items: ChatMessage[]
 	nextCursor: string | null
+	peerReadState: ChatReadState | null
 }
 
 export type ChatReadState = {
@@ -87,7 +94,8 @@ export type ChatReadState = {
 }
 
 export type ChatAblyTokenGrant = {
-	channelName: string
+	inboxChannelName: string
+	conversationChannelName: string | null
 	mode: ChatAblyCapabilityMode
 	capability: string
 	tokenRequest: {
@@ -107,13 +115,23 @@ export type ChatMessageCreatedEvent = {
 	message: ChatMessage
 }
 
-export type ChatConversationReadEvent = {
-	type: 'conversation.read'
+export type ChatPeerMessageReadEvent = {
+	type: 'peer.message.read'
 	conversationId: string
+	readerId: string
 	readState: ChatReadState
 }
 
-export type ChatRealtimeEvent = ChatMessageCreatedEvent | ChatConversationReadEvent
+export type ChatConversationSummaryEvent = {
+	type: 'conversation.summary'
+	summary: ChatConversationSummary
+	totalUnreadMessages: number
+}
+
+export type ChatRealtimeEvent =
+	| ChatMessageCreatedEvent
+	| ChatPeerMessageReadEvent
+	| ChatConversationSummaryEvent
 
 export type ChatCreateConversationResponse =
 	| ApiSuccessResponse<ChatConversationOpenData>

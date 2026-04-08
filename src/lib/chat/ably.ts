@@ -2,12 +2,16 @@ import Ably from 'ably'
 import {
 	CHAT_ABLY_CHANNEL_PREFIX,
 	CHAT_ABLY_EVENT_NAMES,
+	CHAT_ABLY_USER_CHANNEL_PREFIX,
 	type ChatAblyTokenGrant,
-	type ChatConversationReadEvent,
+	type ChatConversationSummary,
+	type ChatConversationSummaryEvent,
+	type ChatMessage,
 	type ChatMessageCreatedEvent,
+	type ChatPeerMessageReadEvent,
+	type ChatReadState,
 } from './contracts'
 import { createChatAblyTokenForbiddenError } from './errors'
-import type { ChatReadState, ChatMessage } from '@/lib/chat/contracts'
 import { AppError } from '@/utils/errors'
 
 const DEFAULT_ABLY_TOKEN_TTL_MS = 60 * 60 * 1000
@@ -38,22 +42,38 @@ export function getChatAblyChannelName(conversationId: string) {
 	return `${CHAT_ABLY_CHANNEL_PREFIX}${conversationId}`
 }
 
-function createChatAblyCapability(channelName: string) {
-	return JSON.stringify({
-		[channelName]: ['subscribe'],
-	})
+export function getChatAblyUserChannelName(userId: string) {
+	return `${CHAT_ABLY_USER_CHANNEL_PREFIX}${userId}`
+}
+
+function createChatAblyCapability(channelNames: string[]) {
+	const capability: Record<string, string[]> = {}
+
+	for (const name of channelNames) {
+		capability[name] = ['subscribe']
+	}
+
+	return JSON.stringify(capability)
 }
 
 export async function issueChatAblyToken(params: {
 	clientId: string
-	conversationId: string
+	conversationId?: string | null
 }): Promise<ChatAblyTokenGrant> {
 	const { clientId, conversationId } = params
-	const channelName = getChatAblyChannelName(conversationId)
-	const capability = createChatAblyCapability(channelName)
+	const inboxChannelName = getChatAblyUserChannelName(clientId)
+	const channelNames: string[] = [inboxChannelName]
+	let conversationChannelName: string | null = null
+
+	if (conversationId) {
+		conversationChannelName = getChatAblyChannelName(conversationId)
+		channelNames.push(conversationChannelName)
+	}
+
+	const capability = createChatAblyCapability(channelNames)
 	const ttl = Number(process.env.ABLY_TOKEN_TTL_MS ?? DEFAULT_ABLY_TOKEN_TTL_MS)
 
-	if (!clientId || !conversationId) {
+	if (!clientId) {
 		throw createChatAblyTokenForbiddenError()
 	}
 
@@ -64,7 +84,8 @@ export async function issueChatAblyToken(params: {
 	})
 
 	return {
-		channelName,
+		inboxChannelName,
+		conversationChannelName,
 		mode: 'subscribe',
 		capability,
 		tokenRequest: {
@@ -94,18 +115,36 @@ export async function publishChatMessageCreatedEvent(params: {
 		.publish(payload.type, payload)
 }
 
-export async function publishChatConversationReadEvent(params: {
+export async function publishChatPeerMessageReadEvent(params: {
 	conversationId: string
+	readerId: string
 	readState: ChatReadState
 }) {
-	const payload: ChatConversationReadEvent = {
+	const payload: ChatPeerMessageReadEvent = {
 		type: CHAT_ABLY_EVENT_NAMES[1],
 		conversationId: params.conversationId,
+		readerId: params.readerId,
 		readState: params.readState,
 	}
 
 	await getAblyClient()
 		.channels.get(getChatAblyChannelName(params.conversationId))
+		.publish(payload.type, payload)
+}
+
+export async function publishChatConversationSummaryEvent(params: {
+	userId: string
+	summary: ChatConversationSummary
+	totalUnreadMessages: number
+}) {
+	const payload: ChatConversationSummaryEvent = {
+		type: CHAT_ABLY_EVENT_NAMES[2],
+		summary: params.summary,
+		totalUnreadMessages: params.totalUnreadMessages,
+	}
+
+	await getAblyClient()
+		.channels.get(getChatAblyUserChannelName(params.userId))
 		.publish(payload.type, payload)
 }
 
@@ -117,4 +156,4 @@ function requireAblyField<T>(value: T | undefined, fieldName: string): T {
 	return value
 }
 
-export type { ChatMessageCreatedEvent, ChatConversationReadEvent }
+export type { ChatMessageCreatedEvent, ChatPeerMessageReadEvent, ChatConversationSummaryEvent }

@@ -1,5 +1,6 @@
 import { combine, sample } from 'effector'
 import { createGate } from 'effector-react'
+import { AccountContextGate, contextPatched } from '../account-context/model'
 import {
 	fetchChatConversations,
 	fetchChatMessages,
@@ -13,19 +14,21 @@ import {
 	createOptimisticChatMessage,
 	getLatestReadableMessageId,
 	markOptimisticChatMessageFailed,
+	mergeConversationSummary,
 	patchConversationReadState,
 	patchConversationWithMessage,
 	replaceOptimisticChatMessage,
-	shouldUseIncomingReadEventAsPeerUpdate,
+	shouldUsePeerMessageReadAsPeerUpdate,
 	sortChatConversations,
 	type ChatUiMessage,
 } from './helpers'
 import {
-	clearActiveConversationRealtime,
-	setActiveConversationRealtime,
+	clearChatRealtimeSubscription,
+	setChatRealtimeSubscription,
 	type ChatRealtimeStatus,
 } from './realtime'
 import type {
+	ChatConversationSummaryEvent,
 	ChatConversationSummary,
 	ChatMessage,
 	ChatReadState,
@@ -85,6 +88,9 @@ const localReadSyncRequested = domain.createEvent<{
 	lastReadMessageId: string
 }>('localReadSyncRequested')
 const chatRealtimeEventReceived = domain.createEvent<ChatRealtimeEvent>('chatRealtimeEventReceived')
+const chatInboxSummaryReceived = domain.createEvent<ChatConversationSummaryEvent>(
+	'chatInboxSummaryReceived',
+)
 const chatRealtimeStatusUpdated = domain.createEvent<ChatRealtimeStatus>(
 	'chatRealtimeStatusUpdated',
 )
@@ -159,26 +165,27 @@ export const markChatConversationReadFx = domain.createEffect<
 	name: 'markChatConversationReadFx',
 })
 
-export const subscribeActiveConversationRealtimeFx = domain.createEffect<
-	{ conversationId: string },
+export const syncChatRealtimeFx = domain.createEffect<
+	{ conversationId: string | null },
 	void,
 	Error
 >({
 	handler: async ({ conversationId }) => {
-		await setActiveConversationRealtime({
+		await setChatRealtimeSubscription({
 			conversationId,
-			onEvent: chatRealtimeEventReceived,
+			onConversationEvent: chatRealtimeEventReceived,
+			onInboxSummary: chatInboxSummaryReceived,
 			onStatusChange: chatRealtimeStatusUpdated,
 		})
 	},
-	name: 'subscribeActiveConversationRealtimeFx',
+	name: 'syncChatRealtimeFx',
 })
 
-export const unsubscribeActiveConversationRealtimeFx = domain.createEffect({
+export const clearChatRealtimeFx = domain.createEffect({
 	handler: async () => {
-		await clearActiveConversationRealtime()
+		await clearChatRealtimeSubscription()
 	},
-	name: 'unsubscribeActiveConversationRealtimeFx',
+	name: 'clearChatRealtimeFx',
 })
 
 export const $conversations = domain.createStore<ChatConversationSummary[]>([], {
@@ -254,6 +261,9 @@ $activeConversationId.on(activeConversationChanged, (_, conversationId) => conve
 
 $conversations
 	.on(loadChatConversationsFx.doneData, (_, result) => sortChatConversations(result.data))
+	.on(chatInboxSummaryReceived, (conversations, event) =>
+		mergeConversationSummary(conversations, event.summary),
+	)
 	.on(conversationReadStateUpdated, (conversations, payload) =>
 		patchConversationReadState(conversations, payload),
 	)
@@ -356,13 +366,27 @@ $pendingReadByConversationId
 		[params.conversationId]: null,
 	}))
 
-$peerReadStateByConversationId.on(
-	peerReadStateTracked,
-	(peerReadStateByConversationId, readState) => ({
+$peerReadStateByConversationId
+	.on(peerReadStateTracked, (peerReadStateByConversationId, readState) => ({
 		...peerReadStateByConversationId,
 		[readState.conversationId]: readState,
-	}),
-)
+	}))
+	.on(
+		loadActiveChatMessagesFx.doneData,
+		(peerReadStateByConversationId, { conversationId, page }) => ({
+			...peerReadStateByConversationId,
+			[conversationId]:
+				page.peerReadState ?? peerReadStateByConversationId[conversationId] ?? null,
+		}),
+	)
+	.on(
+		loadOlderChatMessagesFx.doneData,
+		(peerReadStateByConversationId, { conversationId, page }) => ({
+			...peerReadStateByConversationId,
+			[conversationId]:
+				page.peerReadState ?? peerReadStateByConversationId[conversationId] ?? null,
+		}),
+	)
 
 $conversationsError
 	.on(loadChatConversationsFx, () => null)
@@ -452,32 +476,66 @@ sample({
 	target: activeConversationChanged,
 })
 
-// load conversation list on open or explicit refresh
+// load conversation list on account shell open, chat open, or explicit refresh
 sample({
-	clock: [chatConversationsRefreshRequested, ChatGate.open],
+	clock: [chatConversationsRefreshRequested, ChatGate.open, AccountContextGate.open],
 	fn: () => undefined,
 	target: loadChatConversationsFx,
 })
 
-// bootstrap messages and realtime when a conversation becomes active
+// sync inbox + optional conversation realtime while account shell is open
+sample({
+	clock: [AccountContextGate.open, ChatGate.open, activeConversationChanged],
+	source: {
+		accountOpen: AccountContextGate.status,
+		chatOpen: ChatGate.status,
+		chatState: ChatGate.state,
+	},
+	filter: ({ accountOpen }) => accountOpen,
+	fn: ({ chatOpen, chatState }) => ({
+		conversationId: chatOpen ? (chatState.conversationId ?? null) : null,
+	}),
+	target: syncChatRealtimeFx,
+})
+
+// reload list after chat thread closes while account shell stays mounted
+sample({
+	clock: ChatGate.close,
+	source: AccountContextGate.status,
+	filter: (accountOpen) => accountOpen,
+	fn: () => undefined,
+	target: loadChatConversationsFx,
+})
+
+// keep account sidebar messages badge in sync with precise inbox unread total
+sample({
+	clock: chatInboxSummaryReceived,
+	source: AccountContextGate.status,
+	filter: (accountOpen) => accountOpen,
+	fn: (_accountOpen, event) => ({
+		messages: event.totalUnreadMessages,
+	}),
+	target: contextPatched,
+})
+
+// tear down chat domain state when leaving account shell
+sample({
+	clock: AccountContextGate.close,
+	fn: () => undefined,
+	target: [clearChatRealtimeFx, resetChatFlow],
+})
+
+// bootstrap messages when a conversation becomes active
 sample({
 	clock: activeConversationChanged,
 	filter: (conversationId) => !!conversationId,
 	fn: (conversationId) => ({
 		conversationId: conversationId as string,
 	}),
-	target: [loadActiveChatMessagesFx, subscribeActiveConversationRealtimeFx],
+	target: loadActiveChatMessagesFx,
 })
 
-// tear down realtime subscription when no conversation is active
-sample({
-	clock: activeConversationChanged,
-	filter: (conversationId) => !conversationId,
-	fn: () => undefined,
-	target: unsubscribeActiveConversationRealtimeFx,
-})
-
-// reload active thread and resubscribe realtime on manual refresh
+// reload active thread and resync realtime on manual refresh
 sample({
 	clock: chatActiveConversationReloadRequested,
 	source: $activeConversationId,
@@ -485,7 +543,7 @@ sample({
 	fn: (conversationId) => ({
 		conversationId: conversationId as string,
 	}),
-	target: [loadActiveChatMessagesFx, subscribeActiveConversationRealtimeFx],
+	target: [loadActiveChatMessagesFx, syncChatRealtimeFx],
 })
 
 // refresh conversation list after active-thread reload request
@@ -623,7 +681,7 @@ sample({
 
 // toast realtime subscription failure
 sample({
-	clock: subscribeActiveConversationRealtimeFx.failData,
+	clock: syncChatRealtimeFx.failData,
 	fn: (error) =>
 		createAlertFx.props({
 			severity: 'error',
@@ -640,27 +698,37 @@ sample({
 	clock: chatRealtimeEventReceived,
 	source: $activeConversationId,
 	filter: (_, event) => event.type === 'message.created',
-	fn: (activeConversationId, event) => ({
-		conversationId: event.conversationId,
-		message: (event as Extract<ChatRealtimeEvent, { type: 'message.created' }>).message,
-		incrementUnread: activeConversationId !== event.conversationId,
-		keepUnread: activeConversationId === event.conversationId,
-	}),
+	fn: (activeConversationId, event) => {
+		const messageEvent = event as Extract<ChatRealtimeEvent, { type: 'message.created' }>
+
+		return {
+			conversationId: messageEvent.conversationId,
+			message: messageEvent.message,
+			incrementUnread: activeConversationId !== messageEvent.conversationId,
+			keepUnread: activeConversationId === messageEvent.conversationId,
+		}
+	},
 	target: conversationMessagePatched,
 })
 
 // track peer read cursor from realtime when not conflicting with pending local read
 sample({
 	clock: chatRealtimeEventReceived,
-	source: $pendingReadByConversationId,
-	filter: (pendingReadByConversationId, event) =>
-		event.type === 'conversation.read' &&
-		shouldUseIncomingReadEventAsPeerUpdate({
-			event: event as Extract<ChatRealtimeEvent, { type: 'conversation.read' }>,
+	source: {
+		pendingReadByConversationId: $pendingReadByConversationId,
+		activeConversation: $activeConversation,
+	},
+	filter: ({ pendingReadByConversationId, activeConversation }, event) =>
+		event.type === 'peer.message.read' &&
+		!!activeConversation &&
+		event.conversationId === activeConversation.id &&
+		event.readerId === activeConversation.otherParticipant.id &&
+		shouldUsePeerMessageReadAsPeerUpdate({
+			event: event as Extract<ChatRealtimeEvent, { type: 'peer.message.read' }>,
 			pendingReadMessageId: pendingReadByConversationId[event.conversationId],
 		}),
 	fn: (_, event) =>
-		(event as Extract<ChatRealtimeEvent, { type: 'conversation.read' }>).readState,
+		(event as Extract<ChatRealtimeEvent, { type: 'peer.message.read' }>).readState,
 	target: peerReadStateTracked,
 })
 
@@ -728,11 +796,11 @@ sample({
 	target: conversationReadStateUpdated,
 })
 
-// reset chat stores and unsubscribe realtime when chat UI unmounts
+// reset thread state when chat UI unmounts; drop active conversation channel but keep inbox channel
 sample({
 	clock: ChatGate.close,
 	fn: () => undefined,
-	target: [resetChatFlow, unsubscribeActiveConversationRealtimeFx],
+	target: resetChatFlow,
 })
 
 // helpers ----------------------------------------------------------------------------------------]

@@ -1,4 +1,5 @@
 import { getSession } from './auth/server'
+import { countUnreadChatMessagesForUser } from './db/queries/chat'
 import {
 	countActiveFreelancerApplications,
 	countFreelancerPortfolioWorks,
@@ -13,6 +14,7 @@ export type AccountSnapshot = {
 	projects?: number
 	applications?: number
 	works?: number
+	messages?: number
 }
 
 export type AccountContext = {
@@ -37,27 +39,33 @@ export async function getAccountContext(): Promise<AccountContext | null> {
 }
 
 export async function getAccountSnapshot(session: Session): Promise<AccountSnapshot> {
+	const userId = session.user.id
+
 	if (session.user.role === 'client') {
-		const [projects, applications] = await Promise.all([
-			countClientProjects({ clientId: session.user.id }),
-			countActiveClientProjectApplications({ clientId: session.user.id }),
+		const [projects, applications, messages] = await Promise.all([
+			countClientProjects({ clientId: userId }),
+			countActiveClientProjectApplications({ clientId: userId }),
+			countUnreadChatMessagesForUser(userId),
 		])
 
 		return {
 			role: 'client',
 			projects,
 			applications,
+			messages,
 		}
 	}
 
-	const [works, applications] = await Promise.all([
-		countFreelancerPortfolioWorks({ freelancerId: session.user.id }),
-		countActiveFreelancerApplications({ freelancerId: session.user.id }),
+	const [works, applications, messages] = await Promise.all([
+		countFreelancerPortfolioWorks({ freelancerId: userId }),
+		countActiveFreelancerApplications({ freelancerId: userId }),
+		countUnreadChatMessagesForUser(userId),
 	])
 
 	return {
 		role: 'freelancer',
 		applications,
 		works,
+		messages,
 	}
 }

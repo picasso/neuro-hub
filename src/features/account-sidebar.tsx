@@ -38,7 +38,7 @@ const sidebarGroups: SidebarGroup[] = [
 					{
 						title: 'Сообщения',
 						href: '/account/chat',
-						badge: 3,
+						badge: '~messages',
 						badgeColor: 'success',
 						badgeVariant: 'primary',
 					},

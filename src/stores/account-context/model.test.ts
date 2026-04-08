@@ -20,6 +20,7 @@ describe('account-context model', () => {
 				role: 'client',
 				projects: 3,
 				applications: 5,
+				messages: 2,
 			},
 		})
 
@@ -27,6 +28,7 @@ describe('account-context model', () => {
 			role: 'client',
 			projects: 3,
 			applications: 5,
+			messages: 2,
 		})
 
 		await allSettled(AccountContextGate.close, { scope, params: { role: 'client' } })
@@ -43,6 +45,7 @@ describe('account-context model', () => {
 				role: 'freelancer',
 				applications: 1,
 				works: 2,
+				messages: 4,
 			},
 		})
 
@@ -57,6 +60,7 @@ describe('account-context model', () => {
 			role: 'freelancer',
 			applications: 0,
 			works: 2,
+			messages: 4,
 		})
 	})
 })

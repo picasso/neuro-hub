@@ -110,10 +110,14 @@ export async function markChatConversationRead(params: {
 	return result.data
 }
 
-export async function requestChatAblyToken(conversationId: string): Promise<ChatAblyTokenGrant> {
+export async function requestChatAblyToken(
+	conversationId?: string | null,
+): Promise<ChatAblyTokenGrant> {
+	const body = conversationId == null || conversationId === '' ? {} : { conversationId }
+
 	const result = await requestChatApi<ChatAblyTokenGrant>(CHAT_API_ROUTES.ablyToken, {
 		method: 'POST',
-		body: JSON.stringify({ conversationId }),
+		body: JSON.stringify(body),
 	})
 
 	return result.data

@@ -35,8 +35,8 @@ export {
 	loadOlderChatMessagesFx,
 	markChatConversationReadFx,
 	sendChatMessageFx,
-	subscribeActiveConversationRealtimeFx,
-	unsubscribeActiveConversationRealtimeFx,
+	clearChatRealtimeFx,
+	syncChatRealtimeFx,
 } from './chat/model'
 export type { ChatUiMessage, ChatUiMessageStatus } from './chat/helpers'
 export type { ChatRealtimeStatus } from './chat/realtime'

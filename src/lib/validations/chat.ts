@@ -41,7 +41,7 @@ export const chatMarkReadSchema = z.object({
 })
 
 export const chatAblyTokenSchema = z.object({
-	conversationId: idSchema,
+	conversationId: idSchema.optional(),
 })
 
 export type ChatContextTypeInput = z.infer<typeof chatContextTypeSchema>

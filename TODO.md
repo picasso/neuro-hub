@@ -1,6 +1,6 @@
 # Планы на будущее
 
-## Перейти с Jest на Vitest
+## ~~Перейти с Jest на Vitest~~
 
 | Критерий          | Vitest                                                                                 | Jest                                                                                 |
 | ----------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
@@ -223,7 +223,7 @@ Gzipped: ~11 KB
 - Это страница сейчас совершенно пустая. Логи происходит через модальное окно
 - нужно заполнить страницу каким-то полезным контентом... картинками? текстом?
 
-## Chat realtime unread для всего списка
+## ~~Chat realtime unread для всего списка~~
 
 Проблема:
 - Текущий chat frontend переведён на shared `Ably` client как foundation, но backend по-прежнему выдаёт token только на один `conversationId`.
@@ -254,3 +254,22 @@ Gzipped: ~11 KB
 - realtime перестановку диалогов по `updatedAt`
 - более чистую модель с shared `Ably` client и несколькими управляемыми subscription scopes
 - основу для будущего inbox-style UX без polling
+
+## Улучшить chat realtime error handling и alerting
+
+Проблема:
+- Сейчас пользовательские алерты есть только для client-side ошибок в `src/stores/chat/model.ts` (`sendChatMessageFx.failData`, `loadChatConversationsFx.failData`, `loadActiveChatMessagesFx.failData`, `syncChatRealtimeFx.failData`).
+- Ошибки server-side publish в `src/lib/chat/service.ts` (`publishChatMessageCreatedEvent`, `publishChatConversationSummaryEvent`, `publishChatPeerMessageReadEvent`) сейчас только логируются через `console.error`.
+- Из-за этого часть realtime-ошибок для пользователя визуально пропадает: UI может остаться в частично устаревшем состоянии без явного feedback.
+
+Что нужно продумать:
+1. Какие chat publish errors должны считаться user-visible, а какие достаточно только логировать.
+2. Нужен ли отдельный retry/outbox-подход для publish после записи в БД.
+3. Как передавать деградацию realtime на клиент без ложных алертов при кратковременных сбоях.
+4. Нужно ли показывать предупреждение уровня `warning`, если сообщение сохранено в БД, но realtime fan-out не произошёл.
+5. Нужно ли добавлять server-side structured logging вместо голого `console.error`.
+
+Что хочется получить:
+- предсказуемую стратегию для partial failure между DB write и realtime publish
+- понятный UX для пользователя, когда данные сохранены, но live update не дошёл
+- отдельное решение по retry/logging/alerting без смешивания с текущей базовой доставкой сообщений

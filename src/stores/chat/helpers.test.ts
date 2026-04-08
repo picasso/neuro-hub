@@ -4,9 +4,10 @@ import {
 	createOptimisticChatMessage,
 	getLatestReadableMessageId,
 	markOptimisticChatMessageFailed,
+	mergeConversationSummary,
 	patchConversationReadState,
 	replaceOptimisticChatMessage,
-	shouldUseIncomingReadEventAsPeerUpdate,
+	shouldUsePeerMessageReadAsPeerUpdate,
 } from './helpers'
 import type { ChatConversationSummary, ChatMessage } from '@/lib/chat/contracts'
 
@@ -133,6 +134,29 @@ describe('chat store helpers', () => {
 		expect(readableMessageId).toBe('message-2')
 	})
 
+	it('merges inbox summary into existing conversation list', () => {
+		const updated: ChatConversationSummary = {
+			...baseConversation,
+			updatedAt: '2026-03-30T10:15:00.000Z',
+			unreadCount: 0,
+			lastMessage: {
+				id: 'message-9',
+				senderId: 'user-freelancer',
+				text: 'Новое',
+				createdAt: '2026-03-30T10:15:00.000Z',
+			},
+		}
+
+		const next = mergeConversationSummary([baseConversation], updated)
+
+		expect(next).toHaveLength(1)
+		expect(next[0]).toMatchObject({
+			id: baseConversation.id,
+			unreadCount: 0,
+			lastMessage: { id: 'message-9' },
+		})
+	})
+
 	it('patches local read state and resets unread count', () => {
 		const nextConversations = patchConversationReadState([baseConversation], {
 			conversationId: 'conversation-1',
@@ -146,11 +170,12 @@ describe('chat store helpers', () => {
 		})
 	})
 
-	it('ignores read events that match local pending read', () => {
-		const shouldUseEvent = shouldUseIncomingReadEventAsPeerUpdate({
+	it('ignores peer read events that match local pending read', () => {
+		const shouldUseEvent = shouldUsePeerMessageReadAsPeerUpdate({
 			event: {
-				type: 'conversation.read',
+				type: 'peer.message.read',
 				conversationId: 'conversation-1',
+				readerId: 'user-freelancer',
 				readState: {
 					conversationId: 'conversation-1',
 					lastReadMessageId: 'message-2',
