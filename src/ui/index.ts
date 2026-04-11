@@ -4,7 +4,7 @@ export { Icon, type IconProps, type IconName, type IconOptions, type IconSize } 
 export { TS, TextStyled, type TextStyledProps } from './text-styled'
 export { Button, HrefButton, buttonSize, outlineStyle, type ButtonProps } from './button'
 export { IconButton, contrastStyle, type IconButtonProps } from './icon-button'
-export { Stack, type StackProps } from './stack'
+export { Stack, StackSpan, type StackProps } from './stack'
 export {
 	PageContainer,
 	PageShell,
@@ -102,6 +102,8 @@ export {
 	type PortfolioProps,
 	type PortfolioSelection,
 } from './portfolio/portfolio-client'
+export { TimeDetails, type TimeDetailsProps } from './chat/time-details'
+export { smartTime, fullTime, fullTimeMonth } from './chat/smart-time'
 export type { MediaItem } from './portfolio/media-item'
 export type { MediaAlbumProps as PortfolioAlbumProps } from './portfolio/media-album'
 export { Tooltip, type TooltipProps } from './tooltip'
