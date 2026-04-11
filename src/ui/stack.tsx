@@ -16,7 +16,7 @@ type Justify =
 	| 'space-around'
 	| 'space-evenly'
 
-export type StackProps = ComponentProps<'div'> & {
+type BaseProps = {
 	direction?: StackDirection // default: 'row'
 	vertical?: boolean
 	horizontal?: boolean // default: true
@@ -26,6 +26,8 @@ export type StackProps = ComponentProps<'div'> & {
 	wrap?: StackWrap
 	children: ReactNode
 }
+
+export type StackProps = ComponentProps<'div'> & BaseProps
 
 export function Stack({
 	direction,
@@ -57,6 +59,39 @@ export function Stack({
 		>
 			{children}
 		</div>
+	)
+}
+
+export function StackSpan({
+	direction,
+	vertical,
+	horizontal = true,
+	gap = 2,
+	align = 'center',
+	justify = 'flex-start',
+	wrap,
+	className,
+	children,
+	...props
+}: ComponentProps<'span'> & BaseProps) {
+	const resolvedDirection = resolveDirection({ direction, vertical, horizontal })
+	const resolvedGapClass = isValidGap(gap) ? gapMap.get(gap) : undefined
+
+	return (
+		<span
+			className={cn(
+				'inline-flex',
+				directionClassMap[resolvedDirection],
+				resolvedGapClass,
+				alignClassMap[align],
+				justifyClassMap[justify],
+				resolveWrap(wrap),
+				className,
+			)}
+			{...props}
+		>
+			{children}
+		</span>
 	)
 }
 
