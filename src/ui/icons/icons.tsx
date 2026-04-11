@@ -1,4 +1,5 @@
 import { API } from './api'
+import { Apply } from './apply'
 import { LinkedIn } from './linkedin'
 import { Missing } from './missing'
 import { Missing2 } from './missing2'
@@ -16,4 +17,5 @@ export const customIcons = {
 	missingMore: Missing2,
 	nobody: Person,
 	api: API,
+	apply: Apply,
 }

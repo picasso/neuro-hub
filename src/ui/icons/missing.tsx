@@ -1,103 +1,23 @@
 import type { SVGProps } from 'react'
 
 export function Missing({
-	accent = '#1dbf73', // '#a6eaca',
+	accent = '#1dbf73',
 	...props
 }: SVGProps<SVGSVGElement> & { accent?: string }) {
 	return (
-		<svg viewBox="0 0 46 46" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
-			<g>
-				<circle
-					cx="16.52"
-					cy="27.06"
-					r="3.74"
-					fill="none"
-					stroke="currentColor"
-					strokeMiterlimit="10"
-					strokeWidth="1.5"
-				/>
-				<path
-					d="m10.15,18.23h13.54v-3.65c0-1.66-1.34-3-3-3H4.95c-1.66,0-3,1.34-3,3v10.98c0,1.66,1.34,3,3,3h2.2v-7.33c0-1.66,1.34-3,3-3Z"
-					fill={accent}
-					fillOpacity={0.5}
-					stroke="currentColor"
-					strokeMiterlimit="10"
-					strokeWidth="1.5"
-				/>
-				<line
-					x1="25.25"
-					y1="22.58"
-					x2="31.04"
-					y2="22.58"
-					fill="none"
-					stroke="currentColor"
-					strokeMiterlimit="10"
-					strokeWidth="1.5"
-				/>
-				<polyline
-					points="23.68 26.93 32.93 26.93 36.08 23.89"
-					fill="none"
-					stroke="currentColor"
-					strokeMiterlimit="10"
-					strokeWidth="1.5"
-				/>
-				<path
-					d="m39.38,31.28h-14.28l-7.17,6.3c-.35.35-.91.37-1.3.06l-5.02-3.6c-.38-.32-.93-.3-1.3.03l-3.17,2.5"
-					fill="none"
-					stroke="currentColor"
-					strokeMiterlimit="10"
-					strokeWidth="1.5"
-				/>
-				<polyline
-					points="30.72 35.63 26.64 35.63 20.75 40.9"
-					fill="none"
-					stroke="currentColor"
-					strokeMiterlimit="10"
-					strokeWidth="1.5"
-				/>
-				<line
-					x1="37.34"
-					y1="35.63"
-					x2="34.37"
-					y2="35.63"
-					fill="none"
-					stroke="currentColor"
-					strokeMiterlimit="10"
-					strokeWidth="1.5"
-				/>
-				<path
-					d="m34.99,39.98h-6.32l-4.83,4.36h-13.69c-1.66,0-3-1.34-3-3v-20.11c0-1.66,1.34-3,3-3h22.29"
-					fill="none"
-					stroke="currentColor"
-					strokeMiterlimit="10"
-					strokeWidth="1.5"
-				/>
-				<line
-					x1="29.32"
-					y1="44.33"
-					x2="37.34"
-					y2="44.33"
-					fill="none"
-					stroke="currentColor"
-					strokeMiterlimit="10"
-					strokeWidth="1.5"
-				/>
-			</g>
-			<circle
-				cx="37.75"
-				cy="21.99"
-				r="2.53"
-				fill="none"
+		<svg viewBox="0 0 46 36" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+			<path
+				d="M10.15,8.48 L23.69,8.48 L23.69,4.83 C23.69,3.17 22.35,1.83 20.69,1.83 L4.95,1.83 C3.29,1.83 1.95,3.17 1.95,4.83 L1.95,15.81 C1.95,17.47 3.29,18.81 4.95,18.81 L7.15,18.81 L7.15,11.48 C7.15,9.82 8.49,8.48 10.15,8.48 z"
 				stroke="currentColor"
 				strokeMiterlimit="10"
 				strokeWidth="1.5"
+				fill={accent}
+				fillOpacity={0.5}
 			/>
-			<circle
-				cx="41.52"
-				cy="31.28"
-				r="2.53"
-				fill="none"
+			<path
+				d="M20.26,17.31 C20.26,19.376 18.586,21.05 16.52,21.05 C14.454,21.05 12.78,19.376 12.78,17.31 C12.78,15.244 14.454,13.57 16.52,13.57 C18.586,13.57 20.26,15.244 20.26,17.31 z M31.04,12.83 L25.25,12.83 M36.08,14.14 L32.93,17.18 L23.68,17.18 M7.14,26.82 L10.31,24.32 C10.68,23.99 11.23,23.97 11.61,24.29 L16.63,27.89 C17.02,28.2 17.58,28.18 17.93,27.83 L25.1,21.53 L39.38,21.53 M20.75,31.15 L26.64,25.88 L30.72,25.88 M34.37,25.88 L37.34,25.88 M32.44,8.48 L10.15,8.48 C8.49,8.48 7.15,9.82 7.15,11.48 L7.15,31.59 C7.15,33.25 8.49,34.59 10.15,34.59 L23.84,34.59 L28.67,30.23 L34.99,30.23 M37.34,34.58 L29.32,34.58 M44.05,21.53 C44.05,20.133 42.917,19 41.52,19 C40.123,19 38.99,20.133 38.99,21.53 C38.99,22.927 40.123,24.06 41.52,24.06 C42.917,24.06 44.05,22.927 44.05,21.53 z M40.28,12.24 C40.28,10.843 39.147,9.71 37.75,9.71 C36.353,9.71 35.22,10.843 35.22,12.24 C35.22,13.637 36.353,14.77 37.75,14.77 C39.147,14.77 40.28,13.637 40.28,12.24 z"
 				stroke="currentColor"
+				// strokeWidth="1"
 				strokeMiterlimit="10"
 				strokeWidth="1.5"
 			/>

@@ -12,7 +12,7 @@ export type AvatarProps = {
 	name: string
 	size?: AvatarSize
 	color?: string | 'auto'
-	src?: string
+	src?: string | null
 	alt?: string
 	badge?: AvatarBadgeStatus
 	bordered?: boolean
