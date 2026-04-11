@@ -1,13 +1,5 @@
 import { PendingContent } from '../account-pending'
-import {
-	applicationStatusColor,
-	formatApplicationStatus,
-	formatBudget,
-	formatExperienceLevel,
-	formatProjectDeadline,
-	formatProjectStatus,
-	statusColor,
-} from './project-helpers'
+import { formatBudget, formatDeadline, formatValue, formatColor } from '../entity-cards/utils'
 import { ProjectStartConversationButton } from './project-start-conversation-button'
 import type { Route } from 'next'
 import { getAccountContext } from '@/lib/account'
@@ -91,16 +83,22 @@ export async function ProjectApplications() {
 												variant="caption"
 												color="secondary"
 												className="capitalize"
-												content={`${projectGroup.project.category} · ${formatExperienceLevel(projectGroup.project.experienceLevel)} · дедлайн ${formatProjectDeadline(projectGroup.project.deadline)}`}
+												content={`${projectGroup.project.category} · ${formatValue(projectGroup.project.experienceLevel, 'experience')} · дедлайн ${formatDeadline(projectGroup.project.deadline)}`}
 											/>
 										</Stack>
 										<Stack wrap justify="end">
 											<Badge
 												variant="outline"
 												size="sm"
-												color={statusColor[projectGroup.project.status]}
+												color={formatColor(
+													projectGroup.project.status,
+													'projectStatusColor',
+												)}
 											>
-												{formatProjectStatus(projectGroup.project.status)}
+												{formatValue(
+													projectGroup.project.status,
+													'projectStatus',
+												)}
 											</Badge>
 											<Badge variant="secondary" size="sm">
 												{pluralizeRuWithCount(
@@ -148,14 +146,14 @@ export async function ProjectApplications() {
 															<Badge
 																variant="secondary"
 																size="sm"
-																color={
-																	applicationStatusColor[
-																		application.status
-																	]
-																}
-															>
-																{formatApplicationStatus(
+																color={formatColor(
 																	application.status,
+																	'applicationStatusColor',
+																)}
+															>
+																{formatValue(
+																	application.status,
+																	'applicationStatus',
 																)}
 															</Badge>
 														</Stack>
@@ -168,7 +166,7 @@ export async function ProjectApplications() {
 															<TS
 																variant="caption"
 																color="secondary"
-																content={`Срок кандидата: **${formatProjectDeadline(application.proposedDeadline)}**`}
+																content={`Срок кандидата: **${formatDeadline(application.proposedDeadline)}**`}
 															/>
 														) : null}
 														<TS

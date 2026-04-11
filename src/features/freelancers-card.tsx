@@ -17,13 +17,14 @@ export function FreelancerGridCard({ item }: FreelancerGridCardProps) {
 		<Link
 			href={item.href as Route}
 			hover="underline"
-			className="group block h-full no-underline hover:no-underline"
+			className="block h-full no-underline hover:no-underline"
 		>
 			<Card
+				hoverable
 				image={renderPreview(item)}
 				imageAspect="3/2"
 				badge={item.latestPortfolioItem ? 'Latest work' : 'Portfolio soon'}
-				className="h-full gap-1 overflow-hidden transition-all group-hover:-translate-y-1 group-hover:shadow-xs"
+				className="h-full gap-1 overflow-hidden"
 				titleOver={true}
 				title={item.latestPortfolioItem?.title}
 			>

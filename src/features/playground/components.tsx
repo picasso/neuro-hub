@@ -17,6 +17,8 @@ import { DemoDialog } from './demo-dialog'
 import { DemoDialogSettings } from './demo-dialog-settings'
 import { DemoEmpty } from './demo-empty'
 import { DemoEmptySettings } from './demo-empty-settings'
+import { DemoEntityCards } from './demo-entity-cards'
+import { DemoEntityCardsSettings } from './demo-entity-cards-settings'
 import { DemoIconButtons } from './demo-icon-buttons'
 import { DemoIconButtonsSettings } from './demo-icon-buttons-settings'
 import { DemoIcons } from './demo-icons'
@@ -191,6 +193,15 @@ export const componentDemos: ComponentDemo[] = [
 		ready: true,
 		demo: <DemoCard />,
 		settings: <DemoCardSettings />,
+	},
+	{
+		id: 'entity-cards',
+		name: 'Entity cards',
+		group: 'layout',
+		description: 'ProjectCard, PersonCard, ApplicationCard — доменные карточки на query-типах',
+		ready: true,
+		demo: <DemoEntityCards />,
+		settings: <DemoEntityCardsSettings />,
 	},
 	{
 		id: 'tabs',

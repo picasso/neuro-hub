@@ -1,16 +1,13 @@
 import { redirect } from 'next/navigation'
 import { PendingContent } from '../account-pending'
 import {
-	applicationStatusColor,
 	canWithdrawApplication,
 	describeClient,
-	formatApplicationStatus,
 	formatBudget,
-	formatExperienceLevel,
-	formatProjectDeadline,
-	formatProjectStatus,
-	statusColor,
-} from './project-helpers'
+	formatDeadline,
+	formatValue,
+	formatColor,
+} from '../entity-cards/utils'
 import { WithdrawApplicationButton } from './project-withdraw-button'
 import type { Route } from 'next'
 import { getAccountContext } from '@/lib/account'
@@ -34,11 +31,31 @@ type Options = {
 }
 const statusOptions: Array<Options> = [
 	{ label: 'Все' },
-	{ label: 'Подана', value: 'submitted', color: applicationStatusColor['submitted'] },
-	{ label: 'В шорт-листе', value: 'shortlisted', color: applicationStatusColor['shortlisted'] },
-	{ label: 'Принята', value: 'accepted', color: applicationStatusColor['accepted'] },
-	{ label: 'Отклонена', value: 'rejected', color: applicationStatusColor['rejected'] },
-	{ label: 'Отозвана', value: 'withdrawn', color: applicationStatusColor['withdrawn'] },
+	{
+		label: 'Подана',
+		value: 'submitted',
+		color: formatColor('submitted', 'applicationStatusColor'),
+	},
+	{
+		label: 'В шорт-листе',
+		value: 'shortlisted',
+		color: formatColor('shortlisted', 'applicationStatusColor'),
+	},
+	{
+		label: 'Принята',
+		value: 'accepted',
+		color: formatColor('accepted', 'applicationStatusColor'),
+	},
+	{
+		label: 'Отклонена',
+		value: 'rejected',
+		color: formatColor('rejected', 'applicationStatusColor'),
+	},
+	{
+		label: 'Отозвана',
+		value: 'withdrawn',
+		color: formatColor('withdrawn', 'applicationStatusColor'),
+	},
 ]
 
 export async function AccountApplications({ searchParams }: PageProps) {
@@ -130,7 +147,7 @@ export async function AccountApplications({ searchParams }: PageProps) {
 										<TS
 											variant="caption"
 											color="secondary"
-											content={`${describeClient(item.project.client)} · ${item.project.category} · ${formatExperienceLevel(item.project.experienceLevel)}`}
+											content={`${describeClient(item.project.client)} · ${item.project.category} · ${formatValue(item.project.experienceLevel, 'experience')}`}
 											className="capitalize"
 										/>
 									</Stack>
@@ -138,16 +155,22 @@ export async function AccountApplications({ searchParams }: PageProps) {
 										<Badge
 											variant="secondary"
 											size="sm"
-											color={applicationStatusColor[item.status]}
+											color={formatColor(
+												item.status,
+												'applicationStatusColor',
+											)}
 										>
-											{formatApplicationStatus(item.status)}
+											{formatValue(item.status, 'applicationStatus')}
 										</Badge>
 										<Badge
 											variant="outline"
 											size="sm"
-											color={statusColor[item.project.status]}
+											color={formatColor(
+												item.project.status,
+												'projectStatusColor',
+											)}
 										>
-											{formatProjectStatus(item.project.status)}
+											{formatValue(item.project.status, 'projectStatus')}
 										</Badge>
 									</Stack>
 								</Stack>
@@ -182,13 +205,13 @@ export async function AccountApplications({ searchParams }: PageProps) {
 										<TS
 											variant="caption"
 											color="secondary"
-											content={`Дедлайн проекта: **${formatProjectDeadline(item.project.deadline)}**`}
+											content={`Дедлайн проекта: **${formatDeadline(item.project.deadline)}**`}
 										/>
 										{item.proposedDeadline ? (
 											<TS
 												variant="caption"
 												color="secondary"
-												content={`Ваш срок: **${formatProjectDeadline(item.proposedDeadline)}**`}
+												content={`Ваш срок: **${formatDeadline(item.proposedDeadline)}**`}
 											/>
 										) : null}
 									</Stack>
