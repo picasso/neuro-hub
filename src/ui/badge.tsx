@@ -1,10 +1,11 @@
+import { includes } from 'lodash'
 import { forwardRef, type ReactNode } from 'react'
 import { Icon, type IconName } from './icon'
 import { IconButton } from './icon-button'
 import { Badge as ShadcnBadge } from './shadcn/badge'
 import { type IconColor, type SemanticColor, semanticColorClasses, textSizeClasses } from './types'
 import { needsContrast } from './utils'
-import { cn } from '@/utils'
+import { cn, simpleMarkdown, type MarkdownParams } from '@/utils'
 
 export type BadgeVariant = 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link'
 export type BadgeSize = 'xs' | 'sm' | 'md'
@@ -13,7 +14,7 @@ export type BadgeColor = SemanticColor | 'error' | 'success' | 'warning' | 'info
 export type BadgeProps = Omit<React.ComponentPropsWithoutRef<'span'>, 'children'> & {
 	variant?: BadgeVariant
 	asChild?: boolean
-	label?: string
+	label?: string | null
 	color?: BadgeColor
 	icon?: IconName
 	size?: BadgeSize
@@ -24,6 +25,8 @@ export type BadgeProps = Omit<React.ComponentPropsWithoutRef<'span'>, 'children'
 	ariaOnClose?: string
 	capitalize?: boolean
 	lowercased?: boolean
+	moreContrast?: boolean
+	md?: Partial<MarkdownParams> | false
 }
 
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
@@ -43,6 +46,8 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 			ariaOnClose,
 			capitalize,
 			lowercased,
+			moreContrast,
+			md,
 			...props
 		},
 		ref,
@@ -55,6 +60,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 			textSizeClasses[size],
 			sizeIconClasses[size],
 			color && badgeColorMap[variant][color],
+			color && contrast && moreContrast && contrastColorMap[variant]?.[color],
 			lowercased && 'pt-0',
 			lowercased && size === 'xs' && 'h-6',
 			capitalize && 'capitalize',
@@ -88,7 +94,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 						data-icon="inline-start"
 					/>
 				) : null}
-				{label ?? children}
+				{label ? (md === false ? label : simpleMarkdown(label, md)) : children}
 				{onClose ? (
 					<IconButton
 						icon="x"
@@ -108,7 +114,19 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 		)
 
 		return (
-			<ShadcnBadge ref={ref} variant={shadcnVariant} className={mergedClassName} {...props}>
+			<ShadcnBadge
+				ref={ref}
+				variant={shadcnVariant}
+				className={mergedClassName}
+				data-outlined={
+					!!(
+						variant === 'outline' &&
+						(!color ||
+							includes(['primary', 'secondary', 'dimmed', 'destructive'], color))
+					)
+				}
+				{...props}
+			>
 				{inner}
 			</ShadcnBadge>
 		)
@@ -266,5 +284,16 @@ const badgeColorMap: Record<BadgeVariant, Record<BadgeColor, string>> = {
 		success: 'text-emerald-600',
 		warning: 'text-amber-600',
 		info: 'text-blue-600',
+	},
+}
+
+const contrastColorMap: Partial<Record<BadgeVariant, Partial<Record<BadgeColor, string>>>> = {
+	secondary: {
+		contrast: 'bg-black/40 text-white',
+		soft: 'bg-black/20 text-white/80',
+	},
+	outline: {
+		contrast: 'text-white bg-black/40 border-white',
+		soft: 'text-white/80 bg-black/20 border-white/60',
 	},
 }
