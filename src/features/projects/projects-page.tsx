@@ -1,4 +1,4 @@
-import { ProjectCard } from './project-card'
+import { ProjectCard } from '../entity-cards/project-card'
 import type { Route } from 'next'
 import { listPublicProjects } from '@/lib/db/queries/projects'
 import {

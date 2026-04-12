@@ -9,10 +9,12 @@ export type CardDemoState = {
 	size: NonNullable<CardProps['size']>
 	maxW: MaxW
 	fullWidth: boolean
+	compact: boolean
 	title: boolean
 	description: boolean
 	titleOver: boolean
 	descOver: boolean
+	content: boolean
 	flush: boolean
 	button: boolean
 	badge: boolean
@@ -20,6 +22,7 @@ export type CardDemoState = {
 	image: boolean
 	buttonProps: boolean
 	footer: boolean
+	hoverable: boolean
 	customClassName: boolean
 }
 
@@ -27,10 +30,12 @@ const defaultState: CardDemoState = {
 	size: 'sm',
 	maxW: 'lg',
 	fullWidth: false,
+	compact: false,
 	title: false,
 	description: false,
 	titleOver: false,
 	descOver: false,
+	content: true,
 	flush: false,
 	button: false,
 	badge: false,
@@ -38,6 +43,7 @@ const defaultState: CardDemoState = {
 	image: false,
 	buttonProps: false,
 	footer: false,
+	hoverable: false,
 	customClassName: false,
 }
 
@@ -47,11 +53,14 @@ export function DemoCardSettings() {
 		size,
 		maxW,
 		fullWidth,
+		compact,
+		content,
 		title,
 		description,
 		titleOver,
 		descOver,
 		flush,
+		hoverable,
 		footer,
 		button,
 		badge,
@@ -89,24 +98,14 @@ export function DemoCardSettings() {
 					'10xl',
 				]}
 			/>
-			{/* <SettingSelect
-				id="color"
-				label="Color"
-				value={color}
-				options={[
-					{ label: '— (inherit)', value: 'null' },
-					{ label: 'primary', value: 'primary' },
-					{ label: 'secondary', value: 'secondary' },
-					{ label: 'dimmed', value: 'dimmed' },
-					{ label: 'contrast', value: 'contrast' },
-					{ label: 'soft', value: 'soft' },
-				]}
-			/> */}
 			<Separator />
 			<SettingToggle id="fullWidth" label="Full width" checked={fullWidth} />
+			<SettingToggle id="compact" label="Compact" checked={compact} />
+			<SettingToggle id="content" label="Content" checked={content} />
 			<SettingToggle id="title" label="Title" checked={title} />
 			<SettingToggle id="description" label="Description" checked={description} />
 			<SettingToggle id="flush" label="Flush" checked={flush} />
+			<SettingToggle id="hoverable" label="Hoverable" checked={hoverable} />
 			<SettingToggle id="footer" label="Footer" checked={footer} />
 			<SettingToggle id="badge" label="Badge" checked={badge} />
 			{badge && <SettingToggle id="badgeProps" label="Badge props" checked={badgeProps} />}

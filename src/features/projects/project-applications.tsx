@@ -1,13 +1,7 @@
+import { map } from 'lodash'
 import { PendingContent } from '../account-pending'
-import {
-	applicationStatusColor,
-	formatApplicationStatus,
-	formatBudget,
-	formatExperienceLevel,
-	formatProjectDeadline,
-	formatProjectStatus,
-	statusColor,
-} from './project-helpers'
+import { ApplicationCard } from '../entity-cards/application-card'
+import { formatDeadline, formatValue, formatColor } from '../entity-cards/utils'
 import { ProjectStartConversationButton } from './project-start-conversation-button'
 import type { Route } from 'next'
 import { getAccountContext } from '@/lib/account'
@@ -91,16 +85,22 @@ export async function ProjectApplications() {
 												variant="caption"
 												color="secondary"
 												className="capitalize"
-												content={`${projectGroup.project.category} · ${formatExperienceLevel(projectGroup.project.experienceLevel)} · дедлайн ${formatProjectDeadline(projectGroup.project.deadline)}`}
+												content={`${projectGroup.project.category} · ${formatValue(projectGroup.project.experienceLevel, 'experience')} · дедлайн ${formatDeadline(projectGroup.project.deadline)}`}
 											/>
 										</Stack>
 										<Stack wrap justify="end">
 											<Badge
 												variant="outline"
 												size="sm"
-												color={statusColor[projectGroup.project.status]}
+												color={formatColor(
+													projectGroup.project.status,
+													'projectStatusColor',
+												)}
 											>
-												{formatProjectStatus(projectGroup.project.status)}
+												{formatValue(
+													projectGroup.project.status,
+													'projectStatus',
+												)}
 											</Badge>
 											<Badge variant="secondary" size="sm">
 												{pluralizeRuWithCount(
@@ -120,71 +120,78 @@ export async function ProjectApplications() {
 									</Stack>
 
 									<Stack vertical gap={3} align="stretch">
-										{projectGroup.applications.map((application) => (
-											<div
-												key={application.id}
-												className="rounded-xl border border-border/70 bg-muted/20 p-4"
-											>
-												<Stack
-													vertical
-													gap={3}
-													align="stretch"
-													className="lg:flex-row lg:items-start lg:justify-between"
-												>
-													<Stack
-														vertical
-														gap={2}
-														align="stretch"
-														className="min-w-0"
-													>
-														<Stack wrap gap={2} align="center">
-															<TS
-																variant="subtitle"
-																content={`Заявка от ${formatFreelancerLabel(
-																	application.freelancer.name,
-																	application.freelancer.userId,
-																)}`}
-															/>
-															<Badge
-																variant="secondary"
-																size="sm"
-																color={
-																	applicationStatusColor[
-																		application.status
-																	]
-																}
-															>
-																{formatApplicationStatus(
-																	application.status,
-																)}
-															</Badge>
-														</Stack>
-														<TS
-															variant="caption"
-															color="secondary"
-															content={`Бюджет кандидата: **${formatBudget({ budgetMin: application.proposedPrice })}**`}
-														/>
-														{application.proposedDeadline ? (
-															<TS
-																variant="caption"
-																color="secondary"
-																content={`Срок кандидата: **${formatProjectDeadline(application.proposedDeadline)}**`}
-															/>
-														) : null}
-														<TS
-															variant="body"
-															color="secondary"
-															className="whitespace-pre-line"
-															content={application.coverLetter}
-														/>
-													</Stack>
-													<ProjectStartConversationButton
-														projectId={projectGroup.project.id}
-														freelancerId={application.freelancer.userId}
-														className="lg:self-start"
-													/>
-												</Stack>
-											</div>
+										{map(projectGroup.applications, (application) => (
+											<ApplicationCard key={application.id} {...application}>
+												<ProjectStartConversationButton
+													projectId={projectGroup.project.id}
+													freelancerId={application.freelancer.userId}
+													className="lg:self-start"
+												/>
+											</ApplicationCard>
+											// <div
+											// 	key={application.id}
+											// 	className="rounded-xl border border-border/70 bg-muted/20 p-4"
+											// >
+											// 	<Stack
+											// 		vertical
+											// 		gap={3}
+											// 		align="stretch"
+											// 		className="lg:flex-row lg:items-start lg:justify-between"
+											// 	>
+											// 		<Stack
+											// 			vertical
+											// 			gap={2}
+											// 			align="stretch"
+											// 			className="min-w-0"
+											// 		>
+											// 			<Stack wrap gap={2} align="center">
+											// 				<TS
+											// 					variant="subtitle"
+											// 					content={`Заявка от ${formatFreelancerLabel(
+											// 						application.freelancer.name,
+											// 						application.freelancer.userId,
+											// 					)}`}
+											// 				/>
+											// 				<Badge
+											// 					variant="secondary"
+											// 					size="sm"
+											// 					color={formatColor(
+											// 						application.status,
+											// 						'applicationStatusColor',
+											// 					)}
+											// 				>
+											// 					{formatValue(
+											// 						application.status,
+											// 						'applicationStatus',
+											// 					)}
+											// 				</Badge>
+											// 			</Stack>
+											// 			<TS
+											// 				variant="caption"
+											// 				color="secondary"
+											// 				content={`Бюджет кандидата: **${formatBudget({ budgetMin: application.proposedPrice })}**`}
+											// 			/>
+											// 			{application.proposedDeadline ? (
+											// 				<TS
+											// 					variant="caption"
+											// 					color="secondary"
+											// 					content={`Срок кандидата: **${formatDeadline(application.proposedDeadline)}**`}
+											// 				/>
+											// 			) : null}
+											// 			<TS
+											// 				variant="body"
+											// 				color="secondary"
+											// 				className="whitespace-pre-line"
+											// 				content={application.coverLetter}
+											// 			/>
+											// 		</Stack>
+											// 		<ProjectStartConversationButton
+											// 			projectId={projectGroup.project.id}
+											// 			freelancerId={application.freelancer.userId}
+											// 			className="lg:self-start"
+											// 		/>
+											// 	</Stack>
+											// </div>
 										))}
 									</Stack>
 
@@ -205,9 +212,9 @@ export async function ProjectApplications() {
 	)
 }
 
-function formatFreelancerLabel(name: string | null, userId: string) {
-	const normalizedName = name?.trim()
-	if (normalizedName) return normalizedName
+// function formatFreelancerLabel(name: string | null, userId: string) {
+// 	const normalizedName = name?.trim()
+// 	if (normalizedName) return normalizedName
 
-	return `User ${userId.slice(0, 8)}`
-}
+// 	return `User ${userId.slice(0, 8)}`
+// }

@@ -13,29 +13,38 @@ import {
 	CardFooter,
 	Card as ShadcnCard,
 } from './shadcn/card'
-import { maxWClasses, type Shadow, shadowClasses, type MaxW, buttonOnAccent } from './types'
+import {
+	maxWClasses,
+	type Shadow,
+	shadowClasses,
+	type MaxW,
+	buttonOnAccent,
+	badgeOnAccent,
+} from './types'
 import { cn } from '@/utils'
 
 type ShadcnCardProps = Omit<ComponentProps<typeof ShadcnCard>, 'title'>
 
-export type ImageAspect = 'square' | 'video' | '4/3' | '3/2' | '5/4' | '9/16' | '2/1' | 'none'
 export type CardProps = ShadcnCardProps & {
 	title?: ReactNode
 	description?: ReactNode
 	footer?: ReactNode
+	header?: ReactNode
 	button?: string
 	buttonProps?: Omit<ButtonProps, 'children' | 'label' | 'asChild'>
 	badge?: ReactNode
 	badgeProps?: Omit<BadgeProps, 'children' | 'label' | 'asChild'>
-	image?: ReactNode | 'portfolio' | 'person' | 'project'
+	image?: ReactNode | ImageStub
 	imageAspect?: ImageAspect
 	titleOver?: boolean
 	descriptionOver?: boolean
 	imageClassName?: string
 	shadow?: Shadow
 	flush?: boolean
+	compact?: boolean
 	maxW?: MaxW
 	fullWidth?: boolean
+	hoverable?: boolean
 	headerClassName?: string
 	headerStyle?: React.CSSProperties
 	footerClassName?: string
@@ -52,15 +61,18 @@ export function Card({
 	badge,
 	badgeProps,
 	image,
-	imageAspect = 'video',
+	imageAspect,
 	titleOver,
 	descriptionOver,
 	button,
 	buttonProps,
+	header,
 	footer,
 	className,
 	flush,
+	compact,
 	fullWidth,
+	hoverable,
 	headerClassName,
 	headerStyle,
 	footerClassName,
@@ -69,14 +81,18 @@ export function Card({
 	children,
 	...props
 }: CardProps) {
-	const isSmall = size === 'sm'
+	const isSmall = size === 'sm' || compact
+	const pxPadding = compact ? 'px-4' : 'px-6'
+	const ptPadding = compact ? 'pt-2' : 'pt-4'
+	const pbPadding = compact ? 'pb-2' : 'pb-4'
 	return (
 		<ShadcnCard
 			size={size}
 			className={cn(
-				'mx-auto w-full has-data-[slot=card-footer]:pb-0',
+				'mx-auto overflow-hidden w-full has-data-[slot=card-footer]:pb-0',
 				'*:[img:first-child]:rounded-t-xl has-[>img:first-child]:pt-0',
 				shadowClasses[shadow],
+				hoverable && hoverableClassName,
 				!fullWidth && maxWClasses[maxW],
 				flush && 'has-data-[slot=card-header]:pt-0 has-data-[slot=card-content]:gap-0',
 				image && 'has-data-[slot=card-header]:pt-0',
@@ -84,16 +100,24 @@ export function Card({
 			)}
 			{...props}
 		>
-			{(title || description || badge || image) && (
-				<CardHeader className={headerClassName} style={headerStyle}>
+			{(title || description || badge || image || header) && (
+				<CardHeader
+					className={cn('px-0 relative gap-0', headerClassName)}
+					style={headerStyle}
+				>
 					{image && (
 						<div
 							className={cn(
-								'relative -mx-6 rounded-t-lg overflow-hidden bg-muted/30',
-								imageAspectClasses[imageAspect],
+								'relative rounded-t-lg overflow-hidden bg-muted/30 mb-2',
+								imageAspectClasses[imageAspect ?? 'video'],
+								fixedAspectClasses[
+									`${compact ? 'compact_' : ''}${image as ImageStub}`
+								],
 							)}
 						>
-							{isString(image) ? renderImage(image, title, imageAspect) : image}
+							{isString(image)
+								? renderImage(image, title, imageAspect, hoverable, compact)
+								: image}
 							{badge && (
 								<Badge
 									variant="outline"
@@ -134,7 +158,7 @@ export function Card({
 						</div>
 					)}
 					{!image && badge && (
-						<CardAction>
+						<CardAction className={pxPadding}>
 							<Badge
 								lowercased
 								size={isSmall ? 'sm' : 'xs'}
@@ -150,22 +174,38 @@ export function Card({
 						</CardAction>
 					)}
 					{title && !(titleOver && image) && (
-						<CardTitle className={isSmall ? 'text-sm' : 'text-base'}>{title}</CardTitle>
+						<CardTitle className={cn(pxPadding, isSmall ? 'text-sm' : 'text-base')}>
+							{title}
+						</CardTitle>
 					)}
 					{description && !(descriptionOver && image) && (
-						<CardDescription className={isSmall ? 'text-xs' : 'text-sm'}>
+						<CardDescription
+							className={cn(pxPadding, 'mt-1', isSmall ? 'text-xs' : 'text-sm')}
+						>
 							{description}
 						</CardDescription>
 					)}
+					{header}
 				</CardHeader>
 			)}
-			<CardContent className={cn(isSmall ? 'text-sm' : null, contentClassName)}>
-				{children}
-			</CardContent>
+			{children && (
+				<CardContent
+					className={cn(
+						pxPadding,
+						!image && ptPadding,
+						footer && pbPadding,
+						isSmall ? 'text-sm' : null,
+						contentClassName,
+					)}
+				>
+					{children}
+				</CardContent>
+			)}
 			{(footer || button) && (
 				<CardFooter
 					className={cn(
 						buttonOnAccent(true),
+						badgeOnAccent(true),
 						isSmall ? 'py-3! text-sm' : 'py-5!',
 						footerClassName,
 					)}
@@ -173,12 +213,7 @@ export function Card({
 				>
 					{footer}
 					{button && (
-						<Button
-							fullWidth
-							size={isSmall ? 'xs' : 'sm'}
-							variant="secondary"
-							{...buttonProps}
-						>
+						<Button size={isSmall ? 'xs' : 'sm'} variant="secondary" {...buttonProps}>
 							{button}
 						</Button>
 					)}
@@ -206,12 +241,19 @@ const imageStubs = {
 	project: {
 		name: 'missing-more',
 		forceSize: 120,
-		color: '#0ea5e9',
+		color: '#0e74e9',
 		color2: '#22c55e',
 		accent: '#e90ee9',
 	},
+	request: {
+		name: 'apply',
+		forceSize: 80,
+		color: '#f91643',
+		color2: '#0ea5e9',
+		accent: '#e90ee9',
+	},
 } satisfies Record<
-	'portfolio' | 'person' | 'project',
+	'portfolio' | 'person' | 'project' | 'request',
 	{
 		name: IconName
 		forceSize: number
@@ -221,7 +263,13 @@ const imageStubs = {
 	}
 >
 
-function renderImage(image: string, title: CardProps['title'], imageAspect: ImageAspect) {
+function renderImage(
+	image: string,
+	title: CardProps['title'],
+	imageAspect: ImageAspect = 'video',
+	hoverable?: boolean,
+	compact?: boolean,
+) {
 	if (isImageStub(image)) {
 		const { color, color2, name, forceSize, accent } = imageStubs[image]
 		return (
@@ -233,7 +281,12 @@ function renderImage(image: string, title: CardProps['title'], imageAspect: Imag
 				)}
 				style={{ background: `linear-gradient(135deg, ${color} 0%, ${color2} 100%)` }}
 			>
-				<Icon name={name} size={forceSize} color="contrast" accent={accent} />
+				<Icon
+					name={name}
+					size={Math.floor(forceSize * (compact ? 0.7 : 1))}
+					color="contrast"
+					accent={accent}
+				/>
 			</div>
 		)
 	}
@@ -243,17 +296,21 @@ function renderImage(image: string, title: CardProps['title'], imageAspect: Imag
 			src={image}
 			alt={isString(title) ? title : ''}
 			sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-			className="object-cover transition-transform duration-300 group-hover:scale-[1.1]"
+			className={cn(
+				'object-cover transition-transform duration-300',
+				hoverable && 'group-hover:scale-[1.05]',
+			)}
 		/>
 	)
 }
 
-function isImageStub(image: string): image is keyof typeof imageStubs {
+type ImageStub = keyof typeof imageStubs
+function isImageStub(image: string): image is ImageStub {
 	return image in imageStubs
 }
 
 const imageAspectClasses = {
-	none: '',
+	none: 'aspect-auto',
 	square: 'aspect-square',
 	video: 'aspect-video',
 	'4/3': 'aspect-4/3',
@@ -261,4 +318,22 @@ const imageAspectClasses = {
 	'5/4': 'aspect-5/4',
 	'9/16': 'aspect-9/16',
 	'2/1': 'aspect-2/1',
+	'3/1': 'aspect-3/1',
+} as const
+
+export type ImageAspect = keyof typeof imageAspectClasses
+
+const fixedAspectClasses: Partial<Record<ImageStub | `compact_${ImageStub}`, string>> = {
+	request: 'h-30 aspect-auto',
+	compact_request: 'h-20 aspect-auto',
+	portfolio: 'h-36 aspect-auto',
+	compact_portfolio: 'h-26 aspect-auto',
+	person: 'h-40 aspect-auto',
+	compact_person: 'h-30 aspect-auto',
+	project: 'h-40 aspect-auto',
+	compact_project: 'h-30 aspect-auto',
 }
+
+const hoverableClassName =
+	'group transition-all hover:-translate-y-1' +
+	' hover:shadow-[0_0_5px_-2px_rgba(0,0,0,0.7)] hover:border-black/20'

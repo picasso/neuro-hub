@@ -13,7 +13,7 @@ dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 dayjs.extend(utc)
 
-export { dayjs }
+export { dayjs, type Dayjs }
 
 // just a more familiar name
 export const mergeClasses = clsx

@@ -13,7 +13,10 @@ export function DemoCard() {
 		maxW,
 		footer,
 		flush,
+		hoverable,
 		fullWidth,
+		compact,
+		content,
 		title,
 		description,
 		button,
@@ -37,6 +40,8 @@ export function DemoCard() {
 					maxW={maxW}
 					flush={flush}
 					fullWidth={fullWidth}
+					compact={compact}
+					hoverable={hoverable}
 					title={title ? 'Login to your account' : undefined}
 					description={
 						description ? 'Enter your email below to login to your account' : undefined
@@ -58,9 +63,13 @@ export function DemoCard() {
 					footerClassName={customClassName ? 'bg-primary text-white' : undefined}
 					contentClassName={customClassName ? 'bg-primary text-white' : undefined}
 				>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. The
-					card component supports a size prop that can be set to "sm" for a more compact
-					appearance.
+					{content ? (
+						<>
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+							The card component supports a size prop that can be set to "sm" for a
+							more compact appearance.
+						</>
+					) : undefined}
 				</Card>
 			</DemoSection>
 			{map(sections, (section) => (
@@ -79,6 +88,8 @@ export function DemoCard() {
 								badge={demo.badge}
 								badgeProps={demo.badgeProps}
 								className="mx-0"
+								hoverable={hoverable}
+								compact={compact}
 							/>
 						))}
 					</Stack>
@@ -102,12 +113,6 @@ type DemoConfig = {
 	image?: CardProps['image']
 	badge?: CardProps['badge']
 	badgeProps?: CardProps['badgeProps']
-	// button?: CardProps['button']
-	// buttonProps?: CardProps['buttonProps']
-	// footer?: CardProps['footer']
-	// footerProps?: CardProps['footerProps']
-	// contentClassName?: CardProps['contentClassName']
-	// contentProps?: CardProps['contentProps']
 }
 
 type DemoSection = {
@@ -163,7 +168,7 @@ const sections: DemoSection[] = [
 			{
 				label: 'Portfolio',
 				image: 'portfolio',
-				imageAspect: 'video',
+				// imageAspect: 'video',
 				desc,
 			},
 			{
@@ -176,6 +181,12 @@ const sections: DemoSection[] = [
 				label: 'Project',
 				image: 'project',
 				imageAspect: '5/4',
+				desc,
+			},
+			{
+				label: 'Request',
+				image: 'request',
+				// imageAspect: '2/1',
 				desc,
 			},
 		],

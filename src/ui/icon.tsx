@@ -91,4 +91,4 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
 	)
 })
 
-const accentSupports: IconName[] = ['missing', 'missing-more', 'nobody', 'api']
+const accentSupports: IconName[] = ['missing', 'missing-more', 'nobody', 'api', 'apply']

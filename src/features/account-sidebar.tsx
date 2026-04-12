@@ -1,14 +1,12 @@
 'use client'
 
-import { sample } from 'effector'
 import { createGate, useGate, useUnit } from 'effector-react'
-import { useCallback } from 'react'
 import type { AccountSnapshot } from '@/lib/account'
 import { accountSidebarDomain as domain } from '@/lib/logger'
 import { $accountContext } from '@/stores'
-import { type BreadcrumbProps, Sidebar, type SidebarGroup, type SidebarItemClick } from '@/ui'
+import { Sidebar, type SidebarGroup } from '@/ui'
 
-const sidebarGroups: SidebarGroup[] = [
+export const sidebarGroups: SidebarGroup[] = [
 	{
 		title: 'Платформа',
 		collapsible: true,
@@ -99,9 +97,6 @@ export function AccountSidebar({ context }: AccountSidebarProps) {
 	useGate(AccountSidebarGate)
 	const accountContext = useUnit($accountContext) ?? context
 
-	const onItemClick = useCallback((current: SidebarItemClick, parent?: SidebarItemClick) => {
-		updateBreadcrumb({ current, parent })
-	}, [])
 	return (
 		<Sidebar
 			context={accountContext.role}
@@ -109,34 +104,11 @@ export function AccountSidebar({ context }: AccountSidebarProps) {
 			collapsible="icon"
 			groups={sidebarGroups}
 			variant="sidebar"
-			onItemClick={onItemClick}
 		/>
 	)
 }
 
-// * * * $breadcrumb ------------------------------------------------------------------------------]
-
-type BreadcrumbPath = NonNullable<BreadcrumbProps['path']>
-type BreadcrumbUpdate = { current: SidebarItemClick; parent?: SidebarItemClick }
-
 const AccountSidebarGate = createGate({
 	domain,
 	name: 'AccountSidebarGate',
-})
-const resetBreadcrumb = domain.createEvent('resetBreadcrumb')
-const updateBreadcrumb = domain.createEvent<BreadcrumbUpdate>('updateBreadcrumb')
-export const $breadcrumb = domain.createStore<BreadcrumbPath>([], { name: '$breadcrumb' })
-
-$breadcrumb.reset(resetBreadcrumb)
-$breadcrumb.on(updateBreadcrumb, (_, update) => {
-	const { current, parent } = update
-	const currentPath = current.href ? [current.title, current.href] : current.title
-	const parentPath = parent?.href ? [parent.title, parent.href] : parent ? parent.title : null
-	return (parentPath ? [parentPath, currentPath] : [currentPath]) as BreadcrumbPath
-})
-
-// clear breadcrumb trail when sidebar gate opens
-sample({
-	clock: AccountSidebarGate.open,
-	target: resetBreadcrumb,
 })

@@ -1,7 +1,8 @@
 'use client'
 
-import { useGate, useUnit } from 'effector-react'
-import { $breadcrumb, AccountSidebar } from './account-sidebar'
+import { useGate } from 'effector-react'
+import { useAccountBreadcrumb } from './account-breadcrumb'
+import { AccountSidebar } from './account-sidebar'
 import type { AccountSnapshot } from '@/lib/account'
 import type { PropsWithChildren } from 'react'
 import { AccountContextGate } from '@/stores'
@@ -13,11 +14,11 @@ type AccountLayoutProps = PropsWithChildren<{
 
 export function AccountLayout({ children, context }: AccountLayoutProps) {
 	useGate(AccountContextGate, context)
-	const path = useUnit($breadcrumb)
+	const path = useAccountBreadcrumb()
 	return (
 		<div className="flex w-full overflow-auto rounded-2xl border bg-background">
 			<AccountSidebar context={context} />
-			<SidebarInset className="bg-surfac min-w-0">
+			<SidebarInset className="bg-surface min-w-0">
 				<Stack
 					vertical
 					gap={0}

@@ -101,11 +101,24 @@ export const shadowClasses: Record<Shadow, string> = {
 export function buttonOnAccent(bright?: boolean) {
 	return [
 		bright
-			? '**:data-[variant=outline]:border-accent-dark'
-			: '**:data-[variant=outline]:border-border-dark',
-		bright ? '**:data-[variant=outline]:bg-surface' : '**:data-[variant=outline]:bg-background',
-		'**:data-[variant=outline]:hover:bg-primary/10',
-		'**:data-[variant=outline]:hover:border-primary-light',
-		'**:data-[variant=ghost]:hover:bg-accent-dark',
+			? '**:data-[slot=button]:data-[variant=outline]:border-accent-dark'
+			: '**:data-[slot=button]:data-[variant=outline]:border-border-dark',
+		bright
+			? '**:data-[slot=button]:data-[variant=outline]:bg-surface'
+			: '**:data-[slot=button]:data-[variant=outline]:bg-background',
+		'**:data-[slot=button]:data-[variant=outline]:hover:bg-primary/10',
+		'**:data-[slot=button]:data-[variant=outline]:hover:border-primary-light',
+		'**:data-[slot=button]:data-[variant=ghost]:hover:bg-accent-dark',
+	].join(' ')
+}
+
+export function badgeOnAccent(bright?: boolean) {
+	return [
+		bright
+			? '**:data-[slot=badge]:data-[outlined=true]:border-accent-dark'
+			: '**:data-[slot=badge]:data-[outlined=true]:border-border-dark',
+		bright
+			? '**:data-[slot=badge]:data-[outlined=true]:bg-surface'
+			: '**:data-[slot=badge]:data-[outlined=true]:bg-background',
 	].join(' ')
 }

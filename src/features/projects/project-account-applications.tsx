@@ -1,16 +1,7 @@
 import { redirect } from 'next/navigation'
 import { PendingContent } from '../account-pending'
-import {
-	applicationStatusColor,
-	canWithdrawApplication,
-	describeClient,
-	formatApplicationStatus,
-	formatBudget,
-	formatExperienceLevel,
-	formatProjectDeadline,
-	formatProjectStatus,
-	statusColor,
-} from './project-helpers'
+import { ApplicationCard } from '../entity-cards/application-card'
+import { canWithdrawApplication, formatColor } from '../entity-cards/utils'
 import { WithdrawApplicationButton } from './project-withdraw-button'
 import type { Route } from 'next'
 import { getAccountContext } from '@/lib/account'
@@ -20,7 +11,7 @@ import {
 	type ApplicationStatus,
 	type ApplicationsQueryInput,
 } from '@/lib/validations'
-import { Badge, type BadgeColor, Button, Card, Empty, Link, Stack, TS } from '@/ui'
+import { Badge, type BadgeColor, Button, Empty, Link, Stack, TS } from '@/ui'
 import { normalizeSearchParams, pluralizeRuWithCount } from '@/utils'
 
 type PageProps = {
@@ -34,11 +25,31 @@ type Options = {
 }
 const statusOptions: Array<Options> = [
 	{ label: 'Все' },
-	{ label: 'Подана', value: 'submitted', color: applicationStatusColor['submitted'] },
-	{ label: 'В шорт-листе', value: 'shortlisted', color: applicationStatusColor['shortlisted'] },
-	{ label: 'Принята', value: 'accepted', color: applicationStatusColor['accepted'] },
-	{ label: 'Отклонена', value: 'rejected', color: applicationStatusColor['rejected'] },
-	{ label: 'Отозвана', value: 'withdrawn', color: applicationStatusColor['withdrawn'] },
+	{
+		label: 'Подана',
+		value: 'submitted',
+		color: formatColor('submitted', 'applicationStatusColor'),
+	},
+	{
+		label: 'В шорт-листе',
+		value: 'shortlisted',
+		color: formatColor('shortlisted', 'applicationStatusColor'),
+	},
+	{
+		label: 'Принята',
+		value: 'accepted',
+		color: formatColor('accepted', 'applicationStatusColor'),
+	},
+	{
+		label: 'Отклонена',
+		value: 'rejected',
+		color: formatColor('rejected', 'applicationStatusColor'),
+	},
+	{
+		label: 'Отозвана',
+		value: 'withdrawn',
+		color: formatColor('withdrawn', 'applicationStatusColor'),
+	},
 ]
 
 export async function AccountApplications({ searchParams }: PageProps) {
@@ -109,100 +120,105 @@ export async function AccountApplications({ searchParams }: PageProps) {
 			) : (
 				<Stack vertical gap={3} align="stretch">
 					{history.items.map((item) => (
-						<Card
-							key={item.id}
-							fullWidth
-							className="max-w-none"
-							image="project"
-							imageAspect="none"
-						>
-							<Stack vertical gap={4} align="stretch">
-								<Stack
-									vertical
-									gap={2}
-									align="stretch"
-									className="lg:flex-row lg:items-start lg:justify-between"
-								>
-									<Stack vertical gap={2} align="stretch" className="min-w-0">
-										<Link href={item.project.href as Route} hover="underline">
-											<TS clean variant="h5" content={item.project.title} />
-										</Link>
-										<TS
-											variant="caption"
-											color="secondary"
-											content={`${describeClient(item.project.client)} · ${item.project.category} · ${formatExperienceLevel(item.project.experienceLevel)}`}
-											className="capitalize"
-										/>
-									</Stack>
-									<Stack wrap justify="end">
-										<Badge
-											variant="secondary"
-											size="sm"
-											color={applicationStatusColor[item.status]}
-										>
-											{formatApplicationStatus(item.status)}
-										</Badge>
-										<Badge
-											variant="outline"
-											size="sm"
-											color={statusColor[item.project.status]}
-										>
-											{formatProjectStatus(item.project.status)}
-										</Badge>
-									</Stack>
-								</Stack>
+						<ApplicationCard key={item.id} {...item}>
+							{/* // <Card
+						// 	key={item.id}
+						// 	fullWidth
+						// 	className="max-w-none"
+						// 	image="project"
+						// 	imageAspect="none"
+						// >
+						// 	<Stack vertical gap={4} align="stretch">
+						// 		<Stack
+						// 			vertical
+						// 			gap={2}
+						// 			align="stretch"
+						// 			className="lg:flex-row lg:items-start lg:justify-between"
+						// 		>
+						// 			<Stack vertical gap={2} align="stretch" className="min-w-0">
+						// 				<Link href={item.project.href as Route} hover="underline">
+						// 					<TS clean variant="h5" content={item.project.title} />
+						// 				</Link>
+						// 				<TS
+						// 					variant="caption"
+						// 					color="secondary"
+						// 					content={`${describeClient(item.project.client)} · ${item.project.category} · ${formatValue(item.project.experienceLevel, 'experience')}`}
+						// 					className="capitalize"
+						// 				/>
+						// 			</Stack>
+						// 			<Stack wrap justify="end">
+						// 				<Badge
+						// 					variant="secondary"
+						// 					size="sm"
+						// 					color={formatColor(
+						// 						item.status,
+						// 						'applicationStatusColor',
+						// 					)}
+						// 				>
+						// 					{formatValue(item.status, 'applicationStatus')}
+						// 				</Badge>
+						// 				<Badge
+						// 					variant="outline"
+						// 					size="sm"
+						// 					color={formatColor(
+						// 						item.project.status,
+						// 						'projectStatusColor',
+						// 					)}
+						// 				>
+						// 					{formatValue(item.project.status, 'projectStatus')}
+						// 				</Badge>
+						// 			</Stack>
+						// 		</Stack>
 
-								<Stack wrap gap={2} align="start">
-									{item.project.skills.map((skill) => (
-										<Badge key={skill.id} variant="outline" size="xs">
-											{skill.name}
-										</Badge>
-									))}
-								</Stack>
+						// 		<Stack wrap gap={2} align="start">
+						// 			{item.project.skills.map((skill) => (
+						// 				<Badge key={skill.id} variant="outline" size="xs">
+						// 					{skill.name}
+						// 				</Badge>
+						// 			))}
+						// 		</Stack>
 
-								<TS
-									variant="body"
-									color="secondary"
-									className="whitespace-pre-line"
-									content={item.coverLetter}
-								/>
+						// 		<TS
+						// 			variant="body"
+						// 			color="secondary"
+						// 			className="whitespace-pre-line"
+						// 			content={item.coverLetter}
+						// 		/>
 
-								<Stack wrap gap={3} justify="space-between">
-									<Stack gap={2} wrap>
-										<TS
-											variant="caption"
-											color="secondary"
-											content={`Проект: **${formatBudget(item.project)}**`}
-										/>
-										<TS
-											variant="caption"
-											color="secondary"
-											content={`Ваш бюджет: **${formatBudget({ budgetMin: item.proposedPrice })}**`}
-										/>
-										<TS
-											variant="caption"
-											color="secondary"
-											content={`Дедлайн проекта: **${formatProjectDeadline(item.project.deadline)}**`}
-										/>
-										{item.proposedDeadline ? (
-											<TS
-												variant="caption"
-												color="secondary"
-												content={`Ваш срок: **${formatProjectDeadline(item.proposedDeadline)}**`}
-											/>
-										) : null}
-									</Stack>
-									<Stack wrap justify="end">
-										<Button href={item.project.href as Route} variant="outline">
-											Открыть проект
-										</Button>
-										{canWithdrawApplication(item.status) ? (
-											<WithdrawApplicationButton applicationId={item.id} />
-										) : null}
-									</Stack>
-								</Stack>
+						// 		<Stack wrap gap={3} justify="space-between">
+						// 			<Stack gap={2} wrap>
+						// 				<TS
+						// 					variant="caption"
+						// 					color="secondary"
+						// 					content={`Проект: **${formatBudget(item.project)}**`}
+						// 				/>
+						// 				<TS
+						// 					variant="caption"
+						// 					color="secondary"
+						// 					content={`Ваш бюджет: **${formatBudget({ budgetMin: item.proposedPrice })}**`}
+						// 				/>
+						// 				<TS
+						// 					variant="caption"
+						// 					color="secondary"
+						// 					content={`Дедлайн проекта: **${formatDeadline(item.project.deadline)}**`}
+						// 				/>
+						// 				{item.proposedDeadline ? (
+						// 					<TS
+						// 						variant="caption"
+						// 						color="secondary"
+						// 						content={`Ваш срок: **${formatDeadline(item.proposedDeadline)}**`}
+						// 					/>
+						// 				) : null}
+						// 			</Stack> */}
+							<Stack wrap justify="end">
+								<Button href={item.project.href as Route} variant="outline">
+									Открыть проект
+								</Button>
+								{canWithdrawApplication(item.status) ? (
+									<WithdrawApplicationButton applicationId={item.id} />
+								) : null}
 							</Stack>
-						</Card>
+						</ApplicationCard>
 					))}
 				</Stack>
 			)}

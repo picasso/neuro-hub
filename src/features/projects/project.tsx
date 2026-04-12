@@ -1,16 +1,13 @@
 import { notFound } from 'next/navigation'
-import { ProjectApplicationForm } from './project-application-form'
 import {
-	applicationStatusColor,
 	canWithdrawApplication,
 	describeClient,
-	formatApplicationStatus,
 	formatBudget,
-	formatExperienceLevel,
-	formatProjectDeadline,
-	formatProjectStatus,
-	statusColor,
-} from './project-helpers'
+	formatDeadline,
+	formatValue,
+	formatColor,
+} from '../entity-cards/utils'
+import { ProjectApplicationForm } from './project-application-form'
 import { WithdrawApplicationButton } from './project-withdraw-button'
 import type { Route } from 'next'
 import { getSsrSafeSession } from '@/lib/auth/server'
@@ -48,15 +45,15 @@ export async function ProjectDetailPage(props: PageProps) {
 								<Badge
 									capitalize
 									variant="secondary"
-									color={statusColor[project.status]}
+									color={formatColor(project.status, 'projectStatusColor')}
 								>
-									{formatProjectStatus(project.status)}
+									{formatValue(project.status, 'projectStatus')}
 								</Badge>
 								<Badge capitalize variant="outline">
 									{project.category}
 								</Badge>
 								<Badge capitalize variant="outline">
-									{formatExperienceLevel(project.experienceLevel)}
+									{formatValue(project.experienceLevel, 'experience')}
 								</Badge>
 							</Stack>
 
@@ -65,7 +62,7 @@ export async function ProjectDetailPage(props: PageProps) {
 								<TS
 									variant="body"
 									color="secondary"
-									content={`${describeClient(project.client)} · до ${formatProjectDeadline(project.deadline)}`}
+									content={`${describeClient(project.client)} · до ${formatDeadline(project.deadline)}`}
 								/>
 							</Stack>
 
@@ -92,28 +89,28 @@ export async function ProjectDetailPage(props: PageProps) {
 								<TS
 									variant="subtitle"
 									color="secondary"
-									content={`Дедлайн проекта: **${formatProjectDeadline(project.deadline)}**`}
+									content={`Дедлайн проекта: **${formatDeadline(project.deadline)}**`}
 								/>
 
 								{project.viewerApplication ? (
 									<Stack vertical gap={3} align="stretch" className="h-full">
 										<Badge
 											variant="secondary"
-											color={
-												applicationStatusColor[
-													project.viewerApplication.status
-												]
-											}
+											color={formatColor(
+												project.viewerApplication.status,
+												'applicationStatusColor',
+											)}
 										>
 											Статус заявки:{' '}
-											{formatApplicationStatus(
+											{formatValue(
 												project.viewerApplication.status,
+												'applicationStatus',
 											)}
 										</Badge>
 										<TS
 											variant="caption"
 											color="secondary"
-											content={`Заявка подана ${project.viewerApplication.createdAt ? formatProjectDeadline(project.viewerApplication.createdAt) : 'недавно'}`}
+											content={`Заявка подана ${project.viewerApplication.createdAt ? formatDeadline(project.viewerApplication.createdAt) : 'недавно'}`}
 										/>
 										{canWithdrawApplication(
 											project.viewerApplication.status,
