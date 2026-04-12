@@ -37,6 +37,7 @@ export type ApplicationCardProps = BaseApplication & {
 	freelancer?: ClientProjectApplicationListItem['freelancer']
 	full?: boolean
 	className?: string
+	children?: React.ReactNode
 }
 
 export function ApplicationCard({
@@ -47,8 +48,9 @@ export function ApplicationCard({
 	status,
 	createdAt,
 	freelancer,
-	full = false,
+	full,
 	className,
+	children,
 }: ApplicationCardProps) {
 	const visibleSkills = project ? project.skills.slice(0, 4) : []
 	const remainingSkills = project ? project.skills.length - visibleSkills.length : 0
@@ -148,7 +150,7 @@ export function ApplicationCard({
 					)}
 					{freelancer?.name && (
 						<TS clean variant="subtitle" color="secondary" className="line-clamp-1">
-							{formatList(['Андрей Рублев'], 'user-plus')}
+							{formatList([freelancer.name], 'user-plus')}
 						</TS>
 					)}
 					{project && (
@@ -185,6 +187,7 @@ export function ApplicationCard({
 					className={full ? 'line-clamp-4' : 'line-clamp-2'}
 					content={coverLetter}
 				/>
+				{children}
 			</Stack>
 		</Card>
 	)
