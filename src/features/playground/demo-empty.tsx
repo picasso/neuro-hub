@@ -3,6 +3,7 @@
 import { map } from 'lodash'
 import { DemoLabel, DemoRoot, DemoSection } from './components-utils'
 import { type EmptyDemoState } from './demo-empty-settings'
+import { text } from './mock'
 import { useSettings } from './settings-store'
 import { Button, Empty, type EmptyProps, Stack } from '@/ui'
 import { cn } from '@/utils'
@@ -43,11 +44,7 @@ export function DemoEmpty() {
 								: mediaIcon
 					}
 					title={title ? 'Нет элементов' : undefined}
-					desc={
-						desc
-							? 'Создайте первую запись или импортируйте данные из файла.'
-							: undefined
-					}
+					desc={desc ? text.desc.empty : undefined}
 					outline={outline}
 					error={error}
 					dark={dark}
@@ -114,7 +111,7 @@ const variants: Array<EmptyProps & { label: string }> = [
 		align: 'start',
 		dark: true,
 		title: 'Нет элементов',
-		desc: 'Создайте первую запись или импортируйте данные из файла.',
+		desc: text.desc.empty,
 	},
 	{
 		label: 'Compact light',

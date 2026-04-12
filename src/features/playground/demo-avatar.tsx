@@ -1,13 +1,13 @@
 'use client'
 
+import { map } from 'lodash'
 import { useEffect, useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type AvatarDemoState } from './demo-avatar-settings'
+import { imageUrls } from './mock'
 import { useSettings } from './settings-store'
 import { Avatar, Stack } from '@/ui'
 
-const sampleImage = 'https://github.com/github.png'
-const userAvatar = 'https://avatars.githubusercontent.com/u/399395'
 const names = ['Alice Smith', 'Samantha', 'Марина Петрова', 'X']
 
 export function DemoAvatar() {
@@ -35,7 +35,7 @@ export function DemoAvatar() {
 						name={name ?? 'Unknown'}
 						size={size}
 						color={color}
-						src={withImage ? userAvatar : undefined}
+						src={withImage ? imageUrls.avatar : undefined}
 						alt={withImage ? name : undefined}
 						badge={resolvedBadge}
 						bordered={bordered}
@@ -44,14 +44,14 @@ export function DemoAvatar() {
 			</DemoSection>
 			<DemoSection title="Sizes" asBadge="user" separator>
 				<Stack gap={2} wrap align="center">
-					{(['sm', 'md', 'lg'] as const).map((size) => (
+					{map(['sm', 'md', 'lg'] as const, (size) => (
 						<Avatar key={size} name={names[0]!} size={size} bordered={bordered} />
 					))}
 				</Stack>
 			</DemoSection>
 			<DemoSection title="Initials (different names)" asBadge="user" separator>
 				<Stack gap={2} wrap align="center">
-					{names.map((name) => (
+					{map(names, (name) => (
 						<Avatar key={name} name={name} size="md" bordered={bordered} />
 					))}
 				</Stack>
@@ -61,14 +61,14 @@ export function DemoAvatar() {
 					<Avatar
 						name="GitHub"
 						size="md"
-						src={sampleImage}
+						src={imageUrls.github}
 						alt="GitHub"
 						bordered={bordered}
 					/>
 					<Avatar
 						name="Fallback"
 						size="lg"
-						src={userAvatar}
+						src={imageUrls.avatar}
 						alt="GitHub"
 						bordered={bordered}
 					/>
@@ -76,7 +76,7 @@ export function DemoAvatar() {
 			</DemoSection>
 			<DemoSection title="Badges" asBadge="user" separator>
 				<Stack gap={2} wrap align="center">
-					{(['error', 'success', 'warning', 'info'] as const).map((badge) => (
+					{map(['error', 'success', 'warning', 'info'] as const, (badge) => (
 						<Avatar key={badge} name="DR" size="md" badge={badge} />
 					))}
 				</Stack>

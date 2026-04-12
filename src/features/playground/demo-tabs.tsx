@@ -2,6 +2,7 @@
 
 import { DemoRoot, DemoSection } from './components-utils'
 import { type TabsDemoState } from './demo-tabs-settings'
+import { text } from './mock'
 import { useSettings } from './settings-store'
 import { Stack, Tabs, type TabItem, TS } from '@/ui'
 
@@ -69,7 +70,7 @@ const tabContent = (index: number, title?: string, desc?: string) => (
 			content={
 				desc ??
 				`Раздел **«${title ?? index}»** — \`${index == 1 ? '?' : index == 2 ? '!' : '+'}контент\` вкладки.\n\n` +
-					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+					text.lorem.long
 			}
 		/>
 	</Stack>

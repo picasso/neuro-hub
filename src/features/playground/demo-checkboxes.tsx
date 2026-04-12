@@ -1,5 +1,6 @@
 'use client'
 
+import { map } from 'lodash'
 import { useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type CheckboxDemoState } from './demo-checkboxes-settings'
@@ -97,7 +98,7 @@ export function DemoCheckboxes() {
 
 			<DemoSection title="Group" asBadge="check" separator>
 				<Stack vertical gap={2} align="stretch">
-					{skills.map((skill) => (
+					{map(skills, (skill) => (
 						<Checkbox
 							key={skill.value}
 							label={skill.label}

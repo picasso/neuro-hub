@@ -1,10 +1,17 @@
 'use client'
 
-import dayjs from 'dayjs'
-import { indexOf, random } from 'lodash'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type ChatDemoState } from './demo-chat-settings'
+import { imageUrls, text } from './mock'
+import {
+	createChatRows,
+	createMessagePair,
+	createScrollMessages,
+	getNextConnectionStatus,
+	getTime,
+	type ConnectionStatus,
+} from './mock-generators'
 import { useSettings } from './settings-store'
 import { ChatUI, type ChatUIProps, Stack, type TabItem, Tabs, TS } from '@/ui'
 
@@ -31,46 +38,63 @@ export function DemoChat() {
 	} = useSettings<ChatDemoState>()
 	const [draft, setDraft] = useState('')
 	const [activeChatId, setActiveChatId] = useState<string | null>(null)
-	const [status, setStatus] = useState<(typeof statusMock)[number]>('connecting')
+	const [status, setStatus] = useState<ConnectionStatus>('connecting')
+	const messageMocks = useMemo(() => createMessagePair(), [])
+	const containerScrollMessages = useMemo(() => createScrollMessages(), [])
+	const chatRows = useMemo(
+		() =>
+			createChatRows({ avatarUrl: imageUrls.avatar }) as NonNullable<
+				ChatUIProps.Chats['items']
+			>,
+		[],
+	)
 
-	const reload = toolbarReload ? () => setStatus((prev) => reloadMock(prev)) : undefined
+	const reload = toolbarReload
+		? () => setStatus((prev) => getNextConnectionStatus(prev))
+		: undefined
 	const activeChat = chatRows.find(({ id }) => id === activeChatId)
-	const messageTabs = messagesItems({
-		theme: messageTheme,
-		stickyHeader,
-		stickyFooter,
-		limitWidth,
-		limitHeight,
-		padding,
-		background,
-		bordered,
-		toolbar,
-		toolbarBack,
-		title: toolbarTitle,
-		desc: toolbarDesc,
-		reload,
-		status: toolbarStatus ? status : undefined,
-	})
+	const messageTabs = getMessageItems(
+		{
+			theme: messageTheme,
+			stickyHeader,
+			stickyFooter,
+			limitWidth,
+			limitHeight,
+			padding,
+			background,
+			bordered,
+			toolbar,
+			toolbarBack,
+			title: toolbarTitle,
+			desc: toolbarDesc,
+			reload,
+			status: toolbarStatus ? status : undefined,
+		},
+		containerScrollMessages,
+	)
 
-	const chatTabs = chatItems({
-		stickyHeader,
-		stickyFooter,
-		limitWidth,
-		limitHeight,
-		padding,
-		background,
-		bordered,
-		onSelect: setActiveChatId,
-		activeId: activeChatId,
-		toolbar,
-		toolbarBack,
-		title: toolbarTitle,
-		desc: toolbarDesc,
-		reload,
-		status: toolbarStatus ? status : undefined,
-		avatarName: activeChat?.name,
-		avatarSrc: activeChat?.image,
-	})
+	const chatTabs = getChatItems(
+		{
+			stickyHeader,
+			stickyFooter,
+			limitWidth,
+			limitHeight,
+			padding,
+			background,
+			bordered,
+			onSelect: setActiveChatId,
+			activeId: activeChatId,
+			toolbar,
+			toolbarBack,
+			title: toolbarTitle,
+			desc: toolbarDesc,
+			reload,
+			status: toolbarStatus ? status : undefined,
+			avatarName: activeChat?.name,
+			avatarSrc: activeChat?.image,
+		},
+		chatRows,
+	)
 
 	return (
 		<DemoRoot>
@@ -91,7 +115,7 @@ export function DemoChat() {
 						{...messageMocks.out}
 						text="Отправка…"
 						status="sending"
-						createdAt={mockTime('today')}
+						createdAt={getTime('today')}
 						theme={messageTheme}
 						withTail={withTail}
 					/>
@@ -99,7 +123,7 @@ export function DemoChat() {
 						{...messageMocks.out}
 						text="Ошибка сети"
 						status="failed"
-						createdAt={mockTime('weeks')}
+						createdAt={getTime('weeks')}
 						theme={messageTheme}
 						withTail={withTail}
 					/>
@@ -107,7 +131,7 @@ export function DemoChat() {
 						{...messageMocks.out}
 						text={draft || 'Прочитано'}
 						read
-						createdAt={mockTime('old')}
+						createdAt={getTime('old')}
 						theme={messageTheme}
 						withTail={withTail}
 					/>
@@ -143,18 +167,10 @@ export function DemoChat() {
 				</Stack>
 			</DemoSection>
 
-			<DemoSection
-				title="Messages"
-				desc="Различные состояния: **List / Loading / Error / Empty**"
-				separator
-			>
+			<DemoSection title="Messages" desc={text.desc.states} separator>
 				<Tabs bordered fullWidth size="sm" items={messageTabs} />
 			</DemoSection>
-			<DemoSection
-				title="Chats"
-				desc="Различные состояния: **List / Loading / Error / Empty**"
-				separator
-			>
+			<DemoSection title="Chats" desc={text.desc.states} separator>
 				<Tabs bordered fullWidth size="sm" items={chatTabs} />
 			</DemoSection>
 
@@ -164,7 +180,7 @@ export function DemoChat() {
 				separator
 			>
 				<ChatUI.Composer
-					placeholder="Введите какой-нибудь текст…"
+					placeholder={text.placeholder.composer}
 					onSubmit={setDraft}
 					disabled={composerDisabled}
 					isSubmitting={composerSubmitting}
@@ -175,76 +191,6 @@ export function DemoChat() {
 		</DemoRoot>
 	)
 }
-
-const mockTime = (
-	when: 'today' | 'yesterday' | 'recent' | 'weeks' | 'old' | 'random' = 'random',
-) => {
-	if (when === 'today') return dayjs().utc().toISOString()
-	if (when === 'yesterday') return dayjs().subtract(1, 'day').utc().toISOString()
-	if (when === 'recent') return dayjs().subtract(random(2, 6), 'days').utc().toISOString()
-	if (when === 'weeks') return dayjs().subtract(random(7, 100), 'days').utc().toISOString()
-	if (when === 'old') return dayjs().subtract(random(340, 400), 'days').utc().toISOString()
-	return dayjs().subtract(random(0, 14), 'days').utc().toISOString()
-}
-
-const messageMocks = {
-	in: {
-		direction: 'in' as const,
-		text: 'Привет! Это входящее сообщение с нейтральной bubble.',
-		createdAt: mockTime('recent'),
-	},
-	out: {
-		direction: 'out' as const,
-		text: 'Исходящее: pale primary, время + статус справа.',
-		createdAt: mockTime('yesterday'),
-	},
-}
-
-const containerScrollMessages = Array.from({ length: 28 }, (_, i) => {
-	const direction = (['in', 'out'] as const)[i % 2]
-	return {
-		id: `scroll-${i}`,
-		direction,
-		text: `Сообщение ${i + 1}. Небольшой текст для проверки прокрутки области треда.`,
-		createdAt: mockTime(),
-		...(direction === 'out' ? { status: 'sent' as const } : {}),
-	}
-})
-
-const chatRows = [
-	{
-		id: 'a',
-		name: 'Команда NeuroGig',
-		lastMessageText: 'Короткий превью-текст',
-		updatedAt: mockTime('yesterday'),
-		unreadCount: 3,
-	},
-	{
-		id: 'b',
-		name: 'Длинное имя чата для проверки обрезки и выравнивания',
-		lastMessageText:
-			'Очень длинный последний текст сообщения, который должен аккуратно обрезаться с многоточием в списке',
-		updatedAt: mockTime('recent'),
-		unreadCount: 0,
-	},
-	{
-		id: 'c',
-		image: 'https://avatars.githubusercontent.com/u/399395',
-		name: 'Димон Отстань от меня',
-		lastMessageText:
-			'The main chat page was moved to the right layers, but the conversation-open flow is still exposed as an imperative API through @/features and then executed directly inside a React component. That leaves request/orchestration/error-routing logic in UI code and weakens the intended',
-		updatedAt: mockTime('weeks'),
-		unreadCount: 200,
-	},
-	{
-		id: 'd',
-		name: 'Без непрочитанных',
-		lastMessageText: 'Ок',
-		updatedAt: mockTime('today'),
-		unreadCount: 0,
-	},
-] as NonNullable<ChatUIProps.Chats['items']>
-
 type Options = Pick<
 	ChatUIProps.Container,
 	| 'limitWidth'
@@ -265,16 +211,16 @@ type Options = Pick<
 	title?: boolean
 	desc?: boolean
 	reload?: () => void
-	status?: (typeof statusMock)[number] | null
+	status?: ConnectionStatus | null
 }
 
-const messageContent = (options: Options, props: Partial<ChatUIProps.Messages>) => {
+function messageContent(options: Options, props: Partial<ChatUIProps.Messages>) {
 	const title = `Messages${options.stickyHeader ? ' sticky' : ''} header`
 	const header = options.toolbar ? (
 		<ChatUI.Toolbar
 			back={options.toolbarBack}
 			title={options.title ? title : undefined}
-			desc={options.desc ? 'Описание диалога для проверки обрезки и выравнивания' : undefined}
+			desc={options.desc ? text.desc.toolbar : undefined}
 			onReload={options.reload}
 			status={options.status}
 		/>
@@ -293,13 +239,13 @@ const messageContent = (options: Options, props: Partial<ChatUIProps.Messages>) 
 	)
 }
 
-const messagesItems = (options: Options) =>
-	[
+function getMessageItems(options: Options, items: NonNullable<ChatUIProps.Messages['items']>) {
+	return [
 		{
 			value: 'list',
 			title: 'List',
 			icon: 'collections',
-			content: messageContent(options, { items: containerScrollMessages }),
+			content: messageContent(options, { items }),
 		},
 		{
 			value: 'loading',
@@ -320,8 +266,9 @@ const messagesItems = (options: Options) =>
 			content: messageContent(options, { empty: true }),
 		},
 	] as TabItem[]
+}
 
-const chatContent = (options: Options, props: Partial<ChatUIProps.Chats>) => {
+function chatContent(options: Options, props: Partial<ChatUIProps.Chats>) {
 	const title = `Chats${options.stickyHeader ? ' sticky' : ''} header`
 	const header = options.toolbar ? (
 		<ChatUI.Toolbar
@@ -347,13 +294,13 @@ const chatContent = (options: Options, props: Partial<ChatUIProps.Chats>) => {
 	)
 }
 
-const chatItems = (options: Options) =>
-	[
+function getChatItems(options: Options, items: NonNullable<ChatUIProps.Chats['items']>) {
+	return [
 		{
 			value: 'list',
 			title: 'List',
 			icon: 'collections',
-			content: chatContent(options, { items: chatRows }),
+			content: chatContent(options, { items }),
 		},
 		{
 			value: 'loading',
@@ -374,9 +321,4 @@ const chatItems = (options: Options) =>
 			content: chatContent(options, { empty: true }),
 		},
 	] as TabItem[]
-
-const statusMock = ['idle', 'connecting', 'connected', 'error'] as const
-const reloadMock = (prev: (typeof statusMock)[number]) => {
-	const index = indexOf(statusMock, prev)
-	return statusMock[(index + 1) % statusMock.length]
 }

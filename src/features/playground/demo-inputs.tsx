@@ -3,6 +3,7 @@
 import { type ChangeEvent, useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type InputDemoState } from './demo-inputs-settings'
+import { text } from './mock'
 import { useSettings } from './settings-store'
 import { Stack, TextField } from '@/ui'
 
@@ -43,7 +44,7 @@ export function DemoInputs() {
 				<TextField
 					multiline={multiline}
 					label={multiline ? 'Описание' : 'Email'}
-					placeholder={multiline ? 'Введите описание...' : 'user@example.com'}
+					placeholder={multiline ? text.placeholder.desc : text.placeholder.email}
 					error={
 						error
 							? multiline

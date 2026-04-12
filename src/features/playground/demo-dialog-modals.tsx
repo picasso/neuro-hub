@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import { createModal, createModalWithIds, registerModal } from '../../modals/model'
+import { text } from './mock'
 import { Button, Stack, TS } from '@/ui'
 
 registerModal('demo-test', {
@@ -7,8 +8,7 @@ registerModal('demo-test', {
 	title: 'Rule them all?',
 	iconOptions: { color: 'info' },
 	showFooterClose: true,
-	description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-		 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
+	description: text.lorem.long,
 })
 
 registerModal('demo-duplicate', {

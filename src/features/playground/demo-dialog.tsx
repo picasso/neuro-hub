@@ -1,10 +1,11 @@
 'use client'
 
-import { isNil, isString } from 'lodash'
+import { isNil, isString, map } from 'lodash'
 import { useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { ModalDemo } from './demo-dialog-modals'
 import { type DialogDemoState } from './demo-dialog-settings'
+import { text } from './mock'
 import { useSettings } from './settings-store'
 import { loginModal } from '@/features'
 import { Button, Dialog, Stack, TS } from '@/ui'
@@ -78,12 +79,8 @@ export function DemoDialog() {
 					onClose={onClose('interactive')}
 					icon={icon ? 'briefcase' : undefined}
 					iconOptions={{ color: 'primary' }}
-					title={title ? 'Заголовок диалога' : undefined}
-					description={
-						description
-							? 'Описание с `markdown` поддержкой: **bold**, *italic*, [ссылки](https://example.com).'
-							: undefined
-					}
+					title={title ? text.title.dialog : undefined}
+					description={description ? text.desc.dialog : undefined}
 					size={size}
 					animation={animation}
 					divider={divider}
@@ -125,7 +122,7 @@ export function DemoDialog() {
 
 			<DemoSection title="Sizes" asBadge="shield-check" separator>
 				<Stack wrap gap={2}>
-					{(['sm', 'md', 'lg', 'xl', 'full'] as const).map((s) => (
+					{map(['sm', 'md', 'lg', 'xl', 'full'] as const, (s) => (
 						<div key={s}>
 							<Dialog
 								open={open[s]}
