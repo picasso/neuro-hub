@@ -50,7 +50,8 @@ type RuForms =
 	| 'review'
 	| 'notification'
 	| 'profile'
-
+	| 'application'
+	| 'applications'
 const ruForms: Record<RuForms, readonly [string, string, string]> = {
 	work: ['работа', 'работы', 'работ'],
 	skill: ['навык', 'навыка', 'навыков'],
@@ -60,4 +61,6 @@ const ruForms: Record<RuForms, readonly [string, string, string]> = {
 	review: ['отзыв', 'отзыва', 'отзывов'],
 	notification: ['уведомление', 'уведомления', 'уведомлений'],
 	profile: ['профиль', 'профиля', 'профилей'],
+	application: ['заявка', 'заявки', 'заявок'],
+	applications: ['заявки', 'заявок', 'заявок'],
 }

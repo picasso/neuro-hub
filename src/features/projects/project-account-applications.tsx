@@ -105,7 +105,7 @@ export async function AccountApplications({ searchParams }: PageProps) {
 			<TS
 				variant="caption"
 				color="secondary"
-				content={`Показано ${history.items.length} из ${pluralizeRuWithCount(history.total, ['заявки', 'заявок', 'заявок'])}`}
+				content={`Показано ${history.items.length} из ${pluralizeRuWithCount(history.total, 'applications')}`}
 			/>
 
 			{history.items.length === 0 ? (
@@ -214,9 +214,9 @@ export async function AccountApplications({ searchParams }: PageProps) {
 								<Button href={item.project.href as Route} variant="outline">
 									Открыть проект
 								</Button>
-								{canWithdrawApplication(item.status) ? (
+								{canWithdrawApplication(item.status) && (
 									<WithdrawApplicationButton applicationId={item.id} />
-								) : null}
+								)}
 							</Stack>
 						</ApplicationCard>
 					))}
