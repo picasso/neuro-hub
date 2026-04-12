@@ -94,7 +94,7 @@ export {
 export { Stepper, type StepperProps, type StepperItem } from './stepper'
 export { Skeleton, type SkeletonProps } from './skeleton'
 export { Breadcrumb, type BreadcrumbProps } from './breadcrumb'
-export { Card, type CardProps } from './card'
+export { Card, type CardProps, type ImageStub } from './card'
 export { ChatUI } from './chat/export'
 export type * as ChatUIProps from '@/ui/chat/export'
 export {

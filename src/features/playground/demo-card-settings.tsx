@@ -3,10 +3,11 @@
 import { useEffect } from 'react'
 import { DemoRoot, SettingSelect, SettingToggle } from './components-utils'
 import { useReset, useSettings } from './settings-store'
-import { type CardProps, Separator, type MaxW } from '@/ui'
+import { type CardProps, Separator, type MaxW, type ImageStub } from '@/ui'
 
 export type CardDemoState = {
 	size: NonNullable<CardProps['size']>
+	stub: ImageStub | 'null'
 	maxW: MaxW
 	fullWidth: boolean
 	compact: boolean
@@ -28,6 +29,7 @@ export type CardDemoState = {
 
 const defaultState: CardDemoState = {
 	size: 'sm',
+	stub: 'null',
 	maxW: 'lg',
 	fullWidth: false,
 	compact: false,
@@ -52,6 +54,7 @@ export function DemoCardSettings() {
 	const {
 		size,
 		maxW,
+		stub,
 		fullWidth,
 		compact,
 		content,
@@ -98,6 +101,18 @@ export function DemoCardSettings() {
 					'10xl',
 				]}
 			/>
+			<SettingSelect
+				id="stub"
+				label="Image stub"
+				value={stub}
+				options={[
+					{ label: 'None', value: 'null' },
+					{ label: 'Portfolio', value: 'portfolio' },
+					{ label: 'Person', value: 'person' },
+					{ label: 'Project', value: 'project' },
+					{ label: 'Request', value: 'request' },
+				]}
+			/>
 			<Separator />
 			<SettingToggle id="fullWidth" label="Full width" checked={fullWidth} />
 			<SettingToggle id="compact" label="Compact" checked={compact} />
@@ -114,12 +129,13 @@ export function DemoCardSettings() {
 				<SettingToggle id="buttonProps" label="Button props" checked={buttonProps} />
 			)}
 			<SettingToggle id="image" label="Image" checked={image} />
-			{image && (
-				<>
-					<SettingToggle id="titleOver" label="Title over" checked={titleOver} />
-					<SettingToggle id="descOver" label="Description over" checked={descOver} />
-				</>
-			)}
+			{image ||
+				(stub !== 'null' && (
+					<>
+						<SettingToggle id="titleOver" label="Title over" checked={titleOver} />
+						<SettingToggle id="descOver" label="Description over" checked={descOver} />
+					</>
+				))}
 			<SettingToggle
 				id="customClassName"
 				label="Custom class names"
