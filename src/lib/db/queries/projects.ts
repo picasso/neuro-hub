@@ -51,6 +51,8 @@ export type PublicProjectListItem = {
 	skills: ProjectSkillSummary[]
 }
 
+export type ClientProjectListItem = PublicProjectListItem
+
 export type PublicProjectDetail = {
 	id: string
 	title: string
@@ -397,6 +399,66 @@ export async function getPublicProjectById(
 				}
 			: null,
 	}
+}
+
+export async function listClientProjects({
+	clientId,
+}: {
+	clientId: string
+}): Promise<ClientProjectListItem[]> {
+	const rows = await kysely
+		.selectFrom('projects as project')
+		.leftJoin('user_profiles as profile', 'profile.user_id', 'project.client_id')
+		.select([
+			'project.id as id',
+			'project.title as title',
+			'project.description as description',
+			'project.category as category',
+			'project.experience_level as experienceLevel',
+			'project.budget_type as budgetType',
+			'project.budget_min as budgetMin',
+			'project.budget_max as budgetMax',
+			'project.deadline as deadline',
+			'project.status as status',
+			'project.created_at as createdAt',
+			'project.client_id as clientId',
+			'profile.name as name',
+			'profile.company_name as companyName',
+			'profile.company_role as companyRole',
+			'profile.avatar_url as avatarUrl',
+		])
+		.where('project.client_id', '=', clientId)
+		.orderBy('project.created_at', 'desc')
+		.execute()
+
+	if (rows.length === 0) {
+		return []
+	}
+
+	const skillsByProjectId = await getSkillsByProjectIds(rows.map((row) => row.id))
+
+	return rows.map((row) => ({
+		id: row.id,
+		href: `/projects/${row.id}`,
+		title: row.title,
+		descriptionSnippet: toSnippet(row.description),
+		category: row.category,
+		experienceLevel: row.experienceLevel,
+		budgetType: row.budgetType,
+		budgetMin: row.budgetMin,
+		budgetMax: row.budgetMax,
+		deadline: row.deadline,
+		status: row.status,
+		createdAt: row.createdAt,
+		client: {
+			userId: row.clientId,
+			name: row.name,
+			companyName: row.companyName,
+			companyRole: row.companyRole,
+			avatarUrl: row.avatarUrl,
+		},
+		skills: skillsByProjectId.get(row.id) ?? [],
+	}))
 }
 
 export async function createProjectForClient({
