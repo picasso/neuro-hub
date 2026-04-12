@@ -3,7 +3,7 @@
 import { map, shuffle } from 'lodash'
 import { useMemo, useState } from 'react'
 import { ApplicationCard } from '../entity-cards/application-card'
-// import { PersonCard } from '../entity-cards/person-card'
+import { PersonCard } from '../entity-cards/person-card'
 import { ProjectCard } from '../entity-cards/project-card'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type EntityCardsDemoState } from './demo-entity-cards-settings'
@@ -54,7 +54,7 @@ export function DemoEntityCards() {
 			icon: 'users',
 			content: (
 				<div className="py-4 px-8 max-w-md">
-					{/* <PersonCard variant={personVariant} client={card.client} full={full} /> */}
+					<PersonCard {...personCards[0]} full={full} />
 					{/* {renderPersonCard(personCards[0], full)} */}
 				</div>
 			),
@@ -65,7 +65,7 @@ export function DemoEntityCards() {
 			icon: 'file-text',
 			content: (
 				<div className="py-4 px-8 max-w-xl">
-					<ApplicationCard application={applicationCards[0]} full={full} />
+					<ApplicationCard {...applicationCards[0]} full={full} />
 				</div>
 			),
 		},
@@ -106,23 +106,23 @@ export function DemoEntityCards() {
 							))
 						: null}
 					{activeTab === 'person'
-						? personCards.map((card) => (
+						? map(personCards, (_card, index) => (
 								<div
-									key={card.id}
+									key={index}
 									className={
 										settings.full
 											? 'min-w-70 max-w-md flex-1'
 											: 'min-w-70 max-w-sm flex-1'
 									}
 								>
-									{renderPersonCard(card, full) ?? null}
+									{/* {renderPersonCard(card, full) ?? null} */}
 								</div>
 							))
 						: null}
 					{activeTab === 'application'
 						? applicationCards.map((application) => (
 								<div key={application.id} className="min-w-70 max-w-xl flex-1">
-									<ApplicationCard application={application} full={full} />
+									<ApplicationCard {...application} full={full} />
 								</div>
 							))
 						: null}
@@ -134,30 +134,30 @@ export function DemoEntityCards() {
 
 type PersonPreviewCard =
 	| {
-			id: string
-			variant: 'client'
+			// id: string
+			// variant: 'client'
 			client: ReturnType<typeof buildProjectClient>
 	  }
 	| {
-			id: string
-			variant: 'participant'
-			participant: ChatParticipantSummary
+			// id: string
+			// variant: 'participant'
+			chat: ChatParticipantSummary
 	  }
 	| {
-			id: string
-			variant: 'freelancer'
+			// id: string
+			// variant: 'freelancer'
 			freelancer: ReturnType<typeof buildFreelancerCardData>
 	  }
 
-function renderPersonCard(card: PersonPreviewCard, full: boolean) {
-	if (card.variant === 'client' || full) {
-		// 	return <PersonCard variant="client" client={card.client} full={full} />
-	}
-	// if (card.variant === 'participant') {
-	// 	return <PersonCard variant="participant" participant={card.participant} full={full} />
-	// }
-	// return <PersonCard variant="freelancer" freelancer={card.freelancer} full={full} />
-}
+// function renderPersonCard(card: PersonPreviewCard, full: boolean) {
+// 	if (card.variant === 'client' || full) {
+// 		// 	return <PersonCard variant="client" client={card.client} full={full} />
+// 	}
+// 	// if (card.variant === 'participant') {
+// 	// 	return <PersonCard variant="participant" participant={card.participant} full={full} />
+// 	// }
+// 	// return <PersonCard variant="freelancer" freelancer={card.freelancer} full={full} />
+// }
 
 const mockImages = () => map(shuffle(pictures), (picture) => `/playground/pictures/${picture.file}`)
 const randomUrls = mockImages()
@@ -212,22 +212,12 @@ function buildFreelancerCardData(
 		availability?: string | null
 		portfolioCount?: number
 	},
-): Pick<
-	PublicFreelancerGridItem,
-	| 'href'
-	| 'name'
-	| 'avatarUrl'
-	| 'specialization'
-	| 'bioSnippet'
-	| 'hourlyRate'
-	| 'availability'
-	| 'topSkills'
-	| 'portfolioCount'
-	| 'latestPortfolioItem'
-> {
+): PublicFreelancerGridItem {
 	const hasAvatar = options?.hasAvatar ?? true
 	const hasPreview = options?.hasPreview ?? true
 	return {
+		freelancerProfileId: id,
+		skillCategories: ['image_generation', 'consulting'],
 		href: `/freelancers/${id}`,
 		name: longLines
 			? 'Елена Соколова — генеративный дизайн и визуальные пайплайны'
@@ -346,48 +336,33 @@ function buildPersonCards(settings: EntityCardsDemoState): PersonPreviewCard[] {
 	if (settings.personVariant === 'client') {
 		return [
 			{
-				id: 'client-1',
-				variant: 'client',
 				client: buildProjectClient(settings.personClientAvatar, settings.longLines),
 			},
-			{ id: 'client-2', variant: 'client', client: buildProjectClient(false, false) },
-			{ id: 'client-3', variant: 'client', client: buildProjectClient(true, true) },
+			{ client: buildProjectClient(false, false) },
+			{ client: buildProjectClient(true, true) },
 		]
 	}
 	if (settings.personVariant === 'participant') {
 		return [
 			{
-				id: 'participant-1',
-				variant: 'participant',
-				participant: buildChatParticipant(
-					settings.personParticipantRole,
-					settings.longLines,
-				),
+				chat: buildChatParticipant(settings.personParticipantRole, settings.longLines),
 			},
 			{
-				id: 'participant-2',
-				variant: 'participant',
-				participant: buildChatParticipant(
+				chat: buildChatParticipant(
 					settings.personParticipantRole === 'customer' ? 'freelancer' : 'customer',
 					false,
 				),
 			},
 			{
-				id: 'participant-3',
-				variant: 'participant',
-				participant: buildChatParticipant(settings.personParticipantRole, true),
+				chat: buildChatParticipant(settings.personParticipantRole, true),
 			},
 		]
 	}
 	return [
 		{
-			id: 'freelancer-1',
-			variant: 'freelancer',
 			freelancer: buildFreelancerCardData('mock-profile-1', settings.longLines),
 		},
 		{
-			id: 'freelancer-2',
-			variant: 'freelancer',
 			freelancer: buildFreelancerCardData('mock-profile-2', false, {
 				hasAvatar: false,
 				hasPreview: false,
@@ -396,8 +371,6 @@ function buildPersonCards(settings: EntityCardsDemoState): PersonPreviewCard[] {
 			}),
 		},
 		{
-			id: 'freelancer-3',
-			variant: 'freelancer',
 			freelancer: buildFreelancerCardData('mock-profile-3', true, {
 				hasAvatar: true,
 				hasPreview: true,
