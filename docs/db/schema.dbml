@@ -1,0 +1,331 @@
+Project neuro_hub {
+  database_type: 'PostgreSQL'
+  Note: 'Draft schema for product domains plus auth support tables. Reflects current physical schema of the live database.'
+}
+
+Table users {
+  id text [pk]
+  name text [not null]
+  email text [not null, unique]
+  emailVerified boolean [not null]
+  image text
+  createdAt timestamptz [not null, default: `CURRENT_TIMESTAMP`]
+  updatedAt timestamptz [not null, default: `CURRENT_TIMESTAMP`]
+  role text [not null, note: 'Application role. Canonical role values should be documented in DATABASE.md']
+
+  Note: 'Base user identity table used by product tables as the owner/actor reference.'
+}
+
+Table accounts {
+  id text [pk]
+  accountId text [not null]
+  providerId text [not null]
+  userId text [not null]
+  accessToken text
+  refreshToken text
+  idToken text
+  accessTokenExpiresAt timestamptz
+  refreshTokenExpiresAt timestamptz
+  scope text
+  password text [note: 'Auth-managed field. Treat as sensitive and never expose in docs or query outputs beyond schema-level mention']
+  createdAt timestamptz [not null, default: `CURRENT_TIMESTAMP`]
+  updatedAt timestamptz [not null]
+
+  Note: 'Better Auth account/provider binding for a user.'
+
+  Indexes {
+    userId
+  }
+}
+
+Table sessions {
+  id text [pk]
+  expiresAt timestamptz [not null]
+  token text [not null, unique]
+  createdAt timestamptz [not null, default: `CURRENT_TIMESTAMP`]
+  updatedAt timestamptz [not null]
+  ipAddress text
+  userAgent text
+  userId text [not null]
+
+  Note: 'Better Auth session records. Token is unique and sensitive.'
+
+  Indexes {
+    userId
+  }
+}
+
+Table verifications {
+  id text [pk]
+  identifier text [not null]
+  value text [not null, note: 'Sensitive verification payload']
+  expiresAt timestamptz [not null]
+  createdAt timestamptz [not null, default: `CURRENT_TIMESTAMP`]
+  updatedAt timestamptz [not null, default: `CURRENT_TIMESTAMP`]
+
+  Note: 'Better Auth verification artifacts such as codes or token-like values.'
+
+  Indexes {
+    identifier
+  }
+}
+
+Table user_profiles {
+  id text [pk]
+  user_id text [not null, unique]
+  name varchar(255)
+  avatar_url varchar(500)
+  bio text
+  company_name varchar(255)
+  company_role varchar(255)
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  search_vector tsvector [note: 'Generated full-text search column from name + bio']
+
+  Note: 'Base editable profile for marketplace users.'
+
+  Indexes {
+    user_id
+  }
+}
+
+Table freelancer_profiles {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id text [not null, unique]
+  specialization varchar(255)
+  hourly_rate integer
+  availability varchar(100)
+  experience text
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+
+  Note: 'Freelancer-specific profile used for public marketplace presentation and portfolio ownership.'
+
+  Indexes {
+    user_id
+  }
+}
+
+Table portfolio_items {
+  id uuid [pk, default: `gen_random_uuid()`]
+  freelancer_profile_id uuid [not null]
+  title varchar(255) [not null]
+  description text
+  media_url text [not null, note: 'Absolute public asset URL']
+  media_type varchar(50)
+  category varchar(100)
+  tools_used jsonb [note: 'Flexible list of tools used in the work item']
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  media_width integer
+  media_height integer
+  caption text
+
+  Note: 'Portfolio items belong to freelancer_profiles, not directly to users.'
+
+  Indexes {
+    freelancer_profile_id
+    category
+  }
+}
+
+Table skills {
+  id uuid [pk]
+  legacy_id text [note: 'Legacy text identifier preserved during UUID migration; do not use for new logic']
+  name varchar(100) [not null, unique]
+  category text [note: 'Current schema stores category as text']
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+
+  Note: 'Normalized skill catalog shared across user and project relations.'
+
+  Indexes {
+    category
+  }
+}
+
+Table user_skills {
+  id text [pk]
+  user_id text [not null]
+  legacy_skill_id text [note: 'Legacy text skill reference preserved during UUID migration']
+  proficiency_level text [note: 'Expected values come from original enum-like migration']
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  skill_id uuid [not null]
+
+  Note: 'Join table between users and skills. Keep skill_id as the canonical relation.'
+
+  Indexes {
+    user_id
+    skill_id
+    (user_id, skill_id) [unique]
+  }
+}
+
+Table projects {
+  id uuid [pk, default: `gen_random_uuid()`]
+  client_id text [not null]
+  title varchar(255) [not null]
+  description text [not null]
+  category varchar(100) [not null]
+  experience_level varchar(50) [not null]
+  budget_type varchar(20) [not null]
+  budget_min integer [not null]
+  budget_max integer [not null]
+  deadline timestamptz [not null]
+  status varchar(30) [not null, default: `'draft'`]
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+
+  Note: 'Client-created marketplace project.'
+
+  Indexes {
+    client_id
+    category
+    experience_level
+    deadline
+    (status, created_at)
+  }
+}
+
+Table project_skills {
+  project_id uuid [not null]
+  skill_id uuid [not null]
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+
+  Note: 'Canonical many-to-many relation between projects and required skills.'
+
+  Indexes {
+    (project_id, skill_id) [pk]
+    skill_id
+  }
+}
+
+Table project_attachments {
+  id uuid [pk, default: `gen_random_uuid()`]
+  project_id uuid [not null]
+  filename varchar(255) [not null]
+  file_url text [not null]
+  mime_type varchar(100)
+  file_size_bytes integer
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+
+  Note: 'Files attached to a client project brief.'
+
+  Indexes {
+    project_id
+  }
+}
+
+Table applications {
+  id uuid [pk, default: `gen_random_uuid()`]
+  project_id uuid [not null]
+  freelancer_id text [not null]
+  cover_letter text [not null]
+  proposed_price integer [not null]
+  proposed_deadline timestamptz
+  status varchar(30) [not null, default: `'submitted'`]
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+
+  Note: 'Freelancer response to a project. One application per freelancer per project.'
+
+  Indexes {
+    freelancer_id
+    (project_id, freelancer_id) [unique]
+    (project_id, status)
+    (freelancer_id, created_at)
+  }
+}
+
+Table conversations {
+  id uuid [pk, default: `gen_random_uuid()`]
+  context_type varchar(50) [not null, note: 'Conversation scope discriminator, such as project or application']
+  context_id uuid [not null]
+  customer_id text [not null]
+  freelancer_id text [not null]
+  created_by text [not null]
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+
+  Note: 'Two-party chat container bound to a domain context.'
+
+  Indexes {
+    (context_type, context_id, customer_id, freelancer_id) [unique]
+    (customer_id, updated_at)
+    (freelancer_id, updated_at)
+    (context_type, context_id)
+  }
+}
+
+Table conversation_members {
+  id uuid [pk, default: `gen_random_uuid()`]
+  conversation_id uuid [not null]
+  user_id text [not null]
+  role varchar(30) [not null, note: 'Expected to be unique inside a conversation']
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+
+  Note: 'Participant membership records for conversations.'
+
+  Indexes {
+    (conversation_id, user_id) [unique]
+    (conversation_id, role) [unique]
+    (user_id, created_at)
+  }
+}
+
+Table messages {
+  id uuid [pk, default: `gen_random_uuid()`]
+  conversation_id uuid [not null]
+  sender_id text [not null]
+  text text [not null]
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+
+  Note: 'Message stream inside a conversation.'
+
+  Indexes {
+    (conversation_id, created_at)
+    (conversation_id, created_at, id)
+    (sender_id, created_at)
+  }
+}
+
+Table message_reads {
+  id uuid [pk, default: `gen_random_uuid()`]
+  conversation_id uuid [not null]
+  user_id text [not null]
+  last_read_message_id uuid [not null]
+  last_read_message_created_at timestamptz [not null]
+  read_at timestamptz [not null, default: `CURRENT_TIMESTAMP`]
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+
+  Note: 'Per-user read cursor for each conversation.'
+
+  Indexes {
+    (conversation_id, user_id) [unique]
+    (user_id, updated_at)
+  }
+}
+
+Ref: user_profiles.user_id > users.id
+Ref: freelancer_profiles.user_id > users.id
+Ref: portfolio_items.freelancer_profile_id > freelancer_profiles.id
+Ref: user_skills.user_id > users.id
+Ref: user_skills.skill_id > skills.id
+Ref: projects.client_id > users.id
+Ref: project_skills.project_id > projects.id
+Ref: project_skills.skill_id > skills.id
+Ref: project_attachments.project_id > projects.id
+Ref: applications.project_id > projects.id
+Ref: applications.freelancer_id > users.id
+Ref: conversations.customer_id > users.id
+Ref: conversations.freelancer_id > users.id
+Ref: conversations.created_by > users.id
+Ref: conversation_members.conversation_id > conversations.id
+Ref: conversation_members.user_id > users.id
+Ref: messages.conversation_id > conversations.id
+Ref: messages.sender_id > users.id
+Ref: message_reads.conversation_id > conversations.id
+Ref: message_reads.user_id > users.id
+Ref: message_reads.last_read_message_id > messages.id
+Ref: accounts.userId > users.id
+Ref: sessions.userId > users.id
