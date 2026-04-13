@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type UploaderDemoState } from './demo-uploader-settings'
+import { text } from './mock'
 import { useSettings } from './settings-store'
 import { FileUploader, Stack } from '@/ui'
 
@@ -52,7 +53,7 @@ export function DemoUploader() {
 					maxSizeBytes={maxSizeBytes * 1000}
 					title={title ? 'Портфолио' : undefined}
 					icon={icon ? 'video' : false}
-					placeholder={placeholder ? 'Выберите медиафайл для портфолио' : undefined}
+					placeholder={placeholder ? text.placeholder.uploader : undefined}
 					helper={
 						helper
 							? 'Ничто в настоящей Декларации не может быть истолковано, как предоставление какомулибо государству, группе лиц или отдельным лицам права заниматься какойлибо деятельностью или совершать действия, направленные к уничтожению прав и свобод, изложенных в настоящей Декларации.'

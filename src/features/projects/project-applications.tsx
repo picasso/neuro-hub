@@ -46,7 +46,7 @@ export async function ProjectApplications() {
 					<TS
 						variant="caption"
 						color="secondary"
-						content={`Доступно ${pluralizeRuWithCount(applications.items.length, 'project')} и ${pluralizeRuWithCount(applicationsCount, ['заявка', 'заявки', 'заявок'])} для быстрого старта обсуждения.`}
+						content={`Доступно ${pluralizeRuWithCount(applications.items.length, 'project')} и ${pluralizeRuWithCount(applicationsCount, 'application')} для быстрого старта обсуждения.`}
 					/>
 				) : null}
 
@@ -105,7 +105,7 @@ export async function ProjectApplications() {
 											<Badge variant="secondary" size="sm">
 												{pluralizeRuWithCount(
 													projectGroup.applications.length,
-													['заявка', 'заявки', 'заявок'],
+													'application',
 												)}
 											</Badge>
 										</Stack>

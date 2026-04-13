@@ -85,6 +85,8 @@ export function Card({
 	const pxPadding = compact ? 'px-4' : 'px-6'
 	const ptPadding = compact ? 'pt-2' : 'pt-4'
 	const pbPadding = compact ? 'pb-2' : 'pb-4'
+	const txtGap = !!((title && titleOver) || (description && descriptionOver))
+
 	return (
 		<ShadcnCard
 			size={size}
@@ -116,7 +118,7 @@ export function Card({
 							)}
 						>
 							{isString(image)
-								? renderImage(image, title, imageAspect, hoverable, compact)
+								? renderImage(image, title, imageAspect, hoverable, compact, txtGap)
 								: image}
 							{badge && (
 								<Badge
@@ -137,7 +139,13 @@ export function Card({
 								<CardTitle
 									className={cn(
 										'absolute inset-x-3 bottom-8 text-white text-shadow-md',
-										description && descriptionOver ? 'bottom-8' : 'bottom-4',
+										description && descriptionOver
+											? 'bottom-8'
+											: txtGap
+												? compact
+													? 'bottom-1.5'
+													: 'bottom-3'
+												: 'bottom-4',
 										isSmall ? 'text-xs' : 'text-sm',
 										'backdrop-blur-xs w-fit rounded-lg',
 									)}
@@ -148,7 +156,8 @@ export function Card({
 							{description && descriptionOver && (
 								<CardDescription
 									className={cn(
-										'absolute inset-x-3 bottom-3 text-white/80 text-shadow-md',
+										'absolute inset-x-3 text-white/80 text-shadow-md',
+										txtGap ? (compact ? 'bottom-1.5' : 'bottom-2') : 'bottom-3',
 										isSmall ? 'text-xs' : 'text-sm',
 									)}
 								>
@@ -269,6 +278,7 @@ function renderImage(
 	imageAspect: ImageAspect = 'video',
 	hoverable?: boolean,
 	compact?: boolean,
+	txtGap?: boolean,
 ) {
 	if (isImageStub(image)) {
 		const { color, color2, name, forceSize, accent } = imageStubs[image]
@@ -283,9 +293,10 @@ function renderImage(
 			>
 				<Icon
 					name={name}
-					size={Math.floor(forceSize * (compact ? 0.7 : 1))}
+					size={Math.floor(forceSize * (compact ? (txtGap ? 0.6 : 0.7) : 1))}
 					color="contrast"
 					accent={accent}
+					className={txtGap ? '-mt-5' : undefined}
 				/>
 			</div>
 		)
@@ -304,7 +315,7 @@ function renderImage(
 	)
 }
 
-type ImageStub = keyof typeof imageStubs
+export type ImageStub = keyof typeof imageStubs
 function isImageStub(image: string): image is ImageStub {
 	return image in imageStubs
 }

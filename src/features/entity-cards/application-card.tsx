@@ -116,6 +116,8 @@ export function ApplicationCard({
 			fullWidth
 			className={cn('h-full gap-0 py-0', className)}
 			image="request"
+			title={!full ? project?.title : undefined}
+			titleOver={!full && !!project?.title}
 			header={
 				<>
 					<Badge

@@ -1,5 +1,6 @@
 'use client'
 
+import { map } from 'lodash'
 import { DemoLabel, DemoRoot, DemoSection } from './components-utils'
 import {
 	type TextStyledColor,
@@ -59,7 +60,7 @@ export function DemoTypographyOptions() {
 				separator
 			>
 				<Stack vertical gap={4} align="stretch">
-					{variants.map((v) => (
+					{map(variants, (v) => (
 						<Stack key={v} gap={3} align="baseline">
 							<DemoLabel content={v} size="sm" />
 							<TS variant={v} clean={clean} content={sampleTexts[v]} />

@@ -1,5 +1,6 @@
 'use client'
 
+import { map } from 'lodash'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type BadgeDemoState } from './demo-badge-settings'
 import { useSettings } from './settings-store'
@@ -55,7 +56,7 @@ export function DemoBadge() {
 			</DemoSection>
 			<DemoSection title="Variants" asBadge="shield-check" separator>
 				<Stack wrap className="mb-4">
-					{variants.map((variant) => (
+					{map(variants, (variant) => (
 						<Badge
 							capitalize={capitalize}
 							lowercased={lowercased}
@@ -67,7 +68,7 @@ export function DemoBadge() {
 					))}
 				</Stack>
 				<Stack wrap className="mb-4">
-					{variants.map((variant) => (
+					{map(variants, (variant) => (
 						<Badge
 							capitalize={capitalize}
 							lowercased={lowercased}
@@ -80,7 +81,7 @@ export function DemoBadge() {
 					))}
 				</Stack>
 				<Stack wrap>
-					{variants.map((variant) => (
+					{map(variants, (variant) => (
 						<Badge
 							capitalize={capitalize}
 							lowercased={lowercased}
@@ -95,7 +96,7 @@ export function DemoBadge() {
 			</DemoSection>
 			<DemoSection title="Sizes" asBadge="shield-check" separator>
 				<Stack className="mb-4">
-					{sizes.map((size) => (
+					{map(sizes, (size) => (
 						<Badge
 							key={size}
 							variant="primary"
@@ -106,7 +107,7 @@ export function DemoBadge() {
 					))}
 				</Stack>
 				<Stack>
-					{sizes.map((size) => (
+					{map(sizes, (size) => (
 						<Badge
 							key={size}
 							variant="outline"
@@ -124,7 +125,7 @@ export function DemoBadge() {
 				separator
 			>
 				<Stack gap={2} wrap align="center">
-					{colors.map((color) => (
+					{map(colors, (color) => (
 						<Stack
 							key={color}
 							gap={2}

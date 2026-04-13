@@ -1,5 +1,6 @@
 'use client'
 
+import { map } from 'lodash'
 import { DemoLabel, DemoRoot, DemoSection } from './components-utils'
 import { type IconButtonDemoState } from './demo-icon-buttons-settings'
 import { useSettings } from './settings-store'
@@ -30,7 +31,7 @@ export function DemoIconButtons() {
 						needsContrast(null, variant) && 'text-white bg-primary',
 					)}
 				>
-					{icons.map((icon) => (
+					{map(icons, (icon) => (
 						<Stack vertical key={icon}>
 							<IconButton
 								key={icon}

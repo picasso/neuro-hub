@@ -3,6 +3,7 @@
 import { map } from 'lodash'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type CardDemoState } from './demo-card-settings'
+import { imageUrls, text } from './mock'
 import { useSettings } from './settings-store'
 import { Card, type CardProps, Stack } from '@/ui'
 
@@ -11,6 +12,7 @@ export function DemoCard() {
 	const {
 		size,
 		maxW,
+		stub: imageStub,
 		footer,
 		flush,
 		hoverable,
@@ -29,6 +31,7 @@ export function DemoCard() {
 		descOver,
 	} = settings
 
+	const isStub = imageStub !== 'null'
 	return (
 		<DemoRoot>
 			<DemoSection
@@ -42,10 +45,14 @@ export function DemoCard() {
 					fullWidth={fullWidth}
 					compact={compact}
 					hoverable={hoverable}
-					title={title ? 'Login to your account' : undefined}
-					description={
-						description ? 'Enter your email below to login to your account' : undefined
+					title={
+						title
+							? isStub
+								? 'Миграция inference-пайплайна на GPU-кластер с SLA'
+								: text.title.auth
+							: undefined
 					}
+					description={description ? text.desc.auth : undefined}
 					badge={badge ? (badgeProps ? 'Featured' : 'updated') : undefined}
 					button={button ? 'Action' : undefined}
 					badgeProps={badgeProps ? { icon: 'star', lowercased: false } : undefined}
@@ -54,7 +61,7 @@ export function DemoCard() {
 							? { variant: 'outline', leftIcon: 'brain-circuit', fullWidth: false }
 							: undefined
 					}
-					image={image ? imageUrl : undefined}
+					image={imageStub === 'null' ? (image ? imageUrls.card : undefined) : imageStub}
 					imageAspect={'3/2'}
 					titleOver={titleOver}
 					descriptionOver={descOver}
@@ -65,7 +72,7 @@ export function DemoCard() {
 				>
 					{content ? (
 						<>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+							{text.lorem.short}
 							The card component supports a size prop that can be set to "sm" for a
 							more compact appearance.
 						</>
@@ -99,10 +106,7 @@ export function DemoCard() {
 	)
 }
 
-const imageUrl =
-	'https://bycp5hmwsix5qx2u.public.blob.vercel-storage.com/portfolio/XD5LXKVkaPXvPFDNS0tfwYWPeirXGbT2/fantasy-01-QlbQcYix5SMh60NYLd8fg2BBF1E3Ei.jpg'
-
-const desc = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.'
+const desc = text.lorem.short
 
 type DemoConfig = {
 	label: string
@@ -126,37 +130,37 @@ const sections: DemoSection[] = [
 		demos: [
 			{
 				label: '3/2',
-				image: imageUrl,
+				image: imageUrls.card,
 				imageAspect: '3/2',
 				desc,
 			},
 			{
 				label: '4/3',
-				image: imageUrl,
+				image: imageUrls.card,
 				imageAspect: '4/3',
 				desc,
 			},
 			{
 				label: '5/4',
-				image: imageUrl,
+				image: imageUrls.card,
 				imageAspect: '5/4',
 				desc,
 			},
 			{
 				label: 'Video',
-				image: imageUrl,
+				image: imageUrls.card,
 				imageAspect: 'video',
 				desc,
 			},
 			{
 				label: 'Square',
-				image: imageUrl,
+				image: imageUrls.card,
 				imageAspect: 'square',
 				desc,
 			},
 			{
 				label: '9/16',
-				image: imageUrl,
+				image: imageUrls.card,
 				imageAspect: '9/16',
 				desc,
 			},

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type SelectDemoState } from './demo-selects-settings'
+import { imageUrls } from './mock'
 import { useSettings } from './settings-store'
 import {
 	Combobox,
@@ -256,7 +257,7 @@ const customItems: ComboCustomItem[] = [
 		value: 'svelte',
 		title: 'Svelte from Svelte Society',
 		desc: 'Svelte is a JavaScript compiler for building user interfaces.',
-		image: 'https://raw.githubusercontent.com/wiki/picasso/zukit/assets/banner-1544x500.png',
+		image: imageUrls.banner,
 	},
 	{
 		value: 'nextjs',
@@ -265,7 +266,7 @@ const customItems: ComboCustomItem[] = [
 		avatar: 'John Doe',
 		avatarSize: 'lg',
 		avatarBordered: true,
-		avatarSrc: 'https://avatars.githubusercontent.com/u/399395',
+		avatarSrc: imageUrls.avatar,
 	},
 	{
 		value: 'nuxt',

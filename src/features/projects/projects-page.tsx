@@ -236,7 +236,9 @@ export async function ProjectsPage({ searchParams }: PageProps) {
 						) : (
 							<div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
 								{directory.items.map((item) => (
-									<ProjectCard key={item.id} item={item} />
+									<Link key={item.id} href={item.href}>
+										<ProjectCard item={item} />
+									</Link>
 								))}
 							</div>
 						)}
