@@ -1,0 +1,100 @@
+---
+name: Database Documentation Contract
+description: Keep DB schema docs and canonical SQL examples in sync with migrations and live schema changes
+alwaysApply: true
+---
+
+# Database Documentation Contract
+
+Use this rule whenever a task touches database structure, ownership, or canonical query shape.
+
+## Source Of Truth
+
+- Runtime schema and migrations are the primary source of truth
+- `docs/db/schema.dbml` is the structural map for humans and agents
+- `docs/db/DATABASE.md` is the semantic map for humans and agents
+- `docs/db/queries/*.sql` contains canonical read/query examples
+
+If there is a conflict:
+- trust live schema and migrations first
+- then update the docs to match
+
+## When Updates Are Required
+
+You MUST review whether DB docs need updates when a task changes any of the following:
+
+- files in `src/lib/db/migrations/`
+- Better Auth schema or auth table usage
+- Kysely schema assumptions used by the app
+- table creation or deletion
+- column creation, deletion, rename, type change, nullability change, or default change
+- primary keys, foreign keys, unique constraints, or indexes
+- ownership rules between entities
+- canonical join paths
+- enum-like status or role values stored in the database
+- generated, derived, legacy, or migration-carryover fields that affect how agents read the schema
+
+## Required Files To Check
+
+For every qualifying DB task, inspect:
+
+- `docs/db/schema.dbml`
+- `docs/db/DATABASE.md`
+
+Also inspect `docs/db/queries/` when:
+- the task changes a canonical read model
+- the task changes an important join path
+- the task adds a new domain flow that should have a reusable SQL example
+
+## Update Rules
+
+### Update `docs/db/schema.dbml` when:
+
+- physical schema changed
+- a table/column/constraint/index was added, removed, or changed
+- auth support tables changed
+
+Keep it structural:
+- tables
+- columns and types
+- keys and refs
+- major indexes
+- short notes where they prevent confusion
+
+### Update `docs/db/DATABASE.md` when:
+
+- business meaning changed
+- ownership rules changed
+- lifecycle changed
+- canonical query paths changed
+- sensitive fields or legacy fields need clarification
+
+Keep it semantic:
+- purpose
+- invariants
+- canonical relationships
+- lifecycle rules
+- query conventions
+- agent notes
+
+### Update `docs/db/queries/*.sql` when:
+
+- a canonical query is introduced or changed
+- the preferred join path changed
+- a new important read model appears
+
+Queries in `docs/db/queries/` should:
+- be safe by default
+- avoid sensitive auth values unless the task explicitly requires them
+- use placeholders like `<user_id>` or `<project_id>`
+- reflect current canonical join paths
+
+## Minimum Completion Checklist
+
+Before considering a DB-related task complete, verify:
+
+- `docs/db/schema.dbml` still matches the structural reality
+- `docs/db/DATABASE.md` still matches the domain meaning
+- relevant files in `docs/db/queries/` still match canonical usage
+
+Do not silently skip this review when database-related files changed.

@@ -56,6 +56,14 @@ yarn db:test      # Test connection
 yarn db:check     # Inspect DB
 ```
 
+### Database Docs
+
+- Structural schema map: `docs/db/schema.dbml`
+- Semantic domain guide: `docs/db/DATABASE.md`
+- Canonical SQL examples: `docs/db/queries/`
+
+If a task changes database structure, auth schema usage, ownership, constraints, indexes, enum-like DB values, or canonical join paths, the agent must review and update the relevant DB docs before considering the task complete.
+
 ---
 
 ## File Organization
@@ -139,6 +147,7 @@ Use this routing when Cursor rule auto-application is unreliable:
 - Page layout conventions: `.cursor/rules/page-shell.mdc`
 - Testing guidance: `.cursor/rules/testing.mdc`
 - Database script conventions: `.cursor/rules/db-scripts.mdc`
+- Database documentation sync rules: `.cursor/rules/database-docs.mdc`
 
 ---
 
@@ -232,3 +241,13 @@ Config: [.cursor/mcp.json](.cursor/mcp.json)
 ```zsh
 DEFINE → DESIGN → BUILD → VERIFY → SHIP
 ```
+
+## Database Documentation Contract
+
+When a task touches the database, agents and subagents must treat this as part of the implementation checklist:
+
+1. Verify whether `docs/db/schema.dbml` needs structural updates
+2. Verify whether `docs/db/DATABASE.md` needs semantic updates
+3. Verify whether `docs/db/queries/` needs a new or updated canonical SQL example
+
+Trust live schema and migrations first, then bring DB docs into sync.
