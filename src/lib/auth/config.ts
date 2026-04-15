@@ -5,8 +5,10 @@ import { map } from 'lodash'
 import { nanoid } from 'nanoid'
 import { kysely } from '@/lib/db'
 import { pool } from '@/lib/db/pool'
+import { ensureUserProfileRow } from '@/lib/db/queries/user-profiles'
 import { emailConfig, resend } from '@/lib/email'
 import { VerificationEmail } from '@/lib/email/templates/verification-email'
+import { generateFallbackNickname } from '@/lib/user-profile/nickname'
 
 type BetterAuthSignUpReturned = {
 	user: {
@@ -157,6 +159,7 @@ export const auth = betterAuth({
 								id: userId,
 								user_id: userId,
 								name: profileData.name,
+								nickname: generateFallbackNickname(profileData.name, userId),
 								bio: profileData.bio || null,
 								company_name: profileData.companyName || null,
 								company_role: profileData.companyRole || null,
@@ -208,6 +211,12 @@ export const auth = betterAuth({
 						}
 					} catch (error) {
 						console.error('Failed to create user profile:', error)
+					}
+				} else {
+					try {
+						await ensureUserProfileRow(userId)
+					} catch (error) {
+						console.error('Failed to ensure user profile:', error)
 					}
 				}
 			}

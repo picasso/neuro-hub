@@ -6,7 +6,9 @@ with target as (
 select
 	fp.id as freelancer_profile_id,
 	fp.user_id,
+	up.nickname,
 	coalesce(up.name, u.name) as display_name,
+	up.location,
 	up.avatar_url,
 	up.bio,
 	up.company_name,
@@ -16,7 +18,8 @@ select
 	fp.availability,
 	fp.experience,
 	coalesce(skill_agg.skills, '[]'::jsonb) as skills,
-	coalesce(portfolio_agg.portfolio_items, '[]'::jsonb) as portfolio_items
+	coalesce(portfolio_agg.portfolio_items, '[]'::jsonb) as portfolio_items,
+	coalesce(lang_agg.languages, '[]'::jsonb) as languages
 from target t
 join freelancer_profiles fp on fp.user_id = t.user_id
 join users u on u.id = fp.user_id
@@ -55,3 +58,17 @@ left join lateral (
 	from portfolio_items pi
 	where pi.freelancer_profile_id = fp.id
 ) portfolio_agg on true
+left join lateral (
+	select jsonb_agg(
+		jsonb_build_object(
+			'code', l.code,
+			'name', l.name,
+			'nativeName', l.native_name,
+			'langLevel', ul.lang_level
+		)
+		order by l.sort_order, l.name
+	) as languages
+	from user_languages ul
+	join languages l on l.code = ul.language_code
+	where ul.user_id = fp.user_id
+) lang_agg on true

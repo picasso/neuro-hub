@@ -1,16 +1,17 @@
 import { requireRole } from '@/lib/auth/server'
 import { kysely } from '@/lib/db'
-import { freelancerProfileIdParamSchema, portfolioItemIdParamSchema } from '@/lib/validations'
+import { getFreelancerProfileRowByNickname } from '@/lib/db/queries/freelancers'
+import { freelancerNicknameParamSchema, portfolioItemIdParamSchema } from '@/lib/validations'
 import { errorResponse, noContentResponse } from '@/utils/api-response'
 import { NotFoundError } from '@/utils/errors'
 
 type RouteContext = {
-	params: Promise<{ id: string; itemId: string }>
+	params: Promise<{ nickname: string; itemId: string }>
 }
 
 /**
  * @swagger
- * /api/freelancers/{id}/portfolio/{itemId}:
+ * /api/freelancers/{nickname}/portfolio/{itemId}:
  *   delete:
  *     tags:
  *       - Portfolio
@@ -19,13 +20,12 @@ type RouteContext = {
  *       - cookieAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: nickname
  *         required: true
  *         schema:
  *           type: string
- *           format: uuid
- *         description: Freelancer profile id (UUID)
- *         example: "550e8400-e29b-41d4-a716-446655440000"
+ *         description: Public nickname slug
+ *         example: "jane-ai"
  *       - in: path
  *         name: itemId
  *         required: true
@@ -49,25 +49,22 @@ type RouteContext = {
 export async function DELETE(_: Request, context: RouteContext) {
 	try {
 		const session = await requireRole('freelancer')
-		const { id, itemId } = await context.params
+		const params = await context.params
 
-		freelancerProfileIdParamSchema.parse({ id })
-		portfolioItemIdParamSchema.parse({ itemId })
+		const { nickname } = freelancerNicknameParamSchema.parse({ nickname: params.nickname })
+		const { itemId } = portfolioItemIdParamSchema.parse({ itemId: params.itemId })
 
-		const profile = await kysely
-			.selectFrom('freelancer_profiles')
-			.select(['id', 'user_id'])
-			.where('id', '=', id)
-			.executeTakeFirst()
-
-		if (!profile || profile.user_id !== session.user.id) {
+		const resolved = await getFreelancerProfileRowByNickname(nickname)
+		if (!resolved || resolved.userId !== session.user.id) {
 			throw new NotFoundError('Freelancer profile not found')
 		}
+
+		const freelancerProfileId = resolved.freelancerProfileId
 
 		await kysely
 			.deleteFrom('portfolio_items')
 			.where('id', '=', itemId)
-			.where('freelancer_profile_id', '=', id)
+			.where('freelancer_profile_id', '=', freelancerProfileId)
 			.executeTakeFirst()
 
 		return noContentResponse()

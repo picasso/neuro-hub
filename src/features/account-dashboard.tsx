@@ -6,7 +6,7 @@ export async function AccountDashboard() {
 	const context = await getAccountContext()
 	if (!context) return null
 
-	const { session, profileId } = context
+	const { session, nickname } = context
 
 	return (
 		<div className="w-full min-w-0">
@@ -43,16 +43,16 @@ export async function AccountDashboard() {
 					) : null}
 				</Stack> */}
 
-				{session.user.role === 'freelancer' && profileId ? (
+				{session.user.role === 'freelancer' && nickname ? (
 					<div className="rounded-xl border border-border p-4">
 						<TS variant="subtitle" className="mb-2" content="Публичный профиль" />
 						<Link
 							color="primary"
 							hover="underline"
-							href={`/freelancers/${profileId}`}
+							href={`/freelancers/${nickname}`}
 							className="break-all"
 						>
-							{`/freelancers/${profileId}`}
+							{`/freelancers/${nickname}`}
 						</Link>
 					</div>
 				) : (

@@ -1,20 +1,20 @@
 import { notFound } from 'next/navigation'
 import { FreelancerPublic } from './freelancer-public'
-import { getPublicFreelancerProfileByProfileId } from '@/lib/db/queries/freelancers'
-import { freelancerProfileIdParamSchema } from '@/lib/validations'
+import { getPublicFreelancerProfileByNickname } from '@/lib/db/queries/freelancers'
+import { freelancerNicknameParamSchema } from '@/lib/validations'
 import { Avatar, PageShell, Stack, TS } from '@/ui'
 
 type PageProps = {
-	params: Promise<{ id: string }>
+	params: Promise<{ nickname: string }>
 }
 
 export async function FreelancerProfilePage(props: PageProps) {
-	const { id } = await props.params
+	const { nickname } = await props.params
 
-	const parsedParams = freelancerProfileIdParamSchema.safeParse({ id })
+	const parsedParams = freelancerNicknameParamSchema.safeParse({ nickname })
 	if (!parsedParams.success) notFound()
 
-	const profile = await getPublicFreelancerProfileByProfileId(parsedParams.data.id)
+	const profile = await getPublicFreelancerProfileByNickname(parsedParams.data.nickname)
 	if (!profile) notFound()
 
 	return (

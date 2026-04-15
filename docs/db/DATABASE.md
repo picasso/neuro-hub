@@ -184,19 +184,46 @@ Purpose: editable base profile shared across marketplace use cases.
 Key fields:
 
 - `user_id`: one-to-one link to `users`
+- `nickname`: unique public slug (lowercase) used in `/freelancers/{nickname}` URLs
 - `name`, `avatar_url`, `bio`: public presentation fields
+- `location`: optional free-text location shown on profile when set
 - `company_name`, `company_role`: company-related profile metadata
-- `search_vector`: generated search field for full-text lookup
+- `search_vector`: generated search field for full-text lookup (includes name, nickname, location, bio)
 
 Invariants:
 
 - one `user_profiles` row per `users` row at most
+- `nickname` is unique and treated as the public identifier for user-level profile data in URLs
 - `search_vector` is derived, not user-authored
 
 Canonical usage:
 
 - use this table for general profile data that is not freelancer-specific
 - do not write application logic against `search_vector` as if it were a user-managed field
+
+#### `languages`
+
+Purpose: lookup of ISO-like language codes with display names for profile language lists.
+
+Key fields:
+
+- `code` primary key (short string, e.g. `en`, `ru`)
+- `name`, `native_name`: English and native labels
+- `sort_order`: stable ordering in UI and queries
+
+#### `user_languages`
+
+Purpose: languages spoken by a user with proficiency level.
+
+Key fields:
+
+- composite primary key `(user_id, language_code)`
+- `lang_level`: one of `basic`, `conversational`, `fluent`, `native`
+
+Invariants:
+
+- `language_code` must exist in `languages`
+- at most one row per `(user_id, language_code)`
 
 #### `freelancer_profiles`
 

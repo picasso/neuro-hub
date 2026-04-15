@@ -1,10 +1,15 @@
 import { z } from 'zod'
 import { uuidSchema } from './common'
+import { nicknameSchema } from './user'
 
 /**
- * Public freelancer profile routes address a profile by its domain UUID:
- * `freelancer_profiles.id`.
+ * Public freelancer routes use the user profile nickname slug (`user_profiles.nickname`).
  */
+export const freelancerNicknameParamSchema = z.object({
+	nickname: nicknameSchema,
+})
+
+/** @deprecated Use freelancerNicknameParamSchema — kept for internal UUID references only */
 export const freelancerProfileIdParamSchema = z.object({
 	id: uuidSchema,
 })

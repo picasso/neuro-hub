@@ -85,7 +85,7 @@ export {
 	$isBusy as $freelancerProfileIsBusy,
 	$isLoading as $freelancerProfileIsLoading,
 	$isSaving as $freelancerProfileIsSaving,
-	$profileId as $freelancerProfileId,
+	$freelancerNickname as $freelancerProfileNickname,
 	FreelancerProfileGate,
 	loadFreelancerProfileFx,
 	profileFormUpdated,

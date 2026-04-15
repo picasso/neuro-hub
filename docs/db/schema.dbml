@@ -73,20 +73,46 @@ Table verifications {
 Table user_profiles {
   id text [pk]
   user_id text [not null, unique]
+  nickname varchar(32) [not null, unique, note: 'Public slug for URLs; stored lowercase']
   name varchar(255)
+  location varchar(255)
   avatar_url varchar(500)
   bio text
   company_name varchar(255)
   company_role varchar(255)
   created_at timestamptz [default: `CURRENT_TIMESTAMP`]
   updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
-  search_vector tsvector [note: 'Generated full-text search column from name + bio']
+  search_vector tsvector [note: 'Generated full-text search column from name, nickname, location, bio']
 
   Note: 'Base editable profile for marketplace users.'
 
   Indexes {
     user_id
   }
+}
+
+Table languages {
+  code varchar(16) [pk]
+  name varchar(255) [not null]
+  native_name varchar(255) [not null]
+  sort_order integer [not null, default: 0]
+
+  Note: 'Lookup of spoken/written languages for profiles.'
+}
+
+Table user_languages {
+  user_id text [not null]
+  language_code varchar(16) [not null]
+  lang_level text [not null, note: 'basic | conversational | fluent | native']
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+
+  Indexes {
+    (user_id, language_code) [unique]
+    user_id
+    language_code
+  }
+
+  Note: 'User-selected languages and proficiency. Composite PK (user_id, language_code).'
 }
 
 Table freelancer_profiles {
@@ -307,6 +333,8 @@ Table message_reads {
 }
 
 Ref: user_profiles.user_id > users.id
+Ref: user_languages.user_id > users.id
+Ref: user_languages.language_code > languages.code
 Ref: freelancer_profiles.user_id > users.id
 Ref: portfolio_items.freelancer_profile_id > freelancer_profiles.id
 Ref: user_skills.user_id > users.id

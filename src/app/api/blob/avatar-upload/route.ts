@@ -1,37 +1,25 @@
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client'
 import { NextResponse } from 'next/server'
-import { requireRole } from '@/lib/auth/server'
+import { requireAuth } from '@/lib/auth/server'
 import { errorResponse } from '@/utils/api-response'
 import { ForbiddenError } from '@/utils/errors'
 
-const ALLOWED_CONTENT_TYPES = [
-	'image/jpeg',
-	'image/png',
-	'image/webp',
-	'image/gif',
-	'video/mp4',
-	'video/webm',
-	'audio/mpeg',
-	'audio/wav',
-	'audio/webm',
-	'application/pdf',
-]
+const ALLOWED_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 
-// Client uploads go directly browser -> Blob. Keep a reasonable per-file cap for MVP.
-const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024 // 50MB
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10MB
 
 /**
  * @swagger
- * /api/blob/portfolio-upload:
+ * /api/blob/avatar-upload:
  *   post:
  *     tags:
  *       - Blob Uploads
- *     summary: Create a client-upload token for portfolio media
+ *     summary: Create a client-upload token for profile avatar images
  *     description: >
  *       Exchanges an authenticated user's session for a short-lived client upload token.
- *       Use this endpoint as `handleUploadUrl` with `upload()` from `@vercel/blob/client`.
- *       Files are uploaded under `portfolio/{userId}/...` (auth user id). After upload, create a
- *       portfolio item via `POST /api/freelancers/{nickname}/portfolio` (public nickname slug).
+ *       Use as `handleUploadUrl` with `upload()` from `@vercel/blob/client`.
+ *       Files are stored under `avatars/{userId}/...`. After upload, persist the returned URL
+ *       via `PUT /api/user/profile` as `avatarUrl`.
  *     security:
  *       - cookieAuth: []
  *     responses:
@@ -51,12 +39,10 @@ export async function POST(request: Request): Promise<NextResponse> {
 		const jsonResponse = await handleUpload({
 			body,
 			request,
-			onBeforeGenerateToken: async (pathname, clientPayload) => {
-				const session = await requireRole('freelancer')
+			onBeforeGenerateToken: async (pathname) => {
+				const session = await requireAuth()
 
-				// Enforce per-user folder isolation so one user can't generate tokens
-				// for uploading into another user's folder.
-				const expectedPrefix = `portfolio/${session.user.id}/`
+				const expectedPrefix = `avatars/${session.user.id}/`
 				if (!pathname.startsWith(expectedPrefix)) {
 					throw new ForbiddenError('Invalid upload pathname')
 				}
@@ -67,14 +53,11 @@ export async function POST(request: Request): Promise<NextResponse> {
 					addRandomSuffix: true,
 					tokenPayload: JSON.stringify({
 						userId: session.user.id,
-						clientPayload,
 					}),
 				}
 			},
 			onUploadCompleted: async ({ blob }) => {
-				// Called by Vercel on upload completion (won't run on localhost without a tunnel).
-				// Portfolio DB write happens explicitly via POST /api/freelancers/:nickname/portfolio.
-				console.warn('portfolio blob upload completed', {
+				console.warn('avatar blob upload completed', {
 					url: blob.url,
 					pathname: blob.pathname,
 					contentType: blob.contentType,

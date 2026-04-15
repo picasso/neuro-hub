@@ -1,4 +1,5 @@
 import { kysely } from './kysely'
+import { generateFallbackNickname } from '@/lib/user-profile/nickname'
 
 export async function exampleQueries() {
 	const user = await kysely
@@ -76,6 +77,7 @@ export async function exampleQueries() {
 				id: user.id,
 				user_id: user.id,
 				name: 'Test User',
+				nickname: generateFallbackNickname('Test User', user.id),
 			})
 			.execute()
 

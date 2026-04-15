@@ -30,6 +30,7 @@
 		"db:import": "./scripts/db/import-data.sh",
 		"db:backup:railway": "./scripts/db/backup-railway.sh",
 		"db:check": "tsx scripts/db/check-db.ts",
+		"db:rebuild-fallback-nicknames": "tsx scripts/db/rebuild-fallback-nicknames.ts",
 		"db:delete-applications": "tsx scripts/db/delete-applications.ts",
 		"db:delete-users": "tsx scripts/db/delete-users.ts",
 		"db:reset-email-verification": "tsx scripts/db/reset-email-verification.ts",

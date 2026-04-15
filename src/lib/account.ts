@@ -1,4 +1,5 @@
 import { getSession } from './auth/server'
+import { kysely } from './db'
 import { countUnreadChatMessagesForUser } from './db/queries/chat'
 import {
 	countActiveFreelancerApplications,
@@ -6,6 +7,7 @@ import {
 	getOrCreateFreelancerProfileByUserId,
 } from './db/queries/freelancers'
 import { countActiveClientProjectApplications, countClientProjects } from './db/queries/projects'
+import { ensureUserProfileRow } from './db/queries/user-profiles'
 
 type Session = NonNullable<Awaited<ReturnType<typeof getSession>>>
 export type AccountRole = 'client' | 'freelancer'
@@ -20,6 +22,7 @@ export type AccountSnapshot = {
 export type AccountContext = {
 	session: Session
 	profileId: string | null
+	nickname: string | null
 }
 
 export async function getAccountContext(): Promise<AccountContext | null> {
@@ -27,14 +30,28 @@ export async function getAccountContext(): Promise<AccountContext | null> {
 
 	if (!session) return null
 
-	const profile =
-		session.user.role === 'freelancer'
-			? await getOrCreateFreelancerProfileByUserId(session.user.id)
-			: null
+	if (session.user.role !== 'freelancer') {
+		return {
+			session,
+			profileId: null,
+			nickname: null,
+		}
+	}
+
+	await ensureUserProfileRow(session.user.id)
+
+	const profile = await getOrCreateFreelancerProfileByUserId(session.user.id)
+
+	const userProfile = await kysely
+		.selectFrom('user_profiles')
+		.select('nickname')
+		.where('user_id', '=', session.user.id)
+		.executeTakeFirst()
 
 	return {
 		session,
 		profileId: profile?.id ?? null,
+		nickname: userProfile?.nickname ?? null,
 	}
 }
 

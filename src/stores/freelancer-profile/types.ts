@@ -6,6 +6,7 @@ export type FreelancerProfileForm = {
 }
 
 export type FreelancerProfileDto = {
+	nickname: string
 	profileId: string
 	userId: string
 	specialization: string | null

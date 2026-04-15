@@ -1,33 +1,35 @@
 import { requireRole } from '@/lib/auth/server'
 import { kysely } from '@/lib/db'
-import { getPublicFreelancerProfileByProfileId } from '@/lib/db/queries/freelancers'
-import { freelancerProfileIdParamSchema, updateFreelancerProfileSchema } from '@/lib/validations'
+import {
+	getFreelancerProfileRowByNickname,
+	getPublicFreelancerProfileByNickname,
+} from '@/lib/db/queries/freelancers'
+import { freelancerNicknameParamSchema, updateFreelancerProfileSchema } from '@/lib/validations'
 import { errorResponse, successResponse } from '@/utils/api-response'
 import { NotFoundError } from '@/utils/errors'
 
 type RouteContext = {
-	params: Promise<{ id: string }>
+	params: Promise<{ nickname: string }>
 }
 
 /**
  * @swagger
- * /api/freelancers/{id}:
+ * /api/freelancers/{nickname}:
  *   get:
  *     tags:
  *       - Freelancers
  *     summary: Get public freelancer profile
  *     description: >
- *       Returns public profile for a freelancer addressed by `freelancer_profiles.id` (UUID),
- *       including basic user profile info, freelancer profile fields, skills, and portfolio items.
+ *       Returns public profile for a freelancer addressed by `user_profiles.nickname`,
+ *       including user profile fields, languages, skills, and portfolio items.
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: nickname
  *         required: true
  *         schema:
  *           type: string
- *           format: uuid
- *         description: Freelancer profile id (UUID)
- *         example: "550e8400-e29b-41d4-a716-446655440000"
+ *         description: Public nickname slug
+ *         example: "jane-ai"
  *     responses:
  *       200:
  *         description: Public freelancer profile
@@ -45,13 +47,12 @@ type RouteContext = {
  *       - cookieAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: nickname
  *         required: true
  *         schema:
  *           type: string
- *           format: uuid
- *         description: Freelancer profile id (UUID)
- *         example: "550e8400-e29b-41d4-a716-446655440000"
+ *         description: Public nickname slug of the freelancer profile to update
+ *         example: "jane-ai"
  *     requestBody:
  *       required: true
  *       content:
@@ -85,9 +86,9 @@ type RouteContext = {
  */
 export async function GET(_: Request, context: RouteContext) {
 	try {
-		const { id } = freelancerProfileIdParamSchema.parse(await context.params)
+		const { nickname } = freelancerNicknameParamSchema.parse(await context.params)
 
-		const publicProfile = await getPublicFreelancerProfileByProfileId(id)
+		const publicProfile = await getPublicFreelancerProfileByNickname(nickname)
 		if (!publicProfile) throw new NotFoundError('Freelancer profile not found')
 
 		return successResponse(publicProfile)
@@ -96,27 +97,20 @@ export async function GET(_: Request, context: RouteContext) {
 	}
 }
 
-/**
- * Update freelancer profile by user id (owner-only).
- */
 export async function PUT(request: Request, context: RouteContext) {
 	try {
 		const session = await requireRole('freelancer')
-		const { id } = freelancerProfileIdParamSchema.parse(await context.params)
+		const { nickname } = freelancerNicknameParamSchema.parse(await context.params)
 
 		const body = await request.json()
 		const validated = updateFreelancerProfileSchema.parse(body)
 
-		const existing = await kysely
-			.selectFrom('freelancer_profiles')
-			.selectAll()
-			.where('id', '=', id)
-			.executeTakeFirst()
-
-		if (!existing || existing.user_id !== session.user.id) {
-			// hide existence details
+		const resolved = await getFreelancerProfileRowByNickname(nickname)
+		if (!resolved || resolved.userId !== session.user.id) {
 			throw new NotFoundError('Freelancer profile not found')
 		}
+
+		const id = resolved.freelancerProfileId
 
 		const patch: {
 			specialization?: string | null

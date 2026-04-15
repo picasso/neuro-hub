@@ -13,7 +13,7 @@ import { fileSize } from '@/utils'
 
 type PortfolioContext = {
 	userId: string
-	profileId: string
+	nickname: string
 }
 
 type UploadFeedbackMode = 'staged' | 'progress'
@@ -95,9 +95,9 @@ $uploadFeedbackMode
 
 // * * * Effects ----------------------------------------------------------------------------------]
 
-export const loadPortfolioFx = domain.createEffect<{ profileId: string }, PortfolioItem[], Error>({
-	handler: async ({ profileId }) => {
-		const res = await fetch(`/api/freelancers/${encodeURIComponent(profileId)}/portfolio`)
+export const loadPortfolioFx = domain.createEffect<{ nickname: string }, PortfolioItem[], Error>({
+	handler: async ({ nickname }) => {
+		const res = await fetch(`/api/freelancers/${encodeURIComponent(nickname)}/portfolio`)
 		if (!res.ok) {
 			const json = await res.json().catch(() => null)
 			throw new Error(json?.error?.message || json?.error || 'Failed to load portfolio')
@@ -109,11 +109,11 @@ export const loadPortfolioFx = domain.createEffect<{ profileId: string }, Portfo
 })
 
 export const uploadPortfolioMediaFx = domain.createEffect<
-	{ userId: string; profileId: string; file: File },
-	{ blob: UploadResult; mediaType: string | null; profileId: string },
+	{ userId: string; nickname: string; file: File },
+	{ blob: UploadResult; mediaType: string | null; nickname: string },
 	Error
 >({
-	handler: async ({ userId, profileId, file }) => {
+	handler: async ({ userId, nickname, file }) => {
 		if (!ALLOWED_CONTENT_TYPES.includes(file.type)) {
 			throw new Error('Unsupported file type')
 		}
@@ -135,14 +135,14 @@ export const uploadPortfolioMediaFx = domain.createEffect<
 			}),
 		})
 
-		return { blob, mediaType: file.type || null, profileId }
+		return { blob, mediaType: file.type || null, nickname }
 	},
 	name: 'uploadPortfolioMediaFx',
 })
 
 export const createPortfolioItemFx = domain.createEffect<
 	{
-		profileId: string
+		nickname: string
 		title: string
 		description?: string
 		mediaWidth?: number
@@ -157,7 +157,7 @@ export const createPortfolioItemFx = domain.createEffect<
 	Error
 >({
 	handler: async ({
-		profileId,
+		nickname,
 		title,
 		description,
 		mediaWidth,
@@ -168,7 +168,7 @@ export const createPortfolioItemFx = domain.createEffect<
 		mediaUrl,
 		mediaType,
 	}) => {
-		const res = await fetch(`/api/freelancers/${encodeURIComponent(profileId)}/portfolio`, {
+		const res = await fetch(`/api/freelancers/${encodeURIComponent(nickname)}/portfolio`, {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
 			body: JSON.stringify({
@@ -198,13 +198,13 @@ export const createPortfolioItemFx = domain.createEffect<
 })
 
 export const deletePortfolioItemFx = domain.createEffect<
-	{ profileId: string; itemId: string },
+	{ nickname: string; itemId: string },
 	void,
 	Error
 >({
-	handler: async ({ profileId, itemId }) => {
+	handler: async ({ nickname, itemId }) => {
 		const res = await fetch(
-			`/api/freelancers/${encodeURIComponent(profileId)}/portfolio/${encodeURIComponent(itemId)}`,
+			`/api/freelancers/${encodeURIComponent(nickname)}/portfolio/${encodeURIComponent(itemId)}`,
 			{ method: 'DELETE' },
 		)
 
@@ -239,7 +239,7 @@ sample({
 // fetch list after context is known
 sample({
 	clock: setFreelancerPortfolioContext,
-	fn: ({ profileId }) => ({ profileId }),
+	fn: ({ nickname }) => ({ nickname }),
 	target: loadPortfolioFx,
 })
 
@@ -248,7 +248,7 @@ sample({
 	clock: refreshPortfolio,
 	source: $context,
 	filter: Boolean,
-	fn: (ctx) => ({ profileId: ctx!.profileId }),
+	fn: (ctx) => ({ nickname: ctx!.nickname }),
 	target: loadPortfolioFx,
 })
 
@@ -267,10 +267,10 @@ sample({
 	clock: submitPortfolioItem,
 	source: $form,
 	filter: (form, context) =>
-		!!context.userId && !!context.profileId && !!form.file && !!form.title.trim(),
+		!!context.userId && !!context.nickname && !!form.file && !!form.title.trim(),
 	fn: (form, context) => ({
 		userId: context.userId,
-		profileId: context.profileId,
+		nickname: context.nickname,
 		file: form.file!,
 	}),
 	target: uploadPortfolioMediaFx,
@@ -280,8 +280,8 @@ sample({
 sample({
 	clock: uploadPortfolioMediaFx.doneData,
 	source: $form,
-	fn: (form, { blob, mediaType, profileId }) => ({
-		profileId,
+	fn: (form, { blob, mediaType, nickname }) => ({
+		nickname,
 		title: form.title.trim(),
 		description: form.description.trim() || undefined,
 		mediaWidth: form.mediaWidth ?? undefined,
@@ -315,7 +315,7 @@ sample({
 	clock: deletePortfolioItem,
 	source: $context,
 	filter: Boolean,
-	fn: (ctx, itemId) => ({ profileId: ctx!.profileId, itemId }),
+	fn: (ctx, itemId) => ({ nickname: ctx!.nickname, itemId }),
 	target: deletePortfolioItemFx,
 })
 

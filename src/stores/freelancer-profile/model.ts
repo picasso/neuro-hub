@@ -34,11 +34,13 @@ export const $form = domain.createStore<FreelancerProfileForm>(
 $form.reset(resetFreelancerProfile)
 $form.on(profileFormUpdated, (store, update) => (isEmpty(update) ? store : { ...store, ...update }))
 
-// * * * $profileId -------------------------------------------------------------------------------]
+// * * * $freelancerNickname ----------------------------------------------------------------------]
 
-export const $profileId = domain.createStore<string | null>(null, { name: '$profileId' })
+export const $freelancerNickname = domain.createStore<string | null>(null, {
+	name: '$freelancerNickname',
+})
 
-$profileId.reset(resetFreelancerProfile)
+$freelancerNickname.reset(resetFreelancerProfile)
 
 // * * * effects ----------------------------------------------------------------------------------]
 
@@ -58,18 +60,18 @@ export const loadFreelancerProfileFx = domain.createEffect<void, FreelancerProfi
 })
 
 export const saveFreelancerProfileFx = domain.createEffect<
-	{ profileId: string; form: FreelancerProfileForm },
+	{ nickname: string; form: FreelancerProfileForm },
 	unknown,
 	Error
 >({
-	handler: async ({ profileId, form }) => {
+	handler: async ({ nickname, form }) => {
 		const hourlyRate = form.hourlyRate.trim()
 		const parsedHourly = hourlyRate ? Number(hourlyRate) : undefined
 		if (parsedHourly !== undefined && (!Number.isFinite(parsedHourly) || parsedHourly <= 0)) {
 			throw new Error('Hourly rate must be a positive number')
 		}
 
-		const res = await fetch(`/api/freelancers/${encodeURIComponent(profileId)}`, {
+		const res = await fetch(`/api/freelancers/${encodeURIComponent(nickname)}`, {
 			method: 'PUT',
 			headers: { 'content-type': 'application/json' },
 			body: JSON.stringify({
@@ -119,8 +121,8 @@ sample({
 // store server id after load succeeds
 sample({
 	clock: loadFreelancerProfileFx.doneData,
-	fn: (dto) => dto.profileId,
-	target: $profileId,
+	fn: (dto) => dto.nickname,
+	target: $freelancerNickname,
 })
 
 // hydrate form fields from loaded DTO
@@ -139,11 +141,11 @@ sample({
 sample({
 	clock: saveFreelancerProfileClicked,
 	source: {
-		profileId: $profileId,
+		nickname: $freelancerNickname,
 		form: $form,
 	},
-	filter: ({ profileId }) => !!profileId,
-	fn: ({ profileId, form }) => ({ profileId: profileId!, form }),
+	filter: ({ nickname }) => !!nickname,
+	fn: ({ nickname, form }) => ({ nickname: nickname!, form }),
 	target: saveFreelancerProfileFx,
 })
 

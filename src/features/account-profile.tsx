@@ -7,7 +7,7 @@ export async function AccountProfile() {
 	const context = await getAccountContext()
 	if (!context) return null
 
-	const { session, profileId } = context
+	const { session, nickname } = context
 
 	return (
 		<div className="w-full min-w-0">
@@ -19,7 +19,7 @@ export async function AccountProfile() {
 				content={`Вы вошли как ${session.user.email}`}
 			/> */}
 
-			{session.user.role === 'freelancer' && profileId ? (
+			{session.user.role === 'freelancer' && nickname ? (
 				<div className="mt-8">
 					<TS
 						variant="body"
@@ -30,10 +30,10 @@ export async function AccountProfile() {
 					<Link
 						color="primary"
 						hover="underline"
-						href={`/freelancers/${profileId}`}
+						href={`/freelancers/${nickname}`}
 						className="break-all"
 					>
-						{`/freelancers/${profileId}`}
+						{`/freelancers/${nickname}`}
 					</Link>
 
 					<div className="mt-8">

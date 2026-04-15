@@ -167,10 +167,13 @@ export function createFreelancerCardData(options: {
 		portfolioCount = 8,
 	} = options
 
+	const nickname = `mock-${id.replace(/-/g, '').slice(0, 12)}`
+
 	return {
 		freelancerProfileId: id,
+		nickname,
 		skillCategories: ['image_generation', 'consulting'],
-		href: `/freelancers/${id}`,
+		href: `/freelancers/${nickname}`,
 		name: longLines
 			? 'Елена Соколова — генеративный дизайн и визуальные пайплайны'
 			: 'Елена Соколова',
