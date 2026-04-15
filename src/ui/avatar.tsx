@@ -5,7 +5,7 @@ import { forwardRef } from 'react'
 import { Avatar as AvatarRoot, AvatarBadge, AvatarFallback, AvatarImage } from './shadcn/avatar'
 import { cn } from '@/utils'
 
-export type AvatarSize = 'sm' | 'md' | 'lg'
+export type AvatarSize = 'sm' | 'md' | 'lg' | 'editor'
 export type AvatarBadgeStatus = 'error' | 'success' | 'warning' | 'info'
 
 export type AvatarProps = {
@@ -25,7 +25,7 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
 ) {
 	const initials = getInitials(name)
 	const bgColor = color === 'auto' ? (palette[stringToHash(name)] ?? palette[0]) : color
-	const shadcnSize = size === 'md' ? 'default' : size
+	const shadcnSize = size === 'md' || size === 'editor' ? 'default' : size
 
 	return (
 		<AvatarRoot
@@ -37,6 +37,7 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
 				badge && 'overflow-visible',
 				// extra visual padding for sm size initials
 				size === 'sm' && 'outline',
+				size === 'editor' && 'size-30 **:data-[slot=avatar-fallback]:text-5xl',
 				className,
 			)}
 			// extra visual padding for sm size initials

@@ -34,7 +34,12 @@ export function DemoAvatarSettings() {
 
 	return (
 		<DemoRoot>
-			<SettingSelect id="size" label="Size" value={size} options={['sm', 'md', 'lg']} />
+			<SettingSelect
+				id="size"
+				label="Size"
+				value={size}
+				options={['sm', 'md', 'lg', 'editor']}
+			/>
 			<SettingSelect id="name" label="Name" value={name} options={nameOps} />
 			<SettingSelect
 				id="color"
