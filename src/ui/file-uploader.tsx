@@ -1,8 +1,9 @@
 import { isFunction, join, keys, replace } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { useDropzone, type Accept, type FileError, type FileRejection } from 'react-dropzone'
+import { Avatar } from './avatar'
 import { Empty, type EmptyProps } from './empty'
-import { type IconOptions, type IconName } from './icon'
+import { type IconOptions, type IconName, Icon } from './icon'
 import { Stack } from './stack'
 import { TextField } from './text-field'
 import { TS } from './text-styled'
@@ -30,6 +31,10 @@ export type FileUploaderProps = {
 	variant?: UploaderVariant
 	className?: string
 	wrapperClassName?: string
+	avatar?: 'icon' | string
+	avatarSrc?: string | null
+	completed?: boolean
+	loading?: boolean
 }
 
 export function FileUploader({
@@ -52,6 +57,10 @@ export function FileUploader({
 	variant = 'primary',
 	className,
 	wrapperClassName,
+	avatar,
+	avatarSrc,
+	completed,
+	loading,
 }: FileUploaderProps) {
 	const [inputKey, setInputKey] = useState(0)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -64,7 +73,6 @@ export function FileUploader({
 
 	const onUpdate = useCallback(
 		(file: File | null) => {
-			dev.data({ onUpdate: file })
 			setErrorMessage(null)
 			setFileValue(file)
 		},
@@ -104,8 +112,6 @@ export function FileUploader({
 		multiple: false,
 		onDropAccepted,
 		onDropRejected,
-		noClick: true,
-		noKeyboard: true,
 	})
 
 	const openFileDialog = useCallback(() => {
@@ -116,124 +122,179 @@ export function FileUploader({
 	return (
 		<div
 			{...getRootProps()}
-			className={cn(fullWidth ? 'flex-1 w-full' : 'w-fit', wrapperClassName)}
+			className={cn(
+				'relative',
+				fullWidth && !avatar ? 'flex-1 w-full' : 'w-fit',
+				wrapperClassName,
+			)}
 		>
-			<Empty
-				mediaIcon={mediaIcon}
-				outline={outline}
-				fullWidth={fullWidth}
-				compact={compact}
-				align={align}
-				title={title}
-				icon={icon === false ? undefined : icon}
-				iconOptions={{
-					color: isDragActive ? 'contrast' : (iconOptions?.color ?? iconColors[variant]),
-					size: iconOptions?.size ?? 'lg',
-					spinning: iconOptions?.spinning,
-					tw: iconOptions?.tw,
-					accent: iconOptions?.accent,
-				}}
-				disabled={disabled}
-				error={!!errorMessage}
-				helper={helper}
-				data-drag={isDragActive || undefined}
-				data-reject={isDragReject || undefined}
-				className={cn(
-					'rounded p-4 select-none transition-colors',
-					variants[variant],
-					// dragging indicator styles
-					'data-drag:border-primary-dark data-drag:bg-primary-light data-drag:text-primary-foreground',
-					'data-reject:border-destructive data-reject:bg-destructive/60',
-					'data-drag:**:data-[input=control]:placeholder:text-white/70 data-reject:**:data-[input=control]:placeholder:text-white/70',
-					'data-drag:**:data-[input=wrapper]:text-white/70 data-drag:**:data-[input=wrapper]:border-white/30',
-					'data-reject:**:data-[input=wrapper]:text-white/70 data-reject:**:data-[input=wrapper]:border-white/40',
-					'data-drag:**:data-[slot=helper]:text-white/50 data-reject:**:data-[slot=helper]:text-white/50',
-					'data-drag:**:data-[clear=true]:[&_svg]:text-white/50 data-reject:**:data-[clear=true]:[&_svg]:text-white/50',
-					disabled ? 'cursor-not-allowed' : 'cursor-default',
-					className,
-				)}
-				mediaClassName={cn('m-0 rounded-full', mediaIcon && mediaBg[variant])}
-				helperClassName={cn(helperVariants[variant], fullWidth ? 'max-w-full' : 'max-w-sm')}
-			>
-				<input key={inputKey} {...getInputProps()} />
-				<Stack
-					vertical
-					gap={0.5}
-					align={align === 'start' ? 'flex-start' : 'center'}
-					className={cn(fullWidth ? 'max-w-full' : 'w-full')}
-				>
-					<TS
-						variant="subtitle"
-						className="pb-2 w-full truncate"
-						content={
-							isDragActive
-								? 'Отпустите файл, чтобы выбрать его'
-								: 'Перетащите файл сюда' +
-									(dropOnly ? '' : ' или кликните для выбора ниже')
+			{avatar && (
+				<>
+					<input key={inputKey} {...getInputProps()} />
+					<Avatar
+						name={avatar}
+						src={avatarSrc}
+						size="editor"
+						color={null}
+						fallbackClassName={cn(
+							'ring-offset-background ring-2 ring-transparent ring-offset-2',
+							avatarVariants[variant],
+							outline && 'border border-dashed',
+							// dragging indicator styles
+							'data-drag:border-primary-dark data-drag:bg-primary-light data-drag:text-primary-foreground',
+							'data-reject:border-destructive data-reject:bg-destructive/60',
+							disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+						)}
+						fallbackNode={
+							avatar === 'icon' ? (
+								<Icon name="camera" size={60} color="current" />
+							) : undefined
 						}
-						data-slot="dragging"
+						isDrag={isDragActive || undefined}
+						isReject={isDragReject || undefined}
+						className={cn(
+							'transition-opacity',
+							avatarSrc && !completed && 'opacity-50',
+							className,
+						)}
 					/>
-					{dropOnly ? null : (
-						<TextField
-							showClear
-							readOnly
-							disabled={disabled}
-							value={value?.name ?? ''}
-							placeholder={placeholder}
-							onClick={openFileDialog}
-							onClearClick={() => onUpdate(null)}
-							onKeyDown={(e) => {
-								if (e.key === 'Enter' || e.key === ' ') {
-									e.preventDefault()
-									openFileDialog()
-								}
-							}}
-							onChange={() => {}}
-							error={!!errorMessage}
+					{loading && (
+						<div className="absolute inset-0 rounded-full border-3 border-transparent border-t-primary animate-spin" />
+					)}
+					{avatarSrc && (isDragActive || isDragReject) && (
+						<div
 							className={cn(
-								'cursor-pointer select-none',
-								'data-[disabled=true]:cursor-not-allowed',
-								'*:data-[input=wrapper]:caret-transparent',
+								'absolute inset-0 rounded-full opacity-50',
+								isDragActive && 'bg-primary-light',
+								isDragReject && 'bg-destructive/60',
 							)}
 						/>
 					)}
-					{value ? (
-						<Stack
-							gap={1}
-							className={cn('mt-0.5', fullWidth ? 'max-w-full' : 'w-full')}
-							justify={align === 'start' ? 'flex-start' : 'center'}
-						>
-							<TS
-								inline
-								nowrap
-								variant="caption"
-								content="Выбран файл: "
-								color={isDragActive ? 'contrast' : 'dimmed'}
-							/>
-							<TS
-								variant="caption"
-								content={value.name}
-								color={isDragActive ? 'contrast' : 'secondary'}
-								className="truncate"
-							/>
-							<TS
-								inline
-								nowrap
-								variant="caption"
-								content={`(${fileSize(value.size)})`}
-								color={isDragActive ? 'contrast' : 'primary'}
-							/>
-						</Stack>
-					) : null}
-					{errorMessage ? (
+				</>
+			)}
+			{!avatar && (
+				<Empty
+					mediaIcon={mediaIcon}
+					outline={outline}
+					fullWidth={fullWidth}
+					compact={compact}
+					align={align}
+					title={title}
+					icon={icon === false ? undefined : icon}
+					iconOptions={{
+						color: isDragActive
+							? 'contrast'
+							: (iconOptions?.color ?? iconColors[variant]),
+						size: iconOptions?.size ?? 'lg',
+						spinning: iconOptions?.spinning,
+						tw: iconOptions?.tw,
+						accent: iconOptions?.accent,
+					}}
+					disabled={disabled}
+					error={!!errorMessage}
+					helper={helper}
+					data-drag={isDragActive || undefined}
+					data-reject={isDragReject || undefined}
+					className={cn(
+						'rounded p-4 select-none transition-colors',
+						variants[variant],
+						// dragging indicator styles
+						'data-drag:border-primary-dark data-drag:bg-primary-light data-drag:text-primary-foreground',
+						'data-reject:border-destructive data-reject:bg-destructive/60',
+						'data-drag:**:data-[input=control]:placeholder:text-white/70 data-reject:**:data-[input=control]:placeholder:text-white/70',
+						'data-drag:**:data-[input=wrapper]:text-white/70 data-drag:**:data-[input=wrapper]:border-white/30',
+						'data-reject:**:data-[input=wrapper]:text-white/70 data-reject:**:data-[input=wrapper]:border-white/40',
+						'data-drag:**:data-[slot=helper]:text-white/50 data-reject:**:data-[slot=helper]:text-white/50',
+						'data-drag:**:data-[clear=true]:[&_svg]:text-white/50 data-reject:**:data-[clear=true]:[&_svg]:text-white/50',
+						disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+						className,
+					)}
+					mediaClassName={cn('m-0 rounded-full', mediaIcon && mediaBg[variant])}
+					helperClassName={cn(
+						helperVariants[variant],
+						fullWidth ? 'max-w-full' : 'max-w-sm',
+					)}
+				>
+					<input key={inputKey} {...getInputProps()} />
+					<Stack
+						vertical
+						gap={0.5}
+						align={align === 'start' ? 'flex-start' : 'center'}
+						className={cn(fullWidth ? 'max-w-full' : 'w-full')}
+					>
 						<TS
-							variant="caption"
-							className="block text-destructive"
-							content={errorMessage}
+							variant="subtitle"
+							className="pb-2 w-full truncate"
+							content={
+								isDragActive
+									? 'Отпустите файл, чтобы выбрать его'
+									: 'Перетащите файл сюда' +
+										(dropOnly ? '' : ' или кликните для выбора ниже')
+							}
+							data-slot="dragging"
 						/>
-					) : null}
-				</Stack>
-			</Empty>
+						{dropOnly ? null : (
+							<TextField
+								showClear
+								readOnly
+								disabled={disabled}
+								value={value?.name ?? ''}
+								placeholder={placeholder}
+								onClick={openFileDialog}
+								onClearClick={() => onUpdate(null)}
+								onKeyDown={(e) => {
+									if (e.key === 'Enter' || e.key === ' ') {
+										e.preventDefault()
+										openFileDialog()
+									}
+								}}
+								onChange={() => {}}
+								error={!!errorMessage}
+								className={cn(
+									'cursor-pointer select-none',
+									'data-[disabled=true]:cursor-not-allowed',
+									'*:data-[input=wrapper]:caret-transparent',
+								)}
+							/>
+						)}
+						{value ? (
+							<Stack
+								gap={1}
+								className={cn('mt-0.5', fullWidth ? 'max-w-full' : 'w-full')}
+								justify={align === 'start' ? 'flex-start' : 'center'}
+							>
+								<TS
+									inline
+									nowrap
+									variant="caption"
+									content="Выбран файл: "
+									color={isDragActive ? 'contrast' : 'dimmed'}
+								/>
+								<TS
+									variant="caption"
+									content={value.name}
+									color={isDragActive ? 'contrast' : 'secondary'}
+									className="truncate"
+								/>
+								<TS
+									inline
+									nowrap
+									variant="caption"
+									content={`(${fileSize(value.size)})`}
+									color={isDragActive ? 'contrast' : 'primary'}
+								/>
+							</Stack>
+						) : null}
+						{errorMessage ? (
+							<TS
+								variant="caption"
+								className="block text-destructive"
+								content={errorMessage}
+							/>
+						) : null}
+					</Stack>
+				</Empty>
+			)}
 		</div>
 	)
 }
@@ -299,4 +360,10 @@ const mediaBg: Record<UploaderVariant, IconOptions['tw']> = {
 	primary: 'bg-primary-light/10',
 	secondary: 'bg-foreground/5',
 	ghost: 'bg-dimmed/10',
+}
+
+const avatarVariants: Record<UploaderVariant, string> = {
+	primary: 'border-primary-light bg-primary-fond text-primary/80',
+	secondary: 'border-foreground/20 bg-secondary text-foreground/80',
+	ghost: 'border-border-dark bg-border text-muted-foreground/80',
 }

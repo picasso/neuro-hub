@@ -1,31 +1,49 @@
 'use client'
 
 import { reduce } from 'lodash'
-import { forwardRef } from 'react'
+import { forwardRef, type ReactNode } from 'react'
 import { Avatar as AvatarRoot, AvatarBadge, AvatarFallback, AvatarImage } from './shadcn/avatar'
 import { cn } from '@/utils'
 
-export type AvatarSize = 'sm' | 'md' | 'lg'
+export type AvatarSize = 'sm' | 'md' | 'lg' | 'editor'
 export type AvatarBadgeStatus = 'error' | 'success' | 'warning' | 'info'
 
 export type AvatarProps = {
 	name: string
 	size?: AvatarSize
-	color?: string | 'auto'
+	color?: string | 'auto' | null
 	src?: string | null
 	alt?: string
 	badge?: AvatarBadgeStatus
 	bordered?: boolean
 	className?: string
+	fallbackClassName?: string
+	fallbackNode?: ReactNode
+	isDrag?: boolean
+	isReject?: boolean
 }
 
 export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
-	{ name, size = 'md', color = 'auto', src, alt, badge, bordered = false, className },
+	{
+		name,
+		size = 'md',
+		color,
+		src,
+		alt,
+		badge,
+		bordered = false,
+		className,
+		fallbackClassName,
+		fallbackNode,
+		isDrag,
+		isReject,
+	},
 	ref,
 ) {
 	const initials = getInitials(name)
-	const bgColor = color === 'auto' ? (palette[stringToHash(name)] ?? palette[0]) : color
-	const shadcnSize = size === 'md' ? 'default' : size
+	const isAuto = color === undefined || color === null || color === 'auto'
+	const bgColor = isAuto ? (palette[stringToHash(name)] ?? palette[0]) : color
+	const shadcnSize = size === 'md' || size === 'editor' ? 'default' : size
 
 	return (
 		<AvatarRoot
@@ -37,6 +55,7 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
 				badge && 'overflow-visible',
 				// extra visual padding for sm size initials
 				size === 'sm' && 'outline',
+				size === 'editor' && 'size-30 **:data-[slot=avatar-fallback]:text-5xl',
 				className,
 			)}
 			// extra visual padding for sm size initials
@@ -44,10 +63,12 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
 		>
 			{src && <AvatarImage src={src} alt={alt ?? name} />}
 			<AvatarFallback
-				className="text-white font-semibold"
-				style={{ backgroundColor: bgColor }}
+				className={cn('text-white font-semibold', fallbackClassName)}
+				style={color ? { backgroundColor: bgColor } : undefined}
+				data-drag={isDrag}
+				data-reject={isReject}
 			>
-				{initials}
+				{fallbackNode ?? initials}
 			</AvatarFallback>
 			{badge && <AvatarBadge className={badgeClass[badge]} aria-hidden />}
 		</AvatarRoot>

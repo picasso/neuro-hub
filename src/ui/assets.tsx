@@ -21,6 +21,7 @@ import {
 	Circle,
 	CircleAlert,
 	CircleCheck,
+	Camera,
 	Code,
 	CircuitBoard,
 	CreditCard,
@@ -46,6 +47,7 @@ import {
 	Percent,
 	Plus,
 	Quote,
+	RotateCw,
 	RotateCcw,
 	Search,
 	ShieldCheck,
@@ -126,6 +128,7 @@ const lucideIcons = {
 	Percent,
 	Plus,
 	Quote,
+	RotateCw,
 	RotateCcw,
 	Search,
 	ShieldCheck,
@@ -151,6 +154,7 @@ const lucideIcons = {
 	Send,
 	MessageSquare,
 	MessagesSquare,
+	Camera,
 }
 
 // type generation --------------------------------------------------------------------------------]

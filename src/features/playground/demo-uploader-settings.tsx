@@ -16,6 +16,10 @@ export type UploaderDemoState = {
 	fullWidth: boolean
 	compact: boolean
 	mediaIcon: boolean
+	avatar: boolean
+	avatarSrc: boolean
+	completed: boolean
+	loading: boolean
 	align: 'start' | 'center'
 	variant: 'primary' | 'secondary' | 'ghost'
 	accept: 'image/*' | 'video/*' | 'audio/*' | 'application/pdf' | 'all media'
@@ -33,6 +37,10 @@ const defaultState: UploaderDemoState = {
 	fullWidth: false,
 	compact: false,
 	mediaIcon: false,
+	avatar: false,
+	avatarSrc: false,
+	completed: false,
+	loading: false,
 	align: 'start',
 	variant: 'primary',
 	accept: 'image/*',
@@ -52,6 +60,10 @@ export function DemoUploaderSettings() {
 		placeholder,
 		helper,
 		outline,
+		avatar,
+		avatarSrc,
+		completed,
+		loading,
 		fullWidth,
 		compact,
 		align,
@@ -72,6 +84,14 @@ export function DemoUploaderSettings() {
 			<SettingToggle id="icon" label="Icon" checked={icon} />
 			<SettingToggle id="placeholder" label="Placeholder" checked={placeholder} />
 			<SettingToggle id="helper" label="Helper text" checked={helper} />
+			<SettingToggle id="avatar" label="Avatar" checked={avatar} />
+			{avatar && (
+				<>
+					<SettingToggle id="avatarSrc" label="Avatar src" checked={avatarSrc} />
+					<SettingToggle id="completed" label="Completed" checked={completed} />
+					<SettingToggle id="loading" label="Loading" checked={loading} />
+				</>
+			)}
 			<SettingToggle id="dropOnly" label="Drop only" checked={dropOnly} />
 			<SettingToggle id="disabled" label="Disabled" checked={disabled} />
 
