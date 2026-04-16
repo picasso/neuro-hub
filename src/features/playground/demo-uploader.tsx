@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type UploaderDemoState } from './demo-uploader-settings'
-import { text } from './mock'
+import { imageUrls, text } from './mock'
 import { useSettings } from './settings-store'
 import { FileUploader, Stack } from '@/ui'
 
@@ -14,6 +14,10 @@ export function DemoUploader() {
 		icon,
 		placeholder,
 		helper,
+		avatar,
+		avatarSrc,
+		completed,
+		loading,
 		accept,
 		maxSizeBytes,
 		dropOnly,
@@ -38,6 +42,10 @@ export function DemoUploader() {
 				<FileUploader
 					mediaIcon={mediaIcon}
 					dropOnly={dropOnly}
+					avatar={avatar ? 'John Snow' : undefined}
+					avatarSrc={avatarSrc ? imageUrls.avatar : undefined}
+					completed={completed}
+					loading={loading}
 					value={file}
 					onChange={setFile}
 					accept={
