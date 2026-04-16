@@ -44,7 +44,7 @@ export function DemoAvatar() {
 			</DemoSection>
 			<DemoSection title="Sizes" asBadge="user" separator>
 				<Stack gap={2} wrap align="center">
-					{map(['sm', 'md', 'lg'] as const, (size) => (
+					{map(['sm', 'md', 'lg', 'editor'] as const, (size) => (
 						<Avatar key={size} name={names[0]!} size={size} bordered={bordered} />
 					))}
 				</Stack>
@@ -70,6 +70,13 @@ export function DemoAvatar() {
 						size="lg"
 						src={imageUrls.avatar}
 						alt="GitHub"
+						bordered={bordered}
+					/>
+					<Avatar
+						name="CardTest"
+						size="editor"
+						src={imageUrls.card}
+						alt="Card"
 						bordered={bordered}
 					/>
 				</Stack>

@@ -2,6 +2,8 @@ import { type ReactNode } from 'react'
 import { DemoAlert } from './demo-alert'
 import { DemoAlertSettings } from './demo-alert-settings'
 import { DemoAvatar } from './demo-avatar'
+import { DemoAvatarEditor } from './demo-avatar-editor'
+import { DemoAvatarEditorSettings } from './demo-avatar-editor-settings'
 import { DemoAvatarSettings } from './demo-avatar-settings'
 import { DemoBadge } from './demo-badge'
 import { DemoBadgeSettings } from './demo-badge-settings'
@@ -75,6 +77,15 @@ export const componentDemos: ComponentDemo[] = [
 		ready: true,
 		demo: <DemoAvatar />,
 		settings: <DemoAvatarSettings />,
+	},
+	{
+		id: 'avatar-editor',
+		name: 'Avatar editor',
+		group: 'forms',
+		description: 'Image pick, crop with rotate/zoom, blob output via onCompleted',
+		ready: true,
+		demo: <DemoAvatarEditor />,
+		settings: <DemoAvatarEditorSettings />,
 	},
 	{
 		id: 'badges',
