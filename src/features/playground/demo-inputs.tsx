@@ -6,6 +6,7 @@ import { type InputDemoState } from './demo-inputs-settings'
 import { text } from './mock'
 import { useSettings } from './settings-store'
 import { Stack, TextField } from '@/ui'
+import { InlineAuto } from '@/ui/Inline-auto'
 
 export function DemoInputs() {
 	const settings = useSettings<InputDemoState>()
@@ -16,10 +17,14 @@ export function DemoInputs() {
 		required,
 		startIcon,
 		endIcon,
+		endIconInline,
+		endIconDisabled,
 		onEndClick,
 		multiline,
 		markdown,
 		showClear,
+		inline,
+		enableOnFocus,
 	} = settings
 
 	const helperContent = helperText
@@ -38,37 +43,59 @@ export function DemoInputs() {
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Обёртка `?TextField` —> `Field` + `Input` : `Textarea` + опциональные иконки через `InputGroup` `ButtonGroup`"
+				desc="Обёртка `?TextField` -> `Field` + `Input` : `Textarea` + опциональные иконки через `InputGroup` и `ButtonGroup`"
 				separator
 			>
-				<TextField
-					multiline={multiline}
-					label={multiline ? 'Описание' : 'Email'}
-					placeholder={multiline ? text.placeholder.desc : text.placeholder.email}
-					error={
-						error
-							? multiline
-								? 'Минимум 50 символов'
-								: 'Введите корректный email'
-							: undefined
-					}
-					helper={
-						helperContent
-							? { helper: helperContent, md: markdown ? { br: true } : false }
-							: undefined
-					}
-					value={value}
-					onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-						setValue(e.target.value)
-					}
-					disabled={disabled}
-					required={required}
-					startIcon={resolvedStartIcon}
-					endIcon={resolvedEndIcon}
-					onEndClick={onEndClick && resolvedEndIcon ? () => {} : undefined}
-					showClear={showClear}
-					onClearClick={showClear ? () => setValue('') : undefined}
-				/>
+				{inline ? (
+					<InlineAuto
+						enableOnFocus={enableOnFocus}
+						onlyLatin
+						notEmpty
+						limit={10}
+						value={value}
+						onSave={(value) => setValue(value ?? '')}
+						helper={
+							helperContent
+								? { helper: helperContent, md: markdown ? { br: true } : false }
+								: undefined
+						}
+						disabled={disabled}
+						required={required}
+						showClear={showClear}
+						endIconInline={endIconInline}
+					/>
+				) : (
+					<TextField
+						multiline={multiline}
+						label={multiline ? 'Описание' : 'Email'}
+						placeholder={multiline ? text.placeholder.desc : text.placeholder.email}
+						error={
+							error
+								? multiline
+									? 'Минимум 50 символов'
+									: 'Введите корректный email'
+								: undefined
+						}
+						helper={
+							helperContent
+								? { helper: helperContent, md: markdown ? { br: true } : false }
+								: undefined
+						}
+						value={value}
+						onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+							setValue(e.target.value)
+						}
+						disabled={disabled}
+						required={required}
+						startIcon={resolvedStartIcon}
+						endIcon={resolvedEndIcon}
+						endIconInline={endIconInline}
+						endIconDisabled={endIconDisabled}
+						onEndClick={onEndClick && resolvedEndIcon ? () => {} : undefined}
+						showClear={showClear}
+						onClearClick={showClear ? () => setValue('') : undefined}
+					/>
+				)}
 			</DemoSection>
 
 			<DemoSection title="Variants" asBadge="log-in" separator>

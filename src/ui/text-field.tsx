@@ -23,7 +23,10 @@ type BaseProps = Pick<
 > & {
 	startIcon?: IconProps['name']
 	endIcon?: IconProps['name']
+	endIconInline?: boolean
+	endIconDisabled?: boolean
 	showClear?: boolean
+	clearIconDisabled?: boolean
 	light?: boolean
 	dark?: boolean
 	onEndClick?: () => void
@@ -48,7 +51,10 @@ function InputVariant({
 	required,
 	startIcon,
 	endIcon,
+	endIconInline,
+	endIconDisabled,
 	showClear,
+	clearIconDisabled,
 	light,
 	dark,
 	onEndClick,
@@ -64,8 +70,9 @@ function InputVariant({
 	const hasClickableEnd = !!(endIcon && onEndClick)
 
 	const iconButton =
-		!hasClickableEnd || !endIcon ? null : (
+		endIconInline || !hasClickableEnd || !endIcon ? null : (
 			<IconButton
+				data-action="true"
 				icon={endIcon}
 				variant="outline"
 				onClick={onEndClick}
@@ -74,9 +81,30 @@ function InputVariant({
 			/>
 		)
 	const leftIcon = startIcon ? <Icon name={startIcon} size="sm" /> : null
-	const rightIcon = endIcon ? <Icon name={endIcon} size="sm" /> : null
+	const rightIcon = endIcon ? (
+		endIconInline && onEndClick ? (
+			<IconButton
+				data-action="true"
+				rounded
+				size="xs"
+				icon={endIcon}
+				onClick={onEndClick}
+				disabled={endIconDisabled}
+			/>
+		) : (
+			<Icon name={endIcon} size="sm" />
+		)
+	) : null
 	const clearIcon = showClear ? (
-		<IconButton rounded icon="x" onClick={onClearClick} size="xs" data-clear={true} />
+		<IconButton
+			data-action="true"
+			rounded
+			icon="x"
+			onClick={onClearClick}
+			size="xs"
+			data-clear={true}
+			disabled={clearIconDisabled}
+		/>
 	) : null
 	const wrapperData = { 'data-input': 'wrapper' }
 	const elementData = { 'data-input': 'control' }
