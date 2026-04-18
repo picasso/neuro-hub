@@ -5,8 +5,7 @@ import { DemoRoot, DemoSection } from './components-utils'
 import { type InputDemoState } from './demo-inputs-settings'
 import { text } from './mock'
 import { useSettings } from './settings-store'
-import { Stack, TextField } from '@/ui'
-import { InlineAuto } from '@/ui/Inline-auto'
+import { Stack, TextField, TextFieldAuto } from '@/ui'
 
 export function DemoInputs() {
 	const settings = useSettings<InputDemoState>()
@@ -47,7 +46,7 @@ export function DemoInputs() {
 				separator
 			>
 				{inline ? (
-					<InlineAuto
+					<TextFieldAuto
 						enableOnFocus={enableOnFocus}
 						onlyLatin
 						notEmpty

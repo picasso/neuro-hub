@@ -16,6 +16,7 @@ export { FileUploader, type FileUploaderProps } from './file-uploader-client'
 export { FieldWrapper, type FieldWrapperProps } from './field'
 export { Empty, type EmptyProps, type EmptyShadcnProps } from './empty'
 export { TextField, type TextFieldProps } from './text-field'
+export { TextFieldAuto, type TextFieldAutoProps } from './text-field-auto'
 export { Checkbox, Switch, type CheckboxProps, type SwitchProps } from './checkbox-switch'
 export {
 	Combobox,
