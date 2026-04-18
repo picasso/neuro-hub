@@ -13,7 +13,8 @@
 **Проверки:**
 - ESLint с автоисправлением (`--fix`)
 - Prettier форматирование
-- TypeScript type check
+
+Полный **TypeScript type check** выполняется только в **pre-push** (`yarn type-check`), чтобы можно было коммитить незавершённые изменения без ошибок типов в других файлах.
 
 **Время выполнения:** ~3-5 секунд (зависит от количества staged files)
 
@@ -21,11 +22,7 @@
 
 ```json
 {
-  "*.{ts,tsx}": [
-    "eslint --fix --max-warnings 0",
-    "prettier --write",
-    "bash -c 'tsc --noEmit'"
-  ],
+  "*.{ts,tsx}": ["eslint --fix --max-warnings 0", "prettier --write"],
   "*.{js,jsx,json,css,md}": ["prettier --write"]
 }
 ```
