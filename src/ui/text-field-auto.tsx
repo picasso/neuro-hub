@@ -1,40 +1,53 @@
 'use client'
 
 import {
-	type Ref,
 	useCallback,
 	useState,
 	type KeyboardEvent,
 	useRef,
 	type ChangeEvent,
 	type FocusEvent,
+	useEffect,
 } from 'react'
-import { TextField, type TextFieldProps } from './text-field'
+import { useClickOutside } from './hooks/use-click-outside'
+import { InputField, type TextFieldProps } from './text-field'
+import { variantToText, type TextStyledProps } from './text-styled'
 import { cn, cyrilicValidator } from '@/utils'
 
 type InputVariantProps = Extract<TextFieldProps, { multiline?: false }>
 
+type InputValue = InputVariantProps['value']
 type BaseProps = {
-	value?: string | null
-	onSave: (value?: string | null) => void
+	value?: InputValue
+	variant?: TextStyledProps['variant']
+	onSave: (value?: InputValue) => void
+	onChange?: (value?: InputValue) => void
+	onCancel?: () => void
 	onlyLatin?: boolean
-	limit?: number
+	minimum?: number | null
+	limit?: number | null
 	notEmpty?: boolean
 	enableOnFocus?: boolean
+	cancelable?: boolean
 }
 export type TextFieldAutoProps = BaseProps &
-	Omit<InputVariantProps, 'endIconDisabled' | 'onEndClick' | 'onClearClick' | 'error'> & {
-		multiline?: false
-		ref?: Ref<HTMLInputElement>
-	}
+	Omit<
+		InputVariantProps,
+		'endIconDisabled' | 'onEndClick' | 'onClearClick' | 'ref' | 'value' | 'onChange'
+	>
 
 export function TextFieldAuto({
-	ref,
 	value,
+	variant = 'body',
 	helper,
 	onSave,
+	onCancel,
+	onChange,
+	error: errorEx,
+	cancelable,
 	onlyLatin,
-	limit,
+	minimum = null,
+	limit = null,
 	notEmpty,
 	showClear,
 	endIconInline,
@@ -46,71 +59,138 @@ export function TextFieldAuto({
 	const [enableActions, setEnableActions] = useState(false)
 	const isDirty = proxyValue !== value
 	const interactive = enableOnFocus && endIconInline
+	const error = errorEx ?? validate({ value: proxyValue, notEmpty, minimum, limit, onlyLatin })
 
-	const error =
-		notEmpty && proxyValue === ''
-			? 'Не должно быть пустым'
-			: cyrilicValidator(proxyValue, null, limit, !!onlyLatin)
+	// cancel editing on click outside
+	const rootRef = useRef<HTMLDivElement>(null)
+	const onRootClickOutside = useCallback(() => {
+		debugEvents('outside')
+		if (cancelable) onCancel?.()
+	}, [cancelable, onCancel])
+	useClickOutside(rootRef, onRootClickOutside, { enabled: !!cancelable })
+
+	// input element
+	const inputRef = useRef<HTMLInputElement>(null)
+	const pointerInsideRootRef = useRef(false)
+
+	useEffect(() => {
+		const onPointerDownCapture = (e: PointerEvent) => {
+			const root = rootRef.current
+			const t = e.target
+			if (!root || !(t instanceof Node)) {
+				pointerInsideRootRef.current = false
+				return
+			}
+			pointerInsideRootRef.current = root.contains(t)
+		}
+		document.addEventListener('pointerdown', onPointerDownCapture, true)
+		return () => document.removeEventListener('pointerdown', onPointerDownCapture, true)
+	}, [])
+
+	// focus the input element on mount
+	useEffect(() => {
+		requestAnimationFrame(() => {
+			inputRef.current?.focus()
+		})
+	}, [])
+
+	// button actions -----------------------------------------------------------------------------]
+
+	const focus = useCallback(() => {
+		inputRef.current?.focus()
+	}, [])
+
+	const onCancelProxy = useCallback(() => {
+		debugEvents('cancel')
+		if (isDirty) setProxyValue(value)
+		onCancel?.()
+	}, [isDirty, value, onCancel])
+
+	const onChangeProxy = useCallback(
+		(ev: ChangeEvent<HTMLInputElement>) => {
+			debugEvents('change')
+			const value = ev.target.value
+			setProxyValue(value)
+			onChange?.(value)
+		},
+		[onChange],
+	)
 
 	const onSaveProxy = useCallback(() => {
 		debugEvents('save')
 		if (isDirty && !error) onSave(proxyValue)
-	}, [error, isDirty, onSave, proxyValue])
-
-	const onCancel = useCallback(() => {
-		debugEvents('cancel')
-		if (isDirty) setProxyValue(value)
-	}, [isDirty, value])
-
-	const onChange = useCallback((ev: ChangeEvent<HTMLInputElement>) => {
-		debugEvents('change')
-		setProxyValue(ev.target.value)
-	}, [])
+		if (cancelable) onCancelProxy()
+	}, [error, isDirty, onSave, proxyValue, cancelable, onCancelProxy])
 
 	const onKeyDown = useCallback(
 		(ev: KeyboardEvent<HTMLInputElement>) => {
 			if (ev.key === 'Enter') {
 				onSaveProxy()
 			} else if (ev.key === 'Escape') {
-				onCancel()
+				onCancelProxy()
 			}
 		},
-		[onCancel, onSaveProxy],
+		[onCancelProxy, onSaveProxy],
 	)
 
 	const onBlur = useCallback(
 		(ev: FocusEvent<HTMLInputElement>) => {
 			debugEvents('blur')
+			const root = rootRef.current
+			const rel = ev.relatedTarget
+			const isNode = (node: EventTarget | null): node is Node => node instanceof Node
+			const isInside = (node: EventTarget | null) => isNode(node) && root?.contains(node)
+
+			if (isInside(rel)) {
+				focus()
+				debugEvents('ignore')
+				pointerInsideRootRef.current = false
+				return
+			}
+
 			// give browser time to focus the next element
 			requestAnimationFrame(() => {
-				// check if the new focused element is not an action button of the original container
-				if (!ev.relatedTarget?.getAttribute('data-action')) {
-					setEnableActions(false)
-					onSaveProxy()
-				} else {
-					debugEvents('ignore')
-				}
+				// sometimes the focus is not immediate, so we need to check again
+				requestAnimationFrame(() => {
+					const inside = isInside(document.activeElement) || pointerInsideRootRef.current
+					pointerInsideRootRef.current = false
+					if (inside) {
+						focus()
+						debugEvents('ignore')
+					} else {
+						setEnableActions(false)
+						onSaveProxy()
+					}
+					// check if the new focused element is not an action button of the original container
+					// if (rootRef.current?.contains(ev.relatedTarget ?? document.activeElement)) {
+					// 	focus()
+					// 	debugEvents('ignore')
+					// } else {
+					// 	dev.data({
+					// 		relatedTarget: ev.relatedTarget,
+					// 		activeElement: document.activeElement,
+					// 	})
+					// 	// if (!ev.relatedTarget?.getAttribute('data-action')) {
+					// 	setEnableActions(false)
+					// 	onSaveProxy()
+					// }
+					// else {
+					// 	debugEvents('ignore')
+					// }
+				})
 			})
 		},
-		[onSaveProxy],
+		[focus, onSaveProxy],
 	)
 
 	const onFocus = useCallback(() => {
 		setEnableActions(true)
 	}, [])
 
-	// button actions -----------------------------------------------------------------------------]
-
-	const inputRef = useRef<HTMLInputElement>(null)
-
-	const focus = useCallback(() => {
-		inputRef?.current?.focus()
-	}, [])
-
 	const onActionCancel = useCallback(() => {
-		onCancel()
+		onCancelProxy()
 		requestAnimationFrame(() => focus())
-	}, [onCancel, focus])
+	}, [onCancelProxy, focus])
 
 	const onActionSave = useCallback(() => {
 		onSaveProxy()
@@ -120,12 +200,13 @@ export function TextFieldAuto({
 	const isDisabled = !isDirty
 
 	return (
-		<TextField
-			ref={ref ?? inputRef}
+		<InputField
+			ref={inputRef}
+			rootRef={rootRef}
 			error={error}
 			helper={helper}
 			value={proxyValue}
-			onChange={onChange}
+			onChange={onChangeProxy}
 			onBlur={onBlur}
 			onFocus={onFocus}
 			onKeyDown={onKeyDown}
@@ -143,12 +224,17 @@ export function TextFieldAuto({
 				interactive && !enableActions && '**:data-[action=true]:opacity-0',
 				className,
 			)}
+			inputClassName={cn(
+				variantToText[variant],
+				'[field-sizing:content] min-w-[3ch]',
+				// inputClassName,
+			)}
 			{...props}
 		/>
 	)
 }
 
-function debugEvents(ev: 'blur' | 'change' | 'save' | 'cancel' | 'ignore') {
+function debugEvents(ev: 'blur' | 'change' | 'save' | 'cancel' | 'ignore' | 'outside') {
 	const color = eventColors[ev]
 	dev.info(`{${color}${ev}}`)
 }
@@ -159,4 +245,23 @@ const eventColors: Record<Parameters<typeof debugEvents>[0], string> = {
 	save: '*',
 	cancel: '?',
 	ignore: '!',
+	outside: '$',
+}
+
+function validate({
+	value,
+	notEmpty,
+	minimum,
+	limit,
+	onlyLatin,
+}: {
+	value: BaseProps['value']
+	notEmpty: BaseProps['notEmpty']
+	minimum: BaseProps['minimum']
+	limit: BaseProps['limit']
+	onlyLatin: BaseProps['onlyLatin']
+}) {
+	return notEmpty && value === ''
+		? 'Не должно быть пустым'
+		: cyrilicValidator(value ? String(value) : null, minimum, limit, !!onlyLatin)
 }

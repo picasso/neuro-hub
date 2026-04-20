@@ -52,7 +52,7 @@ export function DemoInputs() {
 						notEmpty
 						limit={10}
 						value={value}
-						onSave={(value) => setValue(value ?? '')}
+						onSave={(value) => setValue(String(value ?? ''))}
 						helper={
 							helperContent
 								? { helper: helperContent, md: markdown ? { br: true } : false }
