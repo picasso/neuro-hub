@@ -1,4 +1,5 @@
 import { Button, type ButtonProps } from './button'
+import { Icon } from './icon'
 import {
 	Popover as ShadcnPopoverRoot,
 	PopoverTrigger as ShadcnPopoverTrigger,
@@ -17,7 +18,9 @@ type ContentProps = ComponentProps<typeof ShadcnPopoverContent>
 export type PopoverProps = RootProps & {
 	align?: ContentProps['align']
 	sideOffset?: ContentProps['sideOffset']
+	flush?: boolean
 	button?: string
+	buttonChevron?: boolean
 	buttonProps?: Omit<ButtonProps, 'label' | 'children'>
 	trigger?: ReactNode
 	title?: ReactNode
@@ -32,7 +35,9 @@ export type PopoverProps = RootProps & {
 export function Popover({
 	align,
 	sideOffset,
+	flush,
 	button,
+	buttonChevron,
 	buttonProps,
 	trigger,
 	title,
@@ -51,12 +56,19 @@ export function Popover({
 				{button ? (
 					<Button variant="outline" {...buttonProps}>
 						{button}
+						{buttonChevron && (
+							<Icon name="chevrons-up-down" size="sm" className="opacity-50" />
+						)}
 					</Button>
 				) : (
 					trigger
 				)}
 			</ShadcnPopoverTrigger>
-			<ShadcnPopoverContent align={align} sideOffset={sideOffset} className={className}>
+			<ShadcnPopoverContent
+				align={align}
+				sideOffset={sideOffset}
+				className={cn(flush && 'p-0', className)}
+			>
 				{(title || desc || header) && (
 					<ShadcnPopoverHeader className={headerClassName}>
 						{title && <ShadcnPopoverTitle>{title}</ShadcnPopoverTitle>}
