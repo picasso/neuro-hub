@@ -21,6 +21,7 @@ type BaseProps = Pick<
 	FieldWrapperProps,
 	'label' | 'labelClassName' | 'helper' | 'helperClassName' | 'error' | 'required' | 'className'
 > & {
+	rootRef?: FieldWrapperProps['ref']
 	startIcon?: IconProps['name']
 	endIcon?: IconProps['name']
 	endIconInline?: boolean
@@ -31,6 +32,7 @@ type BaseProps = Pick<
 	dark?: boolean
 	onEndClick?: () => void
 	onClearClick?: () => void
+	inputClassName?: string
 }
 
 type HTMLInputProps = Omit<ComponentPropsWithRef<'input'>, 'required' | 'ref'>
@@ -62,8 +64,10 @@ function InputVariant({
 	className,
 	labelClassName,
 	helperClassName,
+	inputClassName,
 	multiline: _,
 	ref,
+	rootRef,
 	...mainInputProps
 }: InputVariantProps) {
 	const { disabled, value } = mainInputProps
@@ -108,7 +112,12 @@ function InputVariant({
 	) : null
 	const wrapperData = { 'data-input': 'wrapper' }
 	const elementData = { 'data-input': 'control' }
-	const inputProps = { 'aria-invalid': !!error, required, ...mainInputProps }
+	const inputProps = {
+		'aria-invalid': !!error,
+		required,
+		className: inputClassName,
+		...mainInputProps,
+	}
 
 	const control =
 		iconButton && leftIcon ? (
@@ -139,6 +148,7 @@ function InputVariant({
 
 	return (
 		<FieldWrapper
+			ref={rootRef}
 			label={label}
 			error={error}
 			helper={helper}
@@ -174,6 +184,7 @@ function TextareaVariant({
 	multiline: _,
 	onEndClick: __,
 	ref,
+	rootRef,
 	...textareaProps
 }: TextareaVariantProps) {
 	const { disabled } = textareaProps
@@ -204,6 +215,7 @@ function TextareaVariant({
 
 	return (
 		<FieldWrapper
+			ref={rootRef}
 			label={label}
 			error={error}
 			helper={helper}
@@ -223,6 +235,9 @@ function TextareaVariant({
 }
 
 // TextField --------------------------------------------------------------------------------------]
+
+export const InputField = InputVariant
+export const TextareaField = TextareaVariant
 
 export function TextField(props: TextFieldProps) {
 	if (props.multiline) {
