@@ -182,13 +182,11 @@ export function FileUploader({
 					title={title}
 					icon={icon === false ? undefined : icon}
 					iconOptions={{
+						...iconOptions,
 						color: isDragActive
 							? 'contrast'
 							: (iconOptions?.color ?? iconColors[variant]),
 						size: iconOptions?.size ?? 'lg',
-						spinning: iconOptions?.spinning,
-						tw: iconOptions?.tw,
-						accent: iconOptions?.accent,
 					}}
 					disabled={disabled}
 					error={!!errorMessage}

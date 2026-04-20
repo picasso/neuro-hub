@@ -7,7 +7,7 @@ import {
 	AlertTitle as ShadcnAlertTitle,
 	AlertDescription as ShadcnAlertDescription,
 } from './shadcn/alert'
-import { cn } from '@/utils'
+import { cn, type MarkdownParams, simpleMarkdown } from '@/utils'
 
 type Severity = 'info' | 'success' | 'warning' | 'error' | 'progress'
 type AlertVariant = 'standard' | 'filled' | 'outlined'
@@ -20,6 +20,7 @@ export type AlertProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> & {
 	desc?: string
 	icon?: IconName | false
 	iconOptions?: IconOptions
+	md?: Partial<MarkdownParams> | false
 	onClose?: () => void
 	children?: ReactNode
 }
@@ -34,6 +35,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
 		desc,
 		icon,
 		iconOptions,
+		md,
 		onClose,
 		children,
 		...props
@@ -47,18 +49,19 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
 		severityToClasses(severity, variant),
 		className,
 	)
-	const content = desc ?? children
+	const content = (desc && md !== false ? simpleMarkdown(desc, md) : desc) ?? children
+	const { tw: iconClassName, ...options } = iconOptions ?? {}
 	return (
 		<ShadcnAlert ref={ref} variant="default" className={mergedClassName} {...props}>
 			{icon !== false && (
 				<Icon
 					data-slot="alert-icon"
 					name={icon ?? iconMap[severity]}
+					{...options}
 					size={iconOptions?.size ?? 'lg'}
 					color={iconOptions?.color ?? severity}
-					accent={iconOptions?.accent}
 					spinning={!!(iconOptions?.spinning ?? severity === 'progress')}
-					className={iconOptions?.tw}
+					className={iconClassName}
 				/>
 			)}
 			{title && <ShadcnAlertTitle>{title}</ShadcnAlertTitle>}

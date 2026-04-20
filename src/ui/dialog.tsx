@@ -183,8 +183,9 @@ export function Dialog<T = boolean, L = unknown>({
 		[srTitle],
 	)
 
-	const headerNode = useMemo(
-		() => (
+	const headerNode = useMemo(() => {
+		const { tw: iconClassName, ...options } = iconOptions ?? {}
+		return (
 			<ShadcnDialogHeader className={cn(compactTitle && '-mt-3')}>
 				{icon || title ? (
 					<ShadcnDialogTitle>
@@ -197,11 +198,9 @@ export function Dialog<T = boolean, L = unknown>({
 							{icon && (
 								<Icon
 									name={icon}
-									size={iconOptions?.size ?? (compactTitle ? 'sm' : 'md')}
-									color={iconOptions?.color}
-									spinning={iconOptions?.spinning}
-									accent={iconOptions?.accent}
-									className={iconOptions?.tw}
+									{...options}
+									size={options.size ?? (compactTitle ? 'sm' : 'md')}
+									className={iconClassName}
 								/>
 							)}
 							{title}
@@ -224,9 +223,8 @@ export function Dialog<T = boolean, L = unknown>({
 					</ShadcnDialogDescription>
 				)}
 			</ShadcnDialogHeader>
-		),
-		[title, icon, iconOptions, hiddenSrTitle, desc, md, divider, compactTitle],
-	)
+		)
+	}, [title, icon, iconOptions, hiddenSrTitle, desc, md, divider, compactTitle])
 
 	const footerNode = useMemo(
 		() =>
