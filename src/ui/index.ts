@@ -99,6 +99,7 @@ export { Breadcrumb, type BreadcrumbProps } from './breadcrumb'
 export { Card, type CardProps, type ImageStub } from './card'
 export { ChatUI } from './chat/export'
 export type * as ChatUIProps from '@/ui/chat/export'
+export { Popover, type PopoverProps } from './popover'
 export {
 	Portfolio,
 	type PortfolioProps,
@@ -137,7 +138,7 @@ export {
 } from './shadcn/command'
 export { Label } from './shadcn/label'
 export {
-	Popover,
+	Popover as PopoverRoot,
 	PopoverTrigger,
 	PopoverContent,
 	PopoverAnchor,
