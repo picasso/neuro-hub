@@ -1,6 +1,12 @@
 import { kysely } from '@/lib/db'
 import { generateFallbackNickname } from '@/lib/user-profile/nickname'
 
+export type UserProfileLanguageOption = {
+	code: string
+	name: string
+	nativeName: string
+}
+
 export async function ensureUserProfileRow(userId: string): Promise<void> {
 	const user = await kysely
 		.selectFrom('users')
@@ -41,4 +47,32 @@ export async function ensureUserProfileRow(userId: string): Promise<void> {
 	}
 
 	throw new Error('Could not allocate a unique nickname')
+}
+
+export async function listUserProfileLanguages(): Promise<UserProfileLanguageOption[]> {
+	const rows = await kysely
+		.selectFrom('languages')
+		.select(['code', 'name', 'native_name as nativeName'])
+		.orderBy('sort_order', 'asc')
+		.orderBy('name', 'asc')
+		.execute()
+
+	return rows.map((row) => ({
+		code: row.code,
+		name: row.name,
+		nativeName: row.nativeName,
+	}))
+}
+
+export async function isNicknameAvailableForUser(
+	userId: string,
+	nickname: string,
+): Promise<boolean> {
+	const row = await kysely
+		.selectFrom('user_profiles')
+		.select('user_id')
+		.where('nickname', '=', nickname.toLowerCase())
+		.executeTakeFirst()
+
+	return !row || row.user_id === userId
 }

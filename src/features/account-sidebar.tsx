@@ -22,6 +22,11 @@ export const sidebarGroups: SidebarGroup[] = [
 						href: '/account/profile',
 					},
 					{
+						title: 'Skills & Experience',
+						href: '/account/skills',
+						context: 'freelancer',
+					},
+					{
 						title: 'Портфолио',
 						href: '/account/portfolio',
 						context: 'freelancer',

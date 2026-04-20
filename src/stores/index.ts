@@ -81,20 +81,6 @@ export {
 } from './freelancer-portfolio/model'
 export type { PortfolioForm, PortfolioItem, UploadResult } from './freelancer-portfolio/types'
 export {
-	$form as $freelancerProfileForm,
-	$isBusy as $freelancerProfileIsBusy,
-	$isLoading as $freelancerProfileIsLoading,
-	$isSaving as $freelancerProfileIsSaving,
-	$freelancerNickname as $freelancerProfileNickname,
-	FreelancerProfileGate,
-	loadFreelancerProfileFx,
-	profileFormUpdated,
-	resetFreelancerProfile,
-	saveFreelancerProfileClicked,
-	saveFreelancerProfileFx,
-} from './freelancer-profile/model'
-export type { FreelancerProfileDto, FreelancerProfileForm } from './freelancer-profile/types'
-export {
 	$allSkills,
 	$canGoNext,
 	$canGoPrev,

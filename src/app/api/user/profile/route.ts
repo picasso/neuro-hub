@@ -115,11 +115,14 @@ export async function PUT(request: Request) {
 
 			if (validatedData.languages !== undefined) {
 				const codes = validatedData.languages.map((l) => l.languageCode)
-				const known = await trx
-					.selectFrom('languages')
-					.select('code')
-					.where('code', 'in', codes)
-					.execute()
+				const known =
+					codes.length > 0
+						? await trx
+								.selectFrom('languages')
+								.select('code')
+								.where('code', 'in', codes)
+								.execute()
+						: []
 				const knownSet = new Set(known.map((r) => r.code))
 				for (const code of codes) {
 					if (!knownSet.has(code)) {

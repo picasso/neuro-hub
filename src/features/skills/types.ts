@@ -1,11 +1,12 @@
-export type FreelancerProfileForm = {
+export type FreelancerSkills = {
+	nickname: string
 	specialization: string
 	hourlyRate: string
 	availability: string
 	experience: string
 }
 
-export type FreelancerProfileDto = {
+export type FreelancerSkillsDto = {
 	nickname: string
 	profileId: string
 	userId: string

@@ -26,5 +26,6 @@ export {
 	modalsDomain,
 	viewerDomain,
 	onboardingDomain,
+	profileDomain,
 	projectApplicationsDomain,
 } from './watched'
