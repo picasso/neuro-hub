@@ -10,6 +10,7 @@ import {
 	skillsSaved,
 	skillsUpdated,
 } from './model'
+import { SkillsPicker } from './skills-picker'
 import { Button, Stack, TextField, TS } from '@/ui'
 
 export function AccountSkillsEditor() {
@@ -33,6 +34,11 @@ export function AccountSkillsEditor() {
 					value={specialization}
 					onChange={(e) => onUpdate({ specialization: e.target.value })}
 					helper="Например: AI Consultant, ML Engineer"
+				/>
+				<SkillsPicker
+					searchLabel="Навыки"
+					searchPlaceholder="Найдите навык и добавьте его в профиль"
+					selectedCountLabel={(count) => `Навыков в профиле: ${count}`}
 				/>
 				<TextField
 					label="Ставка ($/час)"

@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 import { requireRole } from '@/lib/auth/server'
 import { kysely } from '@/lib/db'
 import {
@@ -72,6 +73,20 @@ type RouteContext = {
  *               experience:
  *                 type: string
  *                 example: "5+ years building ML/LLM products"
+ *               skills:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - skillId
+ *                     - proficiencyLevel
+ *                   properties:
+ *                     skillId:
+ *                       type: string
+ *                       format: uuid
+ *                     proficiencyLevel:
+ *                       type: string
+ *                       enum: [beginner, intermediate, advanced, expert]
  *     responses:
  *       200:
  *         description: Freelancer profile updated
@@ -129,12 +144,34 @@ export async function PUT(request: Request, context: RouteContext) {
 			patch.availability = validated.availability ?? null
 		if (validated.experience !== undefined) patch.experience = validated.experience ?? null
 
-		const saved = await kysely
-			.updateTable('freelancer_profiles')
-			.set(patch)
-			.where('id', '=', id)
-			.returningAll()
-			.executeTakeFirstOrThrow()
+		const saved = await kysely.transaction().execute(async (trx) => {
+			const profile = await trx
+				.updateTable('freelancer_profiles')
+				.set(patch)
+				.where('id', '=', id)
+				.returningAll()
+				.executeTakeFirstOrThrow()
+
+			if (validated.skills !== undefined) {
+				await trx.deleteFrom('user_skills').where('user_id', '=', session.user.id).execute()
+
+				if (validated.skills.length > 0) {
+					await trx
+						.insertInto('user_skills')
+						.values(
+							validated.skills.map((skill) => ({
+								id: nanoid(),
+								user_id: session.user.id,
+								skill_id: skill.skillId,
+								proficiency_level: skill.proficiencyLevel,
+							})),
+						)
+						.execute()
+				}
+			}
+
+			return profile
+		})
 
 		return successResponse({
 			userId: saved.user_id,

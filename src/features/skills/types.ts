@@ -1,3 +1,20 @@
+import type { UserSkillInput } from '@/lib/validations'
+
+export type SkillItem = {
+	id: string
+	name: string
+	category: string | null
+}
+
+export type UserSkillDTO = {
+	id: string
+	userId: string
+	skillId: string
+	proficiencyLevel: UserSkillInput['proficiencyLevel']
+	createdAt: string | Date | null
+	skill: SkillItem
+}
+
 export type FreelancerSkills = {
 	nickname: string
 	specialization: string
@@ -6,7 +23,7 @@ export type FreelancerSkills = {
 	experience: string
 }
 
-export type FreelancerSkillsDto = {
+export type FreelancerSkillsDTO = {
 	nickname: string
 	profileId: string
 	userId: string
@@ -17,3 +34,17 @@ export type FreelancerSkillsDto = {
 	createdAt: string | Date | null
 	updatedAt: string | Date | null
 }
+
+export type AccountSkillsLoadDTO = FreelancerSkillsDTO & {
+	selectedSkills: UserSkillInput[]
+}
+
+export const skilLevelOptions: Array<{
+	value: UserSkillInput['proficiencyLevel']
+	label: string
+}> = [
+	{ value: 'beginner', label: 'Beginner' },
+	{ value: 'intermediate', label: 'Intermediate' },
+	{ value: 'advanced', label: 'Advanced' },
+	{ value: 'expert', label: 'Expert' },
+]

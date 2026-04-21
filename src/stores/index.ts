@@ -81,7 +81,6 @@ export {
 } from './freelancer-portfolio/model'
 export type { PortfolioForm, PortfolioItem, UploadResult } from './freelancer-portfolio/types'
 export {
-	$allSkills,
 	$canGoNext,
 	$canGoPrev,
 	$credentials as $onboardingCredentials,
@@ -92,14 +91,10 @@ export {
 	$profileData,
 	$profileErrors,
 	$role,
-	$selectedSkills,
-	addSkill,
-	loadSkillsFx,
 	nextStep,
 	OnboardingGate,
 	prevStep,
 	registerUserFx,
-	removeSkill,
 	resetCurrentStep,
 	resetOnboarding,
 	resetRole,
@@ -110,7 +105,6 @@ export {
 	submitRegistration,
 	updateCredentialField,
 	updateProfileField,
-	updateSkillLevel,
 	validateAndContinue,
 	validateCredentialsAndContinue,
 } from './onboarding/model'
@@ -121,8 +115,6 @@ export type {
 	ProfileErrors,
 	ProfileField,
 	RegisterUserInput,
-	Skill,
-	UpdateSkillLevel,
 } from './onboarding/types'
 export {
 	$applicationErrors,

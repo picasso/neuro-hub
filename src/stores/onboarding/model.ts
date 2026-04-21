@@ -1,7 +1,6 @@
 import { combine, sample } from 'effector'
 import { createGate } from 'effector-react'
 import { produce } from 'immer'
-import { find, findIndex } from 'lodash'
 import type {
 	CredentialField,
 	OnboardingStep,
@@ -9,10 +8,18 @@ import type {
 	ProfileErrors,
 	ProfileField,
 	RegisterUserInput,
-	Skill,
-	UpdateSkillLevel,
 } from './types'
 import { createAlertFx } from '@/alerts'
+import {
+	$allSkills,
+	$isSkillsCatalogLoading,
+	$selectedSkills,
+	loadSkillCatalogFx,
+	resetSelectedSkills,
+	skillAdded as addSkill,
+	skillLevelUpdated as updateSkillLevel,
+	skillRemoved as removeSkill,
+} from '@/features/skills/model'
 import { authClient } from '@/lib/auth/client'
 import { onboardingDomain as domain } from '@/lib/logger'
 import {
@@ -21,7 +28,6 @@ import {
 	freelancerProfileSchema,
 	type CredentialsInput,
 	type UserRole,
-	type UserSkillInput,
 } from '@/lib/validations'
 
 // * * * Gate -------------------------------------------------------------------------------------]
@@ -170,53 +176,6 @@ sample({
 	target: $profileErrors,
 })
 
-// * * * $selectedSkills --------------------------------------------------------------------------]
-
-const resetSelectedSkills = domain.createEvent('resetSelectedSkills')
-export const addSkill = domain.createEvent<UserSkillInput>('addSkill')
-export const removeSkill = domain.createEvent<string>('removeSkill')
-export const updateSkillLevel = domain.createEvent<UpdateSkillLevel>('updateSkillLevel')
-
-export const $selectedSkills = domain.createStore<UserSkillInput[]>([], {
-	name: '$selectedSkills',
-})
-
-$selectedSkills.reset(resetSelectedSkills)
-
-$selectedSkills.on(addSkill, (skills, skill) =>
-	produce(skills, (draft) => {
-		const exists = find(draft, { skillId: skill.skillId })
-		if (!exists) {
-			draft.push(skill)
-		}
-	}),
-)
-
-$selectedSkills.on(removeSkill, (skills, skillId) =>
-	produce(skills, (draft) => {
-		const index = findIndex(draft, { skillId })
-		if (index !== -1) {
-			draft.splice(index, 1)
-		}
-	}),
-)
-
-$selectedSkills.on(updateSkillLevel, (skills, { skillId, level }) =>
-	produce(skills, (draft) => {
-		const skill = find(draft, { skillId })
-		if (skill) {
-			skill.proficiencyLevel = level
-		}
-	}),
-)
-
-// * * * $allSkills -------------------------------------------------------------------------------]
-
-const resetAllSkills = domain.createEvent('resetAllSkills')
-export const $allSkills = domain.createStore<Skill[]>([], { name: '$allSkills' })
-
-$allSkills.reset(resetAllSkills)
-
 // * * * $error -----------------------------------------------------------------------------------]
 
 const resetError = domain.createEvent('resetError')
@@ -227,7 +186,6 @@ $error.reset(resetError)
 // * * * Effects ----------------------------------------------------------------------------------]
 
 const onboardingId = createAlertFx.alertId('onboarding-register')
-const skillsId = createAlertFx.alertId('onboarding-skills')
 
 type BetterAuthError = {
 	error?: {
@@ -294,58 +252,9 @@ export const registerUserFx = domain.createEffect<RegisterUserInput, unknown, Er
 	name: 'registerUserFx',
 })
 
-export const loadSkillsFx = domain.createEffect<void, Skill[], Error>({
-	handler: async () => {
-		const timerId = setTimeout(() => {
-			createAlertFx({
-				id: skillsId,
-				severity: 'progress',
-				title: 'Загрузка навыков...',
-				message: 'Получаем список доступных навыков',
-				disableClose: true,
-				disableAutoClose: true,
-			})
-		}, 800)
-
-		try {
-			const response = await fetch('/api/skills?pageSize=100')
-
-			clearTimeout(timerId)
-
-			if (!response.ok) {
-				const error = await response.json()
-				throw new Error(error.error?.message || 'Не удалось загрузить навыки')
-			}
-
-			const result = await response.json()
-
-			if (!result.success || !result.data) {
-				throw new Error('Некорректный формат ответа от сервера')
-			}
-
-			return result.data
-		} catch (error) {
-			clearTimeout(timerId)
-			if (error instanceof Error) {
-				throw error
-			}
-			const betterAuthError = error as BetterAuthError
-			const errorMessage =
-				betterAuthError?.error?.message ||
-				betterAuthError?.message ||
-				'Не удалось создать аккаунт'
-			throw new Error(errorMessage)
-		}
-	},
-	name: 'loadSkillsFx',
-})
-
-// update `$allSkills` when `loadSkillsFx` succeeds
-$allSkills.on(loadSkillsFx.doneData, (_, skills) => skills)
-
 // * * * Computed stores --------------------------------------------------------------------------]
 
-export const $isLoading = combine([registerUserFx.pending, loadSkillsFx.pending], (states) =>
+export const $isLoading = combine([registerUserFx.pending, $isSkillsCatalogLoading], (states) =>
 	states.some(Boolean),
 )
 
@@ -393,7 +302,6 @@ sample({
 		resetProfileData,
 		resetProfileErrors,
 		resetSelectedSkills,
-		resetAllSkills,
 		resetError,
 	],
 })
@@ -567,7 +475,7 @@ sample({
 
 // mirror skills load error into global onboarding error store
 sample({
-	clock: loadSkillsFx.failData,
+	clock: loadSkillCatalogFx.failData,
 	fn: (error) => error.message,
 	target: $error,
 })
@@ -594,16 +502,9 @@ sample({
 	target: createAlertFx,
 })
 
-// dismiss skills progress toast when effect settles
-sample({
-	clock: loadSkillsFx.finally,
-	fn: () => ({ id: skillsId }),
-	target: createAlertFx.removeFx,
-})
-
 // toast skills load failure
 sample({
-	clock: loadSkillsFx.failData,
+	clock: loadSkillCatalogFx.failData,
 	fn: (error) =>
 		createAlertFx.props({
 			severity: 'error',
@@ -622,12 +523,12 @@ sample({
 	source: {
 		allSkills: $allSkills,
 		role: $role,
-		isLoading: loadSkillsFx.pending,
+		isLoading: $isSkillsCatalogLoading,
 	},
 	filter: ({ allSkills, role, isLoading }, currentStep) => {
 		return currentStep === 3 && !isLoading && role === 'freelancer' && allSkills.length === 0
 	},
-	target: loadSkillsFx,
+	target: loadSkillCatalogFx,
 })
 
 // show credential errors on submit when schema still invalid

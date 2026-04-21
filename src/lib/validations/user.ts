@@ -65,22 +65,19 @@ export const userSkillSchema = z.object({
 })
 
 export const addUserSkillsSchema = z.object({
-	skills: z
-		.array(userSkillSchema)
-		.min(1, 'At least one skill is required')
-		.superRefine((skills, ctx) => {
-			const seen = new Set<string>()
-			skills.forEach((skill, idx) => {
-				if (seen.has(skill.skillId)) {
-					ctx.addIssue({
-						code: 'custom',
-						message: 'Duplicate skillId',
-						path: [idx, 'skillId'],
-					})
-				}
-				seen.add(skill.skillId)
-			})
-		}),
+	skills: z.array(userSkillSchema).superRefine((skills, ctx) => {
+		const seen = new Set<string>()
+		skills.forEach((skill, idx) => {
+			if (seen.has(skill.skillId)) {
+				ctx.addIssue({
+					code: 'custom',
+					message: 'Duplicate skillId',
+					path: [idx, 'skillId'],
+				})
+			}
+			seen.add(skill.skillId)
+		})
+	}),
 })
 
 export type CreateUserInput = z.infer<typeof createUserSchema>

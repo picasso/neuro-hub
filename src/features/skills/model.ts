@@ -2,19 +2,31 @@
 
 import { combine, sample } from 'effector'
 import { createGate } from 'effector-react'
-import { isEmpty } from 'lodash'
-import type { FreelancerSkillsDto, FreelancerSkills } from './types'
+import { produce } from 'immer'
+import { find, findIndex, isEmpty } from 'lodash'
+import type { AccountSkillsLoadDTO, FreelancerSkills, SkillItem } from './types'
+import type { UserSkillInput } from '@/lib/validations'
 import { createAlertFx } from '@/alerts'
 import { freelancerProfileDomain as domain } from '@/lib/logger'
 
 // * * * gate -------------------------------------------------------------------------------------]
 
 export const FreelancerSkillsGate = createGate({ domain, name: 'FreelancerSkillsGate' })
+export const SkillsPickerGate = createGate({ domain, name: 'SkillsPickerGate' })
 export const resetSkills = domain.createEvent('resetSkills')
+export const resetSelectedSkills = domain.createEvent('resetSelectedSkills')
+export const skillsCatalogLoaded = domain.createEvent<SkillItem[]>('skillsCatalogLoaded')
+export const selectedSkillsLoaded = domain.createEvent<UserSkillInput[]>('selectedSkillsLoaded')
 
 // * * * $form ------------------------------------------------------------------------------------]
 
 export const skillsUpdated = domain.createEvent<Partial<FreelancerSkills>>('skillsUpdated')
+export const skillAdded = domain.createEvent<UserSkillInput>('skillAdded')
+export const skillRemoved = domain.createEvent<string>('skillRemoved')
+export const skillLevelUpdated = domain.createEvent<{
+	skillId: string
+	level: UserSkillInput['proficiencyLevel']
+}>('skillLevelUpdated')
 export const $skills = domain.createStore<FreelancerSkills>(
 	{
 		nickname: '',
@@ -29,32 +41,74 @@ export const $skills = domain.createStore<FreelancerSkills>(
 $skills.reset(resetSkills)
 $skills.on(skillsUpdated, (store, update) => (isEmpty(update) ? store : { ...store, ...update }))
 
+export const $allSkills = domain.createStore<SkillItem[]>([], { name: '$allSkills' })
+export const $selectedSkills = domain.createStore<UserSkillInput[]>([], { name: '$selectedSkills' })
+
+$allSkills.on(skillsCatalogLoaded, (_, skills) => skills)
+$selectedSkills.reset(resetSelectedSkills)
+$selectedSkills.on(selectedSkillsLoaded, (_, skills) => skills)
+
+$selectedSkills.on(skillAdded, (skills, skill) =>
+	produce(skills, (draft) => {
+		const exists = find(draft, { skillId: skill.skillId })
+		if (!exists) {
+			draft.push(skill)
+		}
+	}),
+)
+
+$selectedSkills.on(skillRemoved, (skills, skillId) =>
+	produce(skills, (draft) => {
+		const index = findIndex(draft, { skillId })
+		if (index !== -1) {
+			draft.splice(index, 1)
+		}
+	}),
+)
+
+$selectedSkills.on(skillLevelUpdated, (skills, { skillId, level }) =>
+	produce(skills, (draft) => {
+		const skill = find(draft, { skillId })
+		if (skill) {
+			skill.proficiencyLevel = level
+		}
+	}),
+)
+
 // * * * effects ----------------------------------------------------------------------------------]
 
-export const loadSkillsFx = domain.createEffect<void, FreelancerSkillsDto, Error>({
+export const loadSkillCatalogFx = domain.createEffect<void, SkillItem[], Error>({
 	handler: async () => {
-		const res = await fetch('/api/freelancers/me')
-		if (!res.ok) {
-			const json = await res.json().catch(() => null)
-			throw new Error(
-				json?.error?.message || json?.error || 'Failed to load freelancer profile',
-			)
-		}
-		const json = await res.json()
-		return json.data as FreelancerSkillsDto
+		return fetchJson<SkillItem[]>('/api/skills?pageSize=100', {
+			fallbackMessage: 'Failed to load skills catalog',
+		})
 	},
-	name: 'loadSkillsFx',
+	name: 'loadSkillCatalogFx',
 })
 
-export const saveSkillsFx = domain.createEffect<FreelancerSkills, unknown, Error>({
-	handler: async ({ nickname, specialization, hourlyRate, availability, experience }) => {
+export const loadAccountSkillsFx = domain.createEffect<void, AccountSkillsLoadDTO, Error>({
+	handler: async () => {
+		return fetchJson<AccountSkillsLoadDTO>('/api/freelancers/me', {
+			fallbackMessage: 'Failed to load freelancer profile',
+		})
+	},
+	name: 'loadAccountSkillsFx',
+})
+
+export const saveSkillsFx = domain.createEffect<
+	{ profile: FreelancerSkills; selectedSkills: UserSkillInput[] },
+	unknown,
+	Error
+>({
+	handler: async ({ profile, selectedSkills }) => {
+		const { nickname, specialization, hourlyRate, availability, experience } = profile
 		const rate = hourlyRate.trim()
 		const parsedHourly = rate ? Number(rate) : undefined
 		if (parsedHourly !== undefined && (!Number.isFinite(parsedHourly) || parsedHourly <= 0)) {
 			throw new Error('Hourly rate must be a positive number')
 		}
 
-		const res = await fetch(`/api/freelancers/${encodeURIComponent(nickname)}`, {
+		await fetchJson(`/api/freelancers/${encodeURIComponent(nickname)}`, {
 			method: 'PUT',
 			headers: { 'content-type': 'application/json' },
 			body: JSON.stringify({
@@ -62,24 +116,22 @@ export const saveSkillsFx = domain.createEffect<FreelancerSkills, unknown, Error
 				hourlyRate: parsedHourly !== undefined ? Math.trunc(parsedHourly) : undefined,
 				availability: availability.trim() || undefined,
 				experience: experience.trim() || undefined,
+				skills: selectedSkills,
 			}),
+			fallbackMessage: 'Failed to save freelancer profile',
 		})
-
-		if (!res.ok) {
-			const json = await res.json().catch(() => null)
-			throw new Error(
-				json?.error?.message || json?.error || 'Failed to save freelancer profile',
-			)
-		}
-
-		return await res.json()
 	},
 	name: 'saveSkillsFx',
 })
 
 // * * * computed stores --------------------------------------------------------------------------]
 
-export const $isLoading = loadSkillsFx.pending
+export const $isSkillsCatalogLoading = loadSkillCatalogFx.pending
+export const $isLoading = combine(
+	loadAccountSkillsFx.pending,
+	$isSkillsCatalogLoading,
+	(isLoadingAccount, isLoadingCatalog) => isLoadingAccount || isLoadingCatalog,
+)
 export const $isSaving = saveSkillsFx.pending
 export const $isBusy = combine($isLoading, $isSaving, (loading, saving) => loading || saving)
 
@@ -92,47 +144,67 @@ export const skillsSaved = domain.createEvent('skillsSaved')
 // discard profile draft when leaving the editor gate
 sample({
 	clock: FreelancerSkillsGate.close,
-	target: resetSkills,
+	target: [resetSkills, resetSelectedSkills],
 })
 
-// fetch profile when gate mounts
+// load the shared skills catalog once when picker mounts
+sample({
+	clock: SkillsPickerGate.open,
+	source: {
+		allSkills: $allSkills,
+		isLoading: $isSkillsCatalogLoading,
+	},
+	filter: ({ allSkills, isLoading }) => allSkills.length === 0 && !isLoading,
+	target: loadSkillCatalogFx,
+})
+
+// fetch account profile and current user skills when account editor mounts
 sample({
 	clock: FreelancerSkillsGate.open,
-	target: loadSkillsFx,
+	target: loadAccountSkillsFx,
 })
 
-// store server id after load succeeds
-// sample({
-// 	clock: loadSkillsFx.doneData,
-// 	fn: (dto) => dto.nickname,
-// 	target: $freelancerNickname,
-// })
+// hydrate shared catalog after successful load
+sample({
+	clock: loadSkillCatalogFx.doneData,
+	target: skillsCatalogLoaded,
+})
 
 // hydrate form fields from loaded DTO
 sample({
-	clock: loadSkillsFx.doneData,
-	fn: ({ nickname, specialization, hourlyRate, availability, experience }): FreelancerSkills => ({
-		nickname,
-		specialization: specialization ?? '',
-		hourlyRate: hourlyRate != null ? String(hourlyRate) : '',
-		availability: availability ?? '',
-		experience: experience ?? '',
+	clock: loadAccountSkillsFx.doneData,
+	fn: (profile): FreelancerSkills => ({
+		nickname: profile.nickname,
+		specialization: profile.specialization ?? '',
+		hourlyRate: profile.hourlyRate != null ? String(profile.hourlyRate) : '',
+		availability: profile.availability ?? '',
+		experience: profile.experience ?? '',
 	}),
 	target: $skills,
+})
+
+// hydrate selected skills from account data
+sample({
+	clock: loadAccountSkillsFx.doneData,
+	fn: ({ selectedSkills }) => selectedSkills,
+	target: selectedSkillsLoaded,
 })
 
 // PUT profile when save clicked with known id
 sample({
 	clock: skillsSaved,
-	source: $skills,
-	filter: ({ nickname }) => !!nickname,
-	fn: (skills) => skills,
+	source: {
+		profile: $skills,
+		selectedSkills: $selectedSkills,
+	},
+	filter: ({ profile }) => !!profile.nickname,
+	fn: ({ profile, selectedSkills }) => ({ profile, selectedSkills }),
 	target: saveSkillsFx,
 })
 
 const profileAlertId = createAlertFx.alertId('freelancer-profile')
 
-// show save progress toast
+// show save progress toast when profile save starts
 sample({
 	clock: saveSkillsFx,
 	fn: () =>
@@ -140,35 +212,35 @@ sample({
 			id: profileAlertId,
 			severity: 'progress',
 			title: 'Сохраняем профиль...',
-			message: 'Обновляем данные фрилансера',
+			message: 'Обновляем данные фрилансера и навыки',
 			disableClose: true,
 			disableAutoClose: true,
 		}),
 	target: createAlertFx,
 })
 
-// dismiss save progress toast when effect settles
+// dismiss save progress toast when save effect settles
 sample({
 	clock: saveSkillsFx.finally,
 	fn: () => ({ id: profileAlertId }),
 	target: createAlertFx.removeFx,
 })
 
-// toast successful save
+// toast successful save after profile and skills persist
 sample({
 	clock: saveSkillsFx.done,
 	fn: () =>
 		createAlertFx.props({
 			severity: 'success',
 			title: 'Профиль обновлён',
-			message: 'Данные сохранены',
+			message: 'Данные и навыки сохранены',
 		}),
 	target: createAlertFx,
 })
 
 // toast load or save failure
 sample({
-	clock: [loadSkillsFx.failData, saveSkillsFx.failData],
+	clock: [loadSkillCatalogFx.failData, loadAccountSkillsFx.failData, saveSkillsFx.failData],
 	fn: (error) =>
 		createAlertFx.props({
 			severity: 'error',
@@ -178,3 +250,22 @@ sample({
 		}),
 	target: createAlertFx,
 })
+function fetchJson<T>(
+	input: RequestInfo | URL,
+	init?: RequestInit & { fallbackMessage?: string },
+): Promise<T> {
+	const { fallbackMessage = 'Request failed', ...requestInit } = init ?? {}
+	return fetch(input, requestInit).then(async (response) => {
+		if (!response.ok) {
+			const json = await response.json().catch(() => null)
+			throw new Error(json?.error?.message || json?.error || fallbackMessage)
+		}
+
+		const json = await response.json().catch(() => null)
+		if (!json?.success) {
+			throw new Error(json?.error?.message || json?.error || fallbackMessage)
+		}
+
+		return json.data as T
+	})
+}

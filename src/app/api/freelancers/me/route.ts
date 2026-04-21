@@ -38,6 +38,12 @@ export async function GET() {
 			.where('user_id', '=', session.user.id)
 			.executeTakeFirstOrThrow()
 
+		const userSkills = await kysely
+			.selectFrom('user_skills')
+			.select(['skill_id as skillId', 'proficiency_level as proficiencyLevel'])
+			.where('user_id', '=', session.user.id)
+			.execute()
+
 		return successResponse({
 			nickname: userProfile.nickname,
 			profileId: profile.id,
@@ -48,6 +54,7 @@ export async function GET() {
 			experience: profile.experience,
 			createdAt: profile.created_at,
 			updatedAt: profile.updated_at,
+			selectedSkills: userSkills,
 		})
 	} catch (error) {
 		return errorResponse(error)
