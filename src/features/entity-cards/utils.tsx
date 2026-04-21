@@ -86,7 +86,7 @@ export function formatBudget(
 	return `${formatNumber(budgetMin, '**₽**')} ➞ ${formatNumber(budgetMax, null)}${suffix}`
 }
 
-export function formatDeadline(date: Date, short = false, prefix = 'До') {
+export function formatDeadline(date: Date, short = false, prefix = 'до') {
 	return prefix ? `${prefix} ${fullTimeMonth(date, short)}` : fullTimeMonth(date, short)
 }
 

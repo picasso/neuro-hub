@@ -1,3 +1,4 @@
+import { Skills } from './skills'
 import { formatBudget, formatDeadline, formatValue, describeClient, formatList } from './utils'
 import type { PublicProjectListItem } from '@/lib/db/queries/projects'
 import { Badge, Card, type CardProps, Stack, TimeDetails, TS } from '@/ui'
@@ -24,25 +25,10 @@ export function ProjectCard({ item, full }: ProjectCardProps) {
 		category,
 		image,
 	} = item
-	const visibleSkills = skills.slice(0, 4)
-	const remainingSkills = skills.length - visibleSkills.length
 
 	const footer = (
 		<Stack vertical gap={3} align="stretch" className="w-full">
-			{full ? (
-				<Stack wrap gap={1} align="start">
-					{visibleSkills.map((skill) => (
-						<Badge key={skill.id} variant="outline" size="xs">
-							{skill.name}
-						</Badge>
-					))}
-					{remainingSkills > 0 ? (
-						<Badge variant="outline" size="xs">
-							+{remainingSkills}
-						</Badge>
-					) : null}
-				</Stack>
-			) : null}
+			{full && <Skills skills={skills} />}
 			<Stack
 				justify="space-between"
 				gap={3}

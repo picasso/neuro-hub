@@ -1,3 +1,4 @@
+import { Skills } from './skills'
 import { formatBudget, formatDeadline, formatList, formatValue } from './utils'
 import type {
 	ClientProjectApplicationListItem,
@@ -7,21 +8,6 @@ import type { Route } from 'next'
 import { Badge, Card, Link, Stack, TimeDetails, TS } from '@/ui'
 import { cn } from '@/utils'
 
-// id: string;
-//     status: string;
-//     coverLetter: string;
-//     proposedPrice: number;
-//     proposedDeadline: Date | null;
-//     createdAt: Date | null;
-//     updatedAt: Date | null;
-
-// 	id: string;
-//     status: string;
-//     coverLetter: string;
-//     proposedPrice: number;
-//     proposedDeadline: Date | null;
-//     createdAt: Date | null;
-//     updatedAt: Date | null;
 type BaseApplication = Pick<
 	FreelancerApplicationListItem,
 	| 'id'
@@ -52,9 +38,6 @@ export function ApplicationCard({
 	className,
 	children,
 }: ApplicationCardProps) {
-	const visibleSkills = project ? project.skills.slice(0, 4) : []
-	const remainingSkills = project ? project.skills.length - visibleSkills.length : 0
-
 	const footer = (
 		<Stack vertical gap={3} align="stretch" className="w-full text-xs">
 			{project &&
@@ -168,20 +151,7 @@ export function ApplicationCard({
 						</TS>
 					)}
 				</Stack>
-				{full && visibleSkills.length > 0 && (
-					<Stack wrap gap={1.5} align="start">
-						{visibleSkills.map((skill) => (
-							<Badge key={skill.id} variant="outline" size="xs">
-								{skill.name}
-							</Badge>
-						))}
-						{remainingSkills > 0 ? (
-							<Badge variant="outline" size="xs">
-								+{remainingSkills}
-							</Badge>
-						) : null}
-					</Stack>
-				)}
+				{full && <Skills skills={project?.skills} />}
 				<TS
 					clean
 					variant={full ? 'body' : 'caption'}
