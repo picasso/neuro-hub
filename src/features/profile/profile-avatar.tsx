@@ -19,7 +19,6 @@ export function ProfileAvatar() {
 		},
 		[onSelected],
 	)
-	// <Stack vertical gap={2} align="center" className="min-w-fit">
 	return (
 		<div className="shrink-0 lg:col-start-1 lg:row-start-1">
 			<AvatarEditor
