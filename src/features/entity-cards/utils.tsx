@@ -1,4 +1,4 @@
-import { includes, isNumber, isString, map } from 'lodash'
+import { compact, includes, isNumber, isString, map } from 'lodash'
 import { Fragment, type ReactNode } from 'react'
 import type { ProjectClientSummary } from '@/lib/db/queries/projects'
 import { fullTimeMonth, Icon, type IconName, StackSpan, type BadgeColor } from '@/ui'
@@ -103,7 +103,7 @@ export function describeCompany(client?: ProjectClientSummary | null) {
 export function canWithdrawApplication(status: string) {
 	return includes(['submitted', 'shortlisted'], status)
 }
-// &nbsp;{separator}&nbsp;
+
 export function formatList(
 	list: ReactNode[],
 	icon?: IconName | null,
@@ -122,4 +122,8 @@ export function formatList(
 			))}
 		</StackSpan>
 	)
+}
+
+export function joinList(list: (string | null | undefined)[], separator = listSeparator) {
+	return compact(list).join(separator)
 }

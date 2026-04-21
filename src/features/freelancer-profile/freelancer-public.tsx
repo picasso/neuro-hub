@@ -31,20 +31,7 @@ export function FreelancerPublic({ profile }: { profile: PublicFreelancerProfile
 						}}
 					/>
 				) : (
-					<Skills withLevel skills={profile.skills} />
-					// <Stack wrap gap={2} align="start">
-					// 	{profile.skills.map((skill) => (
-					// 		<Badge
-					// 			key={skill.skillId}
-					// 			variant="outline"
-					// 			size="xs"
-					// 			color="secondary"
-					// 			icon="badge-check"
-					// 		>
-					// 			{skill.skill.name} · {levelLabel(skill.proficiencyLevel)}
-					// 		</Badge>
-					// 	))}
-					// </Stack>
+					<Skills withLevel variant="secondary" skills={profile.skills} />
 				)}
 			</Card>
 

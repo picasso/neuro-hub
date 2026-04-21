@@ -1,5 +1,5 @@
 import { map } from 'lodash'
-import { formatList } from './utils'
+import { formatList, joinList } from './utils'
 import { type PublicFreelancerProfile } from '@/lib/db/queries/freelancers'
 import { type ProjectSkillSummary } from '@/lib/db/queries/projects'
 import { Badge, type BadgeProps, Stack, type StackProps, Tooltip, type TooltipProps } from '@/ui'
@@ -36,13 +36,17 @@ export function Skills({
 			{map(visibleSkills, (skill) => (
 				<Badge key={getSkill(skill, 'id')} variant={variant} size={size}>
 					{withLevel
-						? formatList([getSkill(skill), getSkill(skill, 'level')])
+						? formatList([<b>{getSkill(skill)}</b>, getSkill(skill, 'level')])
 						: getSkill(skill)}
 				</Badge>
 			))}
 			{restCount > 0 ? (
 				<Tooltip
-					content={map(remainingSkills, (skill) => getSkill(skill)).join('\n')}
+					content={map(remainingSkills, (skill) =>
+						withLevel
+							? joinList([getSkill(skill), getSkill(skill, 'level')])
+							: getSkill(skill),
+					).join('\n')}
 					side={side}
 				>
 					<Badge variant={variant} size={size}>
