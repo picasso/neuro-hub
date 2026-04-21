@@ -57,7 +57,7 @@ export function HeaderAuth({ email, name, slot }: HeaderAuthProps) {
 				iconOptions={{ spinning: isSigningOut }}
 				onClick={onSignOut}
 			/>
-			<Avatar name={displayName} size="lg" bordered />
+			<Avatar name={displayName} color="auto" size="lg" bordered />
 		</Stack>
 	)
 }

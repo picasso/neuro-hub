@@ -65,7 +65,13 @@ export function ChatToolbar({
 				>
 					{avatar && title && (
 						<Stack gap={3} justify="center">
-							<Avatar src={avatarSrc} bordered={!!avatarSrc} name={title} size="sm" />
+							<Avatar
+								src={avatarSrc}
+								bordered={!!avatarSrc}
+								name={title}
+								color="auto"
+								size="sm"
+							/>
 							<Stack vertical gap={0} align="start" className="min-w-0">
 								<TS
 									clean

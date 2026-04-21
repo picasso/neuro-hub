@@ -72,7 +72,7 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 						/>
 					</Stack>
 					<Stack>
-						<Avatar name={client} />
+						<Avatar name={client} color="auto" />
 						<TS strong variant="caption" color="secondary" content={client} />
 					</Stack>
 				</Stack>

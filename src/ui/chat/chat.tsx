@@ -45,7 +45,7 @@ export function Chat({
 			aria-current={active ? 'true' : undefined}
 		>
 			<Stack gap={3} align="center" className="w-full min-w-0">
-				<Avatar name={name} src={image} size="md" className="shrink-0" />
+				<Avatar name={name} src={image} color="auto" size="md" className="shrink-0" />
 				<Stack vertical gap={0.5} align="stretch" className="min-w-0 flex-1">
 					<Stack direction="row" gap={2} align="center" className="min-w-0">
 						<div className="min-w-0 flex-1 overflow-hidden">
