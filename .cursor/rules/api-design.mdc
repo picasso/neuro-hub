@@ -12,6 +12,16 @@ alwaysApply: true
 - Proper HTTP methods and status codes
 - Unified response format
 
+## Client Request Helpers
+
+- For client-side requests that use the shared `ApiResponse<T>` envelope, prefer `requestJson()` from `src/lib/api-client.ts`.
+- When using `requestJson()`, pass payloads through `json` instead of manual `body: JSON.stringify(...)`.
+- Do not add `headers: { 'content-type': 'application/json' }` manually when using `json`; `requestJson()` already handles it.
+- Use `normalizeJson` when the payload needs generic cleanup such as omitting empty strings, nulls, or empty arrays.
+- `normalizeJson.omitEmptyStrings` already trims string values before omitting empty ones, so do not add extra `trim()` only for empty-string cleanup.
+- Keep field-specific semantics inline at the call site when they are not generic, for example `value.trim() || null`, number parsing, date conversion, or array filtering.
+- Keep local wrappers for cases like `meta`, `204 No Content`, uploads, health checks, streaming, or domain-specific error mapping.
+
 ## Response Format
 
 ```ts

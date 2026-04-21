@@ -1,8 +1,10 @@
 export {
+	type ApiErrorDetails,
 	type ApiErrorPayloadPart,
 	buildUserFacingApiErrorMessage,
 	buildUserFacingApiErrorMessageFromParsed,
 	formatApiValidationErrorDetails,
+	parseClientApiError,
 	parseApiResponseError,
 	pickFieldErrorsFromApiErrors,
 	PROJECT_APPLICATION_VALIDATION_FIELD_LABELS,

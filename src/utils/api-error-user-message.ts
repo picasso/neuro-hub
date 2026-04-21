@@ -3,6 +3,11 @@ export type ApiErrorPayloadPart = {
 	errors?: Record<string, string[]>
 }
 
+export type ApiErrorDetails = ApiErrorPayloadPart & {
+	code?: string
+	statusCode?: number
+}
+
 const DEFAULT_GENERIC_VALIDATION_MESSAGES = new Set(['Validation failed'])
 
 /** Field labels for project application API validation paths (Zod / server). */
@@ -21,6 +26,26 @@ export function parseApiResponseError(json: unknown): ApiErrorPayloadPart | null
 	const message = typeof e.message === 'string' ? e.message : undefined
 	const errors = normalizeErrorsRecord(e.errors)
 	return { message, errors }
+}
+
+export function parseClientApiError(error: unknown): ApiErrorDetails | null {
+	if (!error || typeof error !== 'object') return null
+	const source = error as Record<string, unknown>
+	const message = typeof source.message === 'string' ? source.message : undefined
+	const code = typeof source.code === 'string' ? source.code : undefined
+	const statusCode = typeof source.statusCode === 'number' ? source.statusCode : undefined
+	const errors = normalizeErrorsRecord(source.errors)
+
+	if (!message && !code && statusCode === undefined && !errors) {
+		return null
+	}
+
+	return {
+		message,
+		code,
+		statusCode,
+		errors,
+	}
 }
 
 function normalizeErrorsRecord(raw: unknown): Record<string, string[]> | undefined {

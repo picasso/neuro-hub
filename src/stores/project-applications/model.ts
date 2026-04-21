@@ -2,11 +2,12 @@ import { sample } from 'effector'
 import { createGate } from 'effector-react'
 import { isEmpty } from 'lodash'
 import { createAlertFx } from '@/alerts'
+import { requestJson } from '@/lib/api-client'
 import { projectApplicationsDomain as domain } from '@/lib/logger'
 import { applicationSubmitted, applicationWithdrawn } from '@/stores'
 import {
 	buildUserFacingApiErrorMessageFromParsed,
-	parseApiResponseError,
+	parseClientApiError,
 	pickFieldErrorsFromApiErrors,
 	PROJECT_APPLICATION_VALIDATION_FIELD_LABELS,
 } from '@/utils'
@@ -106,19 +107,22 @@ export const submitProjectApplicationFx = domain.createEffect<
 			})
 		}
 
-		const res = await fetch(`/api/projects/${encodeURIComponent(projectId)}/applications`, {
-			method: 'POST',
-			headers: { 'content-type': 'application/json' },
-			body: JSON.stringify({
-				coverLetter: form.coverLetter.trim(),
-				proposedPrice: Math.trunc(proposedPrice),
-				proposedDeadline: form.proposedDeadline || undefined,
-			}),
-		})
-
-		if (!res.ok) {
-			const json = await res.json().catch(() => null)
-			const parsed = parseApiResponseError(json)
+		try {
+			return await requestJson<{ id: string; status: string }>(
+				`/api/projects/${encodeURIComponent(projectId)}/applications`,
+				{
+					method: 'POST',
+					json: {
+						coverLetter: form.coverLetter.trim(),
+						proposedPrice: Math.trunc(proposedPrice),
+						proposedDeadline: form.proposedDeadline.trim(),
+					},
+					normalizeJson: { omitEmptyStrings: true },
+					fallbackMessage: 'Не удалось подать заявку',
+				},
+			)
+		} catch (error) {
+			const parsed = parseClientApiError(error)
 			const message = buildUserFacingApiErrorMessageFromParsed(parsed, {
 				fallback: 'Не удалось подать заявку',
 				fieldLabels: PROJECT_APPLICATION_VALIDATION_FIELD_LABELS,
@@ -128,12 +132,6 @@ export const submitProjectApplicationFx = domain.createEffect<
 				APPLICATION_FORM_FIELD_KEYS,
 			) as Partial<Record<ProjectApplicationFormField, string>> | undefined
 			throw projectApplicationRequestFailure(message, fieldErrors)
-		}
-
-		const json = await res.json()
-		return {
-			id: json.data.id as string,
-			status: json.data.status as string,
 		}
 	},
 	name: 'submitProjectApplicationFx',
@@ -145,13 +143,16 @@ export const withdrawProjectApplicationFx = domain.createEffect<
 	ProjectApplicationRequestFailure
 >({
 	handler: async ({ applicationId }) => {
-		const res = await fetch(`/api/applications/${encodeURIComponent(applicationId)}`, {
-			method: 'DELETE',
-		})
-
-		if (!res.ok) {
-			const json = await res.json().catch(() => null)
-			const parsed = parseApiResponseError(json)
+		try {
+			return await requestJson<{ id: string; status: string }>(
+				`/api/applications/${encodeURIComponent(applicationId)}`,
+				{
+					method: 'DELETE',
+					fallbackMessage: 'Не удалось отозвать заявку',
+				},
+			)
+		} catch (error) {
+			const parsed = parseClientApiError(error)
 			const message = buildUserFacingApiErrorMessageFromParsed(parsed, {
 				fallback: 'Не удалось отозвать заявку',
 				fieldLabels: PROJECT_APPLICATION_VALIDATION_FIELD_LABELS,
@@ -161,12 +162,6 @@ export const withdrawProjectApplicationFx = domain.createEffect<
 				APPLICATION_FORM_FIELD_KEYS,
 			) as Partial<Record<ProjectApplicationFormField, string>> | undefined
 			throw projectApplicationRequestFailure(message, fieldErrors)
-		}
-
-		const json = await res.json()
-		return {
-			id: json.data.id as string,
-			status: json.data.status as string,
 		}
 	},
 	name: 'withdrawProjectApplicationFx',

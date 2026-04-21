@@ -7,8 +7,10 @@ import type {
 	ProjectExperienceLevel,
 } from '@/lib/validations'
 import { createAlertFx } from '@/alerts'
+import { requestJson } from '@/lib/api-client'
 import { createProjectDomain as domain } from '@/lib/logger'
 import { projectCreated } from '@/stores'
+import { parseClientApiError } from '@/utils'
 
 type CreateProjectStatus = Extract<CreateProjectInput['status'], 'draft' | 'published'>
 
@@ -33,13 +35,6 @@ export type SkillOption = {
 	id: string
 	name: string
 	category: FreelancerDirectoryCategory
-}
-
-type ApiErrorPayload = {
-	error?: {
-		message?: string
-		errors?: Record<string, string[]>
-	}
 }
 
 type CreateProjectFailure = Error & {
@@ -92,13 +87,9 @@ export const $createdProjectId = domain.createStore<string | null>(null, {
 
 export const loadSkillsFx = domain.createEffect<void, SkillOption[], CreateProjectFailure>({
 	handler: async () => {
-		const response = await fetch('/api/skills?pageSize=100')
-		if (!response.ok) {
-			throw createProjectFailure('Не удалось загрузить список навыков')
-		}
-
-		const json = (await response.json()) as { data?: SkillOption[] }
-		return json.data ?? []
+		return requestJson<SkillOption[]>('/api/skills?pageSize=100', {
+			fallbackMessage: 'Не удалось загрузить список навыков',
+		})
 	},
 	name: 'loadSkillsFx',
 })
@@ -135,51 +126,52 @@ export const submitCreateProjectFx = domain.createEffect<
 			})
 		}
 
-		const response = await fetch('/api/projects', {
-			method: 'POST',
-			headers: { 'content-type': 'application/json' },
-			body: JSON.stringify({
-				title: form.title.trim(),
-				description: form.description.trim(),
-				category: form.category,
-				experienceLevel: form.experienceLevel,
-				budgetType: form.budgetType,
-				budgetMin: Math.trunc(budgetMin),
-				budgetMax: Math.trunc(budgetMax),
-				deadline: new Date(form.deadline),
-				skillIds: form.skillIds,
-				status: form.status,
-				attachments: [],
-			} satisfies CreateProjectInput),
-		})
+		try {
+			const result = await requestJson<{ id?: string }>('/api/projects', {
+				method: 'POST',
+				json: {
+					title: form.title.trim(),
+					description: form.description.trim(),
+					category: form.category,
+					experienceLevel: form.experienceLevel,
+					budgetType: form.budgetType,
+					budgetMin: Math.trunc(budgetMin),
+					budgetMax: Math.trunc(budgetMax),
+					deadline: new Date(form.deadline),
+					skillIds: form.skillIds,
+					status: form.status,
+					attachments: [],
+				} satisfies CreateProjectInput,
+				fallbackMessage: 'Не удалось создать проект',
+			})
+			const id = result.id
 
-		if (response.status === 401 || response.status === 403) {
-			throw createProjectFailure(
-				'Создавать проекты могут только клиенты. Войдите в клиентский аккаунт, чтобы продолжить.',
-				undefined,
-				response.status,
-			)
-		}
+			if (!id) {
+				throw createProjectFailure(
+					'Проект создан, но не удалось получить его идентификатор',
+				)
+			}
 
-		if (!response.ok) {
-			const json = (await response.json().catch(() => null)) as ApiErrorPayload | null
-			const fieldErrors = mapFieldErrors(json?.error?.errors)
+			return { id }
+		} catch (error) {
+			const parsed = parseClientApiError(error)
+
+			if (parsed?.statusCode === 401 || parsed?.statusCode === 403) {
+				throw createProjectFailure(
+					'Создавать проекты могут только клиенты. Войдите в клиентский аккаунт, чтобы продолжить.',
+					undefined,
+					parsed.statusCode,
+				)
+			}
+
+			const fieldErrors = mapFieldErrors(parsed?.errors)
 			const message =
-				json?.error?.message === 'Validation failed'
+				parsed?.message === 'Validation failed'
 					? 'Проверьте поля формы и попробуйте снова.'
-					: json?.error?.message || 'Не удалось создать проект'
+					: parsed?.message || 'Не удалось создать проект'
 
-			throw createProjectFailure(message, fieldErrors, response.status)
+			throw createProjectFailure(message, fieldErrors, parsed?.statusCode)
 		}
-
-		const json = (await response.json()) as { data?: { id?: string } }
-		const id = json.data?.id
-
-		if (!id) {
-			throw createProjectFailure('Проект создан, но не удалось получить его идентификатор')
-		}
-
-		return { id }
 	},
 	name: 'submitCreateProjectFx',
 })
