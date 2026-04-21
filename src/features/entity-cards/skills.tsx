@@ -1,14 +1,18 @@
 import { map } from 'lodash'
+import { formatList } from './utils'
+import { type PublicFreelancerProfile } from '@/lib/db/queries/freelancers'
 import { type ProjectSkillSummary } from '@/lib/db/queries/projects'
 import { Badge, type BadgeProps, Stack, type StackProps, Tooltip, type TooltipProps } from '@/ui'
 
+type Skill = ProjectSkillSummary | PublicFreelancerProfile['skills'][number]
 type SkillsProps = {
 	splitAt?: number
-	skills?: ProjectSkillSummary[] | null
+	skills?: Skill[] | null
 	align?: StackProps['align']
 	size?: BadgeProps['size']
 	variant?: BadgeProps['variant']
 	side?: TooltipProps['side']
+	withLevel?: boolean
 	className?: string
 }
 
@@ -19,6 +23,7 @@ export function Skills({
 	size = 'xs',
 	variant = 'outline',
 	side = 'right',
+	withLevel,
 	className,
 }: SkillsProps) {
 	if (!skills || skills.length === 0) return null
@@ -29,13 +34,15 @@ export function Skills({
 	return (
 		<Stack wrap gap={1} align={align} className={className}>
 			{map(visibleSkills, (skill) => (
-				<Badge key={skill.id} variant={variant} size={size}>
-					{skill.name}
+				<Badge key={getSkill(skill, 'id')} variant={variant} size={size}>
+					{withLevel
+						? formatList([getSkill(skill), getSkill(skill, 'level')])
+						: getSkill(skill)}
 				</Badge>
 			))}
 			{restCount > 0 ? (
 				<Tooltip
-					content={map(remainingSkills, (skill) => skill.name).join('\n')}
+					content={map(remainingSkills, (skill) => getSkill(skill)).join('\n')}
 					side={side}
 				>
 					<Badge variant={variant} size={size}>
@@ -45,4 +52,21 @@ export function Skills({
 			) : null}
 		</Stack>
 	)
+}
+
+function getSkill(skill: Skill, key: 'id' | 'name' | 'level' = 'name') {
+	if ('skillId' in skill) return key === 'level' ? level(skill) : skill.skill[key]
+	return key === 'level' ? null : skill[key]
+}
+
+function level(skill: Exclude<Skill, ProjectSkillSummary>) {
+	const level = skill.proficiencyLevel
+	if (!level) return '—'
+	const mapping: Record<string, string> = {
+		beginner: 'Beginner',
+		intermediate: 'Intermediate',
+		advanced: 'Advanced',
+		expert: 'Expert',
+	}
+	return mapping[level]
 }
