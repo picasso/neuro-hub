@@ -106,17 +106,26 @@ export function createChatRows(options?: { avatarUrl?: string | null }) {
 const clientBase = {
 	userId: 'user-client-1',
 	name: 'Анна Орлова',
+	nickname: 'anna-orlova',
 	companyName: 'ООО «НейроЛаб»',
 	companyRole: 'Product lead',
+	location: 'Belgrade, Serbia',
+	languages: [
+		{ code: 'ru', name: 'Russian', nativeName: 'Русский', langLevel: 'native' },
+		{ code: 'en', name: 'English', nativeName: 'English', langLevel: 'fluent' },
+	],
 } as const
+
+const clientBio = `Помогаю AI-командам собирать production-ready пайплайны визуальной генерации:
+от поиска визуального направления до настройки inference,
+контроля качества и передачи процессов команде клиента.`
 
 export function createProjectClient(options?: {
 	withAvatar?: boolean
 	longLines?: boolean
 	avatarUrl?: string | null
 }) {
-	const withAvatar = options?.withAvatar ?? true
-	const longLines = options?.longLines ?? false
+	const { withAvatar, longLines, avatarUrl } = options ?? {}
 
 	return {
 		...clientBase,
@@ -127,7 +136,10 @@ export function createProjectClient(options?: {
 			? `${clientBase.companyName} и ещё немного юридического текста в одну строку`
 			: clientBase.companyName,
 		companyRole: longLines ? `${clientBase.companyRole} / AI` : clientBase.companyRole,
-		avatarUrl: withAvatar ? (options?.avatarUrl ?? null) : null,
+		avatarUrl: withAvatar ? (avatarUrl ?? null) : null,
+		location: clientBase.location,
+		languages: [...clientBase.languages],
+		bio: clientBio,
 	}
 }
 
@@ -158,16 +170,16 @@ export function createFreelancerCardData(options: {
 }): PublicFreelancerGridItem {
 	const {
 		id,
-		longLines = false,
+		longLines,
 		avatarUrl = null,
 		previewUrl = null,
-		hasAvatar = true,
-		hasPreview = true,
+		hasAvatar,
+		hasPreview,
 		availability = 'part-time',
 		portfolioCount = 8,
 	} = options
 
-	const nickname = `mock-${id.replace(/-/g, '').slice(0, 12)}`
+	const nickname = 'socol-lena'
 
 	return {
 		freelancerProfileId: id,
@@ -178,12 +190,17 @@ export function createFreelancerCardData(options: {
 			? 'Елена Соколова — генеративный дизайн и визуальные пайплайны'
 			: 'Елена Соколова',
 		avatarUrl: hasAvatar ? avatarUrl : null,
+		location: 'Tbilisi, Georgia',
+		languages: [
+			{ code: 'ru', name: 'Russian', nativeName: 'Русский', langLevel: 'native' },
+			{ code: 'it', name: 'Italian', nativeName: 'Italiano', langLevel: 'basic' },
+		],
+		bio: longLines
+			? 'Помогаю AI-командам собирать production-ready пайплайны визуальной генерации: от поиска визуального направления до настройки inference, контроля качества и передачи процессов команде клиента.'
+			: 'Production-ready visual pipelines for image generation teams.',
 		specialization: longLines
 			? 'Stable Diffusion, ComfyUI, кастомные LoRA, пост-продакшн и короткие циклы итераций с заказчиком'
 			: 'Generative visuals · SD · ComfyUI',
-		bioSnippet: longLines
-			? 'Помогаю AI-командам собирать production-ready пайплайны визуальной генерации: от поиска визуального направления до настройки inference, контроля качества и передачи процессов команде клиента.'
-			: 'Production-ready visual pipelines for image generation teams.',
 		hourlyRate: 65,
 		availability,
 		topSkills: [

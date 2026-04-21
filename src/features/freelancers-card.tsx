@@ -60,7 +60,7 @@ export function FreelancerGridCard({ item }: FreelancerGridCardProps) {
 						color="secondary"
 						className="line-clamp-3"
 						content={
-							item.bioSnippet ||
+							item.bio ||
 							'Пользователь еще не добавил описание, но уже доступен для просмотра профиля.'
 						}
 					/>

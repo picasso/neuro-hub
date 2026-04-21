@@ -1,16 +1,10 @@
+import { getPublicLanguagesByUserIds, type PublicUserLanguage } from './public-user-languages'
 import type { FreelancerDirectoryQueryInput } from '@/lib/validations/freelancer-directory'
 import type { FreelancerProfiles } from '@/types/database'
 import type { Selectable } from 'kysely'
 import { kysely } from '@/lib/db'
 
 type FreelancerProfileRow = Selectable<FreelancerProfiles>
-
-export type PublicUserLanguage = {
-	code: string
-	name: string
-	nativeName: string
-	langLevel: 'basic' | 'conversational' | 'fluent' | 'native'
-}
 
 export type PublicFreelancerProfile = {
 	userId: string
@@ -61,8 +55,10 @@ export type PublicFreelancerGridItem = {
 	href: string
 	name: string | null
 	avatarUrl: string | null
+	location: string | null
+	languages: PublicUserLanguage[]
+	bio: string | null
 	specialization: string | null
-	bioSnippet: string | null
 	hourlyRate: number | null
 	availability: string | null
 	topSkills: Array<{
@@ -395,7 +391,7 @@ export async function listPublicFreelancers(
 	const userIds = rows.map((row) => row.userId)
 	const freelancerProfileIds = rows.map((row) => row.freelancerProfileId)
 
-	const [skillRows, portfolioRows] = await Promise.all([
+	const [skillRows, portfolioRows, languagesByUserId] = await Promise.all([
 		kysely
 			.selectFrom('user_skills as user_skill')
 			.innerJoin('skills as skill', 'skill.id', 'user_skill.skill_id')
@@ -423,6 +419,7 @@ export async function listPublicFreelancers(
 			.where('portfolio_item.freelancer_profile_id', 'in', freelancerProfileIds)
 			.orderBy('portfolio_item.created_at', 'desc')
 			.execute(),
+		getPublicLanguagesByUserIds(userIds),
 	])
 
 	const skillsByUserId = new Map<string, PublicFreelancerGridItem['topSkills']>()
@@ -476,8 +473,10 @@ export async function listPublicFreelancers(
 		href: `/freelancers/${row.nickname}`,
 		name: row.name,
 		avatarUrl: row.avatarUrl,
+		location: row.location,
+		languages: languagesByUserId.get(row.userId) ?? [],
+		bio: row.bio,
 		specialization: row.specialization,
-		bioSnippet: toSnippet(row.bio),
 		hourlyRate: row.hourlyRate,
 		availability: row.availability,
 		topSkills: skillsByUserId.get(row.userId) ?? [],
@@ -569,11 +568,4 @@ export async function countActiveFreelancerApplications({
 		.executeTakeFirstOrThrow()
 
 	return Number(result.count)
-}
-
-function toSnippet(value: string | null, maxLength = 160) {
-	if (!value) return null
-	const normalized = value.replace(/\s+/g, ' ').trim()
-	if (normalized.length <= maxLength) return normalized
-	return `${normalized.slice(0, maxLength - 1).trimEnd()}…`
 }
