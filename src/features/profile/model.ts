@@ -9,6 +9,7 @@ import { debounce } from 'patronum'
 import type { NickStatus, ProfileDTO, ProfileForm, Language } from './types'
 import { createAlertFx } from '@/alerts'
 import { config } from '@/config'
+import { requestJson } from '@/lib/api-client'
 import { profileDomain as domain } from '@/lib/logger'
 import { nicknameSchema } from '@/lib/validations'
 import { fileSize } from '@/utils'
@@ -105,44 +106,35 @@ $nickMessage.on(nicknameChecked, (_, feedback) => feedback.message)
 
 export const loadProfileFx = domain.createEffect<void, ProfileDTO | null, Error>({
 	handler: async () => {
-		const res = await fetch('/api/user/profile')
-		if (!res.ok) {
-			const json = await res.json().catch(() => null)
-			throw new Error(json?.error?.message || json?.error || 'Failed to load profile')
-		}
-		const json = await res.json()
-		return (json.data ?? null) as ProfileDTO | null
+		return (
+			(await requestJson<ProfileDTO | null>('/api/user/profile', {
+				fallbackMessage: 'Failed to load profile',
+			})) ?? null
+		)
 	},
 	name: 'loadProfileFx',
 })
 
 export const saveProfileFx = domain.createEffect<ProfileForm, ProfileDTO, Error>({
 	handler: async (form) => {
-		const res = await fetch('/api/user/profile', {
+		return requestJson<ProfileDTO>('/api/user/profile', {
 			method: 'PUT',
-			headers: { 'content-type': 'application/json' },
-			body: JSON.stringify({
-				name: emptyToUndefined(form.name),
-				nickname: emptyToUndefined(form.nickname),
-				location: emptyToNull(form.location),
-				bio: emptyToUndefined(form.bio),
-				avatarUrl: emptyToUndefined(form.avatarUrl),
+			json: {
+				name: form.name,
+				nickname: form.nickname,
+				location: form.location.trim() || null,
+				bio: form.bio,
+				avatarUrl: form.avatarUrl,
 				languages: form.languages
 					.filter((item) => !!item.languageCode)
 					.map((item) => ({
 						languageCode: item.languageCode,
 						langLevel: item.langLevel,
 					})),
-			}),
+			},
+			normalizeJson: { omitEmptyStrings: true },
+			fallbackMessage: 'Failed to save profile',
 		})
-
-		if (!res.ok) {
-			const json = await res.json().catch(() => null)
-			throw new Error(json?.error?.message || json?.error || 'Failed to save profile')
-		}
-
-		const json = await res.json()
-		return json.data as ProfileDTO
 	},
 	name: 'saveProfileFx',
 })
@@ -154,14 +146,12 @@ export const checkNickFx = domain.createEffect<
 >({
 	handler: async (nickname) => {
 		const params = new URLSearchParams({ nickname })
-		const res = await fetch(`/api/user/profile/nickname?${params.toString()}`)
-		if (!res.ok) {
-			const json = await res.json().catch(() => null)
-			throw new Error(json?.error?.message || json?.error || 'Failed to check nickname')
-		}
-
-		const json = await res.json()
-		return json.data as { nickname: string; available: boolean }
+		return requestJson<{ nickname: string; available: boolean }>(
+			`/api/user/profile/nickname?${params.toString()}`,
+			{
+				fallbackMessage: 'Failed to check nickname',
+			},
+		)
 	},
 	name: 'checkNickFx',
 })
@@ -414,16 +404,6 @@ function toForm(profile: ProfileDTO | null): ProfileForm {
 				...language,
 			})) ?? [],
 	}
-}
-
-function emptyToUndefined(value: string) {
-	const normalized = value.trim()
-	return normalized ? normalized : undefined
-}
-
-function emptyToNull(value: string) {
-	const normalized = value.trim()
-	return normalized ? normalized : null
 }
 
 function normalizeNickname(value: string) {

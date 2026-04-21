@@ -7,6 +7,7 @@ import { isEmpty } from 'lodash'
 import type { PortfolioForm, PortfolioItem, UploadResult } from './types'
 import { createAlertFx, updateAlert } from '@/alerts'
 import { config } from '@/config'
+import { requestJson } from '@/lib/api-client'
 import { freelancerPortfolioDomain as domain } from '@/lib/logger'
 import { portfolioWorkCreated, portfolioWorkDeleted } from '@/stores'
 import { fileSize } from '@/utils'
@@ -97,13 +98,12 @@ $uploadFeedbackMode
 
 export const loadPortfolioFx = domain.createEffect<{ nickname: string }, PortfolioItem[], Error>({
 	handler: async ({ nickname }) => {
-		const res = await fetch(`/api/freelancers/${encodeURIComponent(nickname)}/portfolio`)
-		if (!res.ok) {
-			const json = await res.json().catch(() => null)
-			throw new Error(json?.error?.message || json?.error || 'Failed to load portfolio')
-		}
-		const json = await res.json()
-		return json.data as PortfolioItem[]
+		return requestJson<PortfolioItem[]>(
+			`/api/freelancers/${encodeURIComponent(nickname)}/portfolio`,
+			{
+				fallbackMessage: 'Failed to load portfolio',
+			},
+		)
 	},
 	name: 'loadPortfolioFx',
 })
@@ -168,31 +168,29 @@ export const createPortfolioItemFx = domain.createEffect<
 		mediaUrl,
 		mediaType,
 	}) => {
-		const res = await fetch(`/api/freelancers/${encodeURIComponent(nickname)}/portfolio`, {
-			method: 'POST',
-			headers: { 'content-type': 'application/json' },
-			body: JSON.stringify({
-				title,
-				description: description || undefined,
-				mediaWidth,
-				mediaHeight,
-				caption: caption || undefined,
-				category: category || undefined,
-				toolsUsed: toolsUsed?.length ? toolsUsed : undefined,
-				mediaUrl,
-				mediaType: mediaType || undefined,
-			}),
-		})
-
-		if (!res.ok) {
-			const json = await res.json().catch(() => null)
-			throw new Error(
-				json?.error?.message || json?.error || 'Failed to create portfolio item',
-			)
-		}
-
-		const json = await res.json()
-		return json.data as PortfolioItem
+		return requestJson<PortfolioItem>(
+			`/api/freelancers/${encodeURIComponent(nickname)}/portfolio`,
+			{
+				method: 'POST',
+				json: {
+					title,
+					description,
+					mediaWidth,
+					mediaHeight,
+					caption,
+					category,
+					toolsUsed,
+					mediaUrl,
+					mediaType,
+				},
+				normalizeJson: {
+					omitEmptyStrings: true,
+					omitNulls: true,
+					omitEmptyArrays: true,
+				},
+				fallbackMessage: 'Failed to create portfolio item',
+			},
+		)
 	},
 	name: 'createPortfolioItemFx',
 })

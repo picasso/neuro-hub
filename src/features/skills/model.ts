@@ -7,6 +7,7 @@ import { find, findIndex, isEmpty } from 'lodash'
 import type { AccountSkillsLoadDTO, FreelancerSkills, SkillItem } from './types'
 import type { UserSkillInput } from '@/lib/validations'
 import { createAlertFx } from '@/alerts'
+import { requestJson } from '@/lib/api-client'
 import { freelancerProfileDomain as domain } from '@/lib/logger'
 
 // * * * gate -------------------------------------------------------------------------------------]
@@ -79,7 +80,7 @@ $selectedSkills.on(skillLevelUpdated, (skills, { skillId, level }) =>
 
 export const loadSkillCatalogFx = domain.createEffect<void, SkillItem[], Error>({
 	handler: async () => {
-		return fetchJson<SkillItem[]>('/api/skills?pageSize=100', {
+		return requestJson<SkillItem[]>('/api/skills?pageSize=100', {
 			fallbackMessage: 'Failed to load skills catalog',
 		})
 	},
@@ -88,7 +89,7 @@ export const loadSkillCatalogFx = domain.createEffect<void, SkillItem[], Error>(
 
 export const loadAccountSkillsFx = domain.createEffect<void, AccountSkillsLoadDTO, Error>({
 	handler: async () => {
-		return fetchJson<AccountSkillsLoadDTO>('/api/freelancers/me', {
+		return requestJson<AccountSkillsLoadDTO>('/api/freelancers/me', {
 			fallbackMessage: 'Failed to load freelancer profile',
 		})
 	},
@@ -108,16 +109,16 @@ export const saveSkillsFx = domain.createEffect<
 			throw new Error('Hourly rate must be a positive number')
 		}
 
-		await fetchJson(`/api/freelancers/${encodeURIComponent(nickname)}`, {
+		await requestJson(`/api/freelancers/${encodeURIComponent(nickname)}`, {
 			method: 'PUT',
-			headers: { 'content-type': 'application/json' },
-			body: JSON.stringify({
-				specialization: specialization.trim() || undefined,
+			json: {
+				specialization,
 				hourlyRate: parsedHourly !== undefined ? Math.trunc(parsedHourly) : undefined,
-				availability: availability.trim() || undefined,
-				experience: experience.trim() || undefined,
+				availability,
+				experience,
 				skills: selectedSkills,
-			}),
+			},
+			normalizeJson: { omitEmptyStrings: true },
 			fallbackMessage: 'Failed to save freelancer profile',
 		})
 	},
@@ -250,22 +251,3 @@ sample({
 		}),
 	target: createAlertFx,
 })
-function fetchJson<T>(
-	input: RequestInfo | URL,
-	init?: RequestInit & { fallbackMessage?: string },
-): Promise<T> {
-	const { fallbackMessage = 'Request failed', ...requestInit } = init ?? {}
-	return fetch(input, requestInit).then(async (response) => {
-		if (!response.ok) {
-			const json = await response.json().catch(() => null)
-			throw new Error(json?.error?.message || json?.error || fallbackMessage)
-		}
-
-		const json = await response.json().catch(() => null)
-		if (!json?.success) {
-			throw new Error(json?.error?.message || json?.error || fallbackMessage)
-		}
-
-		return json.data as T
-	})
-}
