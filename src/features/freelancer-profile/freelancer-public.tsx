@@ -1,7 +1,8 @@
 'use client'
 
+import { Skills } from '../entity-cards/skills'
 import type { PublicFreelancerProfile } from '@/lib/db/queries/freelancers'
-import { Badge, Card, Empty, Stack, TS, Portfolio } from '@/ui'
+import { Card, Empty, Stack, Portfolio } from '@/ui'
 import { pluralizeRuWithCount } from '@/utils'
 
 export function FreelancerPublic({ profile }: { profile: PublicFreelancerProfile }) {
@@ -9,57 +10,41 @@ export function FreelancerPublic({ profile }: { profile: PublicFreelancerProfile
 		<Stack vertical gap={6} align="stretch">
 			<Card
 				fullWidth
-				title="О себе"
-				description="Краткое описание опыта, специализации и подхода к работе."
-			>
-				{profile.userProfile?.bio ? (
-					<TS
-						variant="body"
-						color="secondary"
-						className="whitespace-pre-line"
-						content={profile.userProfile.bio}
-					/>
-				) : (
-					<Empty
-						outline
-						compact
-						fullWidth
-						align="start"
-						title="Описание пока не добавлено"
-						helper="Пользователь еще не заполнил публичный блок с рассказом о себе."
-					/>
-				)}
-			</Card>
-
-			<Card
-				fullWidth
 				title="Навыки"
 				description="Ключевые компетенции и текущий уровень владения."
 				badge={pluralizeRuWithCount(profile.skills.length, 'skill')}
+				gap="none"
 			>
 				{profile.skills.length === 0 ? (
 					<Empty
 						outline
 						compact
 						fullWidth
+						dark
 						align="start"
+						mediaIcon="start"
+						icon="brain-circuit"
 						title="Навыки не указаны"
-						helper="Когда пользователь заполнит профиль, здесь появится список подтвержденных навыков."
+						helper={{
+							helper: 'Когда пользователь заполнит профиль,\nздесь появится список подтвержденных навыков.',
+							md: { br: true },
+						}}
 					/>
 				) : (
-					<Stack wrap gap={2} align="start">
-						{profile.skills.map((skill) => (
-							<Badge
-								key={skill.skillId}
-								variant="outline"
-								size="xs"
-								color="secondary"
-								icon="badge-check"
-							>
-								{skill.skill.name} · {levelLabel(skill.proficiencyLevel)}
-							</Badge>
-						))}
-					</Stack>
+					<Skills withLevel skills={profile.skills} />
+					// <Stack wrap gap={2} align="start">
+					// 	{profile.skills.map((skill) => (
+					// 		<Badge
+					// 			key={skill.skillId}
+					// 			variant="outline"
+					// 			size="xs"
+					// 			color="secondary"
+					// 			icon="badge-check"
+					// 		>
+					// 			{skill.skill.name} · {levelLabel(skill.proficiencyLevel)}
+					// 		</Badge>
+					// 	))}
+					// </Stack>
 				)}
 			</Card>
 
@@ -68,16 +53,22 @@ export function FreelancerPublic({ profile }: { profile: PublicFreelancerProfile
 				title="Портфолио"
 				description="Галерея работ с готовым предпросмотром медиа через PortfolioViewer."
 				badge={pluralizeRuWithCount(profile.portfolio.length, 'work')}
+				gap="none"
 			>
 				{profile.portfolio.length === 0 ? (
 					<Empty
 						outline
 						compact
 						fullWidth
+						dark
 						align="start"
+						mediaIcon="start"
 						icon="collections-bookmark"
 						title="Портфолио пока пустое"
-						helper="Когда пользователь добавит кейсы, здесь появится галерея работ с предпросмотром."
+						helper={{
+							helper: 'Когда пользователь добавит кейсы,\nздесь появится галерея работ с предпросмотром.',
+							md: { br: true },
+						}}
 					/>
 				) : (
 					<Portfolio items={profile.portfolio} />
@@ -89,11 +80,13 @@ export function FreelancerPublic({ profile }: { profile: PublicFreelancerProfile
 					fullWidth
 					title="Отзывы"
 					description="Отзывы клиентов о работе с фрилансером."
+					gap="none"
 				>
 					<Empty
 						outline
 						compact
 						fullWidth
+						dark
 						align="start"
 						mediaIcon="center"
 						icon="message-circle-check"
@@ -106,11 +99,13 @@ export function FreelancerPublic({ profile }: { profile: PublicFreelancerProfile
 					fullWidth
 					title="Статистика"
 					description="Метрики по проектам, заказам и активности."
+					gap="none"
 				>
 					<Empty
 						outline
 						compact
 						fullWidth
+						dark
 						align="start"
 						mediaIcon="center"
 						icon="chart-area"
@@ -121,19 +116,4 @@ export function FreelancerPublic({ profile }: { profile: PublicFreelancerProfile
 			</div>
 		</Stack>
 	)
-}
-
-function levelLabel(level: string | null) {
-	switch (level) {
-		case 'beginner':
-			return 'Beginner'
-		case 'intermediate':
-			return 'Intermediate'
-		case 'advanced':
-			return 'Advanced'
-		case 'expert':
-			return 'Expert'
-		default:
-			return '—'
-	}
 }

@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation'
+import { PersonCard } from '../entity-cards/person-card'
 import { FreelancerPublic } from './freelancer-public'
 import { getPublicFreelancerProfileByNickname } from '@/lib/db/queries/freelancers'
 import { freelancerNicknameParamSchema } from '@/lib/validations'
-import { Avatar, PageShell, Stack, TS } from '@/ui'
+import { PageShell, Stack } from '@/ui'
 
 type PageProps = {
 	params: Promise<{ nickname: string }>
@@ -19,24 +20,10 @@ export async function FreelancerProfilePage(props: PageProps) {
 
 	return (
 		<PageShell preset="public">
-			<Stack gap={4} className="mb-8">
-				<Avatar
-					name={profile.userProfile?.name || 'Freelancer'}
-					size="lg"
-					src={profile.userProfile?.avatarUrl ?? undefined}
-				/>
-				<div className="min-w-0">
-					<TS clean variant="h4" content={profile.userProfile?.name || 'Freelancer'} />
-					<TS
-						clean
-						variant="body"
-						color="secondary"
-						className="text-sm"
-						content={profile.freelancer.specialization || 'Специализация не указана'}
-					/>
-				</div>
+			<Stack vertical gap={8} align="stretch">
+				<PersonCard full hero forcedEmpty freelancer={profile} />
+				<FreelancerPublic profile={profile} />
 			</Stack>
-			<FreelancerPublic profile={profile} />
 		</PageShell>
 	)
 }
