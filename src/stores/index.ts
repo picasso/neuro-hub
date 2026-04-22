@@ -12,6 +12,16 @@ export {
 	projectCreated,
 	resetContext,
 } from './account-context/model'
+export {
+	$authHeaderState,
+	$authHeaderUnreadMessages,
+	$authHeaderViewer,
+	authHeaderHydrated,
+	authHeaderUnreadMessagesPatched,
+	authHeaderViewerPatched,
+	AuthHeaderGate,
+	clearAuthHeader,
+} from './auth-header/model'
 export { openChatConversation } from './chat/api'
 export {
 	$activeConversation,

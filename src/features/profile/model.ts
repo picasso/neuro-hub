@@ -12,6 +12,7 @@ import { config } from '@/config'
 import { requestJson } from '@/lib/api-client'
 import { profileDomain as domain } from '@/lib/logger'
 import { nicknameSchema } from '@/lib/validations'
+import { $authHeaderViewer, authHeaderViewerPatched } from '@/stores'
 import { fileSize } from '@/utils'
 
 const ALLOWED_AVATAR_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -258,6 +259,18 @@ sample({
 			: savedForm
 	},
 	target: $form,
+})
+
+// sync saved profile identity into the shared account shell viewer
+sample({
+	clock: saveProfileFx.doneData,
+	source: $authHeaderViewer,
+	filter: (viewer) => !!viewer,
+	fn: (viewer, profile) => ({
+		displayName: profile.name?.trim() || viewer!.displayName,
+		avatarUrl: profile.avatarUrl ?? viewer!.avatarUrl ?? null,
+	}),
+	target: authHeaderViewerPatched,
 })
 
 // derive immediate nickname feedback as soon as the field changes

@@ -13,6 +13,7 @@ export {
 } from './debug-effector'
 
 export {
+	authHeaderDomain,
 	accountContextDomain,
 	accountSidebarDomain,
 	alertsDomain,

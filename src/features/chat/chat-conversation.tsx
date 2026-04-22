@@ -61,6 +61,7 @@ export function ChatConversation() {
 					back
 					backHref={toAccountChatsRoute()}
 					avatar
+					avatarSrc={active.conversation?.otherParticipant.image ?? undefined}
 					title={active.conversation?.otherParticipant.name ?? 'Обсуждение'}
 					desc={
 						active.conversation

@@ -30,7 +30,6 @@ describe('account-context model', () => {
 			applications: 5,
 			messages: 2,
 		})
-
 		await allSettled(AccountContextGate.close, { scope, params: { role: 'client' } })
 
 		expect(scope.getState($accountContext)).toBeNull()

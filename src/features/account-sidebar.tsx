@@ -95,17 +95,17 @@ export const sidebarGroups: SidebarGroup[] = [
 ]
 
 type AccountSidebarProps = {
-	context: AccountSnapshot
+	snapshot: AccountSnapshot
 }
 
-export function AccountSidebar({ context }: AccountSidebarProps) {
+export function AccountSidebar({ snapshot }: AccountSidebarProps) {
 	useGate(AccountSidebarGate)
-	const accountContext = useUnit($accountContext) ?? context
+	const accountSnapshot = useUnit($accountContext) ?? snapshot
 
 	return (
 		<Sidebar
-			context={accountContext.role}
-			badges={accountContext}
+			context={accountSnapshot.role}
+			badges={accountSnapshot}
 			collapsible="icon"
 			groups={sidebarGroups}
 			variant="sidebar"

@@ -18,6 +18,7 @@ export const debugStores = {
 	onboarding: true,
 	auth: true,
 	viewer: true,
+	authHeader: true,
 	accountContext: true,
 	accountSidebar: true,
 	createProject: true,
@@ -104,6 +105,12 @@ export const profileDomain = createDomainWatched(
 	'profile',
 	{ filter: { gate: false } },
 	debugStores.profile,
+)
+
+export const authHeaderDomain = createDomainWatched(
+	'auth-header',
+	{ filter: { gate: false } },
+	debugStores.authHeader,
 )
 
 // * * * account ----------------------------------------------------------------------------------]

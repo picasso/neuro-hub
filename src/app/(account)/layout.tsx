@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
 import type { ReactNode } from 'react'
+import { AuthHeaderGateProvider } from '@/features/auth-header-gate'
 import { AccountShell } from '@/features/server'
-import { getAccountSnapshot } from '@/lib/account'
+import { getAccountShellState } from '@/lib/account'
 import { getSsrSafeSession } from '@/lib/auth/server'
 
 type AccountLayoutProps = {
@@ -12,11 +13,16 @@ export default async function AccountLayout({ children }: AccountLayoutProps) {
 	const session = await getSsrSafeSession()
 	if (!session) redirect('/login?next=/dashboard')
 
-	const context = await getAccountSnapshot(session)
+	const state = await getAccountShellState(session)
 
 	return (
-		<AccountShell email={session.user.email} name={session.user.name} context={context}>
-			{children}
-		</AccountShell>
+		<AuthHeaderGateProvider
+			state={{
+				viewer: state.viewer,
+				unreadMessages: state.snapshot.messages ?? 0,
+			}}
+		>
+			<AccountShell state={state}>{children}</AccountShell>
+		</AuthHeaderGateProvider>
 	)
 }

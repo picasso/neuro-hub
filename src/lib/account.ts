@@ -18,6 +18,19 @@ export type AccountSnapshot = {
 	works?: number
 	messages?: number
 }
+export type AccountViewer = {
+	email: string
+	displayName: string
+	avatarUrl: string | null
+}
+export type AuthHeaderState = {
+	viewer: AccountViewer
+	unreadMessages: number
+}
+export type AccountShellState = {
+	viewer: AccountViewer
+	snapshot: AccountSnapshot
+}
 
 export type AccountContext = {
 	session: Session
@@ -84,5 +97,43 @@ export async function getAccountSnapshot(session: Session): Promise<AccountSnaps
 		applications,
 		works,
 		messages,
+	}
+}
+
+export async function getAuthHeaderState(session: Session): Promise<AuthHeaderState> {
+	const [viewer, unreadMessages] = await Promise.all([
+		getAccountViewer(session),
+		countUnreadChatMessagesForUser(session.user.id),
+	])
+
+	return {
+		viewer,
+		unreadMessages,
+	}
+}
+
+export async function getAccountShellState(session: Session): Promise<AccountShellState> {
+	const [snapshot, viewer] = await Promise.all([
+		getAccountSnapshot(session),
+		getAccountViewer(session),
+	])
+
+	return {
+		viewer,
+		snapshot,
+	}
+}
+
+async function getAccountViewer(session: Session): Promise<AccountViewer> {
+	const profile = await kysely
+		.selectFrom('user_profiles')
+		.select(['name', 'avatar_url as avatarUrl'])
+		.where('user_id', '=', session.user.id)
+		.executeTakeFirst()
+
+	return {
+		email: session.user.email,
+		displayName: profile?.name?.trim() || session.user.name?.trim() || session.user.email,
+		avatarUrl: profile?.avatarUrl ?? session.user.image ?? null,
 	}
 }
