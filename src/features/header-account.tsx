@@ -16,7 +16,7 @@ type AccountHeaderProps = {
 export function AccountHeader({ viewer, snapshot, banner, slot }: AccountHeaderProps) {
 	return (
 		<PageContainer width="desktop">
-			<Stack justify="space-between" gap={4} className="h-14">
+			<Stack justify="space-between" gap={4} className="h-16">
 				<Stack gap={3}>
 					<SidebarTrigger className="-ml-1 md:hidden" />
 					<Separator orientation="vertical" className="h-8! md:hidden bg-accent-dark" />
@@ -32,10 +32,8 @@ export function AccountHeader({ viewer, snapshot, banner, slot }: AccountHeaderP
 				</Stack>
 
 				<HeaderAuth
-					email={viewer.email}
-					name={viewer.displayName}
-					avatarUrl={viewer.avatarUrl}
-					unreadMessages={snapshot.messages}
+					viewer={viewer}
+					snapshot={snapshot}
 					variant="account"
 					slot={<PlaygroundButton />}
 				/>

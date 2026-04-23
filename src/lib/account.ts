@@ -23,14 +23,11 @@ export type AccountViewer = {
 	displayName: string
 	avatarUrl: string | null
 }
-export type AuthHeaderState = {
-	viewer: AccountViewer
-	unreadMessages: number
-}
 export type AccountShellState = {
 	viewer: AccountViewer
 	snapshot: AccountSnapshot
 }
+export type AuthHeaderState = AccountShellState
 
 export type AccountContext = {
 	session: Session
@@ -97,18 +94,6 @@ export async function getAccountSnapshot(session: Session): Promise<AccountSnaps
 		applications,
 		works,
 		messages,
-	}
-}
-
-export async function getAuthHeaderState(session: Session): Promise<AuthHeaderState> {
-	const [viewer, unreadMessages] = await Promise.all([
-		getAccountViewer(session),
-		countUnreadChatMessagesForUser(session.user.id),
-	])
-
-	return {
-		viewer,
-		unreadMessages,
 	}
 }
 

@@ -22,7 +22,11 @@ describe('auth-header model', () => {
 					displayName: 'Client User',
 					avatarUrl: 'https://example.com/avatar.png',
 				},
-				unreadMessages: 2,
+				snapshot: {
+					role: 'client',
+					messages: 2,
+					projects: 4,
+				},
 			},
 		})
 
@@ -32,7 +36,11 @@ describe('auth-header model', () => {
 				displayName: 'Client User',
 				avatarUrl: 'https://example.com/avatar.png',
 			},
-			unreadMessages: 2,
+			snapshot: {
+				role: 'client',
+				messages: 2,
+				projects: 4,
+			},
 		})
 
 		await allSettled(AuthHeaderGate.close, {
@@ -43,11 +51,15 @@ describe('auth-header model', () => {
 					displayName: 'Client User',
 					avatarUrl: 'https://example.com/avatar.png',
 				},
-				unreadMessages: 2,
+				snapshot: {
+					role: 'client',
+					messages: 2,
+					projects: 4,
+				},
 			},
 		})
 
-		expect(scope.getState($authHeaderState)).not.toBeNull()
+		expect(scope.getState($authHeaderState)).toBeNull()
 	})
 
 	it('patches viewer identity and unread count independently', async () => {
@@ -61,7 +73,11 @@ describe('auth-header model', () => {
 					displayName: 'Before Save',
 					avatarUrl: null,
 				},
-				unreadMessages: 3,
+				snapshot: {
+					role: 'freelancer',
+					messages: 3,
+					applications: 1,
+				},
 			},
 		})
 
@@ -83,6 +99,11 @@ describe('auth-header model', () => {
 			avatarUrl: 'https://example.com/new-avatar.png',
 		})
 		expect(scope.getState($authHeaderUnreadMessages)).toBe(7)
+		expect(scope.getState($authHeaderState)?.snapshot).toEqual({
+			role: 'freelancer',
+			messages: 7,
+			applications: 1,
+		})
 	})
 
 	it('clears the shared header state explicitly', async () => {
@@ -96,7 +117,10 @@ describe('auth-header model', () => {
 					displayName: 'Clear Me',
 					avatarUrl: null,
 				},
-				unreadMessages: 1,
+				snapshot: {
+					role: 'client',
+					messages: 1,
+				},
 			},
 		})
 
