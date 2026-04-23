@@ -41,7 +41,13 @@ export function PersonCardHero({
 	return (
 		<Stack gap={full ? 8 : 0} vertical>
 			<Stack gap={8} className="w-full">
-				<Avatar size="editor" color="auto" name={name} src={avatarUrl} />
+				<Avatar
+					size="editor"
+					color="auto"
+					name={name}
+					src={avatarUrl}
+					bordered={!!avatarUrl}
+				/>
 				<Stack gap={3} vertical align="start">
 					<Stack gap={4}>
 						<HeroRecord variant="h4" content={name} />

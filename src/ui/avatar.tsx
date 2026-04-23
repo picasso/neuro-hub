@@ -31,7 +31,7 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
 		src,
 		alt,
 		badge,
-		bordered = false,
+		bordered,
 		className,
 		fallbackClassName,
 		fallbackNode,
@@ -44,14 +44,14 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
 	const isAuto = color === undefined || color === null || color === 'auto'
 	const bgColor = isAuto ? (palette[stringToHash(name)] ?? palette[0]) : color
 	const shadcnSize = size === 'md' || size === 'editor' ? 'default' : size
-
+	const outline = bordered !== false && !!src
 	return (
 		<AvatarRoot
 			key={`${src ?? 'fallback'}:${name}`}
 			ref={ref}
 			size={shadcnSize}
 			className={cn(
-				bordered && 'outline outline-foreground/20',
+				outline && 'outline outline-black/10',
 				badge && 'overflow-visible',
 				// extra visual padding for sm size initials
 				size === 'sm' && 'outline',
