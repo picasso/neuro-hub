@@ -1,5 +1,6 @@
 import { sample } from 'effector'
 import { createGate } from 'effector-react'
+import { produce } from 'immer'
 import type { AuthHeaderState, AccountViewer } from '@/lib/account'
 import { authHeaderDomain as domain } from '@/lib/logger'
 
@@ -26,13 +27,12 @@ $authHeaderState
 	.on(authHeaderHydrated, (_, state) => state)
 	.on(authHeaderViewerPatched, (state, patch) =>
 		state
-			? {
-					...state,
-					viewer: {
-						...state.viewer,
+			? produce(state, (draft) => {
+					draft.viewer = {
+						...draft.viewer,
 						...patch,
-					},
-				}
+					}
+				})
 			: state,
 	)
 	.on(authHeaderUnreadMessagesPatched, (state, unreadMessages) =>

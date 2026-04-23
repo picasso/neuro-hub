@@ -34,6 +34,8 @@ export type CommandOption = {
 	keywords?: string[]
 	href?: Route
 	onSelect?: () => void
+	closable?: boolean
+	hideZero?: boolean
 }
 
 export type CommandOptionGroup = {
@@ -258,12 +260,13 @@ function CommandItemRow({ option, onItemSelect, onClose, className }: CommandIte
 		keywords,
 		disabled,
 		onSelect,
+		hideZero,
 	} = option
 	const { tw: iconClassName, ...iconRest } = iconOptions ?? {}
 	const onSelectProxy = (option: CommandOption) => {
 		onSelect?.()
 		if (!onSelect) onItemSelect?.(option)
-		onClose?.()
+		if (option.closable !== false) onClose?.()
 	}
 
 	return (
@@ -297,7 +300,7 @@ function CommandItemRow({ option, onItemSelect, onClose, className }: CommandIte
 						{shortcut != null && (
 							<span className="shrink-0 text-muted-foreground">{shortcut}</span>
 						)}
-						{badge != null && (
+						{checkBadge(badge, hideZero) && (
 							<Badge size="xs" className="shrink-0" {...badgeProps}>
 								{badge}
 							</Badge>
@@ -365,4 +368,10 @@ function CommandListBody({ emptyText, onItemSelect, onClose, ...props }: Command
 			))}
 		</>
 	)
+}
+
+function checkBadge(badge: CommandOption['badge'], hideZero?: CommandOption['hideZero']) {
+	if (hideZero !== false && badge === 0) return false
+	if (badge == 0) return true
+	return !!badge
 }
