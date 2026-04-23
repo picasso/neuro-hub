@@ -99,6 +99,29 @@ yarn db:seed
 yarn db:seed:make demo-data
 ```
 
+#### `yarn db:seed:status`
+
+Показывает список seed-файлов (порядок запуска) и количество строк в справочных таблицах (`skills`, `languages`) для текущего окружения (по умолчанию `KNEX_ENV` / `NODE_ENV`).
+
+```bash
+yarn db:seed:status
+KNEX_ENV=production yarn db:seed:status
+```
+
+#### `yarn db:seed:production`
+
+Сценарий прогона сидов на production: те же правила, что и у `yarn db:migrate:production` (подхват `DATABASE_URL` из `.env.production.local` через `RAILWAY_DATABASE_URL`, проверка подключения, затем `knex seed:run` в окружении `production`).
+
+Бэкап перед сидом **только** при флаге `--backup` (тот же формат выгрузки, что и у `migrate-production`, `backups/railway/…`).
+
+В конце вызывается `yarn db:seed:status` с `KNEX_ENV=production` — снимок по справочникам после прогона.
+
+```bash
+export DATABASE_URL="<railway_database_url>"
+yarn db:seed:production
+yarn db:seed:production --backup
+```
+
 ### Data Maintenance
 
 #### `yarn db:delete-users --all`

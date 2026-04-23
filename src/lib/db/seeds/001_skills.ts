@@ -90,7 +90,24 @@ const SKILLS = [
 ] as const
 
 export async function seed(knex: Knex): Promise<void> {
-	await knex('skills').del()
+	// `skills` has unique on `id` and on `name`. Production may have legacy rows: same
+	// `name` as the catalog but a different `id` (pre-UUID migration). A plain
+	// `onConflict('id')` insert then hits `skills_name_unique`. Resolve by row lookup first.
+	for (const row of SKILLS) {
+		const byId = await knex('skills').where('id', row.id).first()
+		if (byId) {
+			await knex('skills')
+				.where('id', row.id)
+				.update({ name: row.name, category: row.category })
+			continue
+		}
 
-	await knex('skills').insert(SKILLS)
+		const byName = await knex('skills').where('name', row.name).first()
+		if (byName) {
+			await knex('skills').where('id', byName.id).update({ category: row.category })
+			continue
+		}
+
+		await knex('skills').insert(row)
+	}
 }
