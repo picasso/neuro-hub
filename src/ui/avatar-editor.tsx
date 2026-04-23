@@ -67,11 +67,40 @@ export function AvatarEditor({
 	const [dialogOpen, setDialogOpen] = useState(false)
 	const [previewSrc, setPreviewSrc] = useState<string | null>(null)
 	const [isSaving, setIsSaving] = useState(false)
+	// after upload: true until the remote `src` has loaded and blob preview is cleared
+	const [isRemoteImagePending, setIsRemoteImagePending] = useState(false)
+
 	const safeCropSize = Number.isFinite(cropSize) && cropSize > 0 ? cropSize : defaults.cropSize
 
+	// do not clear blob preview on `completed` — that caused a flash before the remote <img> loaded.
+	// preload the network `src` first, then clear preview in the onload path
 	useEffect(() => {
-		if (completed) setPreviewSrc(null)
-	}, [completed])
+		if (!completed || !src || !previewSrc) {
+			setIsRemoteImagePending(false)
+			return
+		}
+
+		setIsRemoteImagePending(true)
+		// preload the network `src` to avoid flash before the remote <img> loaded
+		const img = new Image()
+		let cancelled = false
+		const finish = () => {
+			if (cancelled) return
+			cancelled = true
+			setIsRemoteImagePending(false)
+			setPreviewSrc((prev) => {
+				if (prev) URL.revokeObjectURL(prev)
+				return null
+			})
+		}
+		img.onload = finish
+		img.onerror = finish
+		img.src = src
+
+		return () => {
+			cancelled = true
+		}
+	}, [completed, src, previewSrc])
 
 	useEffect(() => {
 		if (!cropFile) return
@@ -145,6 +174,9 @@ export function AvatarEditor({
 		setRotate((r) => r + 90)
 	}, [])
 
+	const displaySrc = completed ? (previewSrc ?? src ?? null) : (previewSrc ?? null)
+	const isLoading = Boolean(loading) || isSaving || isRemoteImagePending
+
 	return (
 		<Stack vertical gap={2} align="center" className={cn('inline-flex', className)}>
 			<FileUploader
@@ -158,9 +190,9 @@ export function AvatarEditor({
 				outline={outline}
 				wrapperClassName={wrapperClassName}
 				avatar={name ?? 'icon'}
-				avatarSrc={completed ? (src ?? previewSrc) : previewSrc}
+				avatarSrc={displaySrc}
 				completed={completed}
-				loading={loading || isSaving}
+				loading={isLoading}
 			/>
 			<Dialog
 				closeOnDark
