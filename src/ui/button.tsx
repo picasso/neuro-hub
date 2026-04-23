@@ -58,19 +58,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			inverse && inverseStyle[variant],
 			className,
 		)
+		const { tw: iconClassName, ...options } = iconOptions ?? {}
 		const iconProps: Omit<IconProps, 'name'> = {
+			...options,
 			color: contrastIcon ? 'contrast' : 'secondary',
-			size: iconOptions?.size,
-			spinning: iconOptions?.spinning,
-			className: iconOptions?.tw,
-			accent: iconOptions?.accent,
+			className: iconClassName,
 		}
-
+		const iconSize: Exclude<IconOptions['size'], number> = size
 		const inner = (
 			<>
-				{leftIcon ? <Icon name={leftIcon} {...iconProps} /> : null}
+				{leftIcon ? <Icon name={leftIcon} size={iconSize} {...iconProps} /> : null}
 				{content}
-				{rightIcon ? <Icon name={rightIcon} {...iconProps} /> : null}
+				{rightIcon ? <Icon name={rightIcon} size={iconSize} {...iconProps} /> : null}
 			</>
 		)
 

@@ -7,7 +7,7 @@ export async function AccountPortfolio() {
 	const context = await getAccountContext()
 	if (!context) return null
 
-	const { session, profileId } = context
+	const { session, nickname } = context
 
 	return (
 		<Stack vertical gap={6} align="stretch" className="w-full min-w-0">
@@ -22,8 +22,8 @@ export async function AccountPortfolio() {
 					' и постепенно формируйте витрину своего профиля.'
 				}
 			/>
-			{session.user.role === 'freelancer' && profileId ? (
-				<PortfolioEditor userId={session.user.id} profileId={profileId} />
+			{session.user.role === 'freelancer' && nickname ? (
+				<PortfolioEditor userId={session.user.id} nickname={nickname} />
 			) : (
 				<PendingContent
 					icon="construction"

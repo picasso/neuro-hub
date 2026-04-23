@@ -1,10 +1,15 @@
 import { z } from 'zod'
 import { uuidSchema } from './common'
+import { userSkillSchema, nicknameSchema } from './user'
 
 /**
- * Public freelancer profile routes address a profile by its domain UUID:
- * `freelancer_profiles.id`.
+ * Public freelancer routes use the user profile nickname slug (`user_profiles.nickname`).
  */
+export const freelancerNicknameParamSchema = z.object({
+	nickname: nicknameSchema,
+})
+
+/** @deprecated Use freelancerNicknameParamSchema — kept for internal UUID references only */
 export const freelancerProfileIdParamSchema = z.object({
 	id: uuidSchema,
 })
@@ -14,6 +19,22 @@ export const updateFreelancerProfileSchema = z.object({
 	hourlyRate: z.number().int().positive().optional(),
 	availability: z.string().min(1).max(100).optional(),
 	experience: z.string().max(5000).optional(),
+	skills: z
+		.array(userSkillSchema)
+		.superRefine((skills, ctx) => {
+			const seen = new Set<string>()
+			skills.forEach((skill, idx) => {
+				if (seen.has(skill.skillId)) {
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Duplicate skillId',
+						path: [idx, 'skillId'],
+					})
+				}
+				seen.add(skill.skillId)
+			})
+		})
+		.optional(),
 })
 
 export const createPortfolioItemSchema = z.object({

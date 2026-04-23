@@ -31,7 +31,7 @@ const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024 // 50MB
  *       Exchanges an authenticated user's session for a short-lived client upload token.
  *       Use this endpoint as `handleUploadUrl` with `upload()` from `@vercel/blob/client`.
  *       Files are uploaded under `portfolio/{userId}/...` (auth user id). After upload, create a
- *       portfolio item via `POST /api/freelancers/{profileId}/portfolio` (domain UUID).
+ *       portfolio item via `POST /api/freelancers/{nickname}/portfolio` (public nickname slug).
  *     security:
  *       - cookieAuth: []
  *     responses:
@@ -73,7 +73,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 			},
 			onUploadCompleted: async ({ blob }) => {
 				// Called by Vercel on upload completion (won't run on localhost without a tunnel).
-				// Portfolio DB write happens explicitly via POST /api/freelancers/:profileId/portfolio.
+				// Portfolio DB write happens explicitly via POST /api/freelancers/:nickname/portfolio.
 				console.warn('portfolio blob upload completed', {
 					url: blob.url,
 					pathname: blob.pathname,

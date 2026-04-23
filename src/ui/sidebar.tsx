@@ -208,15 +208,14 @@ function renderGroup(
 }
 
 function renderItem(item: SidebarItem) {
+	const { tw: iconClassName, ...options } = item.iconOptions ?? {}
 	const iconItem = (
 		<>
 			<Icon
 				name={item.icon}
-				size={item.iconOptions?.size}
+				{...options}
 				color={item.iconOptions?.color ?? 'current'}
-				spinning={item.iconOptions?.spinning}
-				className={item.iconOptions?.tw}
-				accent={item.iconOptions?.accent}
+				className={iconClassName}
 			/>
 			<span>{item.title}</span>
 		</>

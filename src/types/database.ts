@@ -180,6 +180,13 @@ export interface Skills {
 	name: string
 }
 
+export interface Languages {
+	code: string
+	name: string
+	native_name: string
+	sort_order: number
+}
+
 export interface UserProfiles {
 	avatar_url: string | null
 	bio: string | null
@@ -187,9 +194,18 @@ export interface UserProfiles {
 	company_role: string | null
 	created_at: Generated<Timestamp | null>
 	id: string
+	location: string | null
 	name: string | null
+	nickname: string
 	search_vector: Generated<string | null>
 	updated_at: Generated<Timestamp | null>
+	user_id: string
+}
+
+export interface UserLanguages {
+	created_at: Generated<Timestamp | null>
+	lang_level: string
+	language_code: string
 	user_id: string
 }
 
@@ -230,6 +246,7 @@ export interface DB {
 	freelancer_profiles: FreelancerProfiles
 	knex_migrations: KnexMigrations
 	knex_migrations_lock: KnexMigrationsLock
+	languages: Languages
 	message_reads: MessageReads
 	messages: Messages
 	portfolio_items: PortfolioItems
@@ -238,6 +255,7 @@ export interface DB {
 	projects: Projects
 	sessions: Sessions
 	skills: Skills
+	user_languages: UserLanguages
 	user_profiles: UserProfiles
 	user_skills: UserSkills
 	users: Users

@@ -67,6 +67,7 @@ export function AlertComponent({ id }: AlertProps) {
 			icon={icon ?? (isProgress ? 'spinner' : undefined)}
 			iconOptions={mergedIconOptions}
 			onClose={disableClose ? undefined : onClose}
+			md={false}
 		>
 			{messageContent}
 			{progressValue !== undefined && (

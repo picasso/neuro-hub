@@ -13,6 +13,7 @@ export {
 } from './debug-effector'
 
 export {
+	authHeaderDomain,
 	accountContextDomain,
 	accountSidebarDomain,
 	alertsDomain,
@@ -26,5 +27,6 @@ export {
 	modalsDomain,
 	viewerDomain,
 	onboardingDomain,
+	profileDomain,
 	projectApplicationsDomain,
 } from './watched'

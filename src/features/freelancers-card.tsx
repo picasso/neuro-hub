@@ -33,6 +33,7 @@ export function FreelancerGridCard({ item }: FreelancerGridCardProps) {
 						<Avatar
 							name={item.name || 'Freelancer'}
 							src={item.avatarUrl ?? undefined}
+							color="auto"
 							size="lg"
 						/>
 						<Stack vertical gap={0} align="stretch" className="min-w-0 flex-1">
@@ -60,7 +61,7 @@ export function FreelancerGridCard({ item }: FreelancerGridCardProps) {
 						color="secondary"
 						className="line-clamp-3"
 						content={
-							item.bioSnippet ||
+							item.bio ||
 							'Пользователь еще не добавил описание, но уже доступен для просмотра профиля.'
 						}
 					/>

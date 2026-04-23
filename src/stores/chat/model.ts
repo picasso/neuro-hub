@@ -1,6 +1,7 @@
 import { combine, sample } from 'effector'
 import { createGate } from 'effector-react'
 import { AccountContextGate, contextPatched } from '../account-context/model'
+import { AuthHeaderGate, authHeaderUnreadMessagesPatched } from '../auth-header/model'
 import {
 	fetchChatConversations,
 	fetchChatMessages,
@@ -104,13 +105,23 @@ export const chatActiveConversationReloadRequested = domain.createEvent(
 )
 export const chatHistoryLoadRequested = domain.createEvent('chatHistoryLoadRequested')
 export const chatMessageSubmitted = domain.createEvent<string>('chatMessageSubmitted')
+const chatConversationsLoaded =
+	domain.createEvent<Awaited<ReturnType<typeof fetchChatConversations>>>(
+		'chatConversationsLoaded',
+	)
 
 export const loadChatConversationsFx = domain.createEffect<
-	void,
-	Awaited<ReturnType<typeof fetchChatConversations>>,
+	{ requestId: number },
+	{
+		requestId: number
+		result: Awaited<ReturnType<typeof fetchChatConversations>>
+	},
 	ChatRequestError
 >({
-	handler: fetchChatConversations,
+	handler: async ({ requestId }) => ({
+		requestId,
+		result: await fetchChatConversations(),
+	}),
 	name: 'loadChatConversationsFx',
 })
 
@@ -241,6 +252,9 @@ export const $messagesErrorByConversationId = domain.createStore<StringMap>(
 		name: '$messagesErrorByConversationId',
 	},
 )
+const $latestChatConversationsRequestId = domain.createStore(0, {
+	name: '$latestChatConversationsRequestId',
+})
 
 export const $realtimeStatus = domain.createStore<ChatRealtimeStatus>('idle', {
 	name: '$chatRealtimeStatus',
@@ -255,12 +269,14 @@ $pendingReadByConversationId.reset(resetChatFlow)
 $peerReadStateByConversationId.reset(resetChatFlow)
 $conversationsError.reset(resetChatFlow)
 $messagesErrorByConversationId.reset(resetChatFlow)
+$latestChatConversationsRequestId.reset(resetChatFlow)
 $realtimeStatus.reset(resetChatFlow)
 
 $activeConversationId.on(activeConversationChanged, (_, conversationId) => conversationId)
+$latestChatConversationsRequestId.on(loadChatConversationsFx, (_, { requestId }) => requestId)
 
 $conversations
-	.on(loadChatConversationsFx.doneData, (_, result) => sortChatConversations(result.data))
+	.on(chatConversationsLoaded, (_, result) => sortChatConversations(result.data))
 	.on(chatInboxSummaryReceived, (conversations, event) =>
 		mergeConversationSummary(conversations, event.summary),
 	)
@@ -390,7 +406,7 @@ $peerReadStateByConversationId
 
 $conversationsError
 	.on(loadChatConversationsFx, () => null)
-	.on(loadChatConversationsFx.done, () => null)
+	.on(chatConversationsLoaded, () => null)
 	.on(loadChatConversationsFx.failData, (_, error) => error.message)
 
 $messagesErrorByConversationId
@@ -479,19 +495,34 @@ sample({
 // load conversation list on account shell open, chat open, or explicit refresh
 sample({
 	clock: [chatConversationsRefreshRequested, ChatGate.open, AccountContextGate.open],
-	fn: () => undefined,
+	source: $latestChatConversationsRequestId,
+	fn: (requestId) => ({ requestId: requestId + 1 }),
 	target: loadChatConversationsFx,
 })
 
-// sync inbox + optional conversation realtime while account shell is open
 sample({
-	clock: [AccountContextGate.open, ChatGate.open, activeConversationChanged],
+	clock: loadChatConversationsFx.doneData,
+	source: $latestChatConversationsRequestId,
+	filter: (latestRequestId, payload) => payload.requestId === latestRequestId,
+	fn: (_latestRequestId, payload) => payload.result,
+	target: chatConversationsLoaded,
+})
+
+// sync inbox + optional conversation realtime while the authenticated header is mounted
+sample({
+	clock: [
+		AuthHeaderGate.open,
+		AuthHeaderGate.state.updates,
+		ChatGate.open,
+		ChatGate.close,
+		activeConversationChanged,
+	],
 	source: {
-		accountOpen: AccountContextGate.status,
+		authHeaderOpen: AuthHeaderGate.status,
 		chatOpen: ChatGate.status,
 		chatState: ChatGate.state,
 	},
-	filter: ({ accountOpen }) => accountOpen,
+	filter: ({ authHeaderOpen }) => authHeaderOpen,
 	fn: ({ chatOpen, chatState }) => ({
 		conversationId: chatOpen ? (chatState.conversationId ?? null) : null,
 	}),
@@ -501,10 +532,20 @@ sample({
 // reload list after chat thread closes while account shell stays mounted
 sample({
 	clock: ChatGate.close,
-	source: AccountContextGate.status,
-	filter: (accountOpen) => accountOpen,
-	fn: () => undefined,
+	source: {
+		accountOpen: AccountContextGate.status,
+		requestId: $latestChatConversationsRequestId,
+	},
+	filter: ({ accountOpen }) => accountOpen,
+	fn: ({ requestId }) => ({ requestId: requestId + 1 }),
 	target: loadChatConversationsFx,
+})
+
+// keep the shared authenticated header unread badge in sync with inbox realtime
+sample({
+	clock: chatInboxSummaryReceived,
+	fn: (event) => event.totalUnreadMessages,
+	target: authHeaderUnreadMessagesPatched,
 })
 
 // keep account sidebar messages badge in sync with precise inbox unread total
@@ -518,11 +559,11 @@ sample({
 	target: contextPatched,
 })
 
-// tear down chat domain state when leaving account shell
+// reset account-only chat UI state when leaving the account shell
 sample({
 	clock: AccountContextGate.close,
 	fn: () => undefined,
-	target: [clearChatRealtimeFx, resetChatFlow],
+	target: resetChatFlow,
 })
 
 // bootstrap messages when a conversation becomes active
@@ -549,7 +590,8 @@ sample({
 // refresh conversation list after active-thread reload request
 sample({
 	clock: chatActiveConversationReloadRequested,
-	fn: () => undefined,
+	source: $latestChatConversationsRequestId,
+	fn: (requestId) => ({ requestId: requestId + 1 }),
 	target: loadChatConversationsFx,
 })
 
@@ -734,11 +776,7 @@ sample({
 
 // queue read sync when latest visible message advances
 sample({
-	clock: [
-		loadActiveChatMessagesFx.doneData,
-		loadChatConversationsFx.doneData,
-		chatRealtimeEventReceived,
-	],
+	clock: [loadActiveChatMessagesFx.doneData, chatConversationsLoaded, chatRealtimeEventReceived],
 	source: {
 		activeConversation: $activeConversation,
 		activeConversationId: $activeConversationId,

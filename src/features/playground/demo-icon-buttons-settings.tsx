@@ -47,7 +47,7 @@ export function DemoIconButtonsSettings() {
 				id="size"
 				label="Size"
 				value={size}
-				options={['icon', 'sm', 'md', 'lg', 'xl']}
+				options={['icon', 'xs', 'sm', 'md', 'lg', 'xl']}
 			/>
 			<SettingSelect
 				id="forceSize"

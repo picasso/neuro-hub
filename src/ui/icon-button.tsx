@@ -1,7 +1,7 @@
 import { capitalize } from 'lodash'
 import { forwardRef } from 'react'
 import { type ButtonProps, buttonSize, HrefButton, outlineStyle } from './button'
-import { Icon, type IconProps } from './icon'
+import { Icon, type IconSize, type IconProps } from './icon'
 import { Button as ShadcnButton } from './shadcn/button'
 import { needsContrast } from './utils'
 import { cn } from '@/utils'
@@ -48,7 +48,8 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
 		const shadcnVariant = variant === 'contrast' ? 'ghost' : (variant as ButtonVariant)
 		const contrast = needsContrast(variant)
 		const mergedClassName = cn(
-			!!rounded && 'rounded-full',
+			!!rounded && 'rounded-full p-0!',
+			!!rounded && size !== 'icon' && roundedPresetClasses[size],
 			outlineStyle(variant),
 			contrastStyle(variant),
 			className,
@@ -125,4 +126,12 @@ export function contrastStyle(variant: 'contrast' | unknown) {
 	return (
 		variant === 'contrast' && '[&_svg]:text-white/70 hover:bg-white/30 hover:[&_svg]:text-white'
 	)
+}
+
+const roundedPresetClasses: Record<IconSize, string> = {
+	xs: 'size-6',
+	sm: 'size-7',
+	md: 'size-8',
+	lg: 'size-10',
+	xl: 'size-14',
 }

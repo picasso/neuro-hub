@@ -1,3 +1,4 @@
+import { getPublicLanguagesByUserIds, type PublicUserLanguage } from './public-user-languages'
 import { kysely } from '@/lib/db'
 import {
 	type ApplicationsQueryInput,
@@ -17,6 +18,21 @@ export type ProjectClientSummary = {
 	companyName: string | null
 	companyRole: string | null
 	avatarUrl: string | null
+	nickname: string
+	location: string | null
+	languages: PublicUserLanguage[]
+	bio: string | null
+}
+
+type ProjectClientRow = {
+	clientId: string
+	name: string | null
+	companyName: string | null
+	companyRole: string | null
+	avatarUrl: string | null
+	nickname: string | null
+	location: string | null
+	bio: string | null
 }
 
 export type ProjectSkillSummary = {
@@ -193,6 +209,9 @@ export async function listPublicProjects(
 			'profile.company_name as companyName',
 			'profile.company_role as companyRole',
 			'profile.avatar_url as avatarUrl',
+			'profile.nickname as nickname',
+			'profile.location as location',
+			'profile.bio as bio',
 		])
 		.where('project.status', '=', 'published')
 		.where('project.deadline', '>', now)
@@ -291,7 +310,10 @@ export async function listPublicProjects(
 		}
 	}
 
-	const skillsByProjectId = await getSkillsByProjectIds(rows.map((row) => row.id))
+	const [skillsByProjectId, languagesByClientId] = await Promise.all([
+		getSkillsByProjectIds(rows.map((row) => row.id)),
+		getPublicLanguagesByUserIds(rows.map((row) => row.clientId)),
+	])
 
 	return {
 		items: rows.map((row) => ({
@@ -307,13 +329,7 @@ export async function listPublicProjects(
 			deadline: row.deadline,
 			status: row.status,
 			createdAt: row.createdAt,
-			client: {
-				userId: row.clientId,
-				name: row.name,
-				companyName: row.companyName,
-				companyRole: row.companyRole,
-				avatarUrl: row.avatarUrl,
-			},
+			client: toProjectClientSummary(row, languagesByClientId),
 			skills: skillsByProjectId.get(row.id) ?? [],
 		})),
 		page,
@@ -348,6 +364,9 @@ export async function getPublicProjectById(
 			'profile.company_name as companyName',
 			'profile.company_role as companyRole',
 			'profile.avatar_url as avatarUrl',
+			'profile.nickname as nickname',
+			'profile.location as location',
+			'profile.bio as bio',
 		])
 		.where('project.id', '=', projectId)
 		.where('project.status', '=', 'published')
@@ -355,9 +374,10 @@ export async function getPublicProjectById(
 
 	if (!project) return null
 
-	const [skillsByProjectId, attachmentsByProjectId] = await Promise.all([
+	const [skillsByProjectId, attachmentsByProjectId, languagesByClientId] = await Promise.all([
 		getSkillsByProjectIds([projectId]),
 		getAttachmentsByProjectIds([projectId]),
+		getPublicLanguagesByUserIds([project.clientId]),
 	])
 
 	const viewerApplication = viewerUserId
@@ -382,13 +402,7 @@ export async function getPublicProjectById(
 		status: project.status,
 		createdAt: project.createdAt,
 		updatedAt: project.updatedAt,
-		client: {
-			userId: project.clientId,
-			name: project.name,
-			companyName: project.companyName,
-			companyRole: project.companyRole,
-			avatarUrl: project.avatarUrl,
-		},
+		client: toProjectClientSummary(project, languagesByClientId),
 		skills: skillsByProjectId.get(projectId) ?? [],
 		attachments: attachmentsByProjectId.get(projectId) ?? [],
 		viewerApplication: viewerApplication
@@ -426,6 +440,9 @@ export async function listClientProjects({
 			'profile.company_name as companyName',
 			'profile.company_role as companyRole',
 			'profile.avatar_url as avatarUrl',
+			'profile.nickname as nickname',
+			'profile.location as location',
+			'profile.bio as bio',
 		])
 		.where('project.client_id', '=', clientId)
 		.orderBy('project.created_at', 'desc')
@@ -435,7 +452,10 @@ export async function listClientProjects({
 		return []
 	}
 
-	const skillsByProjectId = await getSkillsByProjectIds(rows.map((row) => row.id))
+	const [skillsByProjectId, languagesByClientId] = await Promise.all([
+		getSkillsByProjectIds(rows.map((row) => row.id)),
+		getPublicLanguagesByUserIds(rows.map((row) => row.clientId)),
+	])
 
 	return rows.map((row) => ({
 		id: row.id,
@@ -450,13 +470,7 @@ export async function listClientProjects({
 		deadline: row.deadline,
 		status: row.status,
 		createdAt: row.createdAt,
-		client: {
-			userId: row.clientId,
-			name: row.name,
-			companyName: row.companyName,
-			companyRole: row.companyRole,
-			avatarUrl: row.avatarUrl,
-		},
+		client: toProjectClientSummary(row, languagesByClientId),
 		skills: skillsByProjectId.get(row.id) ?? [],
 	}))
 }
@@ -747,6 +761,9 @@ export async function listFreelancerApplications({
 			'profile.company_name as companyName',
 			'profile.company_role as companyRole',
 			'profile.avatar_url as avatarUrl',
+			'profile.nickname as nickname',
+			'profile.location as location',
+			'profile.bio as bio',
 		])
 		.where('application.freelancer_id', '=', freelancerId)
 
@@ -773,7 +790,10 @@ export async function listFreelancerApplications({
 		}
 	}
 
-	const skillsByProjectId = await getSkillsByProjectIds(rows.map((row) => row.projectId))
+	const [skillsByProjectId, languagesByClientId] = await Promise.all([
+		getSkillsByProjectIds(rows.map((row) => row.projectId)),
+		getPublicLanguagesByUserIds(rows.map((row) => row.clientId)),
+	])
 
 	return {
 		items: rows.map((row) => ({
@@ -795,13 +815,7 @@ export async function listFreelancerApplications({
 				budgetMax: row.budgetMax,
 				deadline: row.deadline,
 				status: row.projectStatus,
-				client: {
-					userId: row.clientId,
-					name: row.name,
-					companyName: row.companyName,
-					companyRole: row.companyRole,
-					avatarUrl: row.avatarUrl,
-				},
+				client: toProjectClientSummary(row, languagesByClientId),
 				skills: skillsByProjectId.get(row.projectId) ?? [],
 			},
 		})),
@@ -1014,6 +1028,23 @@ async function getSkillsByProjectIds(projectIds: string[]) {
 	return map
 }
 
+function toProjectClientSummary(
+	row: ProjectClientRow,
+	languagesByUserId: Map<string, PublicUserLanguage[]>,
+): ProjectClientSummary {
+	return {
+		userId: row.clientId,
+		name: row.name,
+		companyName: row.companyName,
+		companyRole: row.companyRole,
+		avatarUrl: row.avatarUrl,
+		nickname: requireProjectClientNickname(row.nickname, row.clientId),
+		location: row.location,
+		languages: languagesByUserId.get(row.clientId) ?? [],
+		bio: row.bio,
+	}
+}
+
 async function getAttachmentsByProjectIds(projectIds: string[]) {
 	const rows = await kysely
 		.selectFrom('project_attachments')
@@ -1090,6 +1121,11 @@ function toSnippet(value: string, maxLength = 180) {
 	const normalized = value.replace(/\s+/g, ' ').trim()
 	if (normalized.length <= maxLength) return normalized
 	return `${normalized.slice(0, maxLength - 1).trimEnd()}…`
+}
+
+function requireProjectClientNickname(nickname: string | null, userId: string) {
+	if (nickname) return nickname
+	throw new Error(`Expected client profile nickname for user ${userId}`)
 }
 
 function isProjectExpired(deadline: Date) {

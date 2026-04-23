@@ -1,5 +1,7 @@
 import { requireRole } from '@/lib/auth/server'
+import { kysely } from '@/lib/db'
 import { getOrCreateFreelancerProfileByUserId } from '@/lib/db/queries/freelancers'
+import { ensureUserProfileRow } from '@/lib/db/queries/user-profiles'
 import { errorResponse, successResponse } from '@/utils/api-response'
 import { UnauthorizedError } from '@/utils/errors'
 
@@ -25,9 +27,25 @@ export async function GET() {
 	try {
 		const session = await requireRole('freelancer')
 
+		await ensureUserProfileRow(session.user.id)
+
 		const profile = await getOrCreateFreelancerProfileByUserId(session.user.id)
 		if (!profile) throw new UnauthorizedError('User not found (stale session)')
+
+		const userProfile = await kysely
+			.selectFrom('user_profiles')
+			.select('nickname')
+			.where('user_id', '=', session.user.id)
+			.executeTakeFirstOrThrow()
+
+		const userSkills = await kysely
+			.selectFrom('user_skills')
+			.select(['skill_id as skillId', 'proficiency_level as proficiencyLevel'])
+			.where('user_id', '=', session.user.id)
+			.execute()
+
 		return successResponse({
+			nickname: userProfile.nickname,
 			profileId: profile.id,
 			userId: profile.user_id,
 			specialization: profile.specialization,
@@ -36,6 +54,7 @@ export async function GET() {
 			experience: profile.experience,
 			createdAt: profile.created_at,
 			updatedAt: profile.updated_at,
+			selectedSkills: userSkills,
 		})
 	} catch (error) {
 		return errorResponse(error)

@@ -42,7 +42,10 @@ export {
 export {
 	addUserSkillsSchema,
 	createUserSchema,
+	languageLevelSchema,
+	nicknameSchema,
 	updateUserProfileSchema,
+	userLanguageEntrySchema,
 	userRoleSchema,
 	userSkillSchema,
 	type AddUserSkillsInput,
@@ -53,6 +56,7 @@ export {
 } from './user'
 export {
 	createPortfolioItemSchema,
+	freelancerNicknameParamSchema,
 	freelancerProfileIdParamSchema,
 	portfolioItemIdParamSchema,
 	updateFreelancerProfileSchema,

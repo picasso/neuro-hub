@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.1] - 2026-04-23
+
+### Added
+
+- Shared authenticated header state across marketing and account layouts, including profile avatar data and realtime unread message counters
+- Phase 2 of the account profile editor, including inline editing, improved avatar flows, skills editing, and additional profile fields such as location, bio, and languages
+- `AvatarEditor` and related uploader improvements for avatar-specific editing flows
+- Public freelancer profile enhancements, including nickname-based URLs and richer profile presentation
+- New and expanded account-facing UI building blocks, including `ProjectCard`, improved `ApplicationCard`, breadcrumbs, `StackSpan`, and `PersonCard`
+- Mock freelancer profiles and portfolio assets for development and UI validation
+- Database reference documentation and synchronization contract notes
+
+### Changed
+
+- Standardized API client request helpers and error handling
+- Refined chat and auth flows to align requests with the current origin and improve timestamp presentation in conversations
+- Improved shared UI primitives and wrappers, including `Card`, `Badge`, `Tooltip`, `Slider`, `TextField`, `FieldWrapper`, `IconButton`, and avatar presentation
+- Simplified pre-commit checks by removing the project-wide TypeScript run from `lint-staged`
+- Updated application-related copy and pluralization across project and account views
+
+### Fixed
+
+- Realtime unread synchronization in chat so header and sidebar badges clear reliably during conversation transitions
+- Chat composer keyboard submission and related interaction edge cases
+- `ApplicationCard`, project card, `TextField`, and form wrapper follow-up issues
+- `cyrillicValidator` and `sprintf` helper behavior
+
 ## [0.5.0] - 2026-04-08
 
 ### Added

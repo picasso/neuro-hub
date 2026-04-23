@@ -1,7 +1,7 @@
 import { LoginButton } from './auth/login-page'
 import { HeaderAuth } from './header-auth'
 import { PlaygroundButton } from './playground/playground-page'
-import { getSsrSafeSession } from '@/lib/auth/server'
+import type { AuthHeaderState } from '@/lib/account'
 import { Button, Link, PageContainer, Stack, TS } from '@/ui'
 
 const guestNavItems = [
@@ -17,8 +17,17 @@ const authedNavItems = [
 	{ href: '/api/reference', label: 'API' },
 ]
 
-export async function MarketingHeader() {
-	const session = await getSsrSafeSession()
+type MarketingHeaderProps = {
+	authState?: AuthHeaderState | null
+	session: {
+		user: {
+			email: string
+			name?: string | null
+		}
+	} | null
+}
+
+export function MarketingHeader({ authState, session }: MarketingHeaderProps) {
 	const navItems = session ? authedNavItems : guestNavItems
 
 	return (
@@ -53,8 +62,10 @@ export async function MarketingHeader() {
 					<Stack wrap justify="flex-end" className="shrink-0 gap-x-2 gap-y-2">
 						{session ? (
 							<HeaderAuth
-								email={session.user.email}
-								name={session.user.name}
+								email={authState?.viewer.email ?? session.user.email}
+								name={authState?.viewer.displayName ?? session.user.name}
+								avatarUrl={authState?.viewer.avatarUrl}
+								unreadMessages={authState?.unreadMessages}
 								variant="marketing"
 								slot={
 									<Button href="/account/dashboard" size="sm" label="Dashboard" />

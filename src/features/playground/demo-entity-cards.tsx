@@ -15,15 +15,16 @@ import {
 	createProjectClient,
 	createShuffledPictureUrls,
 } from './mock-generators'
-import { useSettings } from './settings-store'
+import { useSettings, useUpdateSettings } from './settings-store'
 import type { ChatParticipantSummary } from '@/lib/chat/contracts'
 import { Stack, Tabs, type TabItem } from '@/ui'
 
-type EntityTab = 'project' | 'person' | 'application'
+type EntityTab = EntityCardsDemoState['entity']
 
 export function DemoEntityCards() {
+	const [update] = useUpdateSettings<EntityCardsDemoState>()
 	const settings = useSettings<EntityCardsDemoState>()
-	const { longLines, full, image, personVariant: _, personClientAvatar: __ } = settings
+	const { longLines, full, image, hero } = settings
 	const [activeTab, setActiveTab] = useState<EntityTab>('project')
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const mockUrls = useMemo(() => createShuffledPictureUrls(), [image])
@@ -65,8 +66,8 @@ export function DemoEntityCards() {
 			title: 'PersonCard',
 			icon: 'users',
 			content: (
-				<div className="py-4 px-8 max-w-md">
-					<PersonCard {...personCards[0]} full={full} />
+				<div className="py-4 px-8 max-w-xl">
+					<PersonCard {...personCards[0]} full={full} hero={hero} />
 					{/* {renderPersonCard(personCards[0], full)} */}
 				</div>
 			),
@@ -95,7 +96,10 @@ export function DemoEntityCards() {
 					fullWidth
 					size="sm"
 					value={activeTab}
-					onValueChange={(value) => setActiveTab(value as EntityTab)}
+					onValueChange={(value) => {
+						setActiveTab(value as EntityTab)
+						update({ entity: value as EntityTab })
+					}}
 					items={tabs}
 				/>
 			</DemoSection>
@@ -178,7 +182,7 @@ function buildPersonCards(settings: EntityCardsDemoState, mockUrls: string[]): P
 				client: createProjectClient({
 					withAvatar: settings.personClientAvatar,
 					longLines: settings.longLines,
-					avatarUrl: mockUrls[0] ?? null,
+					avatarUrl: settings.personClientAvatar ? mockUrls[0] : null,
 				}),
 			},
 			{
@@ -229,6 +233,7 @@ function buildPersonCards(settings: EntityCardsDemoState, mockUrls: string[]): P
 				longLines: settings.longLines,
 				avatarUrl: mockUrls[2] ?? null,
 				previewUrl: mockUrls[3] ?? null,
+				hasAvatar: settings.personClientAvatar,
 			}),
 		},
 		{

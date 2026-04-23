@@ -21,8 +21,8 @@ import { fileSize, pluralizeRuWithCount } from '@/utils'
 
 const fileLimit = fileSize(config.uploadMaxSize, 0, true)
 
-export function PortfolioEditor({ userId, profileId }: { userId: string; profileId: string }) {
-	useGate(FreelancerPortfolioGate, { userId, profileId })
+export function PortfolioEditor({ userId, nickname }: { userId: string; nickname: string }) {
+	useGate(FreelancerPortfolioGate, { userId, nickname })
 	const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
 
 	const [
@@ -76,7 +76,7 @@ export function PortfolioEditor({ userId, profileId }: { userId: string; profile
 					size: 'md',
 					leftIcon: 'folder-kanban',
 					disabled: !canSubmit,
-					onClick: () => onSubmit({ userId, profileId }),
+					onClick: () => onSubmit({ userId, nickname }),
 				}}
 				badge={`Лимит файла: ${fileLimit}`}
 				badgeProps={{ icon: 'weight-tilde' }}

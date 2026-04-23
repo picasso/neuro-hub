@@ -21,13 +21,18 @@ type BaseProps = Pick<
 	FieldWrapperProps,
 	'label' | 'labelClassName' | 'helper' | 'helperClassName' | 'error' | 'required' | 'className'
 > & {
+	rootRef?: FieldWrapperProps['ref']
 	startIcon?: IconProps['name']
 	endIcon?: IconProps['name']
+	endIconInline?: boolean
+	endIconDisabled?: boolean
 	showClear?: boolean
+	clearIconDisabled?: boolean
 	light?: boolean
 	dark?: boolean
 	onEndClick?: () => void
 	onClearClick?: () => void
+	inputClassName?: string
 }
 
 type HTMLInputProps = Omit<ComponentPropsWithRef<'input'>, 'required' | 'ref'>
@@ -48,7 +53,10 @@ function InputVariant({
 	required,
 	startIcon,
 	endIcon,
+	endIconInline,
+	endIconDisabled,
 	showClear,
+	clearIconDisabled,
 	light,
 	dark,
 	onEndClick,
@@ -56,16 +64,19 @@ function InputVariant({
 	className,
 	labelClassName,
 	helperClassName,
+	inputClassName,
 	multiline: _,
 	ref,
+	rootRef,
 	...mainInputProps
 }: InputVariantProps) {
 	const { disabled, value } = mainInputProps
 	const hasClickableEnd = !!(endIcon && onEndClick)
 
 	const iconButton =
-		!hasClickableEnd || !endIcon ? null : (
+		endIconInline || !hasClickableEnd || !endIcon ? null : (
 			<IconButton
+				data-action="true"
 				icon={endIcon}
 				variant="outline"
 				onClick={onEndClick}
@@ -74,13 +85,39 @@ function InputVariant({
 			/>
 		)
 	const leftIcon = startIcon ? <Icon name={startIcon} size="sm" /> : null
-	const rightIcon = endIcon ? <Icon name={endIcon} size="sm" /> : null
+	const rightIcon = endIcon ? (
+		endIconInline && onEndClick ? (
+			<IconButton
+				data-action="true"
+				rounded
+				size="xs"
+				icon={endIcon}
+				onClick={onEndClick}
+				disabled={endIconDisabled}
+			/>
+		) : (
+			<Icon name={endIcon} size="sm" />
+		)
+	) : null
 	const clearIcon = showClear ? (
-		<IconButton rounded icon="x" onClick={onClearClick} size="xs" data-clear={true} />
+		<IconButton
+			data-action="true"
+			rounded
+			icon="x"
+			onClick={onClearClick}
+			size="xs"
+			data-clear={true}
+			disabled={clearIconDisabled}
+		/>
 	) : null
 	const wrapperData = { 'data-input': 'wrapper' }
 	const elementData = { 'data-input': 'control' }
-	const inputProps = { 'aria-invalid': !!error, required, ...mainInputProps }
+	const inputProps = {
+		'aria-invalid': !!error,
+		required,
+		className: inputClassName,
+		...mainInputProps,
+	}
 
 	const control =
 		iconButton && leftIcon ? (
@@ -111,6 +148,7 @@ function InputVariant({
 
 	return (
 		<FieldWrapper
+			ref={rootRef}
 			label={label}
 			error={error}
 			helper={helper}
@@ -146,6 +184,7 @@ function TextareaVariant({
 	multiline: _,
 	onEndClick: __,
 	ref,
+	rootRef,
 	...textareaProps
 }: TextareaVariantProps) {
 	const { disabled } = textareaProps
@@ -176,6 +215,7 @@ function TextareaVariant({
 
 	return (
 		<FieldWrapper
+			ref={rootRef}
 			label={label}
 			error={error}
 			helper={helper}
@@ -195,6 +235,9 @@ function TextareaVariant({
 }
 
 // TextField --------------------------------------------------------------------------------------]
+
+export const InputField = InputVariant
+export const TextareaField = TextareaVariant
 
 export function TextField(props: TextFieldProps) {
 	if (props.multiline) {

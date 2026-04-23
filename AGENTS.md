@@ -129,6 +129,7 @@ src/
 - **Page layout:** use `PageShell` presets (`form | content | wide | full`) for route-entry pages and `PageContainer` for inner width caps; see `.cursor/rules/page-shell.mdc`
 - **Server Actions** for mutations, Zod for validation
 - **Effector** for global state
+- **Client JSON requests:** prefer `requestJson()` from `src/lib/api-client.ts` for standard `ApiResponse<T>` flows; use `json` and `normalizeJson` instead of manual `JSON.stringify` and JSON headers, and keep local wrappers only for `meta`, `204`, uploads, health checks, streaming, or domain-specific error mapping
 
 Details: [.cursor/rules/code-style.mdc](.cursor/rules/code-style.mdc)
 

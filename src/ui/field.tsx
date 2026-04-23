@@ -1,7 +1,7 @@
 'use client'
 
 import { has } from 'lodash'
-import { type ComponentProps } from 'react'
+import { type Ref, type ComponentProps } from 'react'
 import {
 	Field,
 	type FieldContent,
@@ -48,6 +48,7 @@ export type FieldWrapperProps = FieldProps.Root & {
 	horizontalClassName?: string
 	labelClassName?: string
 	helperClassName?: string
+	ref?: Ref<HTMLDivElement>
 }
 
 // field wrapper ----------------------------------------------------------------------------------]
@@ -65,6 +66,7 @@ export function FieldWrapper({
 	horizontalClassName,
 	labelClassName,
 	helperClassName,
+	ref,
 }: FieldWrapperProps) {
 	const isHelper = isFieldHelper(helper)
 	const { helper: helperText, md: helperMd }: FieldHelper = isHelper
@@ -80,6 +82,7 @@ export function FieldWrapper({
 
 	return (
 		<Field
+			ref={ref}
 			data-disabled={disabled}
 			data-invalid={!!error}
 			className={cn('gap-1.5', helperMd !== false && 'markdown-root', className)}

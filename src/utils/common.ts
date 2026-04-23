@@ -22,7 +22,7 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
 
-export function sprintf(str: string, ...argv: string[]): string {
+export function sprintf(str: string, ...argv: (string | number)[]): string {
 	if (!argv.length) return str
 	const updatedStr = str.replace('%s', String(argv.shift()))
 	return sprintf(updatedStr, ...argv)

@@ -307,6 +307,7 @@ async function teardownConversationSubscription(
 async function setupDesiredRealtime(params: ChatRealtimeParams) {
 	const client = getSharedRealtimeClient()
 	const reportStatus = createTransitionStatusReporter(activeRealtimeTransitionId)
+	const hadActiveInboxSubscription = !!activeInboxSubscription
 
 	try {
 		await ensureRealtimeCapability(client, params.conversationId)
@@ -316,27 +317,29 @@ async function setupDesiredRealtime(params: ChatRealtimeParams) {
 			return
 		}
 
-		const inboxChannelName = requireLastInboxChannelName()
-		const inboxSubscription = createInboxSubscription(client, inboxChannelName)
+		if (!activeInboxSubscription) {
+			const inboxChannelName = requireLastInboxChannelName()
+			const inboxSubscription = createInboxSubscription(client, inboxChannelName)
 
-		activeInboxSubscription = inboxSubscription
+			activeInboxSubscription = inboxSubscription
 
-		if (desiredRealtimeParams !== params) {
-			await teardownInboxSubscription(client, inboxSubscription)
-			return
+			if (desiredRealtimeParams !== params) {
+				await teardownInboxSubscription(client, inboxSubscription)
+				return
+			}
+
+			await inboxSubscription.channel.attach()
+
+			if (desiredRealtimeParams !== params) {
+				await teardownInboxSubscription(client, inboxSubscription)
+				return
+			}
+
+			await inboxSubscription.channel.subscribe(
+				'conversation.summary',
+				inboxSubscription.onSummary,
+			)
 		}
-
-		await inboxSubscription.channel.attach()
-
-		if (desiredRealtimeParams !== params) {
-			await teardownInboxSubscription(client, inboxSubscription)
-			return
-		}
-
-		await inboxSubscription.channel.subscribe(
-			'conversation.summary',
-			inboxSubscription.onSummary,
-		)
 
 		if (!params.conversationId) {
 			if (client.connection.state === 'connected') {
@@ -379,7 +382,9 @@ async function setupDesiredRealtime(params: ChatRealtimeParams) {
 			reportStatus('connected')
 		}
 	} catch (error) {
-		await teardownInboxSubscription(client, activeInboxSubscription)
+		if (!hadActiveInboxSubscription) {
+			await teardownInboxSubscription(client, activeInboxSubscription)
+		}
 		await teardownConversationSubscription(client, activeConversationSubscription)
 
 		if (desiredRealtimeParams !== params) {
@@ -414,8 +419,6 @@ async function syncRealtimeToDesiredState(reportStatus: (status: ChatRealtimeSta
 	}
 
 	await teardownConversationSubscription(client, activeConversationSubscription)
-	await teardownInboxSubscription(client, activeInboxSubscription)
-	authorizedAuthConversationKey = null
 
 	await setupDesiredRealtime(desiredRealtimeParams)
 }

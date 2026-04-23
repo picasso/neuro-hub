@@ -2,17 +2,18 @@
 
 import { HeaderAuth } from './header-auth'
 import { PlaygroundButton } from './playground/playground-page'
+import type { AccountSnapshot, AccountViewer } from '@/lib/account'
 import type { ReactNode } from 'react'
 import { Link, PageContainer, Separator, SidebarTrigger, Stack, TS } from '@/ui'
 
 type AccountHeaderProps = {
-	email: string
-	name?: string | null
+	viewer: AccountViewer
+	snapshot: AccountSnapshot
 	banner?: string | null
 	slot?: ReactNode
 }
 
-export function AccountHeader({ email, name, banner, slot }: AccountHeaderProps) {
+export function AccountHeader({ viewer, snapshot, banner, slot }: AccountHeaderProps) {
 	return (
 		<PageContainer width="desktop">
 			<Stack justify="space-between" gap={4} className="h-14">
@@ -31,8 +32,10 @@ export function AccountHeader({ email, name, banner, slot }: AccountHeaderProps)
 				</Stack>
 
 				<HeaderAuth
-					email={email}
-					name={name}
+					email={viewer.email}
+					name={viewer.displayName}
+					avatarUrl={viewer.avatarUrl}
+					unreadMessages={snapshot.messages}
 					variant="account"
 					slot={<PlaygroundButton />}
 				/>

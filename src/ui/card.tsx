@@ -28,6 +28,7 @@ type ShadcnCardProps = Omit<ComponentProps<typeof ShadcnCard>, 'title'>
 export type CardProps = ShadcnCardProps & {
 	title?: ReactNode
 	description?: ReactNode
+	gap?: 'none' | 'sm' | 'md' | 'default'
 	footer?: ReactNode
 	header?: ReactNode
 	button?: string
@@ -55,6 +56,7 @@ export type CardProps = ShadcnCardProps & {
 export function Card({
 	title,
 	description,
+	gap,
 	size,
 	shadow = 'none',
 	maxW = '3xl',
@@ -98,6 +100,7 @@ export function Card({
 				!fullWidth && maxWClasses[maxW],
 				flush && 'has-data-[slot=card-header]:pt-0 has-data-[slot=card-content]:gap-0',
 				image && 'has-data-[slot=card-header]:pt-0',
+				gapClasses[gap ?? 'default'],
 				className,
 			)}
 			{...props}
@@ -348,3 +351,10 @@ const fixedAspectClasses: Partial<Record<ImageStub | `compact_${ImageStub}`, str
 const hoverableClassName =
 	'group transition-all hover:-translate-y-1' +
 	' hover:shadow-[0_0_5px_-2px_rgba(0,0,0,0.7)] hover:border-black/20'
+
+const gapClasses = {
+	none: 'gap-0',
+	sm: 'gap-2',
+	md: 'gap-4',
+	default: 'gap-6',
+} as const

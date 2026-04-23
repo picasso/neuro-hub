@@ -38,6 +38,7 @@ export type IconProps = React.ComponentProps<ReturnType<typeof getIcon>> & {
 	pulsing?: boolean
 	bouncing?: boolean
 	accent?: string
+	wrapper?: boolean
 }
 
 export type IconOptions = {
@@ -49,6 +50,7 @@ export type IconOptions = {
 	bouncing?: IconProps['bouncing']
 	tw?: IconProps['className']
 	accent?: IconProps['accent']
+	wrapper?: boolean
 }
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
@@ -62,6 +64,7 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
 		bouncing,
 		className,
 		accent,
+		wrapper,
 		...props
 	},
 	ref,
@@ -69,7 +72,7 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
 	const IconComponent = getIcon(name)
 	const sizeValue = isNumber(size) ? size : sizePresets[size]
 
-	return (
+	const icon = (
 		<IconComponent
 			ref={ref}
 			width={sizeValue}
@@ -82,13 +85,16 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
 				pinging && 'animate-ping',
 				pulsing && 'animate-pulse',
 				bouncing && 'animate-bounce',
-				className,
+				wrapper && 'flex-1',
+				!wrapper && className,
 			)}
 			style={isNumber(size) ? { width: sizeValue, height: sizeValue } : undefined}
 			{...props}
 			{...(accentSupports.includes(name) ? { accent } : {})}
 		/>
 	)
+
+	return wrapper ? <span className={cn('inline-flex w-fit', className)}>{icon}</span> : icon
 })
 
 const accentSupports: IconName[] = ['missing', 'missing-more', 'nobody', 'api', 'apply']

@@ -1,93 +1,55 @@
+import { map, startCase } from 'lodash'
+import { type ReactNode } from 'react'
+import { PersonCardHero } from './person-card-hero'
 import { formatList } from './utils'
 import type { ChatParticipantSummary } from '@/lib/chat/contracts'
-import type { PublicFreelancerGridItem } from '@/lib/db/queries/freelancers'
+import type {
+	PublicFreelancerGridItem,
+	PublicFreelancerProfile,
+} from '@/lib/db/queries/freelancers'
 import type { ProjectClientSummary } from '@/lib/db/queries/projects'
 import { Avatar, Card, Stack, TS } from '@/ui'
 import { cn } from '@/utils'
 
-// freelancerProfileId: string
-// href: string
-// name: string | null
-// avatarUrl: string | null
-// specialization: string | null
-// bioSnippet: string | null
-// hourlyRate: number | null
-// availability: string | null
-// topSkills: Array<{
-// 	id: string
-// 	name: string
-// 	category: string | null
-// 	proficiencyLevel: string | null
-// }>
-// skillCategories: string[]
-// portfolioCount: number
-// latestPortfolioItem: {
-// 	id: string
-// 	title: string
-// 	mediaUrl: string
-// 	mediaType: string | null
-// 	category: string | null
-// } | null
+type Freelancer = PublicFreelancerGridItem | PublicFreelancerProfile
 
 export type PersonCardProps = {
 	full?: boolean
 	className?: string
+	hero?: boolean
+	actions?: ReactNode
+	forcedEmpty?: boolean
 } & (
 	| { client: ProjectClientSummary; chat?: never; freelancer?: never }
 	| { client?: never; chat: ChatParticipantSummary; freelancer?: never }
-	| { client?: never; chat?: never; freelancer: PublicFreelancerGridItem }
+	| { client?: never; chat?: never; freelancer: Freelancer }
 )
 
-// export type PersonCardClientProps = {
-// 	variant: 'client'
-// 	client: ProjectClientSummary
-// 	full?: boolean
-// 	className?: string
-// }
-
-// export type PersonCardParticipantProps = {
-// 	variant: 'participant'
-// 	participant: ChatParticipantSummary
-// 	full?: boolean
-// 	className?: string
-// }
-
-// export type PersonCardFreelancerProps = {
-// 	variant: 'freelancer'
-// 	freelancer: Pick<
-// 		PublicFreelancerGridItem,
-// 		| 'href'
-// 		| 'name'
-// 		| 'avatarUrl'
-// 		| 'specialization'
-// 		| 'bioSnippet'
-// 		| 'hourlyRate'
-// 		| 'availability'
-// 		| 'topSkills'
-// 		| 'portfolioCount'
-// 		| 'latestPortfolioItem'
-// 	>
-// 	full?: boolean
-// 	className?: string
-// }
-
-// function isClient(props: Omit<PersonCardProps, 'full' | 'className'>): props is PersonCardClientProps {
-// export type PersonCardProps =
-// 	| PersonCardClientProps
-// 	| PersonCardParticipantProps
-// 	| PersonCardFreelancerProps
-
-export function PersonCard(props: PersonCardProps) {
-	const { className, full, client, chat, freelancer } = props
-
+export function PersonCard({
+	className,
+	full,
+	hero,
+	actions,
+	forcedEmpty,
+	client,
+	chat,
+	freelancer,
+}: PersonCardProps) {
 	const isClient = !!client
 	const isChat = !!chat
 	const isFreelancer = !!freelancer
 
+	const fdata = getFreelancerData(isFreelancer ? freelancer : null)
 	const fallbackName = isClient ? 'Заказчик' : isChat ? 'Участник' : 'Фрилансер'
 	const id = client?.userId ?? chat?.id ?? freelancer?.freelancerProfileId
-	const name = client?.name ?? chat?.name ?? freelancer?.name ?? fallbackName
-	const avatarUrl = client ? client.avatarUrl : chat ? chat.image : freelancer?.avatarUrl
+	const name = client?.name ?? chat?.name ?? fdata.name ?? fallbackName
+	const avatarUrl = client ? client.avatarUrl : chat ? chat.image : fdata.avatarUrl
+	const nickname = isClient ? client.nickname : (fdata.nickname ?? '')
+	const headline = isClient ? client?.companyRole : (fdata.specialization ?? null)
+	const location = isClient ? client?.location : (fdata.location ?? null)
+	const languages = isClient ? client?.languages : (fdata.languages ?? null)
+	const rawBio = isClient ? client?.bio : (fdata.bio ?? null)
+	const bio = full ? rawBio : toSnippet(rawBio)
 
 	// if (props.variant === 'client') {
 	// 	return (
@@ -109,11 +71,29 @@ export function PersonCard(props: PersonCardProps) {
 	// 	)
 	// }
 
-	const badge = freelancer?.latestPortfolioItem ? 'Latest work' : 'Portfolio soon'
-	const title = freelancer?.latestPortfolioItem?.title
-	const subtitle = freelancer?.specialization ?? 'Специализация не указана'
-	// const company = describeCompany(client)
-	// if (full) {
+	const badge = fdata.latestPortfolioItem ? 'Latest work' : 'Portfolio soon'
+	const title = fdata.latestPortfolioItem?.title
+	const subtitle = fdata.specialization ?? 'Специализация не указана'
+	const company = isClient ? client?.companyName : null
+	const companyRole = isClient && client?.companyRole ? startCase(client.companyRole) : null
+
+	if (hero) {
+		return (
+			<PersonCardHero
+				full={full}
+				isClient={isClient}
+				bio={bio}
+				forcedBio={forcedEmpty}
+				name={name}
+				nickname={nickname}
+				headline={headline}
+				avatarUrl={avatarUrl}
+				location={location}
+				languages={languages}
+			/>
+		)
+	}
+
 	return (
 		<Card
 			data-entity={id}
@@ -129,7 +109,7 @@ export function PersonCard(props: PersonCardProps) {
 			titleOver={full}
 			title={title}
 			footer={
-				'xxx'
+				actions
 				// <Stack justify="space-between" gap={3} className="w-full">
 				// 	<TS
 				// 		clean
@@ -151,7 +131,7 @@ export function PersonCard(props: PersonCardProps) {
 		>
 			<Stack vertical gap={full ? 4 : 3} align="stretch" className="px-4">
 				<Stack gap={3} align="center">
-					<Avatar name={name} src={avatarUrl} size="lg" />
+					<Avatar name={name} src={avatarUrl} color="auto" size="lg" />
 					<Stack vertical gap={0} align="stretch" className="min-w-0 flex-1">
 						<TS
 							clean
@@ -166,7 +146,7 @@ export function PersonCard(props: PersonCardProps) {
 							className={cn(full ? 'line-clamp-2 leading-normal' : 'line-clamp-1')}
 						>
 							{formatList(
-								client ? [client.companyName, client.companyRole] : [subtitle],
+								client ? [company, companyRole] : [subtitle],
 								client ? 'building' : 'brain-circuit',
 							)}
 						</TS>
@@ -180,7 +160,7 @@ export function PersonCard(props: PersonCardProps) {
 							color="secondary"
 							className="line-clamp-3"
 							content={
-								freelancer.bioSnippet ||
+								toSnippet(freelancer.bio) ||
 								'Пользователь еще не добавил описание, но уже доступен для просмотра профиля.'
 							}
 						/>
@@ -201,19 +181,62 @@ export function PersonCard(props: PersonCardProps) {
 			</Stack>
 		</Card>
 	)
-	// }
+}
 
-	// return (
-	// 	<Card
-	// 		fullWidth
-	// 		size="sm"
-	// 		hoverable
-	// 		className="max-w-none gap-0 py-3"
-	// 		contentClassName="p-0"
-	// 	>
-	// 		<PersonCardFreelancerBody freelancer={props.freelancer} full={full} />
-	// 	</Card>
-	// )
+function toSnippet(value: string | null, maxLength = 160) {
+	if (!value) return null
+
+	const normalized = value.replace(/\s+/g, ' ').trim()
+	if (normalized.length <= maxLength) return normalized
+	return `${normalized.slice(0, maxLength - 1).trimEnd()}…`
+}
+
+type FreelancerData = Pick<
+	PublicFreelancerGridItem,
+	| 'name'
+	| 'nickname'
+	| 'avatarUrl'
+	| 'location'
+	| 'languages'
+	| 'bio'
+	| 'specialization'
+	| 'hourlyRate'
+	| 'availability'
+	| 'topSkills'
+	| 'portfolioCount'
+	| 'latestPortfolioItem'
+>
+
+function getFreelancerData(freelancer: Freelancer | null): FreelancerData {
+	if (!freelancer) return {} as FreelancerData
+	if ('userProfile' in freelancer)
+		return {
+			nickname: freelancer.nickname,
+			name: freelancer.userProfile?.name ?? null,
+			avatarUrl: freelancer.userProfile?.avatarUrl ?? null,
+			location: freelancer.userProfile?.location ?? null,
+			bio: freelancer.userProfile?.bio ?? null,
+			languages: freelancer.languages,
+			...freelancer.freelancer,
+			topSkills: map(freelancer.skills, (skill) => ({
+				id: skill.skillId,
+				name: skill.skill.name,
+				category: skill.skill.category,
+				proficiencyLevel: skill.proficiencyLevel,
+			})),
+			portfolioCount: freelancer.portfolio.length,
+			latestPortfolioItem: freelancer.portfolio[0]
+				? {
+						id: freelancer.portfolio[0].id,
+						title: freelancer.portfolio[0].title,
+						mediaUrl: freelancer.portfolio[0].mediaUrl,
+						mediaType: freelancer.portfolio[0].mediaType,
+						category: freelancer.portfolio[0].category,
+					}
+				: null,
+		}
+
+	return freelancer
 }
 
 // function PersonCardClientShell({

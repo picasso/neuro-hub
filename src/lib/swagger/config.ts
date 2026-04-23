@@ -153,10 +153,27 @@ export const swaggerConfig: OpenAPIV3.Document = {
 					id: { type: 'string', format: 'uuid' },
 					userId: { type: 'string', format: 'uuid' },
 					name: { type: 'string' },
+					nickname: { type: 'string', example: 'jane-ai' },
+					location: { type: 'string', nullable: true },
 					avatarUrl: { type: 'string', format: 'uri' },
 					bio: { type: 'string' },
 					companyName: { type: 'string' },
 					companyRole: { type: 'string' },
+					languages: {
+						type: 'array',
+						items: {
+							type: 'object',
+							properties: {
+								languageCode: { type: 'string' },
+								name: { type: 'string' },
+								nativeName: { type: 'string' },
+								langLevel: {
+									type: 'string',
+									enum: ['basic', 'conversational', 'fluent', 'native'],
+								},
+							},
+						},
+					},
 				},
 			},
 			Skill: {

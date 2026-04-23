@@ -1,4 +1,4 @@
-import { map } from 'lodash'
+import { map, omit } from 'lodash'
 import { useState } from 'react'
 import { Icon, type IconName, type IconOptions } from './icon'
 import {
@@ -82,11 +82,9 @@ export function SidebarHeaderMenu({ active, label, items, separator }: SidebarMe
 									<Stack className="size-6 justify-center rounded-md border">
 										<Icon
 											name={item.icon}
-											size={item.iconOptions?.size}
+											{...omit(item.iconOptions, 'tw')}
 											color={item.iconOptions?.color ?? 'current'}
-											spinning={item.iconOptions?.spinning}
 											className={item.iconOptions?.tw}
-											accent={item.iconOptions?.accent}
 										/>
 										<span>{item.title}</span>
 									</Stack>

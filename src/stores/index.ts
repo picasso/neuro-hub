@@ -12,6 +12,16 @@ export {
 	projectCreated,
 	resetContext,
 } from './account-context/model'
+export {
+	$authHeaderState,
+	$authHeaderUnreadMessages,
+	$authHeaderViewer,
+	authHeaderHydrated,
+	authHeaderUnreadMessagesPatched,
+	authHeaderViewerPatched,
+	AuthHeaderGate,
+	clearAuthHeader,
+} from './auth-header/model'
 export { openChatConversation } from './chat/api'
 export {
 	$activeConversation,
@@ -81,21 +91,6 @@ export {
 } from './freelancer-portfolio/model'
 export type { PortfolioForm, PortfolioItem, UploadResult } from './freelancer-portfolio/types'
 export {
-	$form as $freelancerProfileForm,
-	$isBusy as $freelancerProfileIsBusy,
-	$isLoading as $freelancerProfileIsLoading,
-	$isSaving as $freelancerProfileIsSaving,
-	$profileId as $freelancerProfileId,
-	FreelancerProfileGate,
-	loadFreelancerProfileFx,
-	profileFormUpdated,
-	resetFreelancerProfile,
-	saveFreelancerProfileClicked,
-	saveFreelancerProfileFx,
-} from './freelancer-profile/model'
-export type { FreelancerProfileDto, FreelancerProfileForm } from './freelancer-profile/types'
-export {
-	$allSkills,
 	$canGoNext,
 	$canGoPrev,
 	$credentials as $onboardingCredentials,
@@ -106,14 +101,10 @@ export {
 	$profileData,
 	$profileErrors,
 	$role,
-	$selectedSkills,
-	addSkill,
-	loadSkillsFx,
 	nextStep,
 	OnboardingGate,
 	prevStep,
 	registerUserFx,
-	removeSkill,
 	resetCurrentStep,
 	resetOnboarding,
 	resetRole,
@@ -124,7 +115,6 @@ export {
 	submitRegistration,
 	updateCredentialField,
 	updateProfileField,
-	updateSkillLevel,
 	validateAndContinue,
 	validateCredentialsAndContinue,
 } from './onboarding/model'
@@ -135,8 +125,6 @@ export type {
 	ProfileErrors,
 	ProfileField,
 	RegisterUserInput,
-	Skill,
-	UpdateSkillLevel,
 } from './onboarding/types'
 export {
 	$applicationErrors,

@@ -1,30 +1,30 @@
 import { sql } from 'kysely'
 import { requireRole } from '@/lib/auth/server'
 import { kysely } from '@/lib/db'
-import { createPortfolioItemSchema, freelancerProfileIdParamSchema } from '@/lib/validations'
+import { getFreelancerProfileRowByNickname } from '@/lib/db/queries/freelancers'
+import { createPortfolioItemSchema, freelancerNicknameParamSchema } from '@/lib/validations'
 import { createdResponse, errorResponse, successResponse } from '@/utils/api-response'
 import { NotFoundError } from '@/utils/errors'
 
 type RouteContext = {
-	params: Promise<{ id: string }>
+	params: Promise<{ nickname: string }>
 }
 
 /**
  * @swagger
- * /api/freelancers/{id}/portfolio:
+ * /api/freelancers/{nickname}/portfolio:
  *   get:
  *     tags:
  *       - Portfolio
  *     summary: List public portfolio items for a freelancer
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: nickname
  *         required: true
  *         schema:
  *           type: string
- *           format: uuid
- *         description: Freelancer profile id (UUID)
- *         example: "550e8400-e29b-41d4-a716-446655440000"
+ *         description: Public nickname slug
+ *         example: "jane-ai"
  *     responses:
  *       200:
  *         description: Portfolio items
@@ -42,13 +42,12 @@ type RouteContext = {
  *       - cookieAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: nickname
  *         required: true
  *         schema:
  *           type: string
- *           format: uuid
- *         description: Freelancer profile id (UUID)
- *         example: "550e8400-e29b-41d4-a716-446655440000"
+ *         description: Public nickname slug
+ *         example: "jane-ai"
  *     requestBody:
  *       required: true
  *       content:
@@ -101,12 +100,15 @@ type RouteContext = {
  */
 export async function GET(_: Request, context: RouteContext) {
 	try {
-		const { id } = freelancerProfileIdParamSchema.parse(await context.params)
+		const { nickname } = freelancerNicknameParamSchema.parse(await context.params)
+
+		const resolved = await getFreelancerProfileRowByNickname(nickname)
+		if (!resolved) throw new NotFoundError('Freelancer profile not found')
 
 		const items = await kysely
 			.selectFrom('portfolio_items')
 			.selectAll()
-			.where('freelancer_profile_id', '=', id)
+			.where('freelancer_profile_id', '=', resolved.freelancerProfileId)
 			.orderBy('created_at', 'desc')
 			.execute()
 
@@ -134,17 +136,14 @@ export async function GET(_: Request, context: RouteContext) {
 export async function POST(request: Request, context: RouteContext) {
 	try {
 		const session = await requireRole('freelancer')
-		const { id } = freelancerProfileIdParamSchema.parse(await context.params)
+		const { nickname } = freelancerNicknameParamSchema.parse(await context.params)
 
-		const profile = await kysely
-			.selectFrom('freelancer_profiles')
-			.select(['id', 'user_id'])
-			.where('id', '=', id)
-			.executeTakeFirst()
-
-		if (!profile || profile.user_id !== session.user.id) {
+		const resolved = await getFreelancerProfileRowByNickname(nickname)
+		if (!resolved || resolved.userId !== session.user.id) {
 			throw new NotFoundError('Freelancer profile not found')
 		}
+
+		const freelancerProfileId = resolved.freelancerProfileId
 
 		const body = await request.json()
 		const validated = createPortfolioItemSchema.parse(body)
@@ -158,7 +157,7 @@ export async function POST(request: Request, context: RouteContext) {
 		const inserted = await kysely
 			.insertInto('portfolio_items')
 			.values({
-				freelancer_profile_id: id,
+				freelancer_profile_id: freelancerProfileId,
 				title: validated.title,
 				description: validated.description ?? null,
 				media_url: validated.mediaUrl,
@@ -167,7 +166,6 @@ export async function POST(request: Request, context: RouteContext) {
 				media_height: imageDimensions?.height ?? validated.mediaHeight ?? null,
 				caption: validated.caption ?? null,
 				category: validated.category ?? null,
-				// `tools_used` is jsonb; pg will serialize arrays as PG array literals unless we cast explicitly.
 				tools_used: validated.toolsUsed?.length
 					? sql`${JSON.stringify(validated.toolsUsed)}::jsonb`
 					: null,
@@ -216,7 +214,6 @@ async function resolveImageDimensions({
 		return null
 	}
 
-	// only derive metadata from trusted public blob URLs to avoid SSRF
 	if (url.protocol !== 'https:' || !url.hostname.endsWith('.public.blob.vercel-storage.com')) {
 		return null
 	}

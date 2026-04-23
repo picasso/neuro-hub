@@ -355,7 +355,7 @@ export function ComboboxCustom({
 									<Avatar
 										name={item.avatar}
 										size={item.avatarSize}
-										color={item.avatarColor}
+										color={item.avatarColor ?? 'auto'}
 										badge={item.avatarBadge}
 										bordered={item.avatarBordered}
 										src={item.avatarSrc}

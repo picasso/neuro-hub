@@ -1,8 +1,10 @@
 export {
+	type ApiErrorDetails,
 	type ApiErrorPayloadPart,
 	buildUserFacingApiErrorMessage,
 	buildUserFacingApiErrorMessageFromParsed,
 	formatApiValidationErrorDetails,
+	parseClientApiError,
 	parseApiResponseError,
 	pickFieldErrorsFromApiErrors,
 	PROJECT_APPLICATION_VALIDATION_FIELD_LABELS,
@@ -28,7 +30,7 @@ export {
 	type TemplatedMessage,
 } from './common'
 export { findChild, findParent } from './dom'
-export { fileSize } from './file'
+export { fileSize, cyrilicValidator } from './helpers'
 export { pluralizeRu, pluralizeRuWithCount } from './pluralize-ru'
 export { normalizeSearchParams } from './search-params'
 export {

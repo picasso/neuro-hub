@@ -1,3 +1,4 @@
+import { getPublicLanguagesByUserIds, type PublicUserLanguage } from './public-user-languages'
 import type { FreelancerDirectoryQueryInput } from '@/lib/validations/freelancer-directory'
 import type { FreelancerProfiles } from '@/types/database'
 import type { Selectable } from 'kysely'
@@ -8,10 +9,13 @@ type FreelancerProfileRow = Selectable<FreelancerProfiles>
 export type PublicFreelancerProfile = {
 	userId: string
 	freelancerProfileId: string
+	nickname: string
 	userProfile: {
 		name: string | null
+		nickname: string
 		avatarUrl: string | null
 		bio: string | null
+		location: string | null
 	} | null
 	freelancer: {
 		specialization: string | null
@@ -42,15 +46,19 @@ export type PublicFreelancerProfile = {
 		createdAt: Date | null
 		updatedAt: Date | null
 	}>
+	languages: PublicUserLanguage[]
 }
 
 export type PublicFreelancerGridItem = {
 	freelancerProfileId: string
+	nickname: string
 	href: string
 	name: string | null
 	avatarUrl: string | null
+	location: string | null
+	languages: PublicUserLanguage[]
+	bio: string | null
 	specialization: string | null
-	bioSnippet: string | null
 	hourlyRate: number | null
 	availability: string | null
 	topSkills: Array<{
@@ -78,23 +86,57 @@ export type ListPublicFreelancersResult = {
 	hasMore: boolean
 }
 
-export async function getPublicFreelancerProfileByProfileId(
-	profileId: string,
+export async function getFreelancerProfileRowByNickname(nickname: string) {
+	const normalized = nickname.toLowerCase()
+	return kysely
+		.selectFrom('freelancer_profiles as fp')
+		.innerJoin('user_profiles as up', 'up.user_id', 'fp.user_id')
+		.select(['fp.id as freelancerProfileId', 'fp.user_id as userId'])
+		.where('up.nickname', '=', normalized)
+		.executeTakeFirst()
+}
+
+export async function getPublicFreelancerProfileByNickname(
+	nickname: string,
 ): Promise<PublicFreelancerProfile | null> {
+	const normalized = nickname.toLowerCase()
 	const freelancerProfile = await kysely
-		.selectFrom('freelancer_profiles')
-		.selectAll()
-		.where('id', '=', profileId)
+		.selectFrom('freelancer_profiles as fp')
+		.innerJoin('user_profiles as up', 'up.user_id', 'fp.user_id')
+		.selectAll('fp')
+		.where('up.nickname', '=', normalized)
 		.executeTakeFirst()
 
 	if (!freelancerProfile) return null
 	const userId = freelancerProfile.user_id
+	const profileId = freelancerProfile.id
 
 	const userProfile = await kysely
 		.selectFrom('user_profiles')
 		.selectAll()
 		.where('user_id', '=', userId)
 		.executeTakeFirst()
+
+	const languageRows = await kysely
+		.selectFrom('user_languages')
+		.innerJoin('languages', 'languages.code', 'user_languages.language_code')
+		.where('user_languages.user_id', '=', userId)
+		.select([
+			'languages.code as code',
+			'languages.name as name',
+			'languages.native_name as nativeName',
+			'user_languages.lang_level as langLevel',
+		])
+		.orderBy('languages.sort_order', 'asc')
+		.orderBy('languages.name', 'asc')
+		.execute()
+
+	const languages: PublicUserLanguage[] = languageRows.map((row) => ({
+		code: row.code,
+		name: row.name,
+		nativeName: row.nativeName,
+		langLevel: row.langLevel as PublicUserLanguage['langLevel'],
+	}))
 
 	const userSkills = await kysely
 		.selectFrom('user_skills')
@@ -119,11 +161,14 @@ export async function getPublicFreelancerProfileByProfileId(
 	return {
 		userId,
 		freelancerProfileId: freelancerProfile.id,
+		nickname: userProfile?.nickname ?? normalized,
 		userProfile: userProfile
 			? {
 					name: userProfile.name,
+					nickname: userProfile.nickname,
 					avatarUrl: userProfile.avatar_url,
 					bio: userProfile.bio,
+					location: userProfile.location,
 				}
 			: null,
 		freelancer: {
@@ -155,6 +200,7 @@ export async function getPublicFreelancerProfileByProfileId(
 			createdAt: p.created_at,
 			updatedAt: p.updated_at,
 		})),
+		languages,
 	}
 }
 
@@ -191,6 +237,8 @@ export async function listPublicFreelancers(
 			'freelancer.availability as availability',
 			'freelancer.updated_at as updatedAt',
 			'profile.name as name',
+			'profile.nickname as nickname',
+			'profile.location as location',
 			'profile.avatar_url as avatarUrl',
 			'profile.bio as bio',
 		])
@@ -251,6 +299,8 @@ export async function listPublicFreelancers(
 		countQuery = countQuery.where((eb) =>
 			eb.or([
 				eb('profile.name', 'ilike', search),
+				eb('profile.nickname', 'ilike', search),
+				eb('profile.location', 'ilike', search),
 				eb('profile.bio', 'ilike', search),
 				eb('freelancer.specialization', 'ilike', search),
 				eb.exists(
@@ -261,11 +311,26 @@ export async function listPublicFreelancers(
 						.whereRef('user_skill.user_id', '=', 'freelancer.user_id')
 						.where('skill.name', 'ilike', search),
 				),
+				eb.exists(
+					eb
+						.selectFrom('user_languages as ul')
+						.innerJoin('languages as lang', 'lang.code', 'ul.language_code')
+						.select('ul.user_id')
+						.whereRef('ul.user_id', '=', 'freelancer.user_id')
+						.where((b) =>
+							b.or([
+								b('lang.name', 'ilike', search),
+								b('lang.native_name', 'ilike', search),
+							]),
+						),
+				),
 			]),
 		)
 		rowsQuery = rowsQuery.where((eb) =>
 			eb.or([
 				eb('profile.name', 'ilike', search),
+				eb('profile.nickname', 'ilike', search),
+				eb('profile.location', 'ilike', search),
 				eb('profile.bio', 'ilike', search),
 				eb('freelancer.specialization', 'ilike', search),
 				eb.exists(
@@ -275,6 +340,19 @@ export async function listPublicFreelancers(
 						.select('user_skill.id')
 						.whereRef('user_skill.user_id', '=', 'freelancer.user_id')
 						.where('skill.name', 'ilike', search),
+				),
+				eb.exists(
+					eb
+						.selectFrom('user_languages as ul')
+						.innerJoin('languages as lang', 'lang.code', 'ul.language_code')
+						.select('ul.user_id')
+						.whereRef('ul.user_id', '=', 'freelancer.user_id')
+						.where((b) =>
+							b.or([
+								b('lang.name', 'ilike', search),
+								b('lang.native_name', 'ilike', search),
+							]),
+						),
 				),
 			]),
 		)
@@ -313,7 +391,7 @@ export async function listPublicFreelancers(
 	const userIds = rows.map((row) => row.userId)
 	const freelancerProfileIds = rows.map((row) => row.freelancerProfileId)
 
-	const [skillRows, portfolioRows] = await Promise.all([
+	const [skillRows, portfolioRows, languagesByUserId] = await Promise.all([
 		kysely
 			.selectFrom('user_skills as user_skill')
 			.innerJoin('skills as skill', 'skill.id', 'user_skill.skill_id')
@@ -341,6 +419,7 @@ export async function listPublicFreelancers(
 			.where('portfolio_item.freelancer_profile_id', 'in', freelancerProfileIds)
 			.orderBy('portfolio_item.created_at', 'desc')
 			.execute(),
+		getPublicLanguagesByUserIds(userIds),
 	])
 
 	const skillsByUserId = new Map<string, PublicFreelancerGridItem['topSkills']>()
@@ -390,11 +469,14 @@ export async function listPublicFreelancers(
 
 	const items = rows.map((row) => ({
 		freelancerProfileId: row.freelancerProfileId,
-		href: `/freelancers/${row.freelancerProfileId}`,
+		nickname: row.nickname,
+		href: `/freelancers/${row.nickname}`,
 		name: row.name,
 		avatarUrl: row.avatarUrl,
+		location: row.location,
+		languages: languagesByUserId.get(row.userId) ?? [],
+		bio: row.bio,
 		specialization: row.specialization,
-		bioSnippet: toSnippet(row.bio),
 		hourlyRate: row.hourlyRate,
 		availability: row.availability,
 		topSkills: skillsByUserId.get(row.userId) ?? [],
@@ -486,11 +568,4 @@ export async function countActiveFreelancerApplications({
 		.executeTakeFirstOrThrow()
 
 	return Number(result.count)
-}
-
-function toSnippet(value: string | null, maxLength = 160) {
-	if (!value) return null
-	const normalized = value.replace(/\s+/g, ' ').trim()
-	if (normalized.length <= maxLength) return normalized
-	return `${normalized.slice(0, maxLength - 1).trimEnd()}…`
 }

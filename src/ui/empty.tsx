@@ -92,6 +92,7 @@ export function Empty({
 		? { helper: helper.helper, md: helper.md === false ? false : { br: true, ...helper.md } }
 		: { helper, md: { br: true } }
 
+	const { tw: iconClassName, ...options } = iconOptions ?? {}
 	return (
 		<EmptyRoot
 			data-disabled={disabled}
@@ -137,14 +138,13 @@ export function Empty({
 					>
 						<Icon
 							name={icon}
+							{...options}
 							color={
-								iconOptions?.color ??
+								options.color ??
 								(error ? 'destructive' : outline ? 'dimmed' : 'secondary')
 							}
-							size={iconOptions?.size ?? 'sm'}
-							spinning={iconOptions?.spinning}
-							accent={iconOptions?.accent}
-							className={iconOptions?.tw}
+							size={options.size ?? 'sm'}
+							className={iconClassName}
 						/>
 					</EmptyMedia>
 				)}
