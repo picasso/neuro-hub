@@ -2,7 +2,14 @@ import { useUnit } from 'effector-react'
 import { find, map } from 'lodash'
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { formatLanguages, getLanguageLabel, langLevelOptions } from './helpers'
-import { $form, $isBusy, languageAdded, languageRemoved, languageUpdated } from './model'
+import {
+	$form,
+	$isBusy,
+	autosaveRequested,
+	languageAdded,
+	languageRemoved,
+	languageUpdated,
+} from './model'
 import { type LanguageLevel, type LanguageOption } from './types'
 import {
 	Alert,
@@ -54,10 +61,15 @@ export function ProfileLanguages({ availableLanguages, disabled }: ProfileLangua
 		[availableLanguages, onChange],
 	)
 
+	const onOpenChange = useCallback((open: boolean) => {
+		setOpen(open)
+		if (!open) autosaveRequested()
+	}, [])
+
 	return (
 		<Popover
 			open={open}
-			onOpenChange={setOpen}
+			onOpenChange={onOpenChange}
 			align="start"
 			trigger={
 				<StackSpan gap={1} className="cursor-pointer hover:bg-accent rounded-md px-1">

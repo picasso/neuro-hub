@@ -53,7 +53,7 @@ export const languageUpdated = domain.createEvent<LanguageUpdate>('languageUpdat
 export const languageRemoved = domain.createEvent<number>('languageRemoved')
 export const avatarSelected = domain.createEvent<File>('avatarSelected')
 export const saveRequested = domain.createEvent('saveRequested')
-const autosaveRequested = domain.createEvent('autosaveRequested')
+export const autosaveRequested = domain.createEvent('autosaveRequested')
 
 export const nicknameEdited = domain.createEvent<string | undefined>('nicknameEdited')
 export const nicknameUpdated = domain.createEvent<string>('nicknameUpdated')
