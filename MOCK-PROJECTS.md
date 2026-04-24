@@ -9,15 +9,13 @@
 3. `yarn db:seed:mock-users` — **обязателен** (клиенты и фрилансеры с `user_skills`)
 4. `yarn db:seed:mock-projects` — читает YAML ниже, upsert `projects`, `project_skills`, `project_attachments`, `applications`.
 
-
 | Variable                        | Назначение                                                          |
 | ------------------------------- | ------------------------------------------------------------------- |
 | `DATABASE_URL`                  | Подключение к Postgres.                                             |
 | `MOCK_SEED_CONFIRM` / `--force` | Как в mock-users: подтверждение, если `DATABASE_URL` не localhost.  |
 | `NEXT_PUBLIC_APP_URL`           | Не обязателен; вложения в данных заданы относительными public-path. |
 
-
-**10** проектов (по 2 на клиента), **15** вложений на **8** проектах, **15** уникальных файлов в `public/mock-projects/`. Каждая заявка от фрилансера согласована с **пересечением** `user_skills` и `project_skills` (см. `src/lib/dev/mock-projects-seed.ts`). Немедиа-вложения (PDF/DOCX/MP4/M4A) генерируются скриптом `yarn mock-projects:binaries` (см. [scripts/dev/generate-mock-project-binaries.ts](scripts/dev/generate-mock-project-binaries.ts)).
+**10** проектов (по 2 на клиента), **16** вложений на **8** проектах, **16** уникальных файлов в `public/mock-projects/`. Каждая заявка от фрилансера согласована с **пересечением** `user_skills` и `project_skills` (см. `src/lib/dev/mock-projects-seed.ts`). Немедиа-вложения (PDF/DOCX/MP4/MP3) генерируются скриптом `yarn mock-projects:binaries` (см. [scripts/dev/generate-mock-project-binaries.ts](scripts/dev/generate-mock-project-binaries.ts)).
 
 ```yaml
 projects:
@@ -272,19 +270,25 @@ project_attachments:
     filename: attachment-video-perf-hero-a.mp4
     file_url: /mock-projects/attachment-video-perf-hero-a.mp4
     mime_type: video/mp4
-    file_size_bytes: 3970
+    file_size_bytes: 14372023
   - id: f0000000-0000-4000-8000-000000000014
     project_id: d0000000-0000-4000-8000-000000000004
     filename: attachment-video-perf-hero-b.mp4
     file_url: /mock-projects/attachment-video-perf-hero-b.mp4
     mime_type: video/mp4
-    file_size_bytes: 3325
+    file_size_bytes: 5449423
   - id: f0000000-0000-4000-8000-000000000015
     project_id: d0000000-0000-4000-8000-000000000009
-    filename: attachment-store-faq-sample.m4a
-    file_url: /mock-projects/attachment-store-faq-sample.m4a
-    mime_type: audio/mp4
-    file_size_bytes: 25655
+    filename: attachment-store-faq-sample.mp3
+    file_url: /mock-projects/attachment-store-faq-sample.mp3
+    mime_type: audio/mp3
+    file_size_bytes: 532106
+  - id: f0000000-0000-4000-8000-000000000016
+    project_id: d0000000-0000-4000-8000-000000000009
+    filename: attachment-store-faq-script-en-jp.txt
+    file_url: /mock-projects/attachment-store-faq-script-en-jp.txt
+    mime_type: text/plain
+    file_size_bytes: 583
 
 applications:
   # d...002 RAG (5)
@@ -487,6 +491,7 @@ applications:
 - [public/mock-projects/attachment-prompt-playbook.docx](public/mock-projects/attachment-prompt-playbook.docx)  
 - [public/mock-projects/attachment-video-perf-hero-a.mp4](public/mock-projects/attachment-video-perf-hero-a.mp4)  
 - [public/mock-projects/attachment-video-perf-hero-b.mp4](public/mock-projects/attachment-video-perf-hero-b.mp4)  
-- [public/mock-projects/attachment-store-faq-sample.m4a](public/mock-projects/attachment-store-faq-sample.m4a)
+- [public/mock-projects/attachment-store-faq-sample.mp3](public/mock-projects/attachment-store-faq-sample.mp3)
+- [public/mock-projects/attachment-store-faq-script-en-jp.txt](public/mock-projects/attachment-store-faq-script-en-jp.txt)
 
 Пути в БД: `/mock-projects/...` (как public URL).

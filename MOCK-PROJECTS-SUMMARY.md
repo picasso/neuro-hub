@@ -8,4 +8,4 @@
 4. `mock_cl_04` — RAG в регулируемой среде; завершённый ETL
 5. `mock_cl_05` — draft in-store Q&A; consulting sprint (prompts)
 
-**19** mock-заявок, вложения — **8** из **10** проектов (**15** записей, **15** файлов). Подробности: [MOCK-PROJECTS.md](MOCK-PROJECTS.md).
+**19** mock-заявок, вложения — **8** из **10** проектов (**16** записей, **16** файлов). Подробности: [MOCK-PROJECTS.md](MOCK-PROJECTS.md).

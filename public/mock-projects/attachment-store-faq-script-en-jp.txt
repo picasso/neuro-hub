@@ -1,0 +1,6 @@
+“Welcome. I can help with store hours, returns, and where to find items.
+For a refund on opened items, please have your receipt ready and visit the service counter within fourteen days.
+在庫は入り口近くのタブレットで確認できます。 Zaiko wa iriguchi chikaku no taburetto de kakunin dekimasu.
+If you need store inventory for a specific SKU, I can look it up — say ‘inventory check’ to continue.
+For anything sensitive, like a payment problem, I can hand you to our store team — just tap Assistance on the screen.
+Thank you for shopping with us today.”
