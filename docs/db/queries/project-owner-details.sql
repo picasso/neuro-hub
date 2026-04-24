@@ -20,6 +20,7 @@ select
 	p.budget_max,
 	p.deadline,
 	p.status,
+	p.cover_url,
 	p.created_at,
 	p.updated_at,
 	coalesce(required_skill_agg.required_skills, '[]'::jsonb) as required_skills,

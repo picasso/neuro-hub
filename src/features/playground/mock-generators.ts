@@ -272,6 +272,7 @@ export function createPublicProjectListItem(options: {
 		budgetMax: id === 'proj-mock-2' ? 5000 : 260000,
 		deadline,
 		status,
+		coverUrl: null,
 		createdAt,
 		client: createProjectClient({
 			withAvatar: id !== 'proj-mock-2',
@@ -351,6 +352,7 @@ export function createFreelancerApplication(options: {
 			budgetMax: projectSource.budgetMax,
 			deadline: projectSource.deadline,
 			status: projectSource.status,
+			coverUrl: projectSource.coverUrl,
 			client: projectSource.client,
 			skills: projectSource.skills,
 		},

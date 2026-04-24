@@ -189,6 +189,7 @@ Table user_skills {
 Table projects {
   id uuid [pk, default: `gen_random_uuid()`]
   client_id text [not null]
+  cover_url text
   title varchar(255) [not null]
   description text [not null]
   category varchar(100) [not null]
