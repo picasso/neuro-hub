@@ -364,6 +364,8 @@ Key fields:
 - `filename`, `file_url`
 - `mime_type`, `file_size_bytes`
 
+Agent note: `mime_type` reflects the asset (e.g. `image/jpeg`, `application/pdf`, OOXML for `.docx`, `video/mp4`, `audio/mp4` for `.m4a`); mock seeds in `MOCK-PROJECTS.md` mix types for QA.
+
 Invariants:
 
 - every attachment belongs to one project

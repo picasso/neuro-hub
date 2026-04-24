@@ -4,14 +4,16 @@
 
 ## Сид в БД
 
-1. `yarn db:migrate`  
-2. `yarn db:seed` (каталоги `skills` и `languages` — **до** моков)  
+1. `yarn db:migrate`
+2. `yarn db:seed` (каталоги `skills` и `languages` — **до** моков)
 3. `yarn db:seed:mock-users` — читает YAML ниже, подставляет e-mail, никнеймы, `location`, `user_languages`, сохраняет пути к ассетам в виде `/mock-users/...`, создаёт учётки `credential` с хешом пароля (см. `src/lib/dev/mock-users-seed.ts` и `scripts/db/seed-mock-users.ts`).
 
-| Variable | Назначение |
-| -------- | ---------- |
-| `DATABASE_URL` | Подключение к Postgres. |
+
+| Variable              | Назначение                                                                                                                                                                                                                       |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`        | Подключение к Postgres.                                                                                                                                                                                                          |
 | `NEXT_PUBLIC_APP_URL` | Не обязателен для текущего набора моков. Сейчас ассеты в YAML заданы относительными путями `/mock-users/...`. Переменная остаётся только как compatibility origin для legacy absolute URL при нормализации данных в сид-скрипте. |
+
 
 **Пароль всех мок-аккаунтов (email+password):** `mock1234` (в репо не кладётся, только хеш в `accounts`).
 
@@ -26,7 +28,7 @@
 
 **Пять клиентов** (`role: client`, без `freelancer_profiles`) и разные **компании / роли в компании** теперь тоже описаны прямо в YAML ниже; у Yuki Tanaka `user_languages` намеренно пустой по сценарию.
 
-- Avatars on disk: `public/mock-users/avatars/mock-avatar-01.jpg` … `mock-avatar-15.jpg` (JPEG, quality 60)  
+- Avatars on disk: `public/mock-users/avatars/mock-avatar-01.jpg` … `mock-avatar-15.jpg` для фрилансеров; `mock-avatar-cl-01.jpg` … `mock-avatar-cl-05.jpg` для клиентов (`role: client`) (JPEG, quality 60)  
 - Portfolio: `public/mock-users/portfolio/mock-portfolio-ai-*.jpg` (см. `ASSETS-TO-GENERATE.md` при регенерации)  
 - В YAML ниже пути к ассетам заданы как относительные public-path значения: `/mock-users/...`
 
@@ -1403,13 +1405,13 @@ users:
       name: Sarah Mitchell
       role: client
       emailVerified: true
-      image: /mock-users/avatars/mock-avatar-01.jpg
+      image: /mock-users/avatars/mock-avatar-cl-01.jpg
     user_profiles:
       id: mock_cl_01
       user_id: mock_cl_01
       name: Sarah Mitchell
       nickname: sarah-mitchell
-      avatar_url: /mock-users/avatars/mock-avatar-01.jpg
+      avatar_url: /mock-users/avatars/mock-avatar-cl-01.jpg
       bio: Hiring generative-AI teams for industrial automation pilots.
       company_name: Acme Robotics
       company_role: VP of Engineering
@@ -1427,13 +1429,13 @@ users:
       name: Джейми Ву
       role: client
       emailVerified: true
-      image: /mock-users/avatars/mock-avatar-02.jpg
+      image: /mock-users/avatars/mock-avatar-cl-02.jpg
     user_profiles:
       id: mock_cl_02
       user_id: mock_cl_02
       name: Джейми Ву
       nickname: jamie-wu
-      avatar_url: /mock-users/avatars/mock-avatar-02.jpg
+      avatar_url: /mock-users/avatars/mock-avatar-cl-02.jpg
       bio: Планирует дорожные карты AI-функций для B2B SaaS-продуктов.
       company_name: Nordic Labs GmbH
       company_role: Head of Product
@@ -1451,13 +1453,13 @@ users:
       name: Прия Шарма
       role: client
       emailVerified: true
-      image: /mock-users/avatars/mock-avatar-03.jpg
+      image: /mock-users/avatars/mock-avatar-cl-03.jpg
     user_profiles:
       id: mock_cl_03
       user_id: mock_cl_03
       name: Прия Шарма
       nickname: priya-sharma
-      avatar_url: /mock-users/avatars/mock-avatar-03.jpg
+      avatar_url: /mock-users/avatars/mock-avatar-cl-03.jpg
       bio: Ведет бренд-кампании и креативные процессы с использованием генеративных медиа.
       company_name: Horizon Media Group
       company_role: Creative Director
@@ -1475,13 +1477,13 @@ users:
       name: Мара Уэбб
       role: client
       emailVerified: true
-      image: /mock-users/avatars/mock-avatar-04.jpg
+      image: /mock-users/avatars/mock-avatar-cl-04.jpg
     user_profiles:
       id: mock_cl_04
       user_id: mock_cl_04
       name: Мара Уэбб
       nickname: mara-webb
-      avatar_url: /mock-users/avatars/mock-avatar-04.jpg
+      avatar_url: /mock-users/avatars/mock-avatar-cl-04.jpg
       bio: Оценивает внедрение RAG- и LLM-решений для регулируемых отраслей.
       company_name: DeepStack Analytics
       company_role: CTO
@@ -1499,13 +1501,13 @@ users:
       name: Yuki Tanaka
       role: client
       emailVerified: true
-      image: /mock-users/avatars/mock-avatar-05.jpg
+      image: /mock-users/avatars/mock-avatar-cl-05.jpg
     user_profiles:
       id: mock_cl_05
       user_id: mock_cl_05
       name: Yuki Tanaka
       nickname: yuki-tanaka
-      avatar_url: /mock-users/avatars/mock-avatar-05.jpg
+      avatar_url: /mock-users/avatars/mock-avatar-cl-05.jpg
       bio: Store operations and customer-facing AI experiments.
       company_name: Sakura Retail Co.
       company_role: Operations Manager
@@ -1514,3 +1516,4 @@ users:
     user_skills: []
     portfolio_items: []
 ```
+

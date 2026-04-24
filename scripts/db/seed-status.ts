@@ -1,6 +1,10 @@
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 import knex from 'knex'
+import {
+	getExpectedMockProjectApplicationCount,
+	getExpectedMockProjects,
+} from '../../src/lib/dev/mock-projects-seed'
 import { getExpectedMockUsers } from '../../src/lib/dev/mock-users-seed'
 import {
 	pluralize,
@@ -97,6 +101,75 @@ async function main() {
 				}
 				printEmpty()
 				printInfo('Run: yarn db:seed:mock-users')
+			}
+		}
+
+		const expectedProjects = getExpectedMockProjects()
+		const projectIds = expectedProjects.map((e) => e.id)
+		const expectedAppN = getExpectedMockProjectApplicationCount()
+		const foundProjectRows =
+			projectIds.length === 0
+				? []
+				: ((await db('projects').select('id').whereIn('id', projectIds)) as {
+						id: string
+					}[])
+		const presentProjectIds = new Set(foundProjectRows.map((r) => r.id))
+		const missingProjects = expectedProjects.filter((e) => !presentProjectIds.has(e.id))
+		const appCountRows =
+			projectIds.length === 0
+				? ([{ count: '0' }] as { count: string }[])
+				: ((await db('applications')
+						.whereIn('project_id', projectIds)
+						.count('* as count')) as { count: string }[])
+		const appN = Number((appCountRows[0] as { count: string } | undefined)?.count ?? 0)
+
+		printEmpty()
+		printSection('Mock projects (synthetic)')
+		if (expectedProjects.length === 0) {
+			printInfo('No mock project definitions; nothing to check.')
+		} else {
+			printInfo(
+				'Expected: ' +
+					pluralize(expectedProjects.length, 'project') +
+					' and ' +
+					pluralize(expectedAppN, 'application') +
+					' (from MOCK-PROJECTS.md).',
+			)
+			if (missingProjects.length === 0) {
+				printSuccess(
+					'All ' +
+						pluralize(presentProjectIds.size, 'mock project') +
+						' present in the database.',
+				)
+			} else {
+				printWarning(
+					pluralize(presentProjectIds.size, 'project') +
+						' in the database, ' +
+						pluralize(missingProjects.length, 'project') +
+						' missing.',
+				)
+				if (missingProjects.length !== expectedProjects.length) {
+					missingProjects.forEach((m) => {
+						printListItem(m.id + ' (client ' + m.client_id + ')')
+					})
+				}
+				printEmpty()
+				printInfo('Prereq: yarn db:seed:mock-users then run: yarn db:seed:mock-projects')
+			}
+			if (missingProjects.length === 0 && appN !== expectedAppN) {
+				printWarning(
+					'Applications in DB for mock project ids: ' +
+						String(appN) +
+						' (expected ' +
+						String(expectedAppN) +
+						').',
+				)
+			} else if (missingProjects.length === 0) {
+				printSuccess(
+					'Application rows for mock projects: ' +
+						pluralize(appN, 'row') +
+						' (matches YAML).',
+				)
 			}
 		}
 

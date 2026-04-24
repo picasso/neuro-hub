@@ -65,7 +65,7 @@ yarn db:seed
 ```
 
 В Knex-сидах — в частности **skills** и **languages** (см. `src/lib/db/seeds/`). Пользователи в обычном сиде не создаются: регистрация и онбординг через приложение.  
-Опционально — синтетические мок-пользователи: [`MOCK-USERS.md`](../MOCK-USERS.md) и `yarn db:seed:mock-users` (после `db:seed`).
+Опционально — синтетические мок-пользователи: [`MOCK-USERS.md`](../MOCK-USERS.md) и `yarn db:seed:mock-users` (после `db:seed`). Затем опционально — мок-проекты и заявки: [`MOCK-PROJECTS.md`](../MOCK-PROJECTS.md) и `yarn db:seed:mock-projects` (после `db:seed:mock-users`).
 
 ### 5. Проверка подключения
 
@@ -81,6 +81,7 @@ yarn db:test
 | `yarn db:migrate` / `db:migrate:status` / `db:migrate:rollback` | Доменные миграции Knex |
 | `yarn db:seed` / `yarn db:seed:status` | Сиды Knex |
 | `yarn db:seed:mock-users` | Upsert мок-пользователей (см. `MOCK-USERS.md`) |
+| `yarn db:seed:mock-projects` | Upsert мок-проектов и заявок (см. `MOCK-PROJECTS.md`, после `mock-users`) |
 | `yarn db:backup` | [Локальный снимок (один файл)](#локальный-снимок-один-файл) |
 | `yarn db:restore` | [Восстановление из того же файла](#локальный-снимок-один-файл) |
 | `yarn db:export` | Экспорт в **отдельный** timestamped `.sql` (см. `scripts/db/export-data.sh`; удобно для переноса) |
