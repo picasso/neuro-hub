@@ -8,7 +8,7 @@ alwaysApply: false
 
 Reference-only guide for database and CLI scripts. Do not rely on this rule being auto-attached; use it when working in `scripts/` or when a task explicitly involves database utilities.
 
-Guidelines for creating consistent, maintainable database utility scripts.
+Guidelines for creating consistent, maintainable database utility scripts. **TypeScript** entrypoints use `scripts/utils/cli-utils.ts` (chalk). **Bash** scripts in `scripts/db/*.sh` (and similar) **source** `scripts/utils/shell-utils.sh` so output matches the same scheme (ANSI colors, symbols, spacing) and honors `NO_COLOR` / TTY.
 
 ## File Organization
 
@@ -18,14 +18,17 @@ scripts/
 │   ├── check-db.ts           # Database inspection
 │   ├── delete-users.ts       # User deletion with cascade
 │   ├── drop-all-tables.ts    # Table dropping utility
+│   ├── backup-local.sh        # Local pg_dump (bash + shell-utils)
+│   ├── restore-local.sh
 │   └── ...
 └── utils/
-    └── cli-utils.ts          # Centralized CLI utilities
+    ├── cli-utils.ts          # Centralized output for TypeScript CLIs
+    └── shell-utils.sh         # Print helpers, env/safety, prompts for bash
 ```
 
-## CLI Utilities
+## TypeScript: `cli-utils.ts`
 
-Always use centralized utilities from `scripts/utils/cli-utils.ts`:
+Always use centralized utilities from `scripts/utils/cli-utils.ts` for Node-based scripts. **Do not** call `chalk` directly; use the helpers below.
 
 ### Output Functions
 
@@ -33,6 +36,7 @@ Always use centralized utilities from `scripts/utils/cli-utils.ts`:
 import {
     pluralize,
     printDataRow,
+    printDimText,
     printEmpty,
     printError,
     printInfo,
@@ -61,6 +65,9 @@ import {
 - `printWarning(message)` - Yellow with ▲ symbol
 - `printError(message)` - Red with ✖ symbol
 - `printInfo(message)` - Blue with ◆ symbol
+
+**Dim text (secondary / descriptions):**
+- `printDimText(message)` - `chalk` blue + dim; use for one-line help blurbs under a section, hints, and secondary copy (same idea as a second line in `print_info` on the shell side)
 
 **Data Display:**
 - `printDataRow(fields: [string, value][])` - Structured data
@@ -91,7 +98,53 @@ import {
   - Auto-adds count: `pluralize(5, 'user')` → "5 users"
   - Without count: `pluralize(1, 'user', true)` → "user"
 
-## Standard Patterns
+## Bash: `shell-utils.sh`
+
+Use for executable **bash** database scripts. **Source** once (after `set` options if you use `set -u`).
+
+```bash
+set -euo pipefail
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+# Adjust ../.. depth to the repo root from the script’s directory.
+source "${ROOT_DIR}/scripts/utils/shell-utils.sh"
+```
+
+### Print helpers (output)
+
+- `print_empty` — blank line
+- `print_section 'Title'` — uppercase title + cyan `━` line (32 chars), like `printSection` in TypeScript
+- `print_success 'message'` — green, leading `✓`
+- `print_info 'message'` or `print_info 'label' 'secondary'` — `◆`; first part blue; if a **second** argument is given, it prints in **dim** (like `printDimText` for a subtitle or path)
+- `print_error 'message'` — red, leading `✖` on **stderr** (use for failures)
+- `print_text 'line'` — plain (no color)
+- `print_dim_text 'line'` — dim blue, for help text and sub-lines
+- `print_usage` — pass **each** usage line as a **separate argument** (varargs), e.g. `print_usage '  yarn db:foo' '  yarn db:foo --bar'`; "Usage:" + lines in dim cyan, matching `printUsage` in TypeScript
+
+Colors follow the same **semantic** mapping as `cli-utils.ts` (no raw ANSI in scripts; rely on these helpers). Styling is suppressed when `NO_COLOR` is set, or when stdout/stderr is not a TTY (errors check stderr).
+
+### `set -u` and optional arguments
+
+With `set -euo pipefail`, **never** use bare `$2` when a second parameter may be missing. Use `${2:-}` or `local x="${2:-}"` in wrappers (see `print_info` in `shell-utils.sh`).
+
+### Environment and safety
+
+- `load_env_var_if_needed VAR_NAME /path/to/.env` — if `VAR_NAME` is unset/empty and the file exists, sets and **exports** it from a `KEY=value` line (ignores comments; strips simple quotes)
+- `require_local_database_url "${0##*/}"` — **exits** unless `DATABASE_URL` points at `localhost` or `127.0.0.1` (safety for local-only tooling)
+- `require_command psql 'Install PostgreSQL client tools (e.g. postgresql-client).'` — **exits** if the binary is not on `PATH` (message + install hint)
+
+### Confirmation
+
+- `prompt_yes_confirmation '…'` — legacy-style prompt; returns **true** only if the user types **`YES`** exactly (align UX with script copy; for yes/no, prefer documenting this contract in the prompt text). TypeScript’s `promptConfirmation` accepts `yes`/`y`; the bash helper is stricter by design
+
+### Conventions (structure, flags, spacing)
+
+- **Setup:** `set -euo pipefail`, resolve `ROOT_DIR` (depth `../..` from `db/` scripts), `source` `shell-utils.sh`, then call `load_env_var_if_needed`, `require_local_database_url`, and `require_command` as needed.
+- **Spacing:** use `print_empty` around `print_section` and before `exit 1` or final success (same intent as the TypeScript spacing list).
+- **`--help`:** `print_section`, one `print_dim_text` line for what the script does, `print_empty`, `print_usage` with one argument per line, `print_empty`, `exit 0` — see `scripts/db/backup-local.sh`.
+
+## Standard Patterns (TypeScript)
+
+The snippets below are for **Node/TypeScript** scripts. For **bash**, keep the same **spacing and messaging roles** using `print_empty`, `print_section`, `print_error`, and `print_usage` from `shell-utils.sh` (see **Examples**).
 
 ### Script Structure
 
@@ -225,35 +278,37 @@ if (!validArgs) {
 
 ## Color Scheme
 
-**Do not use chalk directly** - use utility functions:
+**TypeScript:** do not use `chalk` outside `cli-utils.ts` — use the table below. **Bash:** do not hand-pick ANSI codes — use `shell-utils.sh` print helpers (same roles).
 
-| Usage | Color | Symbol | Function |
-| ------- | ------- | -------- | ---------- |
-| Success | green | ✓ | `printSuccess()` |
-| Warning | yellow | ▲ | `printWarning()` |
-| Error | red | ✖ | `printError()` |
-| Info | blue | ◆ | `printInfo()` |
-| Section headers | cyan | - | `printSection()` |
-| Data values | blue.dim | - | `printDataRow()` |
-| List items | blue.dim | • | `printListItem()` |
-| Usage help | cyan.dim | - | `printUsage()` |
-| Prompts | yellow | - | `promptConfirmation()` |
+| Usage | Color | Symbol | TypeScript | Bash |
+| ------- | ------- | -------- | ---------- | ---- |
+| Success | green | ✓ | `printSuccess()` | `print_success` |
+| Warning | yellow | ▲ | `printWarning()` | `print_text` (no dedicated helper yet) |
+| Error | red | ✖ | `printError()` | `print_error` |
+| Info | blue | ◆ | `printInfo()` | `print_info` |
+| Secondary / dim | blue.dim | - | `printDimText()` | `print_dim_text` or `print_info 'a' 'b'` |
+| Section headers | cyan | ━ | `printSection()` | `print_section` |
+| Data values | blue.dim + gray labels | - | `printDataRow()` | build with `print_text` / `print_dim_text` |
+| List items | blue.dim | • | `printListItem()` | `print_dim_text` with a leading `•` |
+| Usage help | cyan.dim | - | `printUsage([...])` | `print_usage` (one arg per line) |
+| Prompts | yellow | - | `promptConfirmation()` | `read -p` or `prompt_yes_confirmation` |
 
 ## Spacing Guidelines
 
-**Always add empty lines:**
-- ✅ Before script starts: `printEmpty()` at beginning of `main()`
-- ✅ Before each section: `printEmpty()` before `printSection()`
-- ✅ Before user prompts: `printEmpty()` before `promptConfirmation()`
-- ✅ After cancellation: `printEmpty()` after `printInfo('Operation cancelled.')`
-- ✅ Before exit: `printEmpty()` before `process.exit()`
-- ✅ In error handlers: `printEmpty()` before and after error message
+**Always add empty lines** (TypeScript: `printEmpty()`; bash: `print_empty`):
+- ✅ Before script starts: at beginning of `main()`
+- ✅ Before each section: before `printSection` / `print_section`
+- ✅ Before user prompts: before `promptConfirmation` / `read` / `prompt_yes_confirmation`
+- ✅ After cancellation: after `printInfo('Operation cancelled.')` or equivalent
+- ✅ Before exit: before `process.exit()` or `exit`
+- ✅ In error handlers: before and after the error message
 
 **Never use:**
 - ❌ `console.log('')` - use `printEmpty()` instead
 - ❌ `console.log()` - use `printText()` or specific utilities
 - ❌ Direct `chalk` calls - use provided utilities
 - ❌ `/* eslint-disable no-console */` - not needed with utilities
+- ❌ Raw `echo` for user-facing status lines in bash when a `print_*` exists
 
 ## Database Operations
 
@@ -388,6 +443,31 @@ main().catch((error) => {
 })
 ```
 
+### Local shell script (bash)
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+source "${ROOT_DIR}/scripts/utils/shell-utils.sh"
+
+load_env_var_if_needed DATABASE_URL "${ROOT_DIR}/.env"
+require_local_database_url "${0##*/}"
+require_command psql 'Install PostgreSQL client tools.'
+
+main() {
+    print_empty
+    print_section 'Example'
+    print_dim_text 'One-line description of what this script does.'
+    print_empty
+    print_success 'Done.'
+    print_empty
+}
+
+main "$@"
+```
+
 ## Testing
 
 Before committing:
@@ -396,6 +476,7 @@ Before committing:
 3. Test with `--force` flag (should skip confirmation)
 4. Test cancellation (should show proper spacing)
 5. Test actual operation on dev/test database
+6. For bash scripts: run with `--help` and confirm section, description, and usage lines; run with `NO_COLOR=1` if you need to verify plain output
 
 ## Common Pitfalls
 
@@ -403,14 +484,17 @@ Before committing:
 - Use `console.log()` directly
 - Import and use `chalk` directly
 - Forget spacing before/after messages
-- Use hardcoded colors
+- Use hardcoded colors (TypeScript) or ad-hoc ANSI in bash
 - Skip pluralization for countable items
 - Forget `--force` flag support
+- In bash, use bare `$2` when a second arg may be absent while `set -u` is on
 
 ✅ **Do:**
-- Import utilities from `cli-utils.ts`
-- Use `printEmpty()` for spacing
-- Use `pluralize()` for counts
+- Use `cli-utils.ts` for TypeScript and `shell-utils.sh` for bash
+- Use `printEmpty()` / `print_empty` for spacing
+- Use `pluralize()` for counts in TypeScript
 - Add confirmation prompts for destructive operations
-- Provide clear usage help
-- Follow the color scheme consistently
+- Provide clear usage help (`printUsage` / `print_usage`)
+- Follow the color scheme table (no ad-hoc chalk or ANSI in scripts)
+- In bash with `set -u`, use `${n:-}` for optional positional parameters
+- Spaghetti `echo -e` with hand-written escape codes in bash — use `shell-utils.sh` instead
