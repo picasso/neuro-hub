@@ -20,6 +20,6 @@ export const testConnection = async (): Promise<boolean> => {
 }
 
 export const closeConnection = async (): Promise<void> => {
+	// PostgresDialect.destroy() already ends the shared pool; do not call pool.end() again.
 	await kysely.destroy()
-	await pool.end()
 }

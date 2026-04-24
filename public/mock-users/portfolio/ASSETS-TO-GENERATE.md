@@ -8,7 +8,7 @@ Copy finished PNGs from the Cursor assets folder into this directory, then conve
 
 Target paths in repo: `public/mock-users/portfolio/<filename>`
 
-URLs in `MOCK-USERS.md` use: `http://localhost:3000/mock-users/portfolio/<filename>`
+Asset paths in `MOCK-USERS.md` use: `/mock-users/portfolio/<filename>`
 
 ## Naming
 

@@ -1,6 +1,7 @@
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 import knex from 'knex'
+import { getExpectedMockUsers } from '../../src/lib/dev/mock-users-seed'
 import {
 	pluralize,
 	printEmpty,
@@ -9,6 +10,7 @@ import {
 	printListItem,
 	printSection,
 	printSuccess,
+	printWarning,
 } from '../utils/cli-utils'
 import { getEnvironment, getKnexConfig } from './migrate-shared'
 
@@ -49,6 +51,54 @@ async function main() {
 		printEmpty()
 		printSection('Reference data in database')
 		printDataCounts(skillsN, languagesN)
+
+		const expectedMock = getExpectedMockUsers()
+		const mockIds = expectedMock.map((e) => e.id)
+		const foundMockRows =
+			mockIds.length === 0
+				? []
+				: ((await db('users').select('id').whereIn('id', mockIds)) as { id: string }[])
+		const presentMockIds = new Set(foundMockRows.map((r) => r.id))
+		const missingMock = expectedMock.filter((e) => !presentMockIds.has(e.id))
+		const flN = expectedMock.filter((e) => e.group === 'freelancer').length
+		const clN = expectedMock.filter((e) => e.group === 'client').length
+
+		printEmpty()
+		printSection('Mock users (synthetic)')
+		if (expectedMock.length === 0) {
+			printInfo('No mock user definitions; nothing to check.')
+		} else {
+			printInfo(
+				'Expected: ' +
+					pluralize(expectedMock.length, 'user') +
+					' (' +
+					pluralize(flN, 'freelancer') +
+					', ' +
+					pluralize(clN, 'client') +
+					').',
+			)
+			if (missingMock.length === 0) {
+				printSuccess(
+					'All ' +
+						pluralize(presentMockIds.size, 'mock user') +
+						' present in the database.',
+				)
+			} else {
+				printWarning(
+					pluralize(presentMockIds.size, 'user') +
+						' in the database, ' +
+						pluralize(missingMock.length, 'user') +
+						' missing.',
+				)
+				if (missingMock.length !== expectedMock.length) {
+					missingMock.forEach((m) => {
+						printListItem(m.id + ' (' + m.group + ')')
+					})
+				}
+				printEmpty()
+				printInfo('Run: yarn db:seed:mock-users')
+			}
+		}
 
 		printEmpty()
 		printInfo('Knex does not persist which seeds last ran. Counts show current table state.')
