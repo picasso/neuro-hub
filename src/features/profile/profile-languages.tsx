@@ -5,6 +5,7 @@ import { formatLanguages, getLanguageLabel, langLevelOptions } from './helpers'
 import {
 	$form,
 	$isBusy,
+	$lastTouch,
 	autosaveRequested,
 	languageAdded,
 	languageRemoved,
@@ -31,9 +32,10 @@ export type ProfileLanguagesProps = {
 }
 
 export function ProfileLanguages({ availableLanguages, disabled }: ProfileLanguagesProps) {
-	const [{ languages }, isBusy, onAdd, onRemove, onChange] = useUnit([
+	const [{ languages }, isBusy, last, onAdd, onRemove, onChange] = useUnit([
 		$form,
 		$isBusy,
+		$lastTouch,
 		languageAdded,
 		languageRemoved,
 		languageUpdated,
@@ -66,6 +68,7 @@ export function ProfileLanguages({ availableLanguages, disabled }: ProfileLangua
 		if (!open) autosaveRequested()
 	}, [])
 
+	const isLoading = isBusy && last === 'languages'
 	return (
 		<Popover
 			open={open}
@@ -77,10 +80,15 @@ export function ProfileLanguages({ availableLanguages, disabled }: ProfileLangua
 					<TS
 						clean
 						variant="caption"
-						className={cn('transition-opacity', isBusy && 'opacity-50')}
+						className={cn('transition-opacity', isLoading && 'opacity-50')}
 						content={summary}
 					/>
-					<Icon size="xs" name="pencil" className="ml-1" />
+					<Icon
+						size="xs"
+						name={isLoading ? 'spinner' : 'pencil'}
+						spinning={isLoading}
+						className="ml-1"
+					/>
 				</StackSpan>
 			}
 			footer={

@@ -4,7 +4,7 @@ import { upload } from '@vercel/blob/client'
 import { combine, sample } from 'effector'
 import { createGate } from 'effector-react'
 import { produce } from 'immer'
-import { assign, isEmpty, isEqual } from 'lodash'
+import { assign, isEmpty, isEqual, keys } from 'lodash'
 import { debounce } from 'patronum'
 import type { NickStatus, ProfileDTO, ProfileForm, Language } from './types'
 import { createAlertFx } from '@/alerts'
@@ -64,12 +64,14 @@ export const $form = domain.createStore<ProfileForm>(emptyForm, { name: '$form' 
 export const $savedForm = domain.createStore<ProfileForm>(emptyForm, { name: '$savedForm' })
 export const $nickStatus = domain.createStore<NickStatus>('idle', { name: '$nickStatus' })
 export const $nickMessage = domain.createStore<string | null>(null, { name: '$nickMessage' })
+export const $lastTouch = domain.createStore<keyof ProfileForm | null>(null, { name: '$lastTouch' })
 
 $context.reset(resetProfile)
 $context.on(setProfileContext, (_, context) => context)
 
 $form.reset(resetProfile)
 $savedForm.reset(resetProfile)
+$lastTouch.reset(resetProfile)
 
 $form.on(profileUpdated, (form, update) => (isEmpty(update) ? form : { ...form, ...update }))
 $form.on(nicknameUpdated, (form, nickname) => ({ ...form, nickname }))
@@ -271,6 +273,27 @@ sample({
 		avatarUrl: profile.avatarUrl ?? viewer!.avatarUrl ?? null,
 	}),
 	target: authHeaderViewerPatched,
+})
+
+// track the last field that was touched: `name`, `location`, `bio`, `avatarUrl`
+sample({
+	clock: profileUpdated,
+	fn: (update) => (keys(update)[0] ?? null) as keyof ProfileForm | null,
+	target: $lastTouch,
+})
+
+// track the last field that was touched: `nickname`
+sample({
+	clock: nicknameUpdated,
+	fn: () => 'nickname' as const,
+	target: $lastTouch,
+})
+
+// track the last field that was touched: `languages`
+sample({
+	clock: [languageAdded, languageUpdated, languageRemoved],
+	fn: () => 'languages' as const,
+	target: $lastTouch,
 })
 
 // derive immediate nickname feedback as soon as the field changes

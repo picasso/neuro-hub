@@ -4,12 +4,12 @@ import { InlineEdit } from '../entity-cards/inline-edit'
 import {
 	$form,
 	profileUpdated,
-	$isLoading,
 	$isBusy,
 	$nickMessage,
 	$nickStatus,
 	nicknameEdited,
 	nicknameUpdated,
+	$lastTouch,
 } from './model'
 import { ProfileAvatar } from './profile-avatar'
 import { ProfileLanguages, type ProfileLanguagesProps } from './profile-languages'
@@ -24,18 +24,18 @@ export function ProfileHero({ headline, availableLanguages }: ProfileHeroProps) 
 	const [
 		{ name, nickname, location },
 		isBusy,
-		isLoading,
 		nickMessage,
 		nickStatus,
+		last,
 		onUpdated,
 		onNicknameChange,
 		onNicknameUpdated,
 	] = useUnit([
 		$form,
 		$isBusy,
-		$isLoading,
 		$nickMessage,
 		$nickStatus,
+		$lastTouch,
 		profileUpdated,
 		nicknameEdited,
 		nicknameUpdated,
@@ -51,7 +51,7 @@ export function ProfileHero({ headline, availableLanguages }: ProfileHeroProps) 
 						<InlineEdit
 							value={name}
 							placeholder="Введите имя"
-							loading={isLoading || isBusy}
+							loading={isBusy && last === 'name'}
 							variant="h4"
 							onSave={(update) => update && onUpdated({ name: update })}
 						/>
@@ -64,7 +64,7 @@ export function ProfileHero({ headline, availableLanguages }: ProfileHeroProps) 
 							placeholder="@nickname"
 							template="@%s"
 							color="dimmed"
-							loading={isBusy}
+							loading={isBusy && last === 'nickname'}
 							variant="subtitle"
 							error={isNickError ? nickMessage : undefined}
 							helper={isNickError ? undefined : nickMessage}
@@ -77,14 +77,14 @@ export function ProfileHero({ headline, availableLanguages }: ProfileHeroProps) 
 						variant="body"
 						color="secondary"
 						className="w-full text-sm"
-						content={headline ?? 'AI Developer'}
+						content={headline ?? ''}
 					/>
 					<Stack gap={2} align="start" className="mt-2">
 						<InlineEdit
-							value={location}
+							value={location || 'Не указана'}
 							placeholder="Укажите локацию"
 							contentIcon="map-pin"
-							loading={isLoading || isBusy}
+							loading={isBusy && last === 'location'}
 							variant="caption"
 							onSave={(update) => update && onUpdated({ location: update })}
 						/>
