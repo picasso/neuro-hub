@@ -8,6 +8,7 @@ import { createAlert } from '@/alerts'
 import { signOut } from '@/lib/auth/client'
 import { $authHeaderState, clearChatRealtimeFx } from '@/stores'
 import { Avatar, CommandMenu, Stack, type CommandOptionGroup } from '@/ui'
+import { cn } from '@/utils'
 
 type HeaderAuthProps = {
 	viewer: AccountViewer
@@ -54,6 +55,7 @@ export function HeaderAuth({ viewer: extViewer, snapshot: extSnapshot, slot }: H
 	const avatarUrl = viewer.avatarUrl
 	const displayName = viewer.displayName?.trim() || email
 	const unreadMessages = snapshot.messages ?? 0
+	const isFreelancer = snapshot.role === 'freelancer'
 
 	return (
 		<Stack>
@@ -62,9 +64,20 @@ export function HeaderAuth({ viewer: extViewer, snapshot: extSnapshot, slot }: H
 				flush
 				title={displayName}
 				desc={email}
+				rightIcon={isFreelancer ? 'brain-circuit' : 'briefcase-business'}
+				iconOptions={{
+					wrapper: true,
+					color: 'current',
+					tw: cn(
+						'rounded-full p-2',
+						isFreelancer && 'bg-blue-200/60 text-blue-700/50',
+						!isFreelancer && 'bg-amber-200/70 text-amber-700/60',
+					),
+					size: 'md',
+				}}
 				align="end"
 				groups={generateGroups(snapshot, onSignOut, isSigningOut)}
-				popoverClassName="w-60"
+				popoverClassName="w-auto min-w-65"
 			>
 				<Avatar
 					name={displayName}
