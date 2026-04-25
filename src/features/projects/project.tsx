@@ -89,7 +89,12 @@ export async function ProjectDetailPage(props: PageProps) {
 							className="h-full"
 						>
 							<Stack vertical align="stretch" className="h-full">
-								<TS variant="subtitle" content={formatBudget(project)} />
+								<TS
+									variant="subtitle"
+									content={formatBudget(project)}
+									// we need a wrapper to avoid gaps between currency and value
+									md={{ container: true }}
+								/>
 								<TS
 									variant="subtitle"
 									color="secondary"

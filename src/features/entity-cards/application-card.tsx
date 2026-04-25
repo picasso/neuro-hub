@@ -50,6 +50,8 @@ export function ApplicationCard({
 							size="xs"
 							color="success"
 							label={formatBudget(project)}
+							// we need a wrapper to avoid gaps between currency and value
+							md={{ container: true }}
 						/>,
 					],
 					null,
@@ -63,6 +65,8 @@ export function ApplicationCard({
 						size="xs"
 						color="warning"
 						label={formatBudget(proposedPrice)}
+						// we need a wrapper to avoid gaps between currency and value
+						md={{ container: true }}
 					/>,
 				],
 				null,

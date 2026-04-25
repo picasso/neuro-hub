@@ -7,9 +7,10 @@ import { cn } from '@/utils'
 type ProjectCardProps = {
 	item: PublicProjectListItem
 	full?: boolean
+	hoverable?: boolean
 }
 
-export function ProjectCard({ item, full }: ProjectCardProps) {
+export function ProjectCard({ item, full, hoverable }: ProjectCardProps) {
 	const {
 		experienceLevel,
 		deadline,
@@ -30,7 +31,14 @@ export function ProjectCard({ item, full }: ProjectCardProps) {
 				gap={3}
 				className={cn('w-full', full && 'sm:items-center')}
 			>
-				<Badge variant="outline" size="xs" color="success" label={formatBudget(item)} />
+				<Badge
+					variant="outline"
+					size="xs"
+					color="success"
+					label={formatBudget(item)}
+					// we need a wrapper to avoid gaps between currency and value
+					md={{ container: true }}
+				/>
 				<TimeDetails timestamp={createdAt} withTime={false} prefix="Опубликован" />
 			</Stack>
 		</Stack>
@@ -38,7 +46,7 @@ export function ProjectCard({ item, full }: ProjectCardProps) {
 	return (
 		<Card
 			fullWidth
-			hoverable
+			hoverable={hoverable}
 			className="h-full gap-0 py-0"
 			footer={footer}
 			header={

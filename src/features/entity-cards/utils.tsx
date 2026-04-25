@@ -69,6 +69,7 @@ export function formatNumber(
 	return `${currency ?? ''}${formatted}`
 }
 
+// NOTE: always add `md={{ container: true }}` to avoid gaps between currency and value
 export function formatBudget(
 	budget:
 		| {
@@ -83,7 +84,7 @@ export function formatBudget(
 		: budget
 	const suffix = budgetType === 'hourly' ? ' **/ час**' : ''
 	if (!budgetMax || budgetMin === budgetMax) return `${formatNumber(budgetMin)}${suffix}`
-	return `${formatNumber(budgetMin, '**₽**')} ➞ ${formatNumber(budgetMax, null)}${suffix}`
+	return `${formatNumber(budgetMin, '**₽**')} ➞ ${formatNumber(budgetMax, '**₽**')}${suffix}`
 }
 
 export function formatDeadline(date: Date, short = false, prefix = 'до') {
