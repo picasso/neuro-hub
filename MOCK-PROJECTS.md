@@ -1,6 +1,6 @@
 # MOCK-PROJECTS
 
-Синтетические проекты и заявки для **local** / **QA**: фиксированные UUID, **upsert**-сид. Тексты преимущественно **RU**; `client_id` — только `mock_cl_01`…`mock_cl_05` из [MOCK-USERS.md](MOCK-USERS.md). Вложения: **относительные** пути `/mock-projects/...` (файлы в `public/mock-projects/`); имена файлов на диске — префикс `**attachment-`**.
+Синтетические проекты и заявки для **local** / **QA**: фиксированные UUID, **upsert**-сид. Тексты преимущественно **RU**; `client_id` — только `mock_cl_01`…`mock_cl_05` из [MOCK-USERS.md](MOCK-USERS.md). **Обложки** (`cover_url`): `cover-` + последние 4 символа `id` (без дефисов) + `.jpg`. **Вложения**: **относительные** пути `/mock-projects/...` (файлы в `public/mock-projects/`); префикс имён вложений — `attachment-`. Генерация обложек: 16:9, постобработка `sips` → JPEG Q60; важный визуал в центральной полосе (кроп каталога 3:1).
 
 ## Сид в БД
 
@@ -15,7 +15,7 @@
 | `MOCK_SEED_CONFIRM` / `--force` | Как в mock-users: подтверждение, если `DATABASE_URL` не localhost.  |
 | `NEXT_PUBLIC_APP_URL`           | Не обязателен; вложения в данных заданы относительными public-path. |
 
-**10** проектов (по 2 на клиента), **16** вложений на **8** проектах, **16** уникальных файлов в `public/mock-projects/`. Каждая заявка от фрилансера согласована с **пересечением** `user_skills` и `project_skills` (см. `src/lib/dev/mock-projects-seed.ts`). Немедиа-вложения (PDF/DOCX/MP4/MP3) генерируются скриптом `yarn mock-projects:binaries` (см. [scripts/dev/generate-mock-project-binaries.ts](scripts/dev/generate-mock-project-binaries.ts)).
+**10** проектов (по 2 на клиента), **10** обложек `cover-*.jpg`, **16** вложений на **8** проектах, **26** уникальных медиа-файлов в `public/mock-projects/` (10 обложек + 16 вложений). Каждая заявка от фрилансера согласована с **пересечением** `user_skills` и `project_skills` (см. `src/lib/dev/mock-projects-seed.ts`). Немедиа-вложения (PDF/DOCX/MP4/MP3) генерируются скриптом `yarn mock-projects:binaries` (см. [scripts/dev/generate-mock-project-binaries.ts](scripts/dev/generate-mock-project-binaries.ts)).
 
 ```yaml
 projects:
@@ -29,7 +29,8 @@ projects:
     budget_min: 2200
     budget_max: 9000
     deadline: "2024-10-20T10:00:00.000Z"
-    status: draft
+    status: published
+    cover_url: /mock-projects/cover-0001.jpg
   - id: d0000000-0000-4000-8000-000000000002
     client_id: mock_cl_01
     title: "Корпоративный RAG-ассистент по регламентам и инцидентам"
@@ -41,6 +42,7 @@ projects:
     budget_max: 42000
     deadline: "2026-11-10T00:00:00.000Z"
     status: published
+    cover_url: /mock-projects/cover-0002.jpg
   - id: d0000000-0000-4000-8000-000000000003
     client_id: mock_cl_02
     title: "LLM-функции в B2B-мобильном приложении (MVP+1)"
@@ -52,6 +54,7 @@ projects:
     budget_max: 28000
     deadline: "2026-06-30T12:00:00.000Z"
     status: published
+    cover_url: /mock-projects/cover-0003.jpg
   - id: d0000000-0000-4000-8000-000000000004
     client_id: mock_cl_02
     title: "Ролик 15 с для performance-кампании (соцсети)"
@@ -62,7 +65,8 @@ projects:
     budget_min: 55
     budget_max: 110
     deadline: "2026-05-18T14:00:00.000Z"
-    status: in_progress
+    status: published
+    cover_url: /mock-projects/cover-0004.jpg
   - id: d0000000-0000-4000-8000-000000000005
     client_id: mock_cl_03
     title: "Набор key visuals для весенней бренд-кампании"
@@ -74,6 +78,7 @@ projects:
     budget_max: 60000
     deadline: "2026-12-20T00:00:00.000Z"
     status: published
+    cover_url: /mock-projects/cover-0005.jpg
   - id: d0000000-0000-4000-8000-000000000006
     client_id: mock_cl_03
     title: "Доработка фоторетуши для e-commerce (приостановлено)"
@@ -84,7 +89,8 @@ projects:
     budget_min: 3000
     budget_max: 8000
     deadline: "2023-12-01T00:00:00.000Z"
-    status: cancelled
+    status: published
+    cover_url: /mock-projects/cover-0006.jpg
   - id: d0000000-0000-4000-8000-000000000007
     client_id: mock_cl_04
     title: "RAG и политика цитирования в регулируемой среде"
@@ -96,6 +102,7 @@ projects:
     budget_max: 72000
     deadline: "2026-09-05T12:00:00.000Z"
     status: published
+    cover_url: /mock-projects/cover-0007.jpg
   - id: d0000000-0000-4000-8000-000000000008
     client_id: mock_cl_04
     title: "Интеграция ETL-коннекторов с LLM fallback и мониторингом"
@@ -106,7 +113,8 @@ projects:
     budget_min: 24000
     budget_max: 48000
     deadline: "2025-02-15T00:00:00.000Z"
-    status: completed
+    status: published
+    cover_url: /mock-projects/cover-0008.jpg
   - id: d0000000-0000-4000-8000-000000000009
     client_id: mock_cl_05
     title: "Черновик: пилот in-store Q&A (без заявок в мок-данных)"
@@ -117,7 +125,8 @@ projects:
     budget_min: 4000
     budget_max: 12000
     deadline: "2026-10-01T00:00:00.000Z"
-    status: draft
+    status: published
+    cover_url: /mock-projects/cover-0009.jpg
   - id: d0000000-0000-4000-8000-00000000000a
     client_id: mock_cl_05
     title: "Спринт по настройке промпт-системы и playbooks"
@@ -129,6 +138,7 @@ projects:
     budget_max: 22000
     deadline: "2026-07-22T00:00:00.000Z"
     status: published
+    cover_url: /mock-projects/cover-000a.jpg
 
 project_skills:
   - project_id: d0000000-0000-4000-8000-000000000001
@@ -474,6 +484,11 @@ applications:
     proposed_deadline: "2026-08-10T00:00:00.000Z"
     status: submitted
 ```
+
+## Обложки проектов (диск)
+
+- [public/mock-projects/cover-0001.jpg](public/mock-projects/cover-0001.jpg) … [public/mock-projects/cover-0009.jpg](public/mock-projects/cover-0009.jpg)  
+- [public/mock-projects/cover-000a.jpg](public/mock-projects/cover-000a.jpg)
 
 ## Файлы-вложения (диск)
 

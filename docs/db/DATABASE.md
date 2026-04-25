@@ -343,7 +343,7 @@ Key fields:
 - `budget_type`, `budget_min`, `budget_max`
 - `deadline`
 - `status`
-- `cover_url`: optional URL for a project cover image (or other media) used in listing and detail UIs; nullable when unset
+- `cover_url`: optional URL for a project cover image (or other media) used in listing and detail UIs; nullable when unset. Mock seeds: `MOCK-PROJECTS.md` uses `/mock-projects/cover-*.jpg` (JPEG Q60, 16:9), keyed by the last 4 id hex digits
 
 Invariants:
 

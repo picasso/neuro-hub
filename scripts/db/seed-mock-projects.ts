@@ -149,6 +149,7 @@ async function main() {
 	const now = new Date()
 	for (const p of bundle.projects) {
 		const deadline = new Date(p.deadline)
+		const coverUrl = p.cover_url == null || p.cover_url === '' ? null : p.cover_url
 		await kysely
 			.insertInto('projects')
 			.values({
@@ -163,6 +164,7 @@ async function main() {
 				budget_max: p.budget_max,
 				deadline,
 				status: p.status,
+				cover_url: coverUrl,
 				created_at: now,
 				updated_at: now,
 			})
@@ -178,6 +180,7 @@ async function main() {
 					budget_max: p.budget_max,
 					deadline,
 					status: p.status,
+					cover_url: coverUrl,
 					updated_at: now,
 				}),
 			)

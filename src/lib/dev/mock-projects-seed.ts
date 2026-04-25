@@ -19,6 +19,8 @@ export type MockProjectRow = {
 	budget_max: number
 	deadline: string
 	status: string
+	/** public path, e.g. /mock-projects/cover-0001.jpg */
+	cover_url?: string | null
 }
 
 export type MockProjectSkillRow = {
