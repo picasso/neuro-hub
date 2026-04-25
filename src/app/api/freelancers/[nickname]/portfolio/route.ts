@@ -63,8 +63,12 @@ type RouteContext = {
  *                 type: string
  *                 example: "Built a RAG pipeline with evals and observability"
  *               mediaUrl:
- *                 type: string
- *                 format: uri
+ *                 oneOf:
+ *                   - type: string
+ *                     format: uri
+ *                   - type: string
+ *                     pattern: ^/
+ *                 description: Absolute URL or root-relative path (starts with "/")
  *                 example: "https://<your-blob>.public.blob.vercel-storage.com/portfolio/demo.png"
  *               mediaType:
  *                 type: string

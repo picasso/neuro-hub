@@ -41,8 +41,12 @@ function isUniqueViolation(error: unknown) {
  *                 type: string
  *                 maxLength: 500
  *               avatarUrl:
- *                 type: string
- *                 format: uri
+ *                 oneOf:
+ *                   - type: string
+ *                     format: uri
+ *                   - type: string
+ *                     pattern: ^/
+ *                 description: Absolute URL or root-relative path (starts with "/")
  *               companyName:
  *                 type: string
  *               companyRole:

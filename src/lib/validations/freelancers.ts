@@ -37,10 +37,26 @@ export const updateFreelancerProfileSchema = z.object({
 		.optional(),
 })
 
+const portfolioMediaUrlSchema = z
+	.string()
+	.trim()
+	.refine((value) => {
+		if (value.startsWith('/')) {
+			return !value.startsWith('//')
+		}
+
+		try {
+			new URL(value)
+			return true
+		} catch {
+			return false
+		}
+	}, 'Invalid URL')
+
 export const createPortfolioItemSchema = z.object({
 	title: z.string().min(2).max(255),
 	description: z.string().max(5000).optional(),
-	mediaUrl: z.url(),
+	mediaUrl: portfolioMediaUrlSchema,
 	mediaType: z.string().max(50).optional(),
 	mediaWidth: z.number().int().positive().optional(),
 	mediaHeight: z.number().int().positive().optional(),

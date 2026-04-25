@@ -12,11 +12,12 @@ export const applicationIdParamSchema = z.object({
 
 const allowedAttachmentProtocols = new Set(['https:', 'http:'])
 
-const projectAttachmentUrlSchema = z
-	.string()
-	.trim()
-	.url()
-	.refine((value) => {
+function isAllowedProjectAssetUrl(value: string) {
+	if (value.startsWith('/')) {
+		return !value.startsWith('//')
+	}
+
+	try {
 		const url = new URL(value)
 		if (!allowedAttachmentProtocols.has(url.protocol)) {
 			return false
@@ -27,7 +28,18 @@ const projectAttachmentUrlSchema = z
 		}
 
 		return ['localhost', '127.0.0.1', '::1'].includes(url.hostname)
-	}, 'Attachment URL must use https or local development http')
+	} catch {
+		return false
+	}
+}
+
+const projectAttachmentUrlSchema = z
+	.string()
+	.trim()
+	.refine(
+		isAllowedProjectAssetUrl,
+		'Attachment URL must use https, local development http, or a relative path',
+	)
 
 const projectCoverUrlFieldSchema = z.union([projectAttachmentUrlSchema, z.null()])
 

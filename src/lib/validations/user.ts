@@ -31,13 +31,26 @@ export const createUserSchema = z.object({
 	name: z.string().min(2, 'Name must be at least 2 characters').optional(),
 })
 
+const avatarUrlSchema = z
+	.string()
+	.trim()
+	.refine((value) => {
+		if (value.startsWith('/')) return true
+		try {
+			new URL(value)
+			return true
+		} catch {
+			return false
+		}
+	}, 'Invalid URL')
+
 export const updateUserProfileSchema = z
 	.object({
 		name: z.string().min(2).optional(),
 		nickname: nicknameSchema.optional(),
 		location: z.string().max(255).optional().nullable(),
 		bio: z.string().max(500).optional(),
-		avatarUrl: z.string().url().optional(),
+		avatarUrl: avatarUrlSchema.optional(),
 		companyName: z.string().optional(),
 		companyRole: z.string().optional(),
 		languages: z.array(userLanguageEntrySchema).max(32).optional(),
