@@ -1,4 +1,4 @@
-import { map } from 'lodash'
+import { map, random } from 'lodash'
 import { pictures } from './pictures'
 
 export const imageUrls = {
@@ -15,6 +15,7 @@ export const mediaUrls = {
 	pdf: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
 } as const
 
+export const coverUrl = () => `/mock-projects/cover-000${random(1, 9)}.jpg`
 export const text = {
 	title: {
 		dialog: 'Заголовок диалога',

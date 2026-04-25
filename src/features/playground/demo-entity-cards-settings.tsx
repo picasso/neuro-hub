@@ -9,21 +9,23 @@ import { Separator } from '@/ui'
 export type EntityCardsDemoState = {
 	entity: 'project' | 'person' | 'application'
 	full: boolean
-	image: boolean
+	cover: boolean
 	hero: boolean
 	personVariant: 'client' | 'participant' | 'freelancer'
 	personClientAvatar: boolean
 	personParticipantRole: 'customer' | 'freelancer'
 	longLines: boolean
+	hoverable: boolean
 	applicationStatus: 'submitted' | 'shortlisted' | 'accepted' | 'rejected' | 'withdrawn'
 }
 
 const defaultState: EntityCardsDemoState = {
 	entity: 'project',
 	full: false,
-	image: false,
+	cover: false,
 	hero: false,
 	longLines: false,
+	hoverable: false,
 	personVariant: 'client',
 	personClientAvatar: true,
 	personParticipantRole: 'freelancer',
@@ -37,7 +39,8 @@ export function DemoEntityCardsSettings() {
 		full,
 		hero,
 		longLines,
-		image,
+		cover,
+		hoverable,
 		personVariant,
 		personClientAvatar,
 		personParticipantRole,
@@ -52,11 +55,12 @@ export function DemoEntityCardsSettings() {
 			<SettingToggle id="full" label="Full card" checked={full} />
 			<SettingToggle id="longLines" label="Long lines" checked={longLines} />
 			<SettingToggle
-				id="image"
-				label="Image"
-				checked={image}
+				id="cover"
+				label="Cover"
+				checked={cover}
 				disabled={entity !== 'project'}
 			/>
+			<SettingToggle id="hoverable" label="Hoverable" checked={hoverable} />
 			<Separator />
 			{entity === 'person' && (
 				<>

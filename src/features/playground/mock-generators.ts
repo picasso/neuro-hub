@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { indexOf, map, random, reduce, shuffle, uniqueId } from 'lodash'
-import { dates, getPictureUrl, mediaUrls, text } from './mock'
+import { coverUrl, dates, getPictureUrl, mediaUrls, text } from './mock'
 import { pictures } from './pictures'
 import type { ChatParticipantSummary } from '@/lib/chat/contracts'
 import type { PublicFreelancerGridItem } from '@/lib/db/queries/freelancers'
@@ -272,7 +272,7 @@ export function createPublicProjectListItem(options: {
 		budgetMax: id === 'proj-mock-2' ? 5000 : 260000,
 		deadline,
 		status,
-		coverUrl: null,
+		coverUrl: coverUrl(),
 		createdAt,
 		client: createProjectClient({
 			withAvatar: id !== 'proj-mock-2',

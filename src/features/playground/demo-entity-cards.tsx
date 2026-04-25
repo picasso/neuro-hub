@@ -24,11 +24,10 @@ type EntityTab = EntityCardsDemoState['entity']
 export function DemoEntityCards() {
 	const [update] = useUpdateSettings<EntityCardsDemoState>()
 	const settings = useSettings<EntityCardsDemoState>()
-	const { longLines, full, image, hero } = settings
+	const { longLines, full, cover, hero, hoverable } = settings
 	const [activeTab, setActiveTab] = useState<EntityTab>('project')
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const mockUrls = useMemo(() => createShuffledPictureUrls(), [image])
-	const mockUrl = mockUrls[0]
+	const mockUrls = useMemo(() => createShuffledPictureUrls(), [cover])
 	const projectItems = useMemo(
 		() =>
 			createProjectCards({
@@ -47,6 +46,7 @@ export function DemoEntityCards() {
 		[settings.applicationStatus, projectItems],
 	)
 
+	const coverUrl = cover ? projectItems[0]?.coverUrl : null
 	const tabs: TabItem[] = [
 		{
 			value: 'project',
@@ -55,8 +55,9 @@ export function DemoEntityCards() {
 			content: (
 				<div className="py-4 px-8 max-w-md">
 					<ProjectCard
-						item={{ ...projectItems[0], image: image ? mockUrl : undefined }}
+						item={{ ...projectItems[0], coverUrl: cover ? coverUrl : null }}
 						full={full}
+						hoverable={hoverable}
 					/>
 				</div>
 			),
@@ -109,14 +110,15 @@ export function DemoEntityCards() {
 			>
 				<Stack gap={4} align="stretch" wrap className="max-w-6xl">
 					{activeTab === 'project'
-						? map(projectItems, (item, index) => (
+						? map(projectItems, (item) => (
 								<div key={item.id} className="min-w-70 max-w-md flex-1">
 									<ProjectCard
 										item={{
 											...item,
-											image: image ? mockUrls[index + 1] : undefined,
+											coverUrl: cover ? item.coverUrl : null,
 										}}
 										full={full}
+										hoverable={hoverable}
 									/>
 								</div>
 							))
