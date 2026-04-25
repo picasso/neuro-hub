@@ -16,7 +16,8 @@ import {
 	CommandSeparator,
 	CommandShortcut,
 } from './shadcn/command'
-import { Stack } from './stack'
+import { PopoverDescription, PopoverTitle } from './shadcn/popover'
+import { Stack, StackSpan } from './stack'
 import { TS } from './text-styled'
 import { cn } from '@/utils'
 
@@ -178,6 +179,9 @@ export function CommandPalette({
 export type CommandMenuProps = CommandCommonProps &
 	Omit<ComponentProps<typeof Popover>, 'className' | 'trigger'> & {
 		popoverClassName?: string
+		leftIcon?: IconName
+		rightIcon?: IconName
+		iconOptions?: IconOptions
 	}
 
 export function CommandMenu({
@@ -189,7 +193,10 @@ export function CommandMenu({
 	buttonProps,
 	title,
 	desc,
-	header,
+	leftIcon,
+	rightIcon,
+	iconOptions,
+	header: headerNode,
 	footer,
 	headerClassName,
 	footerClassName,
@@ -213,6 +220,34 @@ export function CommandMenu({
 		</button>
 	) : undefined
 
+	const { tw: iconClassName, ...iconRest } = iconOptions ?? {}
+	const header = headerNode ?? (
+		<StackSpan justify="space-between">
+			{leftIcon && (
+				<Icon
+					name={leftIcon}
+					color="dimmed"
+					size="sm"
+					className={iconClassName}
+					{...iconRest}
+				/>
+			)}
+			<StackSpan vertical align="stretch" gap={0}>
+				<PopoverTitle>{title}</PopoverTitle>
+				<PopoverDescription>{desc}</PopoverDescription>
+			</StackSpan>
+			{rightIcon && (
+				<Icon
+					name={rightIcon}
+					color="dimmed"
+					size="sm"
+					className={iconClassName}
+					{...iconRest}
+				/>
+			)}
+		</StackSpan>
+	)
+
 	return (
 		<Popover
 			flush={flush}
@@ -227,8 +262,8 @@ export function CommandMenu({
 				button,
 				buttonChevron,
 				buttonProps,
-				title,
-				desc,
+				// title,
+				// desc,
 				header,
 				footer,
 				footerClassName,

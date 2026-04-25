@@ -58,6 +58,7 @@ export function AlertComponent({ id }: AlertProps) {
 		<Alert
 			className={cn(
 				'markdown-root min-w-[320px] lg:min-w-100 xl:min-w-150',
+				'shadow-sm',
 				variant === 'filled' && 'contrast',
 			)}
 			variant={variant}

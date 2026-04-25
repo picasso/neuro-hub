@@ -38,7 +38,11 @@ export async function ProjectDetailPage(props: PageProps) {
 	return (
 		<PageShell preset="wide" spacing="lgb">
 			<Stack vertical gap={6} align="stretch">
-				<Card fullWidth image="project" imageAspect="none">
+				<Card
+					fullWidth
+					image={project.coverUrl ?? 'project'}
+					imageAspect={project.coverUrl ? 'video' : 'none'}
+				>
 					<div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
 						<Stack vertical gap={4} align="stretch">
 							<Stack wrap>

@@ -293,7 +293,7 @@ const contrastColorMap: Partial<Record<BadgeVariant, Partial<Record<BadgeColor, 
 		soft: 'bg-black/20 text-white/80',
 	},
 	outline: {
-		contrast: 'text-white bg-black/40 border-white',
+		contrast: 'text-white bg-black/60 border-white',
 		soft: 'text-white/80 bg-black/20 border-white/60',
 	},
 }

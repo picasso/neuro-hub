@@ -1,15 +1,11 @@
 import { Skills } from './skills'
 import { formatBudget, formatDeadline, formatValue, describeClient, formatList } from './utils'
 import type { PublicProjectListItem } from '@/lib/db/queries/projects'
-import { Badge, Card, type CardProps, Stack, TimeDetails, TS } from '@/ui'
+import { Badge, Card, Stack, TimeDetails, TS } from '@/ui'
 import { cn } from '@/utils'
 
-type ProjectItem = PublicProjectListItem & {
-	image?: CardProps['image']
-}
-
 type ProjectCardProps = {
-	item: ProjectItem
+	item: PublicProjectListItem
 	full?: boolean
 }
 
@@ -20,10 +16,10 @@ export function ProjectCard({ item, full }: ProjectCardProps) {
 		createdAt,
 		skills,
 		title,
+		coverUrl,
 		descriptionSnippet,
 		client,
 		category,
-		image,
 	} = item
 
 	const footer = (
@@ -65,8 +61,8 @@ export function ProjectCard({ item, full }: ProjectCardProps) {
 					/>
 				</>
 			}
-			image={image ?? 'project'}
-			imageAspect={image ? (full ? 'video' : '3/1') : undefined}
+			image={coverUrl ?? 'project'}
+			imageAspect={coverUrl ? (full ? 'video' : '2/1') : undefined}
 			compact={!full}
 		>
 			<Stack vertical gap={3} align="stretch" className="h-full pb-2">
