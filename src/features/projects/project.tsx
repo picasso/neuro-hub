@@ -1,4 +1,8 @@
 import { notFound } from 'next/navigation'
+import { Attachments } from '../entity-cards/attachments'
+import { PersonCard } from '../entity-cards/person-card'
+import { ProjectCard } from '../entity-cards/project-card'
+import { Skills } from '../entity-cards/skills'
 import {
 	canWithdrawApplication,
 	describeClient,
@@ -6,6 +10,7 @@ import {
 	formatDeadline,
 	formatValue,
 	formatColor,
+	formatTruncated,
 } from '../entity-cards/utils'
 import { ProjectApplicationForm } from './project-application-form'
 import { WithdrawApplicationButton } from './project-withdraw-button'
@@ -13,7 +18,7 @@ import type { Route } from 'next'
 import { getSsrSafeSession } from '@/lib/auth/server'
 import { getPublicProjectById } from '@/lib/db/queries/projects'
 import { projectIdParamSchema } from '@/lib/validations'
-import { Badge, Button, Card, Empty, Link, PageShell, Stack, TS } from '@/ui'
+import { Badge, Button, Card, Empty, PageShell, Stack, TS } from '@/ui'
 
 type PageProps = {
 	params: Promise<{ id: string }>
@@ -38,36 +43,25 @@ export async function ProjectDetailPage(props: PageProps) {
 	return (
 		<PageShell preset="wide" spacing="lgb">
 			<Stack vertical gap={6} align="stretch">
-				<Card
-					fullWidth
-					image={project.coverUrl ?? 'project'}
-					imageAspect={project.coverUrl ? 'video' : 'none'}
-				>
-					<div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+				<ProjectCard full slimFooter item={project} splitTagsAt={8}>
+					<div className="mt-2 grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
 						<Stack vertical gap={4} align="stretch">
 							<Stack wrap>
 								<Badge
 									capitalize
-									variant="secondary"
+									size="sm"
+									variant="primary"
 									color={formatColor(project.status, 'projectStatusColor')}
 								>
 									{formatValue(project.status, 'projectStatus')}
-								</Badge>
-								<Badge capitalize variant="outline">
-									{project.category}
-								</Badge>
-								<Badge capitalize variant="outline">
-									{formatValue(project.experienceLevel, 'experience')}
 								</Badge>
 							</Stack>
 
 							<Stack vertical gap={2} align="stretch">
 								<TS clean variant="h2" content={project.title} />
-								<TS
-									variant="body"
-									color="secondary"
-									content={`${describeClient(project.client)} · до ${formatDeadline(project.deadline)}`}
-								/>
+								<TS variant="body" color="dimmed">
+									{formatTruncated(describeClient(project.client), 'building')}
+								</TS>
 							</Stack>
 
 							<TS
@@ -89,16 +83,18 @@ export async function ProjectDetailPage(props: PageProps) {
 							className="h-full"
 						>
 							<Stack vertical align="stretch" className="h-full">
-								<TS
-									variant="subtitle"
-									content={formatBudget(project)}
+								<Badge
+									variant="outline"
+									size="sm"
+									color="success"
+									label={formatBudget(project)}
 									// we need a wrapper to avoid gaps between currency and value
 									md={{ container: true }}
 								/>
 								<TS
 									variant="subtitle"
 									color="secondary"
-									content={`Дедлайн проекта: **${formatDeadline(project.deadline)}**`}
+									content={`Дедлайн: **${formatDeadline(project.deadline)}**`}
 								/>
 
 								{project.viewerApplication ? (
@@ -159,7 +155,7 @@ export async function ProjectDetailPage(props: PageProps) {
 							</Stack>
 						</Card>
 					</div>
-				</Card>
+				</ProjectCard>
 
 				<div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
 					<Stack vertical gap={6} align="stretch">
@@ -171,23 +167,18 @@ export async function ProjectDetailPage(props: PageProps) {
 						>
 							{project.skills.length === 0 ? (
 								<Empty
-									dark
-									icon="missing-more"
 									outline
 									compact
 									fullWidth
+									dark
 									align="start"
+									icon="missing-more"
+									iconOptions={{ size: 60 }}
 									title="Навыки пока не указаны"
 									helper="Заказчик еще не привязал навыки к проекту."
 								/>
 							) : (
-								<Stack wrap gap={2} align="start">
-									{project.skills.map((skill) => (
-										<Badge key={skill.id} variant="outline" size="xs">
-											{skill.name}
-										</Badge>
-									))}
-								</Stack>
+								<Skills variant="secondary" skills={project.skills} splitAt={5} />
 							)}
 						</Card>
 
@@ -210,19 +201,11 @@ export async function ProjectDetailPage(props: PageProps) {
 									helper="В текущем проекте заказчик не добавил файлов."
 								/>
 							) : (
-								<Stack vertical gap={2} align="stretch">
-									{project.attachments.map((attachment) => (
-										<Link
-											key={attachment.id}
-											href={attachment.fileUrl}
-											target="_blank"
-											rel="noreferrer"
-											hover="underline"
-										>
-											{attachment.filename}
-										</Link>
-									))}
-								</Stack>
+								<Attachments
+									size="sm"
+									variant="secondary"
+									attachments={project.attachments}
+								/>
 							)}
 						</Card>
 					</Stack>
@@ -231,23 +214,10 @@ export async function ProjectDetailPage(props: PageProps) {
 						fullWidth
 						title="О заказчике"
 						description="Краткая информация о клиенте, опубликованная в профиле."
+						contentClassName="pt-0"
 					>
-						<Stack vertical gap={3} align="stretch" className="h-full">
-							<TS clean variant="subtitle" content={describeClient(project.client)} />
-							{project.client.companyRole ? (
-								<TS
-									variant="caption"
-									color="secondary"
-									content={project.client.companyRole}
-								/>
-							) : null}
-							{project.client.name && project.client.companyName ? (
-								<TS
-									variant="caption"
-									color="secondary"
-									content={`Контакт: ${project.client.name}`}
-								/>
-							) : null}
+						<Stack vertical gap={0} align="stretch" className="h-full">
+							<PersonCard innerOnly multiline client={project.client} />
 							<Button href="/projects" variant="outline" className="mt-auto">
 								Назад к проектам
 							</Button>
