@@ -1,16 +1,7 @@
 import { map, startCase } from 'lodash'
+import { PersonCardBio } from './person-card-bio'
 import { type PublicUserLanguage } from '@/lib/db/queries/public-user-languages'
-import {
-	Avatar,
-	Card,
-	Empty,
-	Icon,
-	type IconName,
-	Stack,
-	StackSpan,
-	type TextStyledProps,
-	TS,
-} from '@/ui'
+import { Avatar, Icon, type IconName, Stack, StackSpan, type TextStyledProps, TS } from '@/ui'
 import { sprintf } from '@/utils'
 
 type HeroCardProps = {
@@ -75,27 +66,7 @@ export function PersonCardHero({
 					</Stack>
 				</Stack>
 			</Stack>
-			{full && (bio || forcedBio) && (
-				<Card
-					fullWidth
-					size="default"
-					gap="none"
-					title="О себе"
-					contentClassName="text-muted-foreground"
-				>
-					{bio ?? (
-						<Empty
-							outline
-							compact
-							fullWidth
-							dark
-							align="start"
-							title="Описание пока не добавлено"
-							helper="Пользователь еще не заполнил публичный блок с рассказом о себе."
-						/>
-					)}
-				</Card>
-			)}
+			{full && <PersonCardBio value={bio} forcedEmpty={forcedBio} />}
 		</Stack>
 	)
 }
