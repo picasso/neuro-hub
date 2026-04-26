@@ -1,4 +1,4 @@
-import { map, random } from 'lodash'
+import { map, random, startCase, times } from 'lodash'
 import { pictures } from './pictures'
 
 export const imageUrls = {
@@ -15,7 +15,39 @@ export const mediaUrls = {
 	pdf: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
 } as const
 
-export const coverUrl = () => `/mock-projects/cover-000${random(1, 9)}.jpg`
+export const genCoverUrl = () => `/mock-projects/cover-000${random(1, 9)}.jpg`
+export const genAvatarUrl = () => `/mock-users/avatars/mock-avatar-0${random(1, 9)}.jpg`
+export const getPortfolio = () => {
+	const kind = ['art', 'avatar', 'edit', 'agent', 'mobile', 'video']
+	const names = {
+		art: 'image_generation',
+		avatar: 'image_generation',
+		edit: 'image_generation',
+		agent: 'programming',
+		mobile: 'programming',
+		video: 'video_generation',
+	}
+	const category = kind[random(0, kind.length - 1)]
+	const path = `/mock-users/portfolio/mock-portfolio-ai-${category}`
+	return times(
+		9,
+		(n) =>
+			({
+				id: `${category}-0${n + 1}`,
+				title: `AI ${startCase(category)} ${n + 1}`,
+				mediaUrl: `${path}-0${n + 1}.jpg`,
+				mediaType: 'image/jpeg',
+				category: names[category as keyof typeof names],
+			}) as {
+				id: string
+				title: string
+				mediaUrl: string
+				mediaType: string | null
+				category: string | null
+			},
+	)
+}
+
 export const text = {
 	title: {
 		dialog: 'Заголовок диалога',
