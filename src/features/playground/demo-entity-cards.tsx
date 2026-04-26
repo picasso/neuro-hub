@@ -4,6 +4,7 @@ import { map } from 'lodash'
 import { useMemo, useState } from 'react'
 import { ApplicationCard } from '../entity-cards/application-card'
 import { PersonCard } from '../entity-cards/person-card'
+import { PortfolioCard } from '../entity-cards/portfolio-card'
 import { ProjectCard } from '../entity-cards/project-card'
 import { DemoRoot, DemoSection } from './components-utils'
 import { type EntityCardsDemoState } from './demo-entity-cards-settings'
@@ -13,7 +14,6 @@ import {
 	createFreelancerCardData,
 	createProjectCards,
 	createProjectClient,
-	createShuffledPictureUrls,
 } from './mock-generators'
 import { useSettings, useUpdateSettings } from './settings-store'
 import type { ChatParticipantSummary } from '@/lib/chat/contracts'
@@ -24,19 +24,19 @@ type EntityTab = EntityCardsDemoState['entity']
 export function DemoEntityCards() {
 	const [update] = useUpdateSettings<EntityCardsDemoState>()
 	const settings = useSettings<EntityCardsDemoState>()
-	const { longLines, full, cover, hero, hoverable } = settings
+	const { longLines, full, cover, hero, hoverable, innerOnly, forcedEmptyBio } = settings
 	const [activeTab, setActiveTab] = useState<EntityTab>('project')
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const mockUrls = useMemo(() => createShuffledPictureUrls(), [cover])
 	const projectItems = useMemo(
 		() =>
 			createProjectCards({
 				longText: longLines,
-				clientAvatarUrl: mockUrls[0] ?? null,
+				withAvatar: true,
 			}),
-		[longLines, mockUrls],
+		[longLines],
 	)
-	const personCards = useMemo(() => buildPersonCards(settings, mockUrls), [settings, mockUrls])
+	const personCards = useMemo(() => buildPersonCards(settings), [settings])
+	const portfolioCards = useMemo(() => buildPortfolioCards(settings), [settings])
+
 	const applicationCards = useMemo(
 		() =>
 			createApplicationCards({
@@ -68,7 +68,14 @@ export function DemoEntityCards() {
 			icon: 'users',
 			content: (
 				<div className="py-4 px-8 max-w-xl">
-					<PersonCard {...personCards[0]} full={full} hero={hero} />
+					<PersonCard
+						{...personCards[0]}
+						full={full}
+						hero={hero}
+						innerOnly={innerOnly}
+						hoverable={hoverable}
+						forcedEmptyBio={forcedEmptyBio}
+					/>
 					{/* {renderPersonCard(personCards[0], full)} */}
 				</div>
 			),
@@ -79,7 +86,22 @@ export function DemoEntityCards() {
 			icon: 'file-text',
 			content: (
 				<div className="py-4 px-8 max-w-xl">
-					<ApplicationCard {...applicationCards[0]} full={full} />
+					<ApplicationCard {...applicationCards[0]} full={full} hoverable={hoverable} />
+				</div>
+			),
+		},
+		{
+			value: 'portfolio',
+			title: 'PortfolioCard',
+			icon: 'image',
+			content: (
+				<div className="py-4 px-8 max-w-xl">
+					<PortfolioCard
+						item="last"
+						freelancer={portfolioCards[0].freelancer}
+						full={full}
+						hoverable={hoverable}
+					/>
 				</div>
 			),
 		},
@@ -89,7 +111,7 @@ export function DemoEntityCards() {
 		<DemoRoot>
 			<DemoSection
 				title="Interactive"
-				desc="Доменные `ProjectCard`, `PersonCard`, `ApplicationCard` с общими toggles и переключением preview по tab."
+				desc="Доменные `?ProjectCard`, `?PersonCard`, `?ApplicationCard` и `?PortfolioCard` с общими toggles и переключением preview по tab."
 				separator
 			>
 				<Tabs
@@ -119,12 +141,13 @@ export function DemoEntityCards() {
 										}}
 										full={full}
 										hoverable={hoverable}
+										splitTagsAt={3}
 									/>
 								</div>
 							))
 						: null}
 					{activeTab === 'person'
-						? map(personCards, (_card, index) => (
+						? map(personCards, (card, index) => (
 								<div
 									key={index}
 									className={
@@ -133,14 +156,24 @@ export function DemoEntityCards() {
 											: 'min-w-70 max-w-sm flex-1'
 									}
 								>
-									{/* {renderPersonCard(card, full) ?? null} */}
+									<PersonCard
+										{...card}
+										full={full}
+										hero={hero}
+										innerOnly={innerOnly}
+										hoverable={hoverable}
+									/>
 								</div>
 							))
 						: null}
 					{activeTab === 'application'
 						? map(applicationCards, (application) => (
 								<div key={application.id} className="min-w-70 max-w-xl flex-1">
-									<ApplicationCard {...application} full={full} />
+									<ApplicationCard
+										{...application}
+										full={full}
+										hoverable={hoverable}
+									/>
 								</div>
 							))
 						: null}
@@ -152,78 +185,61 @@ export function DemoEntityCards() {
 
 type PersonPreviewCard =
 	| {
-			// id: string
-			// variant: 'client'
 			client: ReturnType<typeof createProjectClient>
 	  }
 	| {
-			// id: string
-			// variant: 'participant'
 			chat: ChatParticipantSummary
 	  }
 	| {
-			// id: string
-			// variant: 'freelancer'
 			freelancer: ReturnType<typeof createFreelancerCardData>
 	  }
 
-// function renderPersonCard(card: PersonPreviewCard, full: boolean) {
-// 	if (card.variant === 'client' || full) {
-// 		// 	return <PersonCard variant="client" client={card.client} full={full} />
-// 	}
-// 	// if (card.variant === 'participant') {
-// 	// 	return <PersonCard variant="participant" participant={card.participant} full={full} />
-// 	// }
-// 	// return <PersonCard variant="freelancer" freelancer={card.freelancer} full={full} />
-// }
-
-function buildPersonCards(settings: EntityCardsDemoState, mockUrls: string[]): PersonPreviewCard[] {
-	if (settings.personVariant === 'client') {
+function buildPersonCards(settings: EntityCardsDemoState): PersonPreviewCard[] {
+	const { personVariant, personClientAvatar, longLines, personParticipantRole, forcedEmptyBio } =
+		settings
+	if (personVariant === 'client') {
 		return [
 			{
 				client: createProjectClient({
-					withAvatar: settings.personClientAvatar,
-					longLines: settings.longLines,
-					avatarUrl: settings.personClientAvatar ? mockUrls[0] : null,
+					withAvatar: personClientAvatar,
+					longLines,
 				}),
 			},
 			{
 				client: createProjectClient({
 					withAvatar: false,
 					longLines: false,
-					avatarUrl: mockUrls[0] ?? null,
 				}),
 			},
 			{
 				client: createProjectClient({
 					withAvatar: true,
 					longLines: true,
-					avatarUrl: mockUrls[0] ?? null,
 				}),
 			},
 		]
 	}
-	if (settings.personVariant === 'participant') {
+	if (personVariant === 'participant') {
 		return [
 			{
 				chat: createChatParticipant({
-					role: settings.personParticipantRole,
-					longLines: settings.longLines,
-					image: mockUrls[1] ?? null,
+					role: personParticipantRole,
+					longLines,
+					withAvatar: personClientAvatar,
 				}),
 			},
 			{
 				chat: createChatParticipant({
-					role: settings.personParticipantRole === 'customer' ? 'freelancer' : 'customer',
+					role: personParticipantRole === 'customer' ? 'freelancer' : 'customer',
 					longLines: false,
-					image: mockUrls[1] ?? null,
+					withAvatar: personClientAvatar,
 				}),
 			},
 			{
 				chat: createChatParticipant({
-					role: settings.personParticipantRole,
+					role: personParticipantRole,
 					longLines: true,
-					image: mockUrls[1] ?? null,
+					withAvatar: personClientAvatar,
 				}),
 			},
 		]
@@ -233,17 +249,14 @@ function buildPersonCards(settings: EntityCardsDemoState, mockUrls: string[]): P
 			freelancer: createFreelancerCardData({
 				id: 'mock-profile-1',
 				longLines: settings.longLines,
-				avatarUrl: mockUrls[2] ?? null,
-				previewUrl: mockUrls[3] ?? null,
-				hasAvatar: settings.personClientAvatar,
+				hasAvatar: personClientAvatar,
+				bio: !forcedEmptyBio,
 			}),
 		},
 		{
 			freelancer: createFreelancerCardData({
 				id: 'mock-profile-2',
 				longLines: false,
-				avatarUrl: mockUrls[2] ?? null,
-				previewUrl: mockUrls[3] ?? null,
 				hasAvatar: false,
 				hasPreview: false,
 				availability: 'full-time',
@@ -254,8 +267,41 @@ function buildPersonCards(settings: EntityCardsDemoState, mockUrls: string[]): P
 			freelancer: createFreelancerCardData({
 				id: 'mock-profile-3',
 				longLines: true,
-				avatarUrl: mockUrls[2] ?? null,
-				previewUrl: mockUrls[3] ?? null,
+				hasAvatar: true,
+				hasPreview: true,
+				availability: 'weekends',
+				portfolioCount: 14,
+			}),
+		},
+	]
+}
+
+function buildPortfolioCards(settings: EntityCardsDemoState) {
+	const { personClientAvatar, longLines, portfolio, forcedEmptyBio } = settings
+	return [
+		{
+			freelancer: createFreelancerCardData({
+				id: 'mock-profile-1',
+				longLines,
+				hasAvatar: personClientAvatar,
+				hasPreview: portfolio,
+				bio: !forcedEmptyBio,
+			}),
+		},
+		{
+			freelancer: createFreelancerCardData({
+				id: 'mock-profile-2',
+				longLines: false,
+				hasAvatar: false,
+				hasPreview: false,
+				availability: 'full-time',
+				portfolioCount: 2,
+			}),
+		},
+		{
+			freelancer: createFreelancerCardData({
+				id: 'mock-profile-3',
+				longLines: true,
 				hasAvatar: true,
 				hasPreview: true,
 				availability: 'weekends',

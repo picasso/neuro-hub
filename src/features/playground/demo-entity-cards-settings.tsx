@@ -7,10 +7,13 @@ import { useReset, useSettings } from './settings-store'
 import { Separator } from '@/ui'
 
 export type EntityCardsDemoState = {
-	entity: 'project' | 'person' | 'application'
+	entity: 'project' | 'person' | 'application' | 'portfolio'
 	full: boolean
 	cover: boolean
 	hero: boolean
+	portfolio: boolean
+	innerOnly: boolean
+	forcedEmptyBio: boolean
 	personVariant: 'client' | 'participant' | 'freelancer'
 	personClientAvatar: boolean
 	personParticipantRole: 'customer' | 'freelancer'
@@ -24,6 +27,9 @@ const defaultState: EntityCardsDemoState = {
 	full: false,
 	cover: false,
 	hero: false,
+	portfolio: false,
+	innerOnly: false,
+	forcedEmptyBio: false,
 	longLines: false,
 	hoverable: false,
 	personVariant: 'client',
@@ -38,6 +44,9 @@ export function DemoEntityCardsSettings() {
 		entity,
 		full,
 		hero,
+		portfolio,
+		innerOnly,
+		forcedEmptyBio,
 		longLines,
 		cover,
 		hoverable,
@@ -62,15 +71,24 @@ export function DemoEntityCardsSettings() {
 			/>
 			<SettingToggle id="hoverable" label="Hoverable" checked={hoverable} />
 			<Separator />
+			<SettingToggle
+				id="personClientAvatar"
+				label="Client Avatar URL"
+				checked={personClientAvatar}
+			/>
+			{entity === 'portfolio' && (
+				<SettingToggle id="portfolio" label="Portfolio" checked={portfolio} />
+			)}
 			{entity === 'person' && (
 				<>
 					{includes(['client', 'freelancer'], personVariant) && (
 						<>
 							<SettingToggle id="hero" label="Hero" checked={hero} />
+							<SettingToggle id="innerOnly" label="Inner only" checked={innerOnly} />
 							<SettingToggle
-								id="personClientAvatar"
-								label="Client Avatar URL"
-								checked={personClientAvatar}
+								id="forcedEmptyBio"
+								label="Forced empty bio"
+								checked={forcedEmptyBio}
 							/>
 						</>
 					)}
@@ -79,9 +97,9 @@ export function DemoEntityCardsSettings() {
 						label="Person Source"
 						value={personVariant}
 						options={[
-							{ label: 'Project Client', value: 'client' },
+							{ label: 'Client', value: 'client' },
+							{ label: 'Freelancer', value: 'freelancer' },
 							{ label: 'Chat Participant', value: 'participant' },
-							{ label: 'Freelancer Pick', value: 'freelancer' },
 						]}
 					/>
 
@@ -91,8 +109,8 @@ export function DemoEntityCardsSettings() {
 							label="Participant Role"
 							value={personParticipantRole}
 							options={[
-								{ label: 'customer', value: 'customer' },
-								{ label: 'freelancer', value: 'freelancer' },
+								{ label: 'Client', value: 'customer' },
+								{ label: 'Freelancer', value: 'freelancer' },
 							]}
 						/>
 					) : null}

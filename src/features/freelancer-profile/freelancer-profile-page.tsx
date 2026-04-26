@@ -21,7 +21,7 @@ export async function FreelancerProfilePage(props: PageProps) {
 	return (
 		<PageShell preset="public">
 			<Stack vertical gap={8} align="stretch">
-				<PersonCard full hero forcedEmpty freelancer={profile} />
+				<PersonCard full hero forcedEmptyBio freelancer={profile} />
 				<FreelancerPublic profile={profile} />
 			</Stack>
 		</PageShell>
