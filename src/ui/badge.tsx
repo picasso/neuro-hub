@@ -9,7 +9,7 @@ import { cn, simpleMarkdown, type MarkdownParams } from '@/utils'
 
 export type BadgeVariant = 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link'
 export type BadgeSize = 'xs' | 'sm' | 'md'
-export type BadgeColor = SemanticColor | 'error' | 'success' | 'warning' | 'info'
+export type BadgeColor = SemanticColor | 'error' | 'success' | 'warning' | 'info' | 'cta'
 
 export type BadgeProps = Omit<React.ComponentPropsWithoutRef<'span'>, 'children'> & {
 	variant?: BadgeVariant
@@ -26,6 +26,7 @@ export type BadgeProps = Omit<React.ComponentPropsWithoutRef<'span'>, 'children'
 	capitalize?: boolean
 	lowercased?: boolean
 	moreContrast?: boolean
+	wider?: boolean
 	md?: Partial<MarkdownParams> | false
 }
 
@@ -47,6 +48,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 			capitalize,
 			lowercased,
 			moreContrast,
+			wider,
 			md,
 			...props
 		},
@@ -55,6 +57,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 		const shadcnVariant = variant === 'primary' ? 'default' : variant
 		const contrast = needsContrast(variant, color)
 		const defaultColor = contrast ? 'contrast' : variant === 'link' ? 'primary' : 'dimmed'
+		const hasOverlay = color === 'cta' && variant === 'outline'
 		const mergedClassName = cn(
 			'px-2.5',
 			textSizeClasses[size],
@@ -65,6 +68,8 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 			lowercased && size === 'xs' && 'h-6',
 			capitalize && 'capitalize',
 			onClose && 'pr-0.5',
+			hasOverlay && 'relative',
+			wider && 'tracking-wider text-shadow-2xs',
 			className,
 		)
 
@@ -85,16 +90,23 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 		const iconColor = color ? iconColorMap[variant][color] : undefined
 		const inner = (
 			<>
+				{hasOverlay ? <span className="bg-black/20 absolute inset-0 z-0" /> : null}
 				{icon ? (
 					<Icon
 						name={icon}
 						size={iconSizeMap[size]}
 						color={iconColor ?? defaultColor}
-						className={cn(color === 'soft' && 'text-background/60', iconClassName)}
+						className={cn(
+							'z-10',
+							color === 'soft' && 'text-background/60',
+							iconClassName,
+						)}
 						data-icon="inline-start"
 					/>
 				) : null}
-				{label ? (md === false ? label : simpleMarkdown(label, md)) : children}
+				<span className="z-10">
+					{label ? (md === false ? label : simpleMarkdown(label, md)) : children}
+				</span>
 				{onClose ? (
 					<IconButton
 						icon="x"
@@ -102,7 +114,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 						size="xs"
 						onClick={onClose}
 						className={cn(
-							'-mb-0.5 -ml-1 -mr-1 shrink-0',
+							'-mb-0.5 -ml-1 -mr-1 shrink-0 z-10',
 							'opacity-70 bg-transparent',
 							'hover:bg-transparent hover:opacity-100 transition-opacity',
 							closeClassName,
@@ -157,6 +169,7 @@ const iconColorMap: Record<BadgeVariant, Record<BadgeColor, IconColor>> = {
 		success: 'contrast',
 		warning: 'contrast',
 		info: 'contrast',
+		cta: 'contrast',
 	},
 	secondary: {
 		primary: 'secondary',
@@ -169,6 +182,7 @@ const iconColorMap: Record<BadgeVariant, Record<BadgeColor, IconColor>> = {
 		success: 'secondary',
 		warning: 'secondary',
 		info: 'secondary',
+		cta: 'secondary',
 	},
 	destructive: {
 		primary: 'contrast',
@@ -181,6 +195,7 @@ const iconColorMap: Record<BadgeVariant, Record<BadgeColor, IconColor>> = {
 		success: 'contrast',
 		warning: 'contrast',
 		info: 'contrast',
+		cta: 'contrast',
 	},
 	outline: {
 		primary: 'primary',
@@ -193,6 +208,7 @@ const iconColorMap: Record<BadgeVariant, Record<BadgeColor, IconColor>> = {
 		success: 'success',
 		warning: 'warning',
 		info: 'info',
+		cta: 'contrast',
 	},
 	ghost: {
 		primary: 'primary',
@@ -205,6 +221,7 @@ const iconColorMap: Record<BadgeVariant, Record<BadgeColor, IconColor>> = {
 		success: 'success',
 		warning: 'warning',
 		info: 'info',
+		cta: 'cta',
 	},
 	link: {
 		primary: 'primary',
@@ -217,6 +234,7 @@ const iconColorMap: Record<BadgeVariant, Record<BadgeColor, IconColor>> = {
 		success: 'success',
 		warning: 'warning',
 		info: 'info',
+		cta: 'cta',
 	},
 }
 
@@ -231,6 +249,7 @@ const badgeColorMap: Record<BadgeVariant, Record<BadgeColor, string>> = {
 		success: 'bg-primary text-white',
 		warning: 'bg-amber-500 text-white',
 		info: 'bg-blue-500 text-white',
+		cta: 'bg-cta text-white',
 	},
 	secondary: {
 		...semanticColorClasses,
@@ -241,6 +260,7 @@ const badgeColorMap: Record<BadgeVariant, Record<BadgeColor, string>> = {
 		success: 'bg-primary/30',
 		warning: 'bg-amber-200',
 		info: 'bg-blue-200',
+		cta: 'bg-cta/10 text-cta/80',
 	},
 	destructive: {
 		...semanticColorClasses,
@@ -252,6 +272,7 @@ const badgeColorMap: Record<BadgeVariant, Record<BadgeColor, string>> = {
 		success: 'bg-emerald-500 text-white',
 		warning: 'bg-amber-500 text-white',
 		info: 'bg-blue-500 text-white',
+		cta: 'bg-cta text-white',
 	},
 	outline: {
 		...semanticColorClasses,
@@ -264,6 +285,7 @@ const badgeColorMap: Record<BadgeVariant, Record<BadgeColor, string>> = {
 		success: 'bg-primary/10 text-emerald-600 border-primary/40',
 		warning: 'bg-amber-100 text-amber-600 border-amber-400/40',
 		info: 'bg-blue-100 text-blue-600 border-blue-400/40',
+		cta: 'bg-cta/60 text-white border-white/50',
 	},
 	ghost: {
 		...semanticColorClasses,
@@ -275,6 +297,7 @@ const badgeColorMap: Record<BadgeVariant, Record<BadgeColor, string>> = {
 		success: 'text-emerald-600 hover:bg-primary/10 hover:text-emerald-600',
 		warning: 'text-amber-600 hover:bg-amber-100 hover:text-amber-600',
 		info: 'text-blue-600 hover:bg-blue-100 hover:text-blue-600',
+		cta: 'text-cta hover:bg-cta/10 hover:text-cta',
 	},
 	link: {
 		...semanticColorClasses,
@@ -284,6 +307,7 @@ const badgeColorMap: Record<BadgeVariant, Record<BadgeColor, string>> = {
 		success: 'text-emerald-600',
 		warning: 'text-amber-600',
 		info: 'text-blue-600',
+		cta: 'text-cta',
 	},
 }
 
@@ -291,9 +315,11 @@ const contrastColorMap: Partial<Record<BadgeVariant, Partial<Record<BadgeColor, 
 	secondary: {
 		contrast: 'bg-black/40 text-white',
 		soft: 'bg-black/20 text-white/80',
+		cta: 'bg-cta/20 text-cta',
 	},
 	outline: {
 		contrast: 'text-white bg-black/60 border-white',
 		soft: 'text-white/80 bg-black/20 border-white/60',
+		cta: 'text-white bg-cta/80 border-white/70',
 	},
 }

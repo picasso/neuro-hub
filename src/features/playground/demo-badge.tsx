@@ -20,12 +20,15 @@ const colors = [
 	'success',
 	'warning',
 	'info',
+	'cta',
 ] as const
 
 export function DemoBadge() {
 	const settings = useSettings<BadgeDemoState>()
-	const { variant, size, color, withIcon, closable, capitalize, lowercased } = settings
+	const { variant, size, color, withIcon, closable, capitalize, lowercased, moreContrast } =
+		settings
 
+	const hasOverlay = color === 'cta' && variant === 'outline'
 	return (
 		<DemoRoot>
 			<DemoSection
@@ -39,7 +42,8 @@ export function DemoBadge() {
 					align="center"
 					className={cn(
 						'p-4 rounded-md border',
-						needsContrast(null, color) && 'text-white bg-primary',
+						needsContrast(hasOverlay ? variant : null, color) &&
+							'text-white bg-primary',
 					)}
 				>
 					<Badge
@@ -51,6 +55,7 @@ export function DemoBadge() {
 						onClose={closable ? () => {} : undefined}
 						capitalize={capitalize}
 						lowercased={lowercased}
+						moreContrast={moreContrast}
 					/>
 				</Stack>
 			</DemoSection>
