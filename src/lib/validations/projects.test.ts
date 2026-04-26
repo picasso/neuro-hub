@@ -176,7 +176,7 @@ describe('projectAttachmentSchema', () => {
 				filename: 'brief.pdf',
 				fileUrl: 'javascript:alert(1)',
 			}),
-		).toThrow('Attachment URL must use https or local development http')
+		).toThrow('Attachment URL must use https, local development http, or a relative path')
 	})
 })
 
