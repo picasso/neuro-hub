@@ -4,54 +4,48 @@
  *
  * Env: `DATABASE_URL` (required), `NEXT_PUBLIC_APP_URL` (optional compatibility
  * origin for legacy absolute asset URLs; current mock data uses `/mock-users/...`).
+ *
+ * CLI: `--production` — read `RAILWAY_DATABASE_URL` from `.env.production.local`
+ * (overrides local `DATABASE_URL` from `.env`); restore on exit. If the file is
+ * missing, uses existing `DATABASE_URL` (see `scripts/utils/production-railway-database-url.ts`).
+ *
+ * The first import must be `./ensure-mock-seed-db-env` so `DATABASE_URL` is set before
+ * `src/lib/db` loads (pool is created at import time).
  */
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import './ensure-mock-seed-db-env'
 import { hashPassword } from 'better-auth/crypto'
 import { sql } from 'kysely'
 import { nanoid } from 'nanoid'
 import { closeConnection, kysely } from '../../src/lib/db'
 import {
+	type ClientBundle,
+	type FreelancerBundle,
 	MOCK_SEED_PASSWORD,
 	loadClientBundles,
 	loadFreelancerBundles,
 } from '../../src/lib/dev/mock-users-seed'
 import {
+	buildMockSkillIdResolutionMap,
+	getCanonicalSkillName,
+} from '../../src/lib/dev/resolve-mock-skill-id'
+import {
 	printDataRow,
 	printEmpty,
 	printError,
 	printInfo,
+	printListItem,
 	printSection,
 	printSuccess,
 	promptConfirmation,
 } from '../utils/cli-utils'
 
-function loadDotenvFromCwd() {
+function formatDatabaseTarget(url: string): string {
 	try {
-		const p = resolve(process.cwd(), '.env')
-		const raw = readFileSync(p, 'utf8')
-		for (const line of raw.split('\n')) {
-			const t = line.trim()
-			if (!t || t.startsWith('#')) {
-				continue
-			}
-			const eq = t.indexOf('=')
-			if (eq <= 0) {
-				continue
-			}
-			const key = t.slice(0, eq).trim()
-			let v = t.slice(eq + 1).trim()
-			if (v.startsWith('"') && v.endsWith('"')) {
-				v = v.slice(1, -1).replace(/\\n/g, '\n')
-			} else if (v.startsWith("'") && v.endsWith("'")) {
-				v = v.slice(1, -1)
-			}
-			if (!process.env[key]) {
-				process.env[key] = v
-			}
-		}
+		const u = new URL(url)
+		const name = (u.pathname || '').replace(/^\//, '') || u.searchParams.get('database') || ''
+		return name ? `${u.hostname} / ${name}` : u.hostname
 	} catch {
-		// no .env
+		return '(unparsed DATABASE_URL)'
 	}
 }
 
@@ -193,6 +187,7 @@ async function replaceUserLanguages(
 async function seedFreelancer(
 	passwordHash: string,
 	bundle: Awaited<ReturnType<typeof loadFreelancerBundles>>[number],
+	skillIdMap: ReadonlyMap<string, string>,
 ) {
 	const y = bundle.yaml
 	const u = y.users
@@ -243,14 +238,21 @@ async function seedFreelancer(
 		await kysely
 			.insertInto('user_skills')
 			.values(
-				y.user_skills.map((r) => ({
-					id: r.id,
-					user_id: r.user_id,
-					skill_id: r.skill_id,
-					proficiency_level: r.proficiency_level,
-					legacy_skill_id: r.legacy_skill_id,
-					created_at: now,
-				})),
+				y.user_skills.map((r) => {
+					const dbSkillId = skillIdMap.get(r.skill_id)
+					if (dbSkillId == null) {
+						throw new Error('Unresolved skill_id for user_skills insert: ' + r.skill_id)
+					}
+					return {
+						id: r.id,
+						user_id: r.user_id,
+						skill_id: dbSkillId,
+						proficiency_level: r.proficiency_level,
+						legacy_skill_id:
+							r.legacy_skill_id ?? (dbSkillId === r.skill_id ? null : r.skill_id),
+						created_at: now,
+					}
+				}),
 			)
 			.execute()
 	}
@@ -312,8 +314,102 @@ async function seedClient(
 	await replaceUserLanguages(u.id, bundle.languages)
 }
 
+/**
+ * Ensures `languages` exist. Builds canonical mock skill_id → `skills.id` (resolves
+ * post-migration random UUIDs via the `001_skills` name catalog when ids differ).
+ */
+async function assertPrerequisitesAndBuildSkillIdMap(
+	bundles: FreelancerBundle[],
+	clients: ClientBundle[],
+): Promise<Map<string, string>> {
+	const skillIds = new Set<string>()
+	for (const b of bundles) {
+		for (const s of b.yaml.user_skills) {
+			skillIds.add(s.skill_id)
+		}
+	}
+	const languageCodes = new Set<string>()
+	for (const b of bundles) {
+		for (const l of b.languages) {
+			languageCodes.add(l.language_code)
+		}
+	}
+	for (const c of clients) {
+		for (const l of c.languages) {
+			languageCodes.add(l.language_code)
+		}
+	}
+	let skillIdMap = new Map<string, string>()
+	if (skillIds.size > 0) {
+		const countRow = await kysely
+			.selectFrom('skills')
+			.select((eb) => eb.fn.countAll<string>().as('count'))
+			.executeTakeFirst()
+		const totalSkills = Number(countRow?.count ?? 0)
+
+		skillIdMap = await buildMockSkillIdResolutionMap(kysely, skillIds)
+		const missing = [...skillIds].filter((id) => !skillIdMap.has(id))
+		if (missing.length) {
+			const url = process.env.DATABASE_URL || ''
+			printEmpty()
+			printInfo('This run connects to: ' + formatDatabaseTarget(url))
+			printInfo('Table `skills` in that database: ' + String(totalSkills) + ' row(s).')
+			if (totalSkills === 0) {
+				printEmpty()
+				printError(
+					'No `skills` rows here — reference seed missing or different database URL. ' +
+						'Use the same `DATABASE_URL` you used for `db:seed:status` (see RAILWAY_DATABASE_URL).',
+				)
+			} else {
+				printError('Could not match every mock skill to a row in `skills`.')
+				printInfo(
+					'Mocks use canonical UUIDs from `001_skills`, but migration 20260211_010 ' +
+						'assigned new random UUIDs — name-based resolution should still work if seed names match. ' +
+						'For remaining ids: not in 001 catalog, or missing skill *name* in the database.',
+				)
+			}
+			printEmpty()
+			printInfo(
+				'Unmatched canonical skill_id(s) (up to 15 of ' + String(missing.length) + '):',
+			)
+			missing.slice(0, 15).forEach((id) => {
+				const n = getCanonicalSkillName(id)
+				printListItem(n ? id + ' → ' + n : id + ' (not in 001_skills catalog)', 1)
+			})
+			if (missing.length > 15) {
+				printListItem('… and ' + String(missing.length - 15) + ' more', 1)
+			}
+			printEmpty()
+			process.exit(1)
+		}
+	}
+	if (languageCodes.size > 0) {
+		const rows = await kysely
+			.selectFrom('languages')
+			.select('code')
+			.where('code', 'in', [...languageCodes])
+			.execute()
+		const have = new Set(rows.map((r) => r.code as string))
+		const missing = [...languageCodes].filter((c) => !have.has(c))
+		if (missing.length) {
+			printEmpty()
+			printError(
+				'Missing `languages` rows for mock `user_languages` — base Knex seed is not on this database.',
+			)
+			missing.forEach((code) => {
+				printListItem(code, 1)
+			})
+			printInfo(
+				'Run the reference seed first: `yarn db:seed` (or `scripts/db/seed-production.sh` on production).',
+			)
+			printEmpty()
+			process.exit(1)
+		}
+	}
+	return skillIdMap
+}
+
 async function main() {
-	loadDotenvFromCwd()
 	const args = parseArgs()
 	const databaseUrl = process.env.DATABASE_URL || ''
 	const base =
@@ -343,6 +439,7 @@ async function main() {
 	const passwordHash = await hashPassword(MOCK_SEED_PASSWORD)
 	const bundles = loadFreelancerBundles(repoRoot, base)
 	const clients = loadClientBundles(repoRoot, base)
+	const skillIdMap = await assertPrerequisitesAndBuildSkillIdMap(bundles, clients)
 
 	printEmpty()
 	printSection('Mock users seed')
@@ -364,7 +461,7 @@ async function main() {
 	printEmpty()
 
 	for (const b of bundles) {
-		await seedFreelancer(passwordHash, b)
+		await seedFreelancer(passwordHash, b, skillIdMap)
 		printSuccess('Upserted freelancer ' + b.yaml.users.name)
 	}
 	for (let i = 0; i < clients.length; i++) {

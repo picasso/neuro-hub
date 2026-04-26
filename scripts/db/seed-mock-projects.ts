@@ -4,50 +4,49 @@
  *
  * Env: `DATABASE_URL` (required), `NEXT_PUBLIC_APP_URL` (optional; used when validating
  * freelancer skill overlap via `loadFreelancerBundles`).
+ *
+ * CLI: `--production` — read `RAILWAY_DATABASE_URL` from `.env.production.local`
+ * (overrides local `DATABASE_URL` from `.env`); restore on exit. If the file is
+ * missing, uses existing `DATABASE_URL`.
+ *
+ * The first import must be `./ensure-mock-seed-db-env` (see `seed-mock-users.ts`).
  */
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import './ensure-mock-seed-db-env'
 import { closeConnection, kysely } from '../../src/lib/db'
 import {
 	assertApplicationsMatchProjectSkills,
 	loadMockProjectsBundle,
 } from '../../src/lib/dev/mock-projects-seed'
 import {
+	buildMockSkillIdResolutionMap,
+	getCanonicalSkillName,
+} from '../../src/lib/dev/resolve-mock-skill-id'
+import {
 	printDataRow,
 	printEmpty,
 	printError,
 	printInfo,
+	printListItem,
 	printSection,
 	printSuccess,
 	promptConfirmation,
 } from '../utils/cli-utils'
 
-function loadDotenvFromCwd() {
+const MOCK_PROJECT_PUBLICATION_WINDOW_DAYS = 30
+const DAY_MS = 24 * 60 * 60 * 1000
+
+function randomDateWithinLastDays(now: Date, days: number): Date {
+	const spanMs = days * DAY_MS
+	return new Date(now.getTime() - Math.floor(Math.random() * spanMs))
+}
+
+function formatDatabaseTarget(url: string): string {
 	try {
-		const p = resolve(process.cwd(), '.env')
-		const raw = readFileSync(p, 'utf8')
-		for (const line of raw.split('\n')) {
-			const t = line.trim()
-			if (!t || t.startsWith('#')) {
-				continue
-			}
-			const eq = t.indexOf('=')
-			if (eq <= 0) {
-				continue
-			}
-			const key = t.slice(0, eq).trim()
-			let v = t.slice(eq + 1).trim()
-			if (v.startsWith('"') && v.endsWith('"')) {
-				v = v.slice(1, -1).replace(/\\n/g, '\n')
-			} else if (v.startsWith("'") && v.endsWith("'")) {
-				v = v.slice(1, -1)
-			}
-			if (!process.env[key]) {
-				process.env[key] = v
-			}
-		}
+		const u = new URL(url)
+		const name = (u.pathname || '').replace(/^\//, '') || u.searchParams.get('database') || ''
+		return name ? `${u.hostname} / ${name}` : u.hostname
 	} catch {
-		// no .env
+		return '(unparsed DATABASE_URL)'
 	}
 }
 
@@ -82,8 +81,53 @@ function assertUniqueProjectFreelancerPairs(
 	}
 }
 
+async function buildProjectSkillIdMap(
+	projectSkills: { skill_id: string }[],
+): Promise<Map<string, string>> {
+	const skillIds = new Set(projectSkills.map((r) => r.skill_id))
+	if (skillIds.size === 0) {
+		return new Map()
+	}
+
+	const countRow = await kysely
+		.selectFrom('skills')
+		.select((eb) => eb.fn.countAll<string>().as('count'))
+		.executeTakeFirst()
+	const totalSkills = Number(countRow?.count ?? 0)
+
+	const map = await buildMockSkillIdResolutionMap(kysely, skillIds)
+	const missing = [...skillIds].filter((id) => !map.has(id))
+	if (missing.length === 0) {
+		return map
+	}
+
+	const url = process.env.DATABASE_URL || ''
+	printEmpty()
+	printInfo('This run connects to: ' + formatDatabaseTarget(url))
+	printInfo('Table `skills` in that database: ' + String(totalSkills) + ' row(s).')
+	if (totalSkills === 0) {
+		printError('No `skills` rows here — reference seed missing or different database URL.')
+	} else {
+		printError('Could not match every mock project skill to a row in `skills`.')
+		printInfo(
+			'Project mocks use canonical UUIDs from `001_skills`; production may have ' +
+				'post-migration random UUIDs, so the seed resolves by skill name.',
+		)
+	}
+	printEmpty()
+	printInfo('Unmatched canonical skill_id(s) (up to 15 of ' + String(missing.length) + '):')
+	missing.slice(0, 15).forEach((id) => {
+		const n = getCanonicalSkillName(id)
+		printListItem(n ? id + ' → ' + n : id + ' (not in 001_skills catalog)', 1)
+	})
+	if (missing.length > 15) {
+		printListItem('… and ' + String(missing.length - 15) + ' more', 1)
+	}
+	printEmpty()
+	process.exit(1)
+}
+
 async function main() {
-	loadDotenvFromCwd()
 	const args = parseArgs()
 	const databaseUrl = process.env.DATABASE_URL || ''
 	const base =
@@ -113,6 +157,7 @@ async function main() {
 	const bundle = loadMockProjectsBundle(repoRoot)
 	assertUniqueProjectFreelancerPairs(bundle.applications)
 	assertApplicationsMatchProjectSkills(repoRoot, base)
+	const skillIdMap = await buildProjectSkillIdMap(bundle.project_skills)
 
 	const projectIds = bundle.projects.map((p) => p.id)
 
@@ -150,6 +195,7 @@ async function main() {
 	for (const p of bundle.projects) {
 		const deadline = new Date(p.deadline)
 		const coverUrl = p.cover_url == null || p.cover_url === '' ? null : p.cover_url
+		const publishedAt = randomDateWithinLastDays(now, MOCK_PROJECT_PUBLICATION_WINDOW_DAYS)
 		await kysely
 			.insertInto('projects')
 			.values({
@@ -165,8 +211,8 @@ async function main() {
 				deadline,
 				status: p.status,
 				cover_url: coverUrl,
-				created_at: now,
-				updated_at: now,
+				created_at: publishedAt,
+				updated_at: publishedAt,
 			})
 			.onConflict((oc) =>
 				oc.column('id').doUpdateSet({
@@ -181,7 +227,8 @@ async function main() {
 					deadline,
 					status: p.status,
 					cover_url: coverUrl,
-					updated_at: now,
+					created_at: publishedAt,
+					updated_at: publishedAt,
 				}),
 			)
 			.execute()
@@ -194,7 +241,7 @@ async function main() {
 			.values(
 				bundle.project_skills.map((r) => ({
 					project_id: r.project_id,
-					skill_id: r.skill_id,
+					skill_id: skillIdMap.get(r.skill_id) ?? r.skill_id,
 					created_at: now,
 				})),
 			)

@@ -36,6 +36,12 @@ async function main() {
 		printEmpty()
 		printSection('Seed Status')
 		printInfo('Using environment: ' + environment)
+		if (environment === 'development') {
+			printInfo(
+				'Knex "development" uses knexfile host localhost:5433 (not $DATABASE_URL). ' +
+					'Use KNEX_ENV=production to query the database from DATABASE_URL (e.g. Railway).',
+			)
+		}
 
 		const files = await listSeedFilesInOrder()
 		printEmpty()
@@ -100,7 +106,7 @@ async function main() {
 					})
 				}
 				printEmpty()
-				printInfo('Run: yarn db:seed:mock-users')
+				printInfo('Run: yarn db:mock:users (or db:mock:users:production)')
 			}
 		}
 
@@ -154,7 +160,7 @@ async function main() {
 					})
 				}
 				printEmpty()
-				printInfo('Prereq: yarn db:seed:mock-users then run: yarn db:seed:mock-projects')
+				printInfo('Prereq: yarn db:mock:users then run: yarn db:mock:projects')
 			}
 			if (missingProjects.length === 0 && appN !== expectedAppN) {
 				printWarning(

@@ -1,6 +1,6 @@
 import type { Knex } from 'knex'
 
-const SKILLS = [
+export const SKILLS = [
 	{ id: '00000000-0000-4000-8000-000000000001', name: 'GPT-4', category: 'text_generation' },
 	{
 		id: '00000000-0000-4000-8000-000000000002',
@@ -88,6 +88,8 @@ const SKILLS = [
 	{ id: '00000000-0000-4000-8000-000000000502', name: 'AI Strategy', category: 'consulting' },
 	{ id: '00000000-0000-4000-8000-000000000503', name: 'Team Training', category: 'consulting' },
 ] as const
+
+export type CatalogSkill = (typeof SKILLS)[number]
 
 export async function seed(knex: Knex): Promise<void> {
 	// `skills` has unique on `id` and on `name`. Production may have legacy rows: same
