@@ -51,7 +51,7 @@ users:
       id: f0000000-0000-4000-8000-000000000001
       user_id: mock_ai_fl_01
       specialization: AI concept art and key visuals
-      hourly_rate: 95
+      hourly_rate: 9500
       availability: full-time
       experience: Cinematic key art for games and short pitches. Fast iteration from thumbnails to polished stills with consistent characters and lighting.
     user_skills:
@@ -142,7 +142,7 @@ users:
       id: f0000000-0000-4000-8000-000000000002
       user_id: mock_ai_fl_02
       specialization: AI-native интерфейсы мобильных продуктов
-      hourly_rate: 110
+      hourly_rate: 11000
       availability: part-time
       experience: "Мобильные сценарии с LLM-функциями: постепенное раскрытие возможностей, безопасные fallback-сценарии и измеримая аналитика для оценки качества."
     user_skills:
@@ -233,7 +233,7 @@ users:
       id: f0000000-0000-4000-8000-000000000003
       user_id: mock_ai_fl_03
       specialization: AI-агенты для поддержки и операционных команд
-      hourly_rate: 120
+      hourly_rate: 12000
       availability: full-time
       experience: Агентные системы с опорой на источники, передачей человеку и циклами оценки. Фокус на измеримом снижении нагрузки без рискованной автоматизации.
     user_skills:
@@ -324,7 +324,7 @@ users:
       id: f0000000-0000-4000-8000-000000000004
       user_id: mock_ai_fl_04
       specialization: AI-ретушь и композитинг
-      hourly_rate: 65
+      hourly_rate: 6500
       availability: weekends only
       experience: Каталожная и портретная ретушь с правдоподобной фактурой. Генеративные проходы для фонов и чистки там, где одного Photoshop уже недостаточно.
     user_skills:
@@ -415,7 +415,7 @@ users:
       id: f0000000-0000-4000-8000-000000000005
       user_id: mock_ai_fl_05
       specialization: AI avatars and character packs
-      hourly_rate: 85
+      hourly_rate: 8500
       availability: part-time
       experience: "Stream-ready characters: readable silhouettes, expression sheets, and palette-locked variants."
     user_skills:
@@ -506,7 +506,7 @@ users:
       id: f0000000-0000-4000-8000-000000000006
       user_id: mock_ai_fl_06
       specialization: AI video for ads and social
-      hourly_rate: 90
+      hourly_rate: 9000
       availability: full-time
       experience: Short promos, B-roll augmentation, and storyboard-to-motion experiments with tight brand-safe palettes.
     user_skills:
@@ -597,7 +597,7 @@ users:
       id: f0000000-0000-4000-8000-000000000007
       user_id: mock_ai_fl_07
       specialization: Чат-боты и интеграция LLM-приложений
-      hourly_rate: 100
+      hourly_rate: 10000
       availability: part-time
       experience: Паттерны tool calling, структурированные ответы и guardrails для ассистентов, которые общаются с клиентами.
     user_skills:
@@ -688,7 +688,7 @@ users:
       id: f0000000-0000-4000-8000-000000000008
       user_id: mock_ai_fl_08
       specialization: AI-иллюстрации для бренд-кампаний
-      hourly_rate: 78
+      hourly_rate: 7800
       availability: full-time
       experience: "Системы кампанийной иллюстрации: мотивы, цветовые ритмы и переиспользуемые фоны для маркетинговых команд."
     user_skills:
@@ -779,7 +779,7 @@ users:
       id: f0000000-0000-4000-8000-000000000009
       user_id: mock_ai_fl_09
       specialization: Compositing and scene rebuilds
-      hourly_rate: 72
+      hourly_rate: 7200
       availability: limited ~20h/wk
       experience: Complex masking, relighting, and environment rebuilds for hero marketing frames.
     user_skills:
@@ -870,7 +870,7 @@ users:
       id: f0000000-0000-4000-8000-000000000010
       user_id: mock_ai_fl_10
       specialization: Корпоративные RAG-системы и ассистенты знаний
-      hourly_rate: 130
+      hourly_rate: 13000
       availability: full-time
       experience: Стратегии чанкинга, контроль доступа, наборы для оценки и red-team промпты для регулируемых команд.
     user_skills:
@@ -961,7 +961,7 @@ users:
       id: f0000000-0000-4000-8000-000000000011
       user_id: mock_ai_fl_11
       specialization: UX для автоматизации и оркестрации агентов
-      hourly_rate: 88
+      hourly_rate: 8800
       availability: part-time
       experience: Многошаговые процессы с согласованиями, повторами и операторскими дашбордами для не-разработчиков.
     user_skills:
@@ -1052,7 +1052,7 @@ users:
       id: f0000000-0000-4000-8000-000000000012
       user_id: mock_ai_fl_12
       specialization: AI-пропсы и environment tiles для игр
-      hourly_rate: 58
+      hourly_rate: 5800
       availability: full-time
       experience: Стилизованные пропсы, trim sheets и mood-исследования для небольших студий с жёсткими сроками.
     user_skills:
@@ -1143,7 +1143,7 @@ users:
       id: f0000000-0000-4000-8000-000000000013
       user_id: mock_ai_fl_13
       specialization: AI-наборы для аудио и видеосинхронизации
-      hourly_rate: 92
+      hourly_rate: 9200
       availability: part-time
       experience: Подложки для озвучки, короткие sonic logos и вертикальные монтажи, синхронизированные с beat markers.
     user_skills:
@@ -1234,7 +1234,7 @@ users:
       id: f0000000-0000-4000-8000-000000000014
       user_id: mock_ai_fl_14
       specialization: Мобильный UX для AI-функций
-      hourly_rate: 105
+      hourly_rate: 10500
       availability: full-time
       experience: "Сценарии ассистентов, формирующие привычку: напоминания, сводки и offline-first оболочки."
     user_skills:
@@ -1325,7 +1325,7 @@ users:
       id: f0000000-0000-4000-8000-000000000015
       user_id: mock_ai_fl_15
       specialization: Prompt systems and AI strategy
-      hourly_rate: 140
+      hourly_rate: 14000
       availability: 2 client slots
       experience: Playbooks for evaluation, vendor selection, and team training with realistic ROI framing.
     user_skills:
