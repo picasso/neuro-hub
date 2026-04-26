@@ -153,7 +153,7 @@ export function FileUploader({
 						isDrag={isDragActive || undefined}
 						isReject={isDragReject || undefined}
 						className={cn(
-							'transition-opacity',
+							'transition-opacity cursor-pointer',
 							avatarSrc && !completed && 'opacity-50',
 							className,
 						)}
@@ -169,6 +169,18 @@ export function FileUploader({
 								isDragReject && 'bg-destructive/60',
 							)}
 						/>
+					)}
+					{avatarSrc && !(isDragActive || isDragReject) && (
+						<Stack
+							justify="center"
+							className={cn(
+								'cursor-pointer transition-opacity duration-500 opacity-0',
+								'absolute inset-0 rounded-full bg-black/50',
+								'hover:opacity-100',
+							)}
+						>
+							<Icon name="camera" size={60} color="contrast" />
+						</Stack>
 					)}
 				</>
 			)}

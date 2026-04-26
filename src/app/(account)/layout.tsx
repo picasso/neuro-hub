@@ -16,12 +16,7 @@ export default async function AccountLayout({ children }: AccountLayoutProps) {
 	const state = await getAccountShellState(session)
 
 	return (
-		<AuthHeaderGateProvider
-			state={{
-				viewer: state.viewer,
-				unreadMessages: state.snapshot.messages ?? 0,
-			}}
-		>
+		<AuthHeaderGateProvider state={state}>
 			<AccountShell state={state}>{children}</AccountShell>
 		</AuthHeaderGateProvider>
 	)

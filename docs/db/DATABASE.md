@@ -343,6 +343,7 @@ Key fields:
 - `budget_type`, `budget_min`, `budget_max`
 - `deadline`
 - `status`
+- `cover_url`: optional URL for a project cover image (or other media) used in listing and detail UIs; nullable when unset. Mock seeds: `MOCK-PROJECTS.md` uses `/mock-projects/cover-*.jpg` (JPEG Q60, 16:9), keyed by the last 4 id hex digits
 
 Invariants:
 
@@ -363,6 +364,8 @@ Key fields:
 - `project_id`
 - `filename`, `file_url`
 - `mime_type`, `file_size_bytes`
+
+Agent note: `mime_type` reflects the asset (e.g. `image/jpeg`, `application/pdf`, OOXML for `.docx`, `video/mp4`, `audio/mp3` for `.mp3`); mock seeds in `MOCK-PROJECTS.md` mix types for QA.
 
 Invariants:
 

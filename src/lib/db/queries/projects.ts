@@ -62,6 +62,7 @@ export type PublicProjectListItem = {
 	budgetMax: number
 	deadline: Date
 	status: string
+	coverUrl: string | null
 	createdAt: Date | null
 	client: ProjectClientSummary
 	skills: ProjectSkillSummary[]
@@ -80,6 +81,7 @@ export type PublicProjectDetail = {
 	budgetMax: number
 	deadline: Date
 	status: string
+	coverUrl: string | null
 	createdAt: Date | null
 	updatedAt: Date | null
 	client: ProjectClientSummary
@@ -117,6 +119,7 @@ export type FreelancerApplicationListItem = {
 		budgetMax: number
 		deadline: Date
 		status: string
+		coverUrl: string | null
 		client: ProjectClientSummary
 		skills: ProjectSkillSummary[]
 	}
@@ -165,6 +168,7 @@ export type ClientProjectApplicationsGroup = {
 		budgetMax: number
 		deadline: Date
 		status: string
+		coverUrl: string | null
 		skills: ProjectSkillSummary[]
 	}
 	applications: ClientProjectApplicationListItem[]
@@ -203,6 +207,7 @@ export async function listPublicProjects(
 			'project.budget_max as budgetMax',
 			'project.deadline as deadline',
 			'project.status as status',
+			'project.cover_url as coverUrl',
 			'project.created_at as createdAt',
 			'project.client_id as clientId',
 			'profile.name as name',
@@ -328,6 +333,7 @@ export async function listPublicProjects(
 			budgetMax: row.budgetMax,
 			deadline: row.deadline,
 			status: row.status,
+			coverUrl: row.coverUrl,
 			createdAt: row.createdAt,
 			client: toProjectClientSummary(row, languagesByClientId),
 			skills: skillsByProjectId.get(row.id) ?? [],
@@ -357,6 +363,7 @@ export async function getPublicProjectById(
 			'project.budget_max as budgetMax',
 			'project.deadline as deadline',
 			'project.status as status',
+			'project.cover_url as coverUrl',
 			'project.created_at as createdAt',
 			'project.updated_at as updatedAt',
 			'project.client_id as clientId',
@@ -400,6 +407,7 @@ export async function getPublicProjectById(
 		budgetMax: project.budgetMax,
 		deadline: project.deadline,
 		status: project.status,
+		coverUrl: project.coverUrl,
 		createdAt: project.createdAt,
 		updatedAt: project.updatedAt,
 		client: toProjectClientSummary(project, languagesByClientId),
@@ -434,6 +442,7 @@ export async function listClientProjects({
 			'project.budget_max as budgetMax',
 			'project.deadline as deadline',
 			'project.status as status',
+			'project.cover_url as coverUrl',
 			'project.created_at as createdAt',
 			'project.client_id as clientId',
 			'profile.name as name',
@@ -469,6 +478,7 @@ export async function listClientProjects({
 		budgetMax: row.budgetMax,
 		deadline: row.deadline,
 		status: row.status,
+		coverUrl: row.coverUrl,
 		createdAt: row.createdAt,
 		client: toProjectClientSummary(row, languagesByClientId),
 		skills: skillsByProjectId.get(row.id) ?? [],
@@ -498,6 +508,7 @@ export async function createProjectForClient({
 				budget_max: input.budgetMax,
 				deadline: input.deadline,
 				status: input.status,
+				cover_url: input.coverUrl ?? null,
 				updated_at: new Date(),
 			})
 			.returning(['id', 'title', 'status'])
@@ -549,6 +560,7 @@ export async function updateProjectForClient({
 			budgetMax: input.budgetMax ?? existing.budget_max,
 			deadline: input.deadline ?? existing.deadline,
 			status: input.status ?? existing.status,
+			coverUrl: input.coverUrl !== undefined ? input.coverUrl : existing.cover_url,
 			skillIds:
 				input.skillIds ?? (skillsByProjectId.get(projectId) ?? []).map((item) => item.id),
 			attachments:
@@ -574,6 +586,7 @@ export async function updateProjectForClient({
 		if (input.budgetMax !== undefined) patch.budget_max = input.budgetMax
 		if (input.deadline !== undefined) patch.deadline = input.deadline
 		if (input.status !== undefined) patch.status = input.status
+		if (input.coverUrl !== undefined) patch.cover_url = input.coverUrl
 
 		const updated = await trx
 			.updateTable('projects')
@@ -756,6 +769,7 @@ export async function listFreelancerApplications({
 			'project.budget_max as budgetMax',
 			'project.deadline as deadline',
 			'project.status as projectStatus',
+			'project.cover_url as coverUrl',
 			'project.client_id as clientId',
 			'profile.name as name',
 			'profile.company_name as companyName',
@@ -815,6 +829,7 @@ export async function listFreelancerApplications({
 				budgetMax: row.budgetMax,
 				deadline: row.deadline,
 				status: row.projectStatus,
+				coverUrl: row.coverUrl,
 				client: toProjectClientSummary(row, languagesByClientId),
 				skills: skillsByProjectId.get(row.projectId) ?? [],
 			},
@@ -880,6 +895,7 @@ export async function listClientProjectApplications({
 			'project.budget_max as budgetMax',
 			'project.deadline as deadline',
 			'project.status as projectStatus',
+			'project.cover_url as coverUrl',
 			'application.id as applicationId',
 			'application.status as applicationStatus',
 			'application.cover_letter as coverLetter',
@@ -941,6 +957,7 @@ export async function listClientProjectApplications({
 				budgetMax: row.budgetMax,
 				deadline: row.deadline,
 				status: row.projectStatus,
+				coverUrl: row.coverUrl,
 				skills: skillsByProjectId.get(row.projectId) ?? [],
 			},
 			applications: [

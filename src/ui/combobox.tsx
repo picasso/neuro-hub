@@ -56,16 +56,11 @@ export declare namespace ComboboxProps {
 	type ChipsInput = ComponentProps<typeof ComboboxChipsInput>
 }
 
-// const X: ComboboxProps.Group = {}
-
 export type ComboOption = {
 	value: string
 	option?: Omit<ComboboxProps.Item, 'value'>
 	label: string
 }
-// type ComboValue = ComboOption | null | undefined
-// type ComboOnChange = ((value: ComboValue) => void) | undefined
-// type ComboItemToString = ((item: ComboOption) => string) | undefined
 
 export type ComboGroup = {
 	value: string
@@ -277,19 +272,6 @@ export function ComboboxGroupped({
 }
 
 // custom combobox (custom items) -----------------------------------------------------------------]
-
-{
-	/* <ComboboxValue>
-	{(values) => (
-		<>
-			{values.map((value: string) => (
-				<ComboboxChip key={value}>{value}</ComboboxChip>
-			))}
-			<ComboboxChipsInput />
-		</>
-	)}
-</ComboboxValue> */
-}
 
 export type ComboboxCustomProps = ComboboxProps<ComboCustomItem, false> & {
 	variant?: ItemProps['variant']

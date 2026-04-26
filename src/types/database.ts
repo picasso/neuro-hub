@@ -48,7 +48,7 @@ export interface Applications {
 	project_id: string
 	proposed_deadline: Timestamp | null
 	proposed_price: number
-	status: string
+	status: Generated<string>
 	updated_at: Generated<Timestamp | null>
 }
 
@@ -94,13 +94,20 @@ export interface KnexMigrationsLock {
 	is_locked: number | null
 }
 
+export interface Languages {
+	code: string
+	name: string
+	native_name: string
+	sort_order: Generated<number>
+}
+
 export interface MessageReads {
 	conversation_id: string
 	created_at: Generated<Timestamp | null>
 	id: Generated<string>
 	last_read_message_created_at: Timestamp
 	last_read_message_id: string
-	read_at: Timestamp
+	read_at: Generated<Timestamp>
 	updated_at: Generated<Timestamp | null>
 	user_id: string
 }
@@ -145,12 +152,13 @@ export interface Projects {
 	budget_type: string
 	category: string
 	client_id: string
+	cover_url: string | null
 	created_at: Generated<Timestamp | null>
 	deadline: Timestamp
 	description: string
 	experience_level: string
 	id: Generated<string>
-	status: string
+	status: Generated<string>
 	title: string
 	updated_at: Generated<Timestamp | null>
 }
@@ -180,11 +188,11 @@ export interface Skills {
 	name: string
 }
 
-export interface Languages {
-	code: string
-	name: string
-	native_name: string
-	sort_order: number
+export interface UserLanguages {
+	created_at: Generated<Timestamp | null>
+	lang_level: string
+	language_code: string
+	user_id: string
 }
 
 export interface UserProfiles {
@@ -199,13 +207,6 @@ export interface UserProfiles {
 	nickname: string
 	search_vector: Generated<string | null>
 	updated_at: Generated<Timestamp | null>
-	user_id: string
-}
-
-export interface UserLanguages {
-	created_at: Generated<Timestamp | null>
-	lang_level: string
-	language_code: string
 	user_id: string
 }
 

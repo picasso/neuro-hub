@@ -94,6 +94,16 @@ export {
 	type TabItem,
 } from './tabs'
 export { Stepper, type StepperProps, type StepperItem } from './stepper'
+export {
+	Command,
+	CommandMenu,
+	CommandPalette,
+	type CommandProps,
+	type CommandMenuProps,
+	type CommandPaletteProps,
+	type CommandOption,
+	type CommandOptionGroup,
+} from './command-client'
 export { Skeleton, type SkeletonProps } from './skeleton'
 export { Breadcrumb, type BreadcrumbProps } from './breadcrumb'
 export { Card, type CardProps, type ImageStub } from './card'
@@ -126,7 +136,7 @@ export {
 	CardContent,
 } from './shadcn/card'
 export {
-	Command,
+	Command as CommandRoot,
 	CommandDialog,
 	CommandInput,
 	CommandList,

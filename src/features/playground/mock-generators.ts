@@ -1,6 +1,14 @@
 import dayjs from 'dayjs'
 import { indexOf, map, random, reduce, shuffle, uniqueId } from 'lodash'
-import { dates, getPictureUrl, mediaUrls, text } from './mock'
+import {
+	genCoverUrl,
+	genAvatarUrl,
+	dates,
+	getPictureUrl,
+	mediaUrls,
+	text,
+	getPortfolio,
+} from './mock'
 import { pictures } from './pictures'
 import type { ChatParticipantSummary } from '@/lib/chat/contracts'
 import type { PublicFreelancerGridItem } from '@/lib/db/queries/freelancers'
@@ -120,12 +128,8 @@ const clientBio = `Помогаю AI-командам собирать productio
 от поиска визуального направления до настройки inference,
 контроля качества и передачи процессов команде клиента.`
 
-export function createProjectClient(options?: {
-	withAvatar?: boolean
-	longLines?: boolean
-	avatarUrl?: string | null
-}) {
-	const { withAvatar, longLines, avatarUrl } = options ?? {}
+export function createProjectClient(options?: { withAvatar?: boolean; longLines?: boolean }) {
+	const { withAvatar, longLines } = options ?? {}
 
 	return {
 		...clientBase,
@@ -136,7 +140,7 @@ export function createProjectClient(options?: {
 			? `${clientBase.companyName} и ещё немного юридического текста в одну строку`
 			: clientBase.companyName,
 		companyRole: longLines ? `${clientBase.companyRole} / AI` : clientBase.companyRole,
-		avatarUrl: withAvatar ? (avatarUrl ?? null) : null,
+		avatarUrl: withAvatar ? genAvatarUrl() : null,
 		location: clientBase.location,
 		languages: [...clientBase.languages],
 		bio: clientBio,
@@ -146,14 +150,14 @@ export function createProjectClient(options?: {
 export function createChatParticipant(options: {
 	role: ChatParticipantSummary['role']
 	longLines?: boolean
-	image?: string | null
+	withAvatar?: boolean
 }): ChatParticipantSummary {
 	return {
 		id: 'part-1',
 		name: options.longLines
 			? 'Константин Волков-Смирновский (участник с длинным именем)'
 			: 'Константин Волков',
-		image: options.image ?? null,
+		image: options.withAvatar ? genAvatarUrl() : null,
 		role: options.role,
 	}
 }
@@ -161,25 +165,25 @@ export function createChatParticipant(options: {
 export function createFreelancerCardData(options: {
 	id: string
 	longLines?: boolean
-	avatarUrl?: string | null
-	previewUrl?: string | null
 	hasAvatar?: boolean
 	hasPreview?: boolean
 	availability?: string | null
 	portfolioCount?: number
-}): PublicFreelancerGridItem {
+	bio?: boolean
+}): PublicFreelancerGridItem & { portfolio: PublicFreelancerGridItem['latestPortfolioItem'][] } {
 	const {
 		id,
 		longLines,
-		avatarUrl = null,
-		previewUrl = null,
 		hasAvatar,
 		hasPreview,
 		availability = 'part-time',
-		portfolioCount = 8,
+		portfolioCount = 9,
+		bio,
 	} = options
 
 	const nickname = 'socol-lena'
+	const portfolio = getPortfolio()
+	const lastItem = portfolio[portfolio.length - 1]
 
 	return {
 		freelancerProfileId: id,
@@ -189,19 +193,21 @@ export function createFreelancerCardData(options: {
 		name: longLines
 			? 'Елена Соколова — генеративный дизайн и визуальные пайплайны'
 			: 'Елена Соколова',
-		avatarUrl: hasAvatar ? avatarUrl : null,
+		avatarUrl: hasAvatar ? genAvatarUrl() : null,
 		location: 'Tbilisi, Georgia',
 		languages: [
 			{ code: 'ru', name: 'Russian', nativeName: 'Русский', langLevel: 'native' },
 			{ code: 'it', name: 'Italian', nativeName: 'Italiano', langLevel: 'basic' },
 		],
-		bio: longLines
-			? 'Помогаю AI-командам собирать production-ready пайплайны визуальной генерации: от поиска визуального направления до настройки inference, контроля качества и передачи процессов команде клиента.'
-			: 'Production-ready visual pipelines for image generation teams.',
+		bio: bio
+			? longLines
+				? 'Помогаю AI-командам собирать production-ready пайплайны визуальной генерации: от поиска визуального направления до настройки inference, контроля качества и передачи процессов команде клиента.'
+				: 'Production-ready visual pipelines for image generation teams.'
+			: null,
 		specialization: longLines
 			? 'Stable Diffusion, ComfyUI, кастомные LoRA, пост-продакшн и короткие циклы итераций с заказчиком'
 			: 'Generative visuals · SD · ComfyUI',
-		hourlyRate: 65,
+		hourlyRate: random(1500, 5000),
 		availability,
 		topSkills: [
 			{
@@ -232,15 +238,16 @@ export function createFreelancerCardData(options: {
 		portfolioCount,
 		latestPortfolioItem: hasPreview
 			? {
-					id: `${id}-portfolio-item-1`,
+					id: `${lastItem.id}-portfolio-item-1`,
 					title: longLines
 						? 'Редизайн hero-визуалов для AI SaaS с вариативной генерацией и art direction'
-						: 'AI SaaS hero visuals',
-					mediaUrl: previewUrl ?? '',
-					mediaType: 'image/jpeg',
-					category: 'branding',
+						: lastItem.title,
+					mediaUrl: lastItem.mediaUrl,
+					mediaType: lastItem.mediaType,
+					category: lastItem.category,
 				}
 			: null,
+		portfolio,
 	}
 }
 
@@ -248,9 +255,8 @@ export function createPublicProjectListItem(options: {
 	id: string
 	status: PublicProjectListItem['status']
 	longText?: boolean
-	clientAvatarUrl?: string | null
 }) {
-	const { id, status, longText = false, clientAvatarUrl = null } = options
+	const { id, status, longText = false } = options
 	const title = longText
 		? 'Миграция inference-пайплайна на GPU-кластер с SLA и мониторингом качества выдачи'
 		: 'Inference-пайплайн на GPU'
@@ -272,11 +278,11 @@ export function createPublicProjectListItem(options: {
 		budgetMax: id === 'proj-mock-2' ? 5000 : 260000,
 		deadline,
 		status,
+		coverUrl: genCoverUrl(),
 		createdAt,
 		client: createProjectClient({
 			withAvatar: id !== 'proj-mock-2',
 			longLines: longText,
-			avatarUrl: clientAvatarUrl,
 		}),
 		skills: [
 			{ id: `${id}-sk-1`, name: 'PyTorch', category: 'programming' },
@@ -296,30 +302,24 @@ export function createPublicProjectListItem(options: {
 	}
 }
 
-export function createProjectCards(options?: {
-	longText?: boolean
-	clientAvatarUrl?: string | null
-}) {
-	const { longText = false, clientAvatarUrl = null } = options ?? {}
+export function createProjectCards(options?: { longText?: boolean; withAvatar?: boolean }) {
+	const { longText = false } = options ?? {}
 
 	return [
 		createPublicProjectListItem({
 			id: 'proj-mock-1',
 			longText,
 			status: 'published',
-			clientAvatarUrl,
 		}),
 		createPublicProjectListItem({
 			id: 'proj-mock-2',
 			longText: false,
 			status: 'published',
-			clientAvatarUrl,
 		}),
 		createPublicProjectListItem({
 			id: 'proj-mock-3',
 			longText: true,
 			status: 'published',
-			clientAvatarUrl,
 		}),
 	]
 }
@@ -351,6 +351,7 @@ export function createFreelancerApplication(options: {
 			budgetMax: projectSource.budgetMax,
 			deadline: projectSource.deadline,
 			status: projectSource.status,
+			coverUrl: projectSource.coverUrl,
 			client: projectSource.client,
 			skills: projectSource.skills,
 		},

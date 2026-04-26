@@ -12,11 +12,12 @@ export const applicationIdParamSchema = z.object({
 
 const allowedAttachmentProtocols = new Set(['https:', 'http:'])
 
-const projectAttachmentUrlSchema = z
-	.string()
-	.trim()
-	.url()
-	.refine((value) => {
+function isAllowedProjectAssetUrl(value: string) {
+	if (value.startsWith('/')) {
+		return !value.startsWith('//')
+	}
+
+	try {
 		const url = new URL(value)
 		if (!allowedAttachmentProtocols.has(url.protocol)) {
 			return false
@@ -27,7 +28,20 @@ const projectAttachmentUrlSchema = z
 		}
 
 		return ['localhost', '127.0.0.1', '::1'].includes(url.hostname)
-	}, 'Attachment URL must use https or local development http')
+	} catch {
+		return false
+	}
+}
+
+const projectAttachmentUrlSchema = z
+	.string()
+	.trim()
+	.refine(
+		isAllowedProjectAssetUrl,
+		'Attachment URL must use https, local development http, or a relative path',
+	)
+
+const projectCoverUrlFieldSchema = z.union([projectAttachmentUrlSchema, z.null()])
 
 export const projectAttachmentSchema = z.object({
 	filename: z.string().trim().min(1).max(255),
@@ -79,6 +93,7 @@ const projectFieldsSchema = z.object({
 	status: projectStatusSchema,
 	skillIds: projectSkillIdsSchema,
 	attachments: z.array(projectAttachmentSchema).max(5),
+	coverUrl: projectCoverUrlFieldSchema.optional(),
 })
 
 export const fullProjectSchema = projectFieldsSchema.refine(
@@ -116,6 +131,7 @@ export const updateProjectSchema = z
 		status: projectStatusSchema.optional(),
 		skillIds: projectSkillIdsSchema.optional(),
 		attachments: z.array(projectAttachmentSchema).max(5).optional(),
+		coverUrl: projectCoverUrlFieldSchema.optional(),
 	})
 	.refine(
 		(value) =>

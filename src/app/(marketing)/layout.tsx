@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { AuthHeaderGateProvider } from '@/features/auth-header-gate'
 import { MarketingFooter, MarketingHeader } from '@/features/server'
-import { getAuthHeaderState } from '@/lib/account'
+import { getAccountShellState } from '@/lib/account'
 import { getSsrSafeSession } from '@/lib/auth/server'
 
 type MarketingLayoutProps = {
@@ -10,7 +10,7 @@ type MarketingLayoutProps = {
 
 export default async function MarketingLayout({ children }: MarketingLayoutProps) {
 	const session = await getSsrSafeSession()
-	const authState = session ? await getAuthHeaderState(session) : null
+	const authState = session ? await getAccountShellState(session) : null
 
 	const content = (
 		<div className="flex min-h-screen flex-col">

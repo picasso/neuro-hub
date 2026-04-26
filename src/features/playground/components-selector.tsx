@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { type ComponentDemo, componentDemos, groupLabels } from './components'
 import {
-	Command,
+	CommandRoot,
 	CommandEmpty,
 	CommandGroup,
 	CommandInput,
@@ -37,7 +37,7 @@ export function ComponentSelector({ selected, onSelect }: ComponentSelectorProps
 				className: 'w-65 justify-between',
 			}}
 		>
-			<Command>
+			<CommandRoot>
 				<CommandInput placeholder="Поиск..." />
 				<CommandList>
 					<CommandEmpty>Ничего не найдено.</CommandEmpty>
@@ -73,7 +73,7 @@ export function ComponentSelector({ selected, onSelect }: ComponentSelectorProps
 						</CommandGroup>
 					))}
 				</CommandList>
-			</Command>
+			</CommandRoot>
 		</Popover>
 	)
 }

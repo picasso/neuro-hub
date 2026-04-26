@@ -131,7 +131,8 @@ export function Card({
 									{...badgeProps}
 									className={cn(
 										'absolute right-3 top-3',
-										isSmall ? 'tracking-tight' : 'tracking-normal',
+										!badgeProps?.wider &&
+											(isSmall ? 'tracking-tight' : 'tracking-normal'),
 										badgeProps?.className,
 									)}
 								>

@@ -2,7 +2,15 @@ import { useUnit } from 'effector-react'
 import { find, map } from 'lodash'
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { formatLanguages, getLanguageLabel, langLevelOptions } from './helpers'
-import { $form, $isBusy, languageAdded, languageRemoved, languageUpdated } from './model'
+import {
+	$form,
+	$isBusy,
+	$lastTouch,
+	autosaveRequested,
+	languageAdded,
+	languageRemoved,
+	languageUpdated,
+} from './model'
 import { type LanguageLevel, type LanguageOption } from './types'
 import {
 	Alert,
@@ -24,9 +32,10 @@ export type ProfileLanguagesProps = {
 }
 
 export function ProfileLanguages({ availableLanguages, disabled }: ProfileLanguagesProps) {
-	const [{ languages }, isBusy, onAdd, onRemove, onChange] = useUnit([
+	const [{ languages }, isBusy, last, onAdd, onRemove, onChange] = useUnit([
 		$form,
 		$isBusy,
+		$lastTouch,
 		languageAdded,
 		languageRemoved,
 		languageUpdated,
@@ -54,10 +63,16 @@ export function ProfileLanguages({ availableLanguages, disabled }: ProfileLangua
 		[availableLanguages, onChange],
 	)
 
+	const onOpenChange = useCallback((open: boolean) => {
+		setOpen(open)
+		if (!open) autosaveRequested()
+	}, [])
+
+	const isLoading = isBusy && last === 'languages'
 	return (
 		<Popover
 			open={open}
-			onOpenChange={setOpen}
+			onOpenChange={onOpenChange}
 			align="start"
 			trigger={
 				<StackSpan gap={1} className="cursor-pointer hover:bg-accent rounded-md px-1">
@@ -65,10 +80,15 @@ export function ProfileLanguages({ availableLanguages, disabled }: ProfileLangua
 					<TS
 						clean
 						variant="caption"
-						className={cn('transition-opacity', isBusy && 'opacity-50')}
+						className={cn('transition-opacity', isLoading && 'opacity-50')}
 						content={summary}
 					/>
-					<Icon size="xs" name="pencil" className="ml-1" />
+					<Icon
+						size="xs"
+						name={isLoading ? 'spinner' : 'pencil'}
+						spinning={isLoading}
+						className="ml-1"
+					/>
 				</StackSpan>
 			}
 			footer={

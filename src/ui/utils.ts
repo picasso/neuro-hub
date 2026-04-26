@@ -3,7 +3,8 @@
 export function needsContrast(variant: string | null, color?: string): boolean {
 	return (
 		['default', 'destructive', 'primary'].includes(variant as string) ||
-		['contrast', 'soft'].includes(color as string)
+		['contrast', 'soft'].includes(color as string) ||
+		(['outline', 'secondary'].includes(variant as string) && ['cta'].includes(color as string))
 	)
 }
 

@@ -1,5 +1,5 @@
 import { Skills } from './skills'
-import { formatBudget, formatDeadline, formatList, formatValue } from './utils'
+import { type CommonProps, formatBudget, formatDeadline, formatList, formatValue } from './utils'
 import type {
 	ClientProjectApplicationListItem,
 	FreelancerApplicationListItem,
@@ -18,13 +18,13 @@ type BaseApplication = Pick<
 	| 'createdAt'
 	| 'updatedAt'
 >
-export type ApplicationCardProps = BaseApplication & {
-	project?: FreelancerApplicationListItem['project']
-	freelancer?: ClientProjectApplicationListItem['freelancer']
-	full?: boolean
-	className?: string
-	children?: React.ReactNode
-}
+export type ApplicationCardProps = BaseApplication &
+	CommonProps & {
+		project?: FreelancerApplicationListItem['project']
+		freelancer?: ClientProjectApplicationListItem['freelancer']
+		className?: string
+		children?: React.ReactNode
+	}
 
 export function ApplicationCard({
 	project,
@@ -35,6 +35,8 @@ export function ApplicationCard({
 	createdAt,
 	freelancer,
 	full,
+	hoverable,
+	splitTagsAt,
 	className,
 	children,
 }: ApplicationCardProps) {
@@ -50,6 +52,8 @@ export function ApplicationCard({
 							size="xs"
 							color="success"
 							label={formatBudget(project)}
+							// we need a wrapper to avoid gaps between currency and value
+							md={{ container: true }}
 						/>,
 					],
 					null,
@@ -63,6 +67,8 @@ export function ApplicationCard({
 						size="xs"
 						color="warning"
 						label={formatBudget(proposedPrice)}
+						// we need a wrapper to avoid gaps between currency and value
+						md={{ container: true }}
 					/>,
 				],
 				null,
@@ -97,6 +103,7 @@ export function ApplicationCard({
 	return (
 		<Card
 			fullWidth
+			hoverable={hoverable}
 			className={cn('h-full gap-0 py-0', className)}
 			image="request"
 			title={!full ? project?.title : undefined}
@@ -151,7 +158,7 @@ export function ApplicationCard({
 						</TS>
 					)}
 				</Stack>
-				{full && <Skills skills={project?.skills} />}
+				{full && <Skills skills={project?.skills} splitAt={splitTagsAt} />}
 				<TS
 					clean
 					variant={full ? 'body' : 'caption'}

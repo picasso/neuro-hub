@@ -44,6 +44,44 @@ describe('createProjectSchema', () => {
 		expect(result.deadline).toBeInstanceOf(Date)
 	})
 
+	it('accepts optional coverUrl', () => {
+		const result = createProjectSchema.parse({
+			title: 'Build a generative AI support assistant',
+			description:
+				'Need an experienced freelancer to design and ship a support assistant with retrieval, evaluation and prompt optimization for our internal team.',
+			category: 'text_generation',
+			experienceLevel: 'senior',
+			budgetType: 'fixed',
+			budgetMin: 1500,
+			budgetMax: 3000,
+			deadline: '2030-01-10',
+			skillIds: ['550e8400-e29b-41d4-a716-446655440000'],
+			attachments: [],
+			coverUrl: 'https://example.com/assets/cover.jpg',
+		})
+
+		expect(result.coverUrl).toBe('https://example.com/assets/cover.jpg')
+	})
+
+	it('accepts null coverUrl', () => {
+		const result = createProjectSchema.parse({
+			title: 'Build a generative AI support assistant',
+			description:
+				'Need an experienced freelancer to design and ship a support assistant with retrieval, evaluation and prompt optimization for our internal team.',
+			category: 'text_generation',
+			experienceLevel: 'senior',
+			budgetType: 'fixed',
+			budgetMin: 1500,
+			budgetMax: 3000,
+			deadline: '2030-01-10',
+			skillIds: ['550e8400-e29b-41d4-a716-446655440000'],
+			attachments: [],
+			coverUrl: null,
+		})
+
+		expect(result.coverUrl).toBeNull()
+	})
+
 	it('rejects invalid budget range', () => {
 		expect(() =>
 			createProjectSchema.parse({
@@ -112,6 +150,14 @@ describe('updateProjectSchema', () => {
 
 		expect(result.status).toBe('completed')
 	})
+
+	it('accepts coverUrl update', () => {
+		const result = updateProjectSchema.parse({
+			coverUrl: 'https://cdn.example.com/p/cover.png',
+		})
+
+		expect(result.coverUrl).toBe('https://cdn.example.com/p/cover.png')
+	})
 })
 
 describe('projectAttachmentSchema', () => {
@@ -130,7 +176,7 @@ describe('projectAttachmentSchema', () => {
 				filename: 'brief.pdf',
 				fileUrl: 'javascript:alert(1)',
 			}),
-		).toThrow('Attachment URL must use https or local development http')
+		).toThrow('Attachment URL must use https, local development http, or a relative path')
 	})
 })
 

@@ -7,23 +7,31 @@ import { useReset, useSettings } from './settings-store'
 import { Separator } from '@/ui'
 
 export type EntityCardsDemoState = {
-	entity: 'project' | 'person' | 'application'
+	entity: 'project' | 'person' | 'application' | 'portfolio'
 	full: boolean
-	image: boolean
+	cover: boolean
 	hero: boolean
+	portfolio: boolean
+	innerOnly: boolean
+	forcedEmptyBio: boolean
 	personVariant: 'client' | 'participant' | 'freelancer'
 	personClientAvatar: boolean
 	personParticipantRole: 'customer' | 'freelancer'
 	longLines: boolean
+	hoverable: boolean
 	applicationStatus: 'submitted' | 'shortlisted' | 'accepted' | 'rejected' | 'withdrawn'
 }
 
 const defaultState: EntityCardsDemoState = {
 	entity: 'project',
 	full: false,
-	image: false,
+	cover: false,
 	hero: false,
+	portfolio: false,
+	innerOnly: false,
+	forcedEmptyBio: false,
 	longLines: false,
+	hoverable: false,
 	personVariant: 'client',
 	personClientAvatar: true,
 	personParticipantRole: 'freelancer',
@@ -36,8 +44,12 @@ export function DemoEntityCardsSettings() {
 		entity,
 		full,
 		hero,
+		portfolio,
+		innerOnly,
+		forcedEmptyBio,
 		longLines,
-		image,
+		cover,
+		hoverable,
 		personVariant,
 		personClientAvatar,
 		personParticipantRole,
@@ -52,21 +64,31 @@ export function DemoEntityCardsSettings() {
 			<SettingToggle id="full" label="Full card" checked={full} />
 			<SettingToggle id="longLines" label="Long lines" checked={longLines} />
 			<SettingToggle
-				id="image"
-				label="Image"
-				checked={image}
+				id="cover"
+				label="Cover"
+				checked={cover}
 				disabled={entity !== 'project'}
 			/>
+			<SettingToggle id="hoverable" label="Hoverable" checked={hoverable} />
 			<Separator />
+			<SettingToggle
+				id="personClientAvatar"
+				label="Client Avatar URL"
+				checked={personClientAvatar}
+			/>
+			{entity === 'portfolio' && (
+				<SettingToggle id="portfolio" label="Portfolio" checked={portfolio} />
+			)}
 			{entity === 'person' && (
 				<>
 					{includes(['client', 'freelancer'], personVariant) && (
 						<>
 							<SettingToggle id="hero" label="Hero" checked={hero} />
+							<SettingToggle id="innerOnly" label="Inner only" checked={innerOnly} />
 							<SettingToggle
-								id="personClientAvatar"
-								label="Client Avatar URL"
-								checked={personClientAvatar}
+								id="forcedEmptyBio"
+								label="Forced empty bio"
+								checked={forcedEmptyBio}
 							/>
 						</>
 					)}
@@ -75,9 +97,9 @@ export function DemoEntityCardsSettings() {
 						label="Person Source"
 						value={personVariant}
 						options={[
-							{ label: 'Project Client', value: 'client' },
+							{ label: 'Client', value: 'client' },
+							{ label: 'Freelancer', value: 'freelancer' },
 							{ label: 'Chat Participant', value: 'participant' },
-							{ label: 'Freelancer Pick', value: 'freelancer' },
 						]}
 					/>
 
@@ -87,8 +109,8 @@ export function DemoEntityCardsSettings() {
 							label="Participant Role"
 							value={personParticipantRole}
 							options={[
-								{ label: 'customer', value: 'customer' },
-								{ label: 'freelancer', value: 'freelancer' },
+								{ label: 'Client', value: 'customer' },
+								{ label: 'Freelancer', value: 'freelancer' },
 							]}
 						/>
 					) : null}

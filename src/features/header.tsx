@@ -32,7 +32,7 @@ export function MarketingHeader({ authState, session }: MarketingHeaderProps) {
 
 	return (
 		<header className="border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/85">
-			<PageContainer width="desktop" className="py-4 md:py-5">
+			<PageContainer width="desktop" className="py-3">
 				<Stack wrap gap={3} justify="space-between" className="md:flex-nowrap md:gap-6">
 					<Stack wrap className="min-w-0 flex-1 gap-3 md:flex-nowrap md:gap-8">
 						<Link
@@ -60,23 +60,21 @@ export function MarketingHeader({ authState, session }: MarketingHeaderProps) {
 					</Stack>
 
 					<Stack wrap justify="flex-end" className="shrink-0 gap-x-2 gap-y-2">
-						{session ? (
+						{session && authState ? (
 							<HeaderAuth
-								email={authState?.viewer.email ?? session.user.email}
-								name={authState?.viewer.displayName ?? session.user.name}
-								avatarUrl={authState?.viewer.avatarUrl}
-								unreadMessages={authState?.unreadMessages}
+								viewer={authState.viewer}
+								snapshot={authState.snapshot}
 								variant="marketing"
 								slot={
 									<Button href="/account/dashboard" size="sm" label="Dashboard" />
 								}
 							/>
-						) : (
+						) : !session ? (
 							<>
 								<LoginButton />
 								<Button href="/signup" size="sm" label="Регистрация" />
 							</>
-						)}
+						) : null}
 					</Stack>
 				</Stack>
 			</PageContainer>

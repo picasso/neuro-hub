@@ -23,19 +23,17 @@ export type AccountViewer = {
 	displayName: string
 	avatarUrl: string | null
 }
-export type AuthHeaderState = {
-	viewer: AccountViewer
-	unreadMessages: number
-}
 export type AccountShellState = {
 	viewer: AccountViewer
 	snapshot: AccountSnapshot
 }
+export type AuthHeaderState = AccountShellState
 
 export type AccountContext = {
 	session: Session
 	profileId: string | null
 	nickname: string | null
+	profileHeadline: string | null
 }
 
 export async function getAccountContext(): Promise<AccountContext | null> {
@@ -43,28 +41,38 @@ export async function getAccountContext(): Promise<AccountContext | null> {
 
 	if (!session) return null
 
+	await ensureUserProfileRow(session.user.id)
+
+	const userProfile = await kysely
+		.selectFrom('user_profiles')
+		.select(['nickname', 'company_name as companyName', 'company_role as companyRole'])
+		.where('user_id', '=', session.user.id)
+		.executeTakeFirst()
+
+	const profileHeadline =
+		session.user.role === 'client'
+			? [userProfile?.companyName, userProfile?.companyRole]
+					.map((value) => value?.trim())
+					.filter(Boolean)
+					.join(' ✶ ') || null
+			: null
+
 	if (session.user.role !== 'freelancer') {
 		return {
 			session,
 			profileId: null,
 			nickname: null,
+			profileHeadline,
 		}
 	}
 
-	await ensureUserProfileRow(session.user.id)
-
 	const profile = await getOrCreateFreelancerProfileByUserId(session.user.id)
-
-	const userProfile = await kysely
-		.selectFrom('user_profiles')
-		.select('nickname')
-		.where('user_id', '=', session.user.id)
-		.executeTakeFirst()
 
 	return {
 		session,
 		profileId: profile?.id ?? null,
 		nickname: userProfile?.nickname ?? null,
+		profileHeadline: profile?.specialization ?? null,
 	}
 }
 
@@ -97,18 +105,6 @@ export async function getAccountSnapshot(session: Session): Promise<AccountSnaps
 		applications,
 		works,
 		messages,
-	}
-}
-
-export async function getAuthHeaderState(session: Session): Promise<AuthHeaderState> {
-	const [viewer, unreadMessages] = await Promise.all([
-		getAccountViewer(session),
-		countUnreadChatMessagesForUser(session.user.id),
-	])
-
-	return {
-		viewer,
-		unreadMessages,
 	}
 }
 

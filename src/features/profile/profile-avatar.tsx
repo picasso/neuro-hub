@@ -1,7 +1,7 @@
 'use client'
 
 import { useUnit } from 'effector-react'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { $form, $isBusy, $isUploadingAvatar, avatarSelected } from './model'
 import { AvatarEditor, type AvatarEditorResult } from '@/ui'
 
@@ -13,8 +13,15 @@ export function ProfileAvatar() {
 		avatarSelected,
 	])
 
+	const [avatarProxy, setAvatarProxy] = useState<string | null>(avatarUrl)
+
+	useEffect(() => {
+		setAvatarProxy(avatarUrl)
+	}, [avatarUrl])
+
 	const onCompleted = useCallback(
 		({ file }: AvatarEditorResult) => {
+			setAvatarProxy(null)
 			onSelected(file)
 		},
 		[onSelected],
@@ -23,7 +30,7 @@ export function ProfileAvatar() {
 		<div className="shrink-0 lg:col-start-1 lg:row-start-1">
 			<AvatarEditor
 				name="icon"
-				src={avatarUrl}
+				src={avatarProxy}
 				loading={isUploadingAvatar}
 				completed={!!avatarUrl}
 				disabled={isBusy}
