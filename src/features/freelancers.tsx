@@ -1,4 +1,4 @@
-import { FreelancerGridCard } from './freelancers-card'
+import { PortfolioCard } from './entity-cards/portfolio-card'
 import type { Route } from 'next'
 import { freelancerCatalogMock } from '@/config'
 import { listPublicFreelancers } from '@/lib/db/queries/freelancers'
@@ -211,20 +211,28 @@ export async function FreelancersPage({ searchParams }: PageProps) {
 
 						{directory.items.length === 0 ? (
 							<Empty
+								light
 								outline
 								fullWidth
 								align="start"
-								icon="search"
+								icon="missing"
+								iconOptions={{ size: 60 }}
 								title="Фрилансеры не найдены"
 								helper="Попробуйте изменить поисковый запрос, категорию или отключить фильтр по портфолио."
 							/>
 						) : (
 							<div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
 								{directory.items.map((item) => (
-									<FreelancerGridCard
-										key={item.freelancerProfileId}
-										item={item}
-									/>
+									<Link key={item.freelancerProfileId} href={item.href}>
+										<PortfolioCard
+											full
+											hoverable
+											bioSnippet={57}
+											splitTagsAt={2}
+											freelancer={item}
+											item="last"
+										/>
+									</Link>
 								))}
 							</div>
 						)}
