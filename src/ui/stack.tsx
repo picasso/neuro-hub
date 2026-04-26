@@ -70,17 +70,18 @@ export function StackSpan({
 	align = 'center',
 	justify = 'flex-start',
 	wrap,
+	inlineBlock,
 	className,
 	children,
 	...props
-}: ComponentProps<'span'> & BaseProps) {
+}: ComponentProps<'span'> & BaseProps & { inlineBlock?: boolean }) {
 	const resolvedDirection = resolveDirection({ direction, vertical, horizontal })
 	const resolvedGapClass = isValidGap(gap) ? gapMap.get(gap) : undefined
 
 	return (
 		<span
 			className={cn(
-				'inline-flex',
+				inlineBlock ? 'inline-block' : 'inline-flex',
 				directionClassMap[resolvedDirection],
 				resolvedGapClass,
 				alignClassMap[align],
