@@ -2,7 +2,7 @@ import { startCase } from 'lodash'
 import { type ReactNode } from 'react'
 import { PersonCardBio } from './person-card-bio'
 import { PersonCardHero } from './person-card-hero'
-import { type CommonProps, formatTruncated, getFreelancerData, toSnippet } from './utils'
+import { type CommonProps, formatTruncated, getFreelancerData } from './utils'
 import type { ChatParticipantSummary } from '@/lib/chat/contracts'
 import type {
 	PublicFreelancerGridItem,
@@ -20,7 +20,7 @@ export type PersonCardProps = CommonProps & {
 	actions?: ReactNode
 	// display even empty bio block
 	forcedEmptyBio?: boolean
-	bioSnippet?: boolean
+	bioSnippet?: true | number
 	innerOnly?: boolean
 	multiline?: boolean
 } & (
@@ -58,7 +58,7 @@ export function PersonCard({
 	const location = isClient ? client?.location : (fdata.location ?? null)
 	const languages = isClient ? client?.languages : (fdata.languages ?? null)
 	const rawBio = isClient ? client?.bio : (fdata.bio ?? null)
-	const bio = full ? rawBio : toSnippet(rawBio)
+	// const bio = full ? rawBio : toSnippet(rawBio)
 
 	const badge = fdata.latestPortfolioItem ? 'Latest work' : 'Portfolio soon'
 	const title = fdata.latestPortfolioItem?.title
@@ -71,7 +71,7 @@ export function PersonCard({
 			<PersonCardHero
 				full={full}
 				isClient={isClient}
-				bio={bio}
+				bio={rawBio}
 				forcedBio={forcedEmptyBio}
 				name={name}
 				nickname={nickname}
@@ -132,34 +132,13 @@ export function PersonCard({
 			hoverable={hoverable}
 			fullWidth
 			size={full ? 'default' : 'sm'}
-			// className="max-w-none gap-0 py-3"
-			className={cn('h-full gap-1 overflow-hidden', className)}
-			contentClassName="p-0 pb-2"
-			// image={renderPreview(props.freelancer)}
 			imageAspect="3/2"
 			badge={isFreelancer && full ? badge : undefined}
 			titleOver={full}
 			title={title}
-			footer={
-				actions
-				// <Stack justify="space-between" gap={3} className="w-full">
-				// 	<TS
-				// 		clean
-				// 		variant="caption"
-				// 		color="secondary"
-				// 		content={
-				// 			freelancerMeta(props.freelancer) ||
-				// 			`ставки (${formatRate(-1)}) не указаны`
-				// 		}
-				// 	/>
-				// 	<TS
-				// 		clean
-				// 		variant="caption"
-				// 		color="secondary"
-				// 		content={pluralizeRuWithCount(props.freelancer.portfolioCount, 'work')}
-				// 	/>
-				// </Stack>
-			}
+			footer={actions}
+			className={cn('h-full gap-1 overflow-hidden', className)}
+			contentClassName="p-0 pb-2"
 		>
 			{inner}
 		</Card>
