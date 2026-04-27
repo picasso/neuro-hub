@@ -10754,7 +10754,7 @@ __metadata:
     react-avatar-editor: "npm:^15.1.0"
     react-dom: "npm:^19.2.4"
     react-dropzone: "npm:^15.0.0"
-    react-photo-album: "npm:^3.5.1"
+    react-photo-album: "npm:^3.6.0"
     resend: "npm:^6.9.4"
     shadcn: "npm:^4.0.8"
     sonner: "npm:^2.0.7"
@@ -12028,16 +12028,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-photo-album@npm:^3.5.1":
-  version: 3.5.1
-  resolution: "react-photo-album@npm:3.5.1"
+"react-photo-album@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "react-photo-album@npm:3.6.0"
   peerDependencies:
     "@types/react": ^18 || ^19
     react: ^18 || ^19
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10c0/4c1c21dec7e4fe542f6746a265de60cbdf064bc5e0adb805f7b6c8720d17c2cd70b801b838349ec3cc05a4ede4abbc3f6292b4e011a7e0ced77b6f4307534bac
+  checksum: 10c0/eeb5cc49b4a657e7c87bfaa694df967897d633da8b4f368bedd383617c1ffdbd0b51a1350b28fe5b9407d2066099c4d3ac23715662050b794dba984c3dface40
   languageName: node
   linkType: hard
 
