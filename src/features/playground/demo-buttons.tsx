@@ -33,9 +33,9 @@ export function DemoButtons() {
 					<Button variant="ghost" label="Cancel" className="mr-10" />
 					<Button variant="default" label="Default" leftIcon="book-marked" />
 					<Button variant="outline" label="Outline" leftIcon="building" />
-					<Button variant="secondary" label="Secondary" leftIcon="email" />
+					<Button variant="secondary" label="Secondary" leftIcon="mail" />
 					<Button variant="destructive" label="Destructive" leftIcon="trash" />
-					<Button variant="ghost" label="Ghost" leftIcon="login" />
+					<Button variant="ghost" label="Ghost" leftIcon="log-in" />
 				</Stack>
 			</DemoSection>
 			<DemoSection title="Sizes" asBadge="credit-card">

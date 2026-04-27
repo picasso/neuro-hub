@@ -7,7 +7,7 @@ import { useSettings } from './settings-store'
 import { IconButton, needsContrast, Stack } from '@/ui'
 import { cn } from '@/utils'
 
-const icons = ['thumbs-up', 'search', 'trash', 'book-marked', 'eye', 'collections'] as const
+const icons = ['thumbs-up', 'search', 'trash', 'book-marked', 'eye', 'layout-grid'] as const
 
 export function DemoIconButtons() {
 	const settings = useSettings<IconButtonDemoState>()

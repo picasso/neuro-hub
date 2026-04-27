@@ -233,7 +233,7 @@ const customItems: ComboCustomItem[] = [
 		title: 'React from Facebook',
 		desc: 'React is a **JavaScript library** for building `!user` interfaces.',
 		button: 'Follow',
-		buttonRightIcon: 'email',
+		buttonRightIcon: 'mail',
 	},
 	{
 		value: 'vue',

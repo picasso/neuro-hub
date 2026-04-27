@@ -17,7 +17,7 @@ export function EmailVerificationStep() {
 					align="center"
 					className="mx-auto size-20 rounded-full bg-primary"
 				>
-					<Icon name="email" size={40} color="contrast" />
+					<Icon name="mail" size={40} color="contrast" />
 				</Stack>
 
 				<TS variant="h5" gutterBottom content="Подтвердите email" />

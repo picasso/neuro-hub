@@ -274,7 +274,7 @@ const demoSections: DemoSection[] = [
 				buttonColor: 'info',
 				alertOptions: {
 					severity: 'info',
-					icon: 'email',
+					icon: 'mail',
 					title: 'Custom icon',
 					message: 'Using **warning** icon instead of default info icon',
 				},

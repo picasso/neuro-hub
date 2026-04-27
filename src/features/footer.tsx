@@ -11,7 +11,7 @@ const platformLinks = [
 const resourceLinks = [{ href: '/api/reference', label: 'API for developers' }]
 
 const socialLinks = [
-	{ href: contactContent.social.github, icon: 'git-hub' as const, label: 'GitHub' },
+	{ href: contactContent.social.github, icon: 'github' as const, label: 'GitHub' },
 	{ href: contactContent.social.twitter, icon: 'x-twitter' as const, label: 'X / Twitter' },
 	{ href: contactContent.social.linkedin, icon: 'linked-in' as const, label: 'LinkedIn' },
 	{ href: contactContent.social.telegram, icon: 'telegram' as const, label: 'Telegram' },
@@ -26,7 +26,7 @@ export function MarketingFooter() {
 						<Stack gap={2}>
 							<TS variant="h5" clean strong content="NeuroGig" />
 							<Badge
-								icon="done"
+								icon="check"
 								variant="outline"
 								color="secondary"
 								label={config.version}
@@ -73,7 +73,7 @@ export function MarketingFooter() {
 								/>
 							))}
 							<Stack gap={2}>
-								<Icon name="email" size={16} color="dimmed" />
+								<Icon name="mail" size={16} color="dimmed" />
 								<Link
 									href={`mailto:${contactContent.email}`}
 									size="sm"

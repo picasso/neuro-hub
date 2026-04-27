@@ -32,7 +32,6 @@ import {
 	FolderKanban,
 	Frown,
 	Gavel,
-	Github,
 	History,
 	Image,
 	Info,
@@ -117,7 +116,6 @@ const lucideIcons = {
 	FolderKanban,
 	Frown,
 	Gavel,
-	Github,
 	History,
 	Image,
 	Info,
@@ -197,51 +195,16 @@ const library = reduce(
 // aliases ----------------------------------------------------------------------------------------]
 
 const aliases = {
-	// backward compat: old MUI names -> new lucide names
+	// useful aliases
 	close: 'x',
-	done: 'check',
-	'done-filled': 'shield-check',
-	delete: 'trash',
-	'delete-outline': 'trash',
-	'do-not-disturb': 'ban',
-	'expand-more': 'chevron-down',
-	error: 'circle-alert',
-	'error-filled': 'circle-alert',
-	'info-filled': 'info',
 	warning: 'alert-triangle',
-	'warning-filled': 'alert-triangle',
-	'verified-user': 'shield-check',
-
+	error: 'circle-alert',
+	ellipsis: 'more-horizontal',
 	// media aliases
 	'media-image': 'image',
 	'media-video': 'video',
 	'media-audio': 'volume',
 	'media-pdf': 'file-text',
-
-	// semantic aliases
-	loading: 'spinner',
-	article: 'file-text',
-	business: 'building',
-	collections: 'layout-grid',
-	'collections-bookmark': 'book-marked',
-	email: 'mail',
-	'format-quote': 'quote',
-	groups: 'users',
-	login: 'log-in',
-	payment: 'credit-card',
-	person: 'user',
-	'person-add': 'user-plus',
-	verified: 'badge-check',
-	'video-library': 'video',
-	visibility: 'eye',
-	'visibility-off': 'eye-off',
-	work: 'briefcase',
-
-	'git-hub': 'github',
-	'check-circle': 'circle-check',
-
-	// chat status icons (lucide naming)
-	ellipsis: 'more-horizontal',
 } as const
 
 type AliasName = keyof typeof aliases

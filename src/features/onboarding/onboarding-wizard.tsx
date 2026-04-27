@@ -62,7 +62,7 @@ export function OnboardingWizard() {
 							variant="primary"
 							size="md"
 							label={role === 'freelancer' ? 'Фрилансер' : 'Заказчик'}
-							icon={role === 'freelancer' ? 'person' : 'business'}
+							icon={role === 'freelancer' ? 'user' : 'building'}
 							onClose={() => resetOnboarding()}
 							ariaOnClose="Сбросить и начать заново"
 						/>

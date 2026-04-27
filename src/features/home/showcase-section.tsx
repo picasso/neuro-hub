@@ -11,7 +11,7 @@ type CategoryConfig = {
 
 const categoryConfig: Record<string, CategoryConfig> = {
 	'Генерация текста': {
-		icon: 'article',
+		icon: 'file-text',
 		gradient: 'linear-gradient(90deg, #5a4fcf 0%, #a78bfa 100%)',
 		chipColor: '#667eea',
 		quoteBg: 'rgba(102, 126, 234, 0.1)',
@@ -23,7 +23,7 @@ const categoryConfig: Record<string, CategoryConfig> = {
 		quoteBg: 'rgba(240, 147, 251, 0.1)',
 	},
 	'Генерация видео': {
-		icon: 'video-library',
+		icon: 'video',
 		gradient: 'linear-gradient(90deg, #0891b2 0%, #67e8f9 100%)',
 		chipColor: '#4facfe',
 		quoteBg: 'rgba(79, 172, 254, 0.1)',
@@ -59,11 +59,7 @@ function CaseCard({ category, title, description, result, feedback, client }: Ca
 			footer={
 				<Stack vertical align="flex-start" gap={4}>
 					<Stack align="flex-start">
-						<Icon
-							name="format-quote"
-							style={{ color: config.chipColor }}
-							className="mt-1"
-						/>
+						<Icon name="quote" style={{ color: config.chipColor }} className="mt-1" />
 						<TS
 							variant="subtitle"
 							color="dimmed"

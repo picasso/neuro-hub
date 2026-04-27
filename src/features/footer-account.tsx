@@ -11,7 +11,7 @@ export function AccountFooter() {
 							<TS variant="caption" clean strong content="NeuroGig" />
 						</Link>
 						<Badge
-							icon="done"
+							icon="check"
 							variant="outline"
 							color="secondary"
 							label={config.version}

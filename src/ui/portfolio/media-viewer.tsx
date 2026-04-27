@@ -282,7 +282,7 @@ export function MediaViewer({
 							</div>
 						) : (
 							<div className="flex h-full w-full flex-col items-center justify-center gap-6 py-12">
-								<Icon name="do-not-disturb" size={180} color="contrast" />
+								<Icon name="ban" size={180} color="contrast" />
 								<TS
 									clean
 									variant="body"
@@ -523,7 +523,7 @@ const mediaKindIcons: Record<MediaKind, IconName> = {
 	video: 'media-video',
 	audio: 'media-audio',
 	pdf: 'media-pdf',
-	unknown: 'do-not-disturb',
+	unknown: 'ban',
 }
 
 function getViewerSize({

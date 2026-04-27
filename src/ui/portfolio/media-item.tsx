@@ -205,7 +205,7 @@ const placeholderProps: Record<MediaKind, PlaceholderProps> = {
 		color2: '#111827',
 	},
 	unknown: {
-		name: 'do-not-disturb',
+		name: 'ban',
 		forceSize: 80,
 		color: '#ab2d2d',
 	},

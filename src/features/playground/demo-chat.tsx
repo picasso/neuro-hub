@@ -244,7 +244,7 @@ function getMessageItems(options: Options, items: NonNullable<ChatUIProps.Messag
 		{
 			value: 'list',
 			title: 'List',
-			icon: 'collections',
+			icon: 'layout-grid',
 			content: messageContent(options, { items }),
 		},
 		{
@@ -299,7 +299,7 @@ function getChatItems(options: Options, items: NonNullable<ChatUIProps.Chats['it
 		{
 			value: 'list',
 			title: 'List',
-			icon: 'collections',
+			icon: 'layout-grid',
 			content: chatContent(options, { items }),
 		},
 		{

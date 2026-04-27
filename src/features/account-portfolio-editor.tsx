@@ -150,7 +150,7 @@ export function PortfolioEditor({ userId, nickname }: { userId: string; nickname
 						outline
 						fullWidth
 						align="start"
-						icon="collections-bookmark"
+						icon="book-marked"
 						title="Портфолио пока пустое"
 						helper="После первой загрузки здесь появится галерея с выбором работы, предпросмотром и возможностями модификации."
 					/>

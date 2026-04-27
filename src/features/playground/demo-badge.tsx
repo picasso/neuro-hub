@@ -182,7 +182,7 @@ export function DemoBadge() {
 						icon="trash"
 						capitalize={capitalize}
 					/>
-					<Badge variant="secondary" label="email" icon="email" capitalize={capitalize} />
+					<Badge variant="secondary" label="email" icon="mail" capitalize={capitalize} />
 				</Stack>
 			</DemoSection>
 			<DemoSection title="Closable (onClose)" asBadge="shield-check">

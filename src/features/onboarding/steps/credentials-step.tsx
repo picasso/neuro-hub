@@ -54,7 +54,7 @@ export function CredentialsStep() {
 					onChange={(e) => onUpdateField({ field: 'password', value: e.target.value })}
 					error={credentialsErrors.password}
 					helper="Минимум 8 символов"
-					endIcon={showPassword ? 'visibility-off' : 'visibility'}
+					endIcon={showPassword ? 'eye-off' : 'eye'}
 					onEndClick={() => setShowPassword(!showPassword)}
 				/>
 

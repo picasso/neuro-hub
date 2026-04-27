@@ -75,7 +75,7 @@ export function DemoUploader() {
 					align={align}
 				/>
 			</DemoSection>
-			<DemoSection title="Drop only" asBadge="video-library">
+			<DemoSection title="Drop only" asBadge="video">
 				<Stack align="stretch">
 					<FileUploader
 						outline

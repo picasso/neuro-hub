@@ -50,7 +50,7 @@ export function FreelancerPublic({ profile }: { profile: PublicFreelancerProfile
 						dark
 						align="start"
 						mediaIcon="start"
-						icon="collections-bookmark"
+						icon="book-marked"
 						title="Портфолио пока пустое"
 						helper={{
 							helper: 'Когда пользователь добавит кейсы,\nздесь появится галерея работ с предпросмотром.',

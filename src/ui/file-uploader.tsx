@@ -47,7 +47,7 @@ export function FileUploader({
 	dropOnly,
 	placeholder,
 	title,
-	icon: icon = 'collections-bookmark',
+	icon: icon = 'book-marked',
 	iconOptions,
 	mediaIcon,
 	compact,

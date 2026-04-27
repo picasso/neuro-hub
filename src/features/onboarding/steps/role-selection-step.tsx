@@ -19,13 +19,13 @@ const roleOptions: RoleOption[] = [
 		value: 'freelancer',
 		title: 'Фрилансер',
 		description: 'Я ищу интересные проекты и хочу применить свои навыки в AI',
-		icon: 'person',
+		icon: 'user',
 	},
 	{
 		value: 'client',
 		title: 'Заказчик',
 		description: 'Мне нужны специалисты для реализации AI-проектов',
-		icon: 'business',
+		icon: 'building',
 	},
 ]
 

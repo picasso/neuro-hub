@@ -36,7 +36,7 @@ export function HeroSection() {
 							inverse
 							href="/signup?role=freelancer"
 							size="lg"
-							leftIcon="work"
+							leftIcon="briefcase"
 							label={heroContent.ctaFreelancer}
 							className="shadow-lg shadow-black/10"
 						/>
@@ -46,7 +46,7 @@ export function HeroSection() {
 							href="/signup?role=client"
 							variant="outline"
 							size="lg"
-							leftIcon="business"
+							leftIcon="building"
 							label={heroContent.ctaClient}
 							className="shadow-lg shadow-black/10"
 						/>
@@ -56,7 +56,7 @@ export function HeroSection() {
 						inverse
 						href="/login"
 						variant="ghost"
-						leftIcon="login"
+						leftIcon="log-in"
 						label={heroContent.ctaLogin}
 					/>
 				</div>

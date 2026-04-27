@@ -85,7 +85,7 @@ const tabs: TabItem[] = [
 	{
 		value: 'text',
 		title: 'Text',
-		icon: 'article',
+		icon: 'file-text',
 		content: <DemoTypographyText />,
 	},
 	{
